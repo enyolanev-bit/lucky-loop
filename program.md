@@ -67,6 +67,17 @@ Run the world-model ablation:
 PYTHONPATH=src python3 scripts/run_ablation_suite.py --world-model auto
 ```
 
+Start from a research question:
+
+```bash
+PYTHONPATH=src python3 -m luckyloop.autoresearch \
+  --question "Can world-model-guided autoresearch produce more claimable ML evidence than classic autoresearch?" \
+  --agent codex_operator \
+  --execute
+```
+
+This command creates `reports/autoresearch/<question_slug>/` with literature context, agent instructions, an experiment plan, evidence manifest, and a final report scaffold. The coding agent remains the autoresearch agent; Python does not pretend to call Codex or Claude internally.
+
 Validate artifacts:
 
 ```bash

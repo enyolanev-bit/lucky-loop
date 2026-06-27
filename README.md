@@ -94,6 +94,17 @@ export LUCKYWORLD_SIMULATOR_BASE_URL=http://134.199.205.222:8000/v1
 export LUCKYWORLD_SIMULATOR_MODEL=Qwen/Qwen-AgentWorld-35B-A3B
 export LUCKYWORLD_SIMULATOR_API_KEY=dummy
 
+python3 -m luckyloop.autoresearch \
+  --question "Can world-model-guided autoresearch produce more claimable ML evidence than classic autoresearch?" \
+  --agent codex_operator \
+  --execute
+```
+
+This is the main agent-operated path: Codex, Claude Code, OpenClaw, Hermes, or an API planner acts as the autoresearch agent in the repo. Lucky Loop provides the world-model prediction layer, real execution harness, comparator, verifier, claim ledger, and evidence reports.
+
+To run one task directly:
+
+```bash
 python3 -m luckyloop.loop \
   --task configs/tasks/breast_cancer_accuracy.json \
   --planner-mode operator_driven \
@@ -167,6 +178,7 @@ reports/<task_id>/claim_ledger.json
 reports/benchmark_summary.md
 reports/ablations/world_model_ablation.md
 reports/ablations/classic_vs_lucky_loop.md
+reports/autoresearch/<question_slug>/
 reports/pitch_backend_summary.md
 app/streamlit_app.py
 ```

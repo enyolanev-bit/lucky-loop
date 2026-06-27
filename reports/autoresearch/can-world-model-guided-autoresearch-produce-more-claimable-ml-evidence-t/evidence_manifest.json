@@ -1,0 +1,45 @@
+{
+  "schema_version": "1.0",
+  "executed_this_run": true,
+  "workspace": "reports/autoresearch/can-world-model-guided-autoresearch-produce-more-claimable-ml-evidence-t",
+  "literature": {
+    "related_work": "reports/autoresearch/can-world-model-guided-autoresearch-produce-more-claimable-ml-evidence-t/literature/related_work.md",
+    "research_context": "reports/autoresearch/can-world-model-guided-autoresearch-produce-more-claimable-ml-evidence-t/literature/research_context.json",
+    "sources_bib": "reports/autoresearch/can-world-model-guided-autoresearch-produce-more-claimable-ml-evidence-t/literature/sources.bib"
+  },
+  "benchmark_reports": {
+    "summary": "reports/benchmark_summary.md",
+    "ablation": "reports/ablations/world_model_ablation.md",
+    "classic_vs_lucky_loop": "reports/ablations/classic_vs_lucky_loop.md",
+    "backend_pitch": "reports/pitch_backend_summary.md"
+  },
+  "task_artifacts": [
+    {
+      "task_id": "breast_cancer_accuracy",
+      "main_runs": "runs/breast_cancer_accuracy/run_*.json",
+      "main_report": "reports/breast_cancer_accuracy/final_report.md",
+      "claim_ledger": "reports/breast_cancer_accuracy/claim_ledger.json",
+      "calibration": "reports/breast_cancer_accuracy/world_model_calibration.md",
+      "ablation_runs": "runs/ablations/*/breast_cancer_accuracy/run_*.json",
+      "ablation_reports": "reports/ablations/*/breast_cancer_accuracy/final_report.md"
+    },
+    {
+      "task_id": "wine_accuracy",
+      "main_runs": "runs/wine_accuracy/run_*.json",
+      "main_report": "reports/wine_accuracy/final_report.md",
+      "claim_ledger": "reports/wine_accuracy/claim_ledger.json",
+      "calibration": "reports/wine_accuracy/world_model_calibration.md",
+      "ablation_runs": "runs/ablations/*/wine_accuracy/run_*.json",
+      "ablation_reports": "reports/ablations/*/wine_accuracy/final_report.md"
+    },
+    {
+      "task_id": "digits_accuracy",
+      "main_runs": "runs/digits_accuracy/run_*.json",
+      "main_report": "reports/digits_accuracy/final_report.md",
+      "claim_ledger": "reports/digits_accuracy/claim_ledger.json",
+      "calibration": "reports/digits_accuracy/world_model_calibration.md",
+      "ablation_runs": "runs/ablations/*/digits_accuracy/run_*.json",
+      "ablation_reports": "reports/ablations/*/digits_accuracy/final_report.md"
+    }
+  ]
+}

@@ -1,0 +1,77 @@
+{
+  "schema_version": "1.0",
+  "question": "Can world-model-guided autoresearch produce more claimable ML evidence than classic autoresearch?",
+  "goal": "Run an end-to-end agent-operated autoresearch loop with world-model predictions before compute and claim verification after execution.",
+  "tasks": [
+    {
+      "task_id": "breast_cancer_accuracy",
+      "dataset": "breast_cancer",
+      "primary_metric": "accuracy",
+      "budget_runs": 7,
+      "models": [
+        "logistic_regression",
+        "random_forest",
+        "svc",
+        "gradient_boosting"
+      ],
+      "task_spec": "configs/tasks/breast_cancer_accuracy.json"
+    },
+    {
+      "task_id": "wine_accuracy",
+      "dataset": "wine",
+      "primary_metric": "accuracy",
+      "budget_runs": 7,
+      "models": [
+        "logistic_regression",
+        "random_forest",
+        "svc",
+        "gradient_boosting"
+      ],
+      "task_spec": "configs/tasks/wine_accuracy.json"
+    },
+    {
+      "task_id": "digits_accuracy",
+      "dataset": "digits",
+      "primary_metric": "accuracy",
+      "budget_runs": 7,
+      "models": [
+        "logistic_regression",
+        "random_forest",
+        "svc",
+        "hist_gradient_boosting"
+      ],
+      "task_spec": "configs/tasks/digits_accuracy.json"
+    }
+  ],
+  "policies": [
+    "classic_autoresearch",
+    "classic_verified",
+    "lucky_loop_full"
+  ],
+  "metrics": [
+    "best_single_run_score",
+    "best_verified_mean_score",
+    "best_claimable_score",
+    "unsupported_best_model_claims",
+    "prediction_interval_coverage",
+    "prediction_miss_count",
+    "runs_to_first_verification",
+    "compute_per_claimable_claim"
+  ],
+  "steps": [
+    "literature_review",
+    "experiment_plan",
+    "classic_autoresearch_baseline",
+    "classic_verified_baseline",
+    "lucky_loop_full_world_model_run",
+    "artifact_validation",
+    "claim_calibrated_report"
+  ],
+  "success_criteria": [
+    "Live or cached Qwen-AgentWorld candidate predictions exist for Lucky Loop full traces.",
+    "Classic autoresearch baseline is compared against Lucky Loop full.",
+    "Top observed models are detected from real sklearn results.",
+    "Claims are allowed or blocked through claim ledger entries.",
+    "Final report distinguishes score observations from robust claims."
+  ]
+}
