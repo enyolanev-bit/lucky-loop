@@ -98,6 +98,6 @@ That is useful, not bad:
 | `reports/world_model_calibration.md` | prediction-vs-reality calibration |
 | `reports/claim_ledger.json` | supported/blocked claims |
 | `reports/verifier_crosscheck.md` | independent IC95 cross-check |
-| `reports/post_training_feedback_response.md` | response to post-training feedback |
-| `experiments/post_training_lora_probe.py` | additive Qwen3-0.6B LoRA probe |
+| `reports/post_training_feedback_response.md` | response to post-training feedback for `Qwen/Qwen3-0.6B` on `SetFit/sst2` |
+| `experiments/post_training_lora_probe.py` | additive Qwen3-0.6B LoRA probe using `SetFit/sst2` |
 | `app/streamlit_app.py` | judge-facing timeline UI |

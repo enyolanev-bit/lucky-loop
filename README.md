@@ -63,6 +63,7 @@ Qwen-AgentWorld is never treated as the research agent or verifier. It is the wo
   - `seed_noise = 0.027972`
   - verdict: `inconclusive`
 - An additive IC95 cross-check exists at `experiments/verifier_crosscheck.py` and writes `reports/verifier_crosscheck.md` without replacing the trust-ladder verifier.
+- The post-training feedback is answered with an additive LoRA probe at `experiments/post_training_lora_probe.py`, targeting `Qwen/Qwen3-0.6B` on `SetFit/sst2` with explicit train/test splits.
 
 ## Judge Evidence
 
