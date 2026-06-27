@@ -43,7 +43,9 @@ The important distinction:
 Operating mode:
 
 - **Product path:** the autoresearch agent is an OpenAI-compatible planner API. It proposes hypotheses and chooses action IDs from a safe catalog.
-- **Development path:** `--planner-mode replay` uses the same `AgentDecision` schema without requiring credentials, so the pipeline can be tested before an API key is available.
+- **No-key agent path:** `--planner-mode agent_handoff` lets Codex, Claude Code, OpenClaw, or another external agent read a request JSON and write an `AgentDecision` response.
+- **Automatic agent path:** `--planner-mode agent_command` calls any CLI adapter through `LUCKYLOOP_AGENT_COMMAND`.
+- **Test path:** `--planner-mode replay` uses a local fixture-like planner for smoke tests only.
 - **Compatibility path:** `--planner-mode selector` keeps the previous transparent selector available, but it is not the main demo path.
 
 Qwen-AgentWorld is never treated as the research agent or verifier. It is the world model that forecasts candidate-action outcomes.
@@ -54,7 +56,7 @@ Qwen-AgentWorld is never treated as the research agent or verifier. It is the wo
 - OpenAI-compatible endpoint: `http://134.199.205.222:8000/v1`.
 - `src/luckyloop/` contains the runnable task-agnostic ML research loop:
   - task specs for sklearn benchmarks
-  - API-first autoresearch planner interface
+  - API-first and external-agent autoresearch planner interface
   - adaptive candidate generation from dataset/model/search-space config
   - world-model prediction
   - real experiment execution
@@ -106,6 +108,28 @@ export LUCKYLOOP_AGENT_API_KEY=...
 PYTHONPATH=src python3 -m luckyloop.loop \
   --task configs/tasks/breast_cancer_accuracy.json \
   --planner-mode llm
+```
+
+Use Codex/Claude Code/OpenClaw as the planner without an API key:
+
+```bash
+PYTHONPATH=src python3 -m luckyloop.loop \
+  --task configs/tasks/breast_cancer_accuracy.json \
+  --planner-mode agent_handoff \
+  --agent-backend codex_handoff
+```
+
+Lucky Loop writes `agent_io/<task_id>/<state_id>.request.json` and waits for `*.response.json`.
+The response contract is documented in `docs/agent_contract.md`.
+
+Use a CLI-backed agent:
+
+```bash
+export LUCKYLOOP_AGENT_COMMAND="your-agent {request_path} {response_path}"
+PYTHONPATH=src python3 -m luckyloop.loop \
+  --task configs/tasks/breast_cancer_accuracy.json \
+  --planner-mode agent_command \
+  --agent-backend generic_command
 ```
 
 Run all real benchmark tasks:

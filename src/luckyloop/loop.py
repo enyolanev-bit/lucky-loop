@@ -97,6 +97,10 @@ def run(
     task: TaskSpec | None = None,
     output_namespace: str | None = None,
     planner_mode: str = "replay",
+    agent_backend: str | None = None,
+    agent_io_dir: str = "agent_io",
+    agent_timeout_seconds: int = 900,
+    agent_poll_seconds: float = 2.0,
 ) -> list[ExperimentTrace]:
     task = task or load_task(None)
     goal = goal or task.goal
@@ -111,7 +115,13 @@ def run(
     reports_dir.mkdir(exist_ok=True)
     traces: list[ExperimentTrace] = []
     seen: set[str] = set()
-    agent = make_research_agent(planner_mode)
+    agent = make_research_agent(
+        planner_mode,
+        agent_backend=agent_backend,
+        agent_io_dir=agent_io_dir,
+        agent_timeout_seconds=agent_timeout_seconds,
+        agent_poll_seconds=agent_poll_seconds,
+    )
     state = (
         f"Goal: {goal}\n"
         f"No experiments have been run yet. Dataset: sklearn {task.dataset}. "
@@ -217,10 +227,24 @@ def main() -> None:
     ap.add_argument("--max-experiments", type=int, default=None)
     ap.add_argument("--task", default=None, help="Path to a TaskSpec JSON file.")
     ap.add_argument("--output-namespace", default=None, help="Optional subdirectory under runs/ and reports/.")
-    ap.add_argument("--planner-mode", choices=["llm", "replay", "selector"], default="replay")
+    ap.add_argument("--planner-mode", choices=["llm", "agent_handoff", "agent_command", "replay", "selector"], default="replay")
+    ap.add_argument("--agent-backend", default=None, help="Backend label stored in traces, e.g. codex_handoff or openai_compatible.")
+    ap.add_argument("--agent-io-dir", default="agent_io", help="Directory for agent request/response handoff files.")
+    ap.add_argument("--agent-timeout-seconds", type=int, default=900)
+    ap.add_argument("--agent-poll-seconds", type=float, default=2.0)
     args = ap.parse_args()
     task = load_task(args.task)
-    traces = run(args.goal, args.max_experiments, task=task, output_namespace=args.output_namespace, planner_mode=args.planner_mode)
+    traces = run(
+        args.goal,
+        args.max_experiments,
+        task=task,
+        output_namespace=args.output_namespace,
+        planner_mode=args.planner_mode,
+        agent_backend=args.agent_backend,
+        agent_io_dir=args.agent_io_dir,
+        agent_timeout_seconds=args.agent_timeout_seconds,
+        agent_poll_seconds=args.agent_poll_seconds,
+    )
     successful = [t for t in traces if t.actual_result.accuracy is not None]
     best = max(successful, key=lambda t: t.actual_result.accuracy or -1, default=None)
     if args.output_namespace:
