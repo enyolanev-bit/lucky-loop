@@ -3,7 +3,17 @@ from __future__ import annotations
 import json
 from itertools import product
 
-from .schemas import CandidatePrediction, DecisionTrace, ExperimentTrace, ProposedAction, RejectedCandidate, ResearchState, TaskSpec
+from .schemas import (
+    AgentDecision,
+    CandidatePrediction,
+    DecisionTrace,
+    ExperimentTrace,
+    ProposedAction,
+    RejectedCandidate,
+    ResearchState,
+    SafetyValidation,
+    TaskSpec,
+)
 from .simulator import predict
 from .top_models import build_top_model_verification_action
 
@@ -159,7 +169,7 @@ def generate_candidates(task: TaskSpec, state: ResearchState, traces: list[Exper
     if state.top_model_summary and state.top_model_summary.needs_robustness_verification:
         top_model_action = build_top_model_verification_action(task, state.top_model_summary)
         if top_model_action is not None:
-            candidates.append(top_model_action)
+            candidates.insert(0, top_model_action)
 
     if model_search_complete or (state.budget_remaining is not None and state.budget_remaining <= 2):
         for index, _sweep in enumerate(task.sweeps):
@@ -206,7 +216,11 @@ def _best_accuracy(traces: list[ExperimentTrace]) -> float:
     return max(values, default=0.0)
 
 
-def _score_candidate(candidate_prediction: CandidatePrediction, traces: list[ExperimentTrace]) -> tuple[float, list[str], list[str], list[str], dict[str, float]]:
+def _score_candidate(
+    candidate_prediction: CandidatePrediction,
+    traces: list[ExperimentTrace],
+    agent_decision: AgentDecision | None = None,
+) -> tuple[float, list[str], list[str], list[str], dict[str, float]]:
     action = candidate_prediction.action
     prediction = candidate_prediction.prediction
     risks = " ".join(prediction.risks).lower()
@@ -224,8 +238,19 @@ def _score_candidate(candidate_prediction: CandidatePrediction, traces: list[Exp
         "redundancy_penalty": 0.0,
         "compute_cost_penalty": 0.0,
         "unsupported_claim_risk": 0.0,
+        "agent_preference": 0.0,
     }
     tested_models = {t.proposed_action.model for t in traces if t.actual_result.accuracy is not None}
+
+    if agent_decision and action.action_id == agent_decision.preferred_action_id:
+        score += 42
+        breakdown["agent_preference"] += 42
+        reasons.append("autoresearch agent preferred this catalog action")
+        selector_reasons.append("agent preferred action accepted into safety scoring")
+    elif agent_decision and action.action_id in set(agent_decision.candidate_action_ids):
+        score += 8
+        breakdown["agent_preference"] += 8
+        reasons.append("autoresearch agent included this action in its candidate shortlist")
 
     if prediction.recommendation == "run":
         score += 20
@@ -337,16 +362,42 @@ def _score_candidate(candidate_prediction: CandidatePrediction, traces: list[Exp
     return score, reasons, world_reasons, selector_reasons, breakdown
 
 
-def select_candidate(state: ResearchState, predictions: list[CandidatePrediction], traces: list[ExperimentTrace]) -> tuple[CandidatePrediction, DecisionTrace]:
+def select_candidate(
+    state: ResearchState,
+    predictions: list[CandidatePrediction],
+    traces: list[ExperimentTrace],
+    agent_decision: AgentDecision | None = None,
+) -> tuple[CandidatePrediction, DecisionTrace, SafetyValidation]:
     if not predictions:
         raise ValueError("select_candidate requires at least one candidate prediction")
 
+    candidate_ids = {cp.action.action_id or "" for cp in predictions}
+    valid_agent_action = bool(
+        agent_decision
+        and agent_decision.preferred_action_id in candidate_ids
+        and agent_decision.stop_or_continue == "continue"
+    )
     scored = []
     for cp in predictions:
-        score, reasons, world_reasons, selector_reasons, breakdown = _score_candidate(cp, traces)
+        score, reasons, world_reasons, selector_reasons, breakdown = _score_candidate(cp, traces, agent_decision)
         scored.append((score, cp, reasons, world_reasons, selector_reasons, breakdown))
     scored.sort(key=lambda row: row[0], reverse=True)
     selected_score, selected, selected_reasons, selected_world_reasons, selected_selector_reasons, selected_breakdown = scored[0]
+    selection_overrode_agent = bool(
+        agent_decision
+        and agent_decision.preferred_action_id
+        and selected.action.action_id != agent_decision.preferred_action_id
+    )
+    override_reason = None
+    validation_notes = []
+    if agent_decision:
+        validation_notes.append(f"agent preferred {agent_decision.preferred_action_id}")
+    if not valid_agent_action and agent_decision:
+        override_reason = "agent preferred action was not present in the candidate catalog or requested stop"
+        validation_notes.append(override_reason)
+    elif selection_overrode_agent:
+        override_reason = "safety selector chose a higher-scoring action after world-model and evidence-risk scoring"
+        validation_notes.append(override_reason)
 
     rejected = []
     for score, candidate_prediction, reasons, _world_reasons, _selector_reasons, breakdown in scored[1:]:
@@ -359,9 +410,14 @@ def select_candidate(state: ResearchState, predictions: list[CandidatePrediction
         )
 
     risk_text = ", ".join(selected.prediction.risks) or "no specific risk"
+    agent_used = bool(agent_decision and selected.action.action_id == agent_decision.preferred_action_id)
     world_used = bool(selected_world_reasons)
     selector_used = bool(selected_selector_reasons)
-    if world_used and selector_used:
+    if agent_used and (world_used or selector_used):
+        causal_signal_type = "mixed"
+    elif agent_used:
+        causal_signal_type = "agent_decision"
+    elif world_used and selector_used:
         causal_signal_type = "mixed"
     elif world_used:
         causal_signal_type = "world_model_prediction"
@@ -372,13 +428,23 @@ def select_candidate(state: ResearchState, predictions: list[CandidatePrediction
     causal_reason = (
         f"Selected {selected.action.model} because score={selected_score}; "
         f"{'; '.join(selected_reasons)}. "
+        f"Agent hypothesis: {agent_decision.working_hypothesis if agent_decision else 'selector-only mode'}. "
         f"World model predicted {selected.prediction.expected_metric}, runtime {selected.prediction.expected_runtime_seconds}, "
         f"recommendation={selected.prediction.recommendation}, risks={risk_text}. "
         f"Causal signal type: {causal_signal_type}."
     )
 
+    safety_validation = SafetyValidation(
+        valid_agent_action=valid_agent_action if agent_decision else True,
+        selected_action_id=selected.action.action_id or "",
+        selection_overrode_agent=selection_overrode_agent,
+        override_reason=override_reason,
+        validation_notes=validation_notes,
+    )
+
     return selected, DecisionTrace(
         selected_action=selected.action,
+        agent_signal_used=agent_used,
         world_model_signal_used=world_used,
         selector_policy_signal_used=selector_used,
         causal_signal_type=causal_signal_type,
@@ -389,6 +455,10 @@ def select_candidate(state: ResearchState, predictions: list[CandidatePrediction
         score_breakdown=selected_breakdown,
         qwen_suggested_action=selected.action.action_id,
         catalog_validation="accepted",
+        agent_rationale=agent_decision.rationale if agent_decision else "",
+        preferred_action_id=agent_decision.preferred_action_id if agent_decision else None,
+        selection_overrode_agent=selection_overrode_agent,
+        override_reason=override_reason,
         causal_reason=causal_reason,
         rejected_candidates=rejected,
-    )
+    ), safety_validation

@@ -2,11 +2,11 @@
   "schema_version": "1.0",
   "entries": [
     {
-      "claim_id": "run_005_claim_001",
+      "claim_id": "run_006_claim_001",
       "claim": "logistic_regression_scaled_C=0.1 is robustly better than random_forest_n=100.",
       "status": "blocked",
       "evidence_run_ids": [
-        "run_005"
+        "run_006"
       ],
       "blocked_reason": "Measured top-model effect is not larger than inter-seed noise. The report must not claim a robust best model.",
       "allowed_rewrite": "logistic_regression_scaled_C=0.1 had the best multi-seed mean accuracy, but the effect was smaller than seed noise; no robust best-model claim is allowed.",
@@ -19,11 +19,11 @@
       }
     },
     {
-      "claim_id": "run_006_claim_001",
+      "claim_id": "run_007_claim_001",
       "claim": "C=0.1 is robustly better than C=10.0.",
       "status": "blocked",
       "evidence_run_ids": [
-        "run_006"
+        "run_007"
       ],
       "blocked_reason": "Measured effect is not larger than inter-seed noise. The report must not oversell this as a robust discovery.",
       "allowed_rewrite": "C=0.1 had the best mean accuracy, but the effect was smaller than seed noise.",

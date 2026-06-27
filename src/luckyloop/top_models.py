@@ -48,7 +48,7 @@ def detect_top_models(
     metric: str = "accuracy",
     top_k: int = 3,
     margin: float = 0.01,
-    min_single_runs: int = 3,
+    min_single_runs: int = 5,
 ) -> TopModelSummary:
     candidates: list[TopModelCandidate] = []
     verified_keys: set[str] = set()

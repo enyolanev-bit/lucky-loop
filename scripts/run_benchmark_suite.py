@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
+import argparse
 from pathlib import Path
 
 from luckyloop.loop import run
@@ -24,10 +25,13 @@ def _actual_metric(trace):
 
 
 def main() -> None:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--planner-mode", choices=["llm", "replay", "selector"], default="replay")
+    args = parser.parse_args()
     rows = []
     for task_path in TASKS:
         task = load_task(task_path)
-        traces = run(task=task, output_namespace=task.task_id)
+        traces = run(task=task, output_namespace=task.task_id, planner_mode=args.planner_mode)
         metric_traces = [
             t
             for t in traces
@@ -60,7 +64,7 @@ def main() -> None:
     report = [
         "# Lucky Loop Benchmark Summary",
         "",
-        "These benchmark tasks use real sklearn datasets, real training commands, and real multi-seed sweeps.",
+        f"These benchmark tasks use real sklearn datasets, real training commands, real multi-seed sweeps, and planner_mode={args.planner_mode}.",
         "",
         "| Task | Runs | Best model | Best metric | Top-model verifications | Prediction misses | Claims blocked | Supported claims |",
         "|---|---:|---|---:|---:|---:|---:|---:|",

@@ -1,72 +1,102 @@
 {
   "run_id": "run_003",
   "goal": "Maximize validation accuracy on sklearn breast_cancer under a small compute budget, while avoiding unsupported claims.",
-  "hypothesis": "Selected logistic_regression because score=63.0; world model recommended run; candidate is a variant of an already tested family; after an unscaled logistic baseline, scaling is the direct world-model intervention to test. World model predicted accuracy around 0.95-0.98, runtime under 5, recommendation=run, risks=minor convergence warning possible. Causal signal type: mixed.",
+  "hypothesis": "Selected svc because score=90.0; autoresearch agent preferred this catalog action; world model recommended run; new model family increases search coverage. Agent hypothesis: Testing a new model family can reveal whether the current best score depends on inductive bias.. World model predicted accuracy around 0.90-0.99, runtime under 10, recommendation=run, risks=sensitive to scaling and C. Causal signal type: mixed.",
   "proposed_action": {
-    "action_id": "action_logistic_regression_C-1p0_scale-True",
-    "command": "python experiments/train_sklearn.py --dataset breast_cancer --model logistic_regression --scale",
-    "model": "logistic_regression",
+    "action_id": "action_svc_C-0p5_kernel-rbf_scale-True",
+    "command": "python experiments/train_sklearn.py --dataset breast_cancer --model svc --scale --C 0.5 --kernel rbf",
+    "model": "svc",
     "params": {
       "dataset": "breast_cancer",
       "scale": true,
-      "C": 1.0
+      "C": 0.5,
+      "kernel": "rbf"
     }
   },
   "world_model_prediction": {
-    "expected_metric": "accuracy around 0.95-0.98",
-    "expected_runtime_seconds": "under 5",
+    "expected_metric": "accuracy around 0.90-0.99",
+    "expected_runtime_seconds": "under 10",
     "risks": [
-      "minor convergence warning possible"
+      "sensitive to scaling and C"
     ],
     "recommendation": "run",
-    "rationale": "Scaling usually helps logistic regression on tabular numeric features.",
-    "action_specific_signal": "Feature scaling is the direct intervention for a linear model after an unscaled baseline.",
-    "claim_risk": "Single-run best score should not be claimed as robust without repeated seeds."
+    "rationale": "Scaled SVC can be strong on small numeric classification tasks but needs careful comparison.",
+    "action_specific_signal": "SVC tests a margin-based nonlinear hypothesis after linear/tree baselines.",
+    "claim_risk": "SVC should not be declared best without repeated-seed evidence."
   },
   "actual_result": {
     "status": "success",
-    "accuracy": 0.986013986013986,
-    "f1": 0.986013986013986,
-    "runtime_seconds": 0.0189,
-    "stdout_tail": "{\n  \"accuracy\": 0.986013986013986,\n  \"dataset\": \"breast_cancer\",\n  \"f1\": 0.986013986013986,\n  \"model\": \"logistic_regression\",\n  \"n_label_noise_flips\": 0,\n  \"n_test\": 143,\n  \"n_train\": 426,\n  \"params\": {\n    \"C\": 1.0,\n    \"dataset\": \"breast_cancer\",\n    \"kernel\": \"rbf\",\n    \"label_noise\": 0.0,\n    \"learning_rate\": 0.1,\n    \"max_depth\": null,\n    \"max_iter\": 1000,\n    \"model\": \"logistic_regression\",\n    \"n_estimators\": 200,\n    \"scale\": true,\n    \"seed\": 42,\n    \"test_size\": 0.25\n  },\n  \"runtime_seconds\": 0.0189,\n  \"status\": \"success\"\n}\n",
+    "accuracy": 0.972027972027972,
+    "f1": 0.9719127026819333,
+    "runtime_seconds": 0.0194,
+    "stdout_tail": "{\n  \"accuracy\": 0.972027972027972,\n  \"dataset\": \"breast_cancer\",\n  \"f1\": 0.9719127026819333,\n  \"model\": \"svc\",\n  \"n_label_noise_flips\": 0,\n  \"n_test\": 143,\n  \"n_train\": 426,\n  \"params\": {\n    \"C\": 0.5,\n    \"dataset\": \"breast_cancer\",\n    \"kernel\": \"rbf\",\n    \"label_noise\": 0.0,\n    \"learning_rate\": 0.1,\n    \"max_depth\": null,\n    \"max_iter\": 1000,\n    \"model\": \"svc\",\n    \"n_estimators\": 200,\n    \"scale\": true,\n    \"seed\": 42,\n    \"test_size\": 0.25\n  },\n  \"runtime_seconds\": 0.0194,\n  \"status\": \"success\"\n}\n",
     "stderr_tail": "",
     "raw": {
-      "accuracy": 0.986013986013986,
+      "accuracy": 0.972027972027972,
       "dataset": "breast_cancer",
-      "f1": 0.986013986013986,
-      "model": "logistic_regression",
+      "f1": 0.9719127026819333,
+      "model": "svc",
       "n_label_noise_flips": 0,
       "n_test": 143,
       "n_train": 426,
       "params": {
-        "C": 1.0,
+        "C": 0.5,
         "dataset": "breast_cancer",
         "kernel": "rbf",
         "label_noise": 0.0,
         "learning_rate": 0.1,
         "max_depth": null,
         "max_iter": 1000,
-        "model": "logistic_regression",
+        "model": "svc",
         "n_estimators": 200,
         "scale": true,
         "seed": 42,
         "test_size": 0.25
       },
-      "runtime_seconds": 0.0189,
+      "runtime_seconds": 0.0194,
       "status": "success"
     }
   },
   "comparison": {
-    "metric_match": false,
+    "metric_match": true,
     "runtime_match": true,
-    "unexpected_events": [
-      "accuracy 0.9860 outside predicted range 0.95-0.98"
-    ],
-    "lesson": "Run succeeded, but the prediction missed at least one quantitative detail."
+    "unexpected_events": [],
+    "lesson": "Prediction was broadly consistent with the real run."
   },
   "next_decision": "Continue: regenerate candidates from the updated state and ask the world model to predict each option.",
   "verification": null,
-  "schema_version": "2.0",
+  "schema_version": "3.0",
+  "planner_mode": "replay",
+  "agent_backend": "replay",
+  "agent_model": "replay-agent-v1",
+  "agent_prompt_hash": "73b7cd6cebcd255e",
+  "agent_decision": {
+    "research_question": "Maximize validation accuracy on sklearn breast_cancer under a small compute budget, while avoiding unsupported claims.",
+    "working_hypothesis": "Testing a new model family can reveal whether the current best score depends on inductive bias.",
+    "candidate_action_ids": [
+      "action_logistic_regression_C-1p0_scale-True",
+      "action_logistic_regression_C-10p0_scale-True",
+      "action_logistic_regression_C-0p1_scale-False",
+      "action_logistic_regression_C-1p0_scale-False",
+      "action_logistic_regression_C-10p0_scale-False",
+      "action_svc_C-0p5_kernel-rbf_scale-True"
+    ],
+    "preferred_action_id": "action_svc_C-0p5_kernel-rbf_scale-True",
+    "rationale": "Given state state_003 with budget_remaining=5, the planner chooses action_svc_C-0p5_kernel-rbf_scale-True to collect the most decision-relevant evidence.",
+    "expected_evidence_needed": "Run a real single-model experiment from the safe catalog.",
+    "claim_risk": "The result is still an observation until robustness is checked.",
+    "stop_or_continue": "continue"
+  },
+  "safety_validation": {
+    "valid_agent_action": true,
+    "selected_action_id": "action_svc_C-0p5_kernel-rbf_scale-True",
+    "selection_overrode_agent": false,
+    "override_reason": null,
+    "validation_notes": [
+      "agent preferred action_svc_C-0p5_kernel-rbf_scale-True"
+    ]
+  },
+  "research_hypothesis": "Testing a new model family can reveal whether the current best score depends on inductive bias.",
   "state_before": {
     "state_id": "state_003",
     "goal": "Maximize validation accuracy on sklearn breast_cancer under a small compute budget, while avoiding unsupported claims.",
@@ -129,7 +159,7 @@
       ],
       "top_gap": null,
       "needs_robustness_verification": false,
-      "reason": "Need at least 3 single-run model results before top-model verification.",
+      "reason": "Need at least 5 single-run model results before top-model verification.",
       "verification_action_key": null
     },
     "summary": "Task=breast_cancer_accuracy; dataset=breast_cancer; primary_metric=accuracy. Goal: Maximize validation accuracy on sklearn breast_cancer under a small compute budget, while avoiding unsupported claims.\nNo experiments have been run yet. Dataset: sklearn breast_cancer. Primary metric: accuracy; secondary metrics: f1.\nrun_001: logistic_regression actual=0.951048951048951 status=success; prediction=accuracy around 0.90-0.97; recommendation=run; lesson=Prediction was broadly consistent with the real run.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_002: logistic_regression actual=0.9790209790209791 status=success; prediction=accuracy around 0.95-0.98; recommendation=run; lesson=Prediction was broadly consistent with the real run.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option."
@@ -553,47 +583,79 @@
     }
   ],
   "selected_action": {
-    "action_id": "action_logistic_regression_C-1p0_scale-True",
-    "command": "python experiments/train_sklearn.py --dataset breast_cancer --model logistic_regression --scale",
-    "model": "logistic_regression",
+    "action_id": "action_svc_C-0p5_kernel-rbf_scale-True",
+    "command": "python experiments/train_sklearn.py --dataset breast_cancer --model svc --scale --C 0.5 --kernel rbf",
+    "model": "svc",
     "params": {
       "dataset": "breast_cancer",
       "scale": true,
-      "C": 1.0
+      "C": 0.5,
+      "kernel": "rbf"
     }
   },
   "decision_trace": {
     "selected_action": {
-      "action_id": "action_logistic_regression_C-1p0_scale-True",
-      "command": "python experiments/train_sklearn.py --dataset breast_cancer --model logistic_regression --scale",
-      "model": "logistic_regression",
+      "action_id": "action_svc_C-0p5_kernel-rbf_scale-True",
+      "command": "python experiments/train_sklearn.py --dataset breast_cancer --model svc --scale --C 0.5 --kernel rbf",
+      "model": "svc",
       "params": {
         "dataset": "breast_cancer",
         "scale": true,
-        "C": 1.0
+        "C": 0.5,
+        "kernel": "rbf"
       }
     },
+    "agent_signal_used": true,
     "world_model_signal_used": true,
     "selector_policy_signal_used": true,
     "causal_signal_type": "mixed",
-    "observed_state_signal": "Need at least 3 single-run model results before top-model verification.",
+    "observed_state_signal": "Need at least 5 single-run model results before top-model verification.",
     "world_model_signal": "prediction contained an action-specific research signal",
-    "selector_policy_signal": "after an unscaled logistic baseline, scaling is the direct intervention to test",
-    "selected_score": 63.0,
+    "selector_policy_signal": "agent preferred action accepted into safety scoring; new model family increases search coverage",
+    "selected_score": 90.0,
     "score_breakdown": {
-      "expected_gain": 45.0,
+      "expected_gain": 0.0,
       "uncertainty": 0.0,
-      "novelty": 0.0,
+      "novelty": 18.0,
       "verification_value": 0.0,
       "qwen_signal": 30.0,
-      "redundancy_penalty": -12.0,
+      "redundancy_penalty": 0.0,
       "compute_cost_penalty": 0.0,
-      "unsupported_claim_risk": 0.0
+      "unsupported_claim_risk": 0.0,
+      "agent_preference": 42.0
     },
-    "qwen_suggested_action": "action_logistic_regression_C-1p0_scale-True",
+    "qwen_suggested_action": "action_svc_C-0p5_kernel-rbf_scale-True",
     "catalog_validation": "accepted",
-    "causal_reason": "Selected logistic_regression because score=63.0; world model recommended run; candidate is a variant of an already tested family; after an unscaled logistic baseline, scaling is the direct world-model intervention to test. World model predicted accuracy around 0.95-0.98, runtime under 5, recommendation=run, risks=minor convergence warning possible. Causal signal type: mixed.",
+    "agent_rationale": "Given state state_003 with budget_remaining=5, the planner chooses action_svc_C-0p5_kernel-rbf_scale-True to collect the most decision-relevant evidence.",
+    "preferred_action_id": "action_svc_C-0p5_kernel-rbf_scale-True",
+    "selection_overrode_agent": false,
+    "override_reason": null,
+    "causal_reason": "Selected svc because score=90.0; autoresearch agent preferred this catalog action; world model recommended run; new model family increases search coverage. Agent hypothesis: Testing a new model family can reveal whether the current best score depends on inductive bias.. World model predicted accuracy around 0.90-0.99, runtime under 10, recommendation=run, risks=sensitive to scaling and C. Causal signal type: mixed.",
     "rejected_candidates": [
+      {
+        "action": {
+          "action_id": "action_logistic_regression_C-1p0_scale-True",
+          "command": "python experiments/train_sklearn.py --dataset breast_cancer --model logistic_regression --scale",
+          "model": "logistic_regression",
+          "params": {
+            "dataset": "breast_cancer",
+            "scale": true,
+            "C": 1.0
+          }
+        },
+        "reason": "score=71.0; autoresearch agent included this action in its candidate shortlist; world model recommended run; candidate is a variant of an already tested family; after an unscaled logistic baseline, scaling is the direct world-model intervention to test",
+        "score_breakdown": {
+          "expected_gain": 45.0,
+          "uncertainty": 0.0,
+          "novelty": 0.0,
+          "verification_value": 0.0,
+          "qwen_signal": 30.0,
+          "redundancy_penalty": -12.0,
+          "compute_cost_penalty": 0.0,
+          "unsupported_claim_risk": 0.0,
+          "agent_preference": 8.0
+        }
+      },
       {
         "action": {
           "action_id": "action_logistic_regression_C-10p0_scale-True",
@@ -605,7 +667,7 @@
             "C": 10.0
           }
         },
-        "reason": "score=63.0; world model recommended run; candidate is a variant of an already tested family; after an unscaled logistic baseline, scaling is the direct world-model intervention to test",
+        "reason": "score=71.0; autoresearch agent included this action in its candidate shortlist; world model recommended run; candidate is a variant of an already tested family; after an unscaled logistic baseline, scaling is the direct world-model intervention to test",
         "score_breakdown": {
           "expected_gain": 45.0,
           "uncertainty": 0.0,
@@ -614,31 +676,8 @@
           "qwen_signal": 30.0,
           "redundancy_penalty": -12.0,
           "compute_cost_penalty": 0.0,
-          "unsupported_claim_risk": 0.0
-        }
-      },
-      {
-        "action": {
-          "action_id": "action_svc_C-0p5_kernel-rbf_scale-True",
-          "command": "python experiments/train_sklearn.py --dataset breast_cancer --model svc --scale --C 0.5 --kernel rbf",
-          "model": "svc",
-          "params": {
-            "dataset": "breast_cancer",
-            "scale": true,
-            "C": 0.5,
-            "kernel": "rbf"
-          }
-        },
-        "reason": "score=48.0; world model recommended run; new model family increases search coverage",
-        "score_breakdown": {
-          "expected_gain": 0.0,
-          "uncertainty": 0.0,
-          "novelty": 18.0,
-          "verification_value": 0.0,
-          "qwen_signal": 30.0,
-          "redundancy_penalty": 0.0,
-          "compute_cost_penalty": 0.0,
-          "unsupported_claim_risk": 0.0
+          "unsupported_claim_risk": 0.0,
+          "agent_preference": 8.0
         }
       },
       {
@@ -662,7 +701,8 @@
           "qwen_signal": 30.0,
           "redundancy_penalty": 0.0,
           "compute_cost_penalty": 0.0,
-          "unsupported_claim_risk": 0.0
+          "unsupported_claim_risk": 0.0,
+          "agent_preference": 0.0
         }
       },
       {
@@ -686,7 +726,8 @@
           "qwen_signal": 30.0,
           "redundancy_penalty": 0.0,
           "compute_cost_penalty": 0.0,
-          "unsupported_claim_risk": 0.0
+          "unsupported_claim_risk": 0.0,
+          "agent_preference": 0.0
         }
       },
       {
@@ -709,7 +750,8 @@
           "qwen_signal": 30.0,
           "redundancy_penalty": 0.0,
           "compute_cost_penalty": -4.0,
-          "unsupported_claim_risk": 0.0
+          "unsupported_claim_risk": 0.0,
+          "agent_preference": 0.0
         }
       },
       {
@@ -732,7 +774,8 @@
           "qwen_signal": 30.0,
           "redundancy_penalty": 0.0,
           "compute_cost_penalty": -4.0,
-          "unsupported_claim_risk": 0.0
+          "unsupported_claim_risk": 0.0,
+          "agent_preference": 0.0
         }
       },
       {
@@ -755,7 +798,8 @@
           "qwen_signal": 30.0,
           "redundancy_penalty": 0.0,
           "compute_cost_penalty": -4.0,
-          "unsupported_claim_risk": 0.0
+          "unsupported_claim_risk": 0.0,
+          "agent_preference": 0.0
         }
       },
       {
@@ -778,7 +822,8 @@
           "qwen_signal": 30.0,
           "redundancy_penalty": 0.0,
           "compute_cost_penalty": -4.0,
-          "unsupported_claim_risk": 0.0
+          "unsupported_claim_risk": 0.0,
+          "agent_preference": 0.0
         }
       },
       {
@@ -792,7 +837,7 @@
             "C": 0.1
           }
         },
-        "reason": "score=18.0; world model recommended run; candidate is a variant of an already tested family",
+        "reason": "score=26.0; autoresearch agent included this action in its candidate shortlist; world model recommended run; candidate is a variant of an already tested family",
         "score_breakdown": {
           "expected_gain": 0.0,
           "uncertainty": 0.0,
@@ -801,7 +846,8 @@
           "qwen_signal": 30.0,
           "redundancy_penalty": -12.0,
           "compute_cost_penalty": 0.0,
-          "unsupported_claim_risk": 0.0
+          "unsupported_claim_risk": 0.0,
+          "agent_preference": 8.0
         }
       },
       {
@@ -815,7 +861,7 @@
             "C": 1.0
           }
         },
-        "reason": "score=18.0; world model recommended run; candidate is a variant of an already tested family",
+        "reason": "score=26.0; autoresearch agent included this action in its candidate shortlist; world model recommended run; candidate is a variant of an already tested family",
         "score_breakdown": {
           "expected_gain": 0.0,
           "uncertainty": 0.0,
@@ -824,7 +870,8 @@
           "qwen_signal": 30.0,
           "redundancy_penalty": -12.0,
           "compute_cost_penalty": 0.0,
-          "unsupported_claim_risk": 0.0
+          "unsupported_claim_risk": 0.0,
+          "agent_preference": 8.0
         }
       },
       {
@@ -838,7 +885,7 @@
             "C": 10.0
           }
         },
-        "reason": "score=18.0; world model recommended run; candidate is a variant of an already tested family",
+        "reason": "score=26.0; autoresearch agent included this action in its candidate shortlist; world model recommended run; candidate is a variant of an already tested family",
         "score_breakdown": {
           "expected_gain": 0.0,
           "uncertainty": 0.0,
@@ -847,7 +894,8 @@
           "qwen_signal": 30.0,
           "redundancy_penalty": -12.0,
           "compute_cost_penalty": 0.0,
-          "unsupported_claim_risk": 0.0
+          "unsupported_claim_risk": 0.0,
+          "agent_preference": 8.0
         }
       }
     ]
@@ -882,7 +930,7 @@
     ],
     "top_gap": null,
     "needs_robustness_verification": false,
-    "reason": "Need at least 3 single-run model results before top-model verification.",
+    "reason": "Need at least 5 single-run model results before top-model verification.",
     "verification_action_key": null
   },
   "artifacts": {

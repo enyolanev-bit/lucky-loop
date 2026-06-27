@@ -1,7 +1,7 @@
 {
   "run_id": "run_002",
   "goal": "Maximize validation accuracy on sklearn wine under a small compute budget, while avoiding unsupported claims.",
-  "hypothesis": "Selected logistic_regression because score=63.0; world model recommended run; candidate is a variant of an already tested family; after an unscaled logistic baseline, scaling is the direct world-model intervention to test. World model predicted accuracy around 0.95-0.98, runtime under 5, recommendation=run, risks=minor convergence warning possible. Causal signal type: mixed.",
+  "hypothesis": "Selected logistic_regression because score=105.0; autoresearch agent preferred this catalog action; world model recommended run; candidate is a variant of an already tested family; after an unscaled logistic baseline, scaling is the direct world-model intervention to test. Agent hypothesis: Feature scaling should improve or stabilize scale-sensitive linear classification.. World model predicted accuracy around 0.95-0.98, runtime under 5, recommendation=run, risks=minor convergence warning possible. Causal signal type: mixed.",
   "proposed_action": {
     "action_id": "action_logistic_regression_C-0p1_scale-True",
     "command": "python experiments/train_sklearn.py --dataset wine --model logistic_regression --scale --C 0.1",
@@ -27,8 +27,8 @@
     "status": "success",
     "accuracy": 1.0,
     "f1": 1.0,
-    "runtime_seconds": 0.0357,
-    "stdout_tail": "{\n  \"accuracy\": 1.0,\n  \"dataset\": \"wine\",\n  \"f1\": 1.0,\n  \"model\": \"logistic_regression\",\n  \"n_label_noise_flips\": 0,\n  \"n_test\": 45,\n  \"n_train\": 133,\n  \"params\": {\n    \"C\": 0.1,\n    \"dataset\": \"wine\",\n    \"kernel\": \"rbf\",\n    \"label_noise\": 0.0,\n    \"learning_rate\": 0.1,\n    \"max_depth\": null,\n    \"max_iter\": 1000,\n    \"model\": \"logistic_regression\",\n    \"n_estimators\": 200,\n    \"scale\": true,\n    \"seed\": 42,\n    \"test_size\": 0.25\n  },\n  \"runtime_seconds\": 0.0357,\n  \"status\": \"success\"\n}\n",
+    "runtime_seconds": 0.0161,
+    "stdout_tail": "{\n  \"accuracy\": 1.0,\n  \"dataset\": \"wine\",\n  \"f1\": 1.0,\n  \"model\": \"logistic_regression\",\n  \"n_label_noise_flips\": 0,\n  \"n_test\": 45,\n  \"n_train\": 133,\n  \"params\": {\n    \"C\": 0.1,\n    \"dataset\": \"wine\",\n    \"kernel\": \"rbf\",\n    \"label_noise\": 0.0,\n    \"learning_rate\": 0.1,\n    \"max_depth\": null,\n    \"max_iter\": 1000,\n    \"model\": \"logistic_regression\",\n    \"n_estimators\": 200,\n    \"scale\": true,\n    \"seed\": 42,\n    \"test_size\": 0.25\n  },\n  \"runtime_seconds\": 0.0161,\n  \"status\": \"success\"\n}\n",
     "stderr_tail": "",
     "raw": {
       "accuracy": 1.0,
@@ -52,7 +52,7 @@
         "seed": 42,
         "test_size": 0.25
       },
-      "runtime_seconds": 0.0357,
+      "runtime_seconds": 0.0161,
       "status": "success"
     }
   },
@@ -66,7 +66,38 @@
   },
   "next_decision": "Continue: regenerate candidates from the updated state and ask the world model to predict each option.",
   "verification": null,
-  "schema_version": "2.0",
+  "schema_version": "3.0",
+  "planner_mode": "replay",
+  "agent_backend": "replay",
+  "agent_model": "replay-agent-v1",
+  "agent_prompt_hash": "e52145c49a2b52cf",
+  "agent_decision": {
+    "research_question": "Maximize validation accuracy on sklearn wine under a small compute budget, while avoiding unsupported claims.",
+    "working_hypothesis": "Feature scaling should improve or stabilize scale-sensitive linear classification.",
+    "candidate_action_ids": [
+      "action_logistic_regression_C-0p1_scale-True",
+      "action_logistic_regression_C-1p0_scale-True",
+      "action_logistic_regression_C-10p0_scale-True",
+      "action_logistic_regression_C-0p1_scale-False",
+      "action_logistic_regression_C-1p0_scale-False",
+      "action_logistic_regression_C-10p0_scale-False"
+    ],
+    "preferred_action_id": "action_logistic_regression_C-0p1_scale-True",
+    "rationale": "Given state state_002 with budget_remaining=6, the planner chooses action_logistic_regression_C-0p1_scale-True to collect the most decision-relevant evidence.",
+    "expected_evidence_needed": "Compare scaled logistic regression against the unscaled baseline.",
+    "claim_risk": "A single improvement is observational until repeated-seed verification.",
+    "stop_or_continue": "continue"
+  },
+  "safety_validation": {
+    "valid_agent_action": true,
+    "selected_action_id": "action_logistic_regression_C-0p1_scale-True",
+    "selection_overrode_agent": false,
+    "override_reason": null,
+    "validation_notes": [
+      "agent preferred action_logistic_regression_C-0p1_scale-True"
+    ]
+  },
+  "research_hypothesis": "Feature scaling should improve or stabilize scale-sensitive linear classification.",
   "state_before": {
     "state_id": "state_002",
     "goal": "Maximize validation accuracy on sklearn wine under a small compute budget, while avoiding unsupported claims.",
@@ -109,7 +140,7 @@
       ],
       "top_gap": null,
       "needs_robustness_verification": false,
-      "reason": "Need at least 3 single-run model results before top-model verification.",
+      "reason": "Need at least 5 single-run model results before top-model verification.",
       "verification_action_key": null
     },
     "summary": "Task=wine_accuracy; dataset=wine; primary_metric=accuracy. Goal: Maximize validation accuracy on sklearn wine under a small compute budget, while avoiding unsupported claims.\nNo experiments have been run yet. Dataset: sklearn wine. Primary metric: accuracy; secondary metrics: f1.\nrun_001: logistic_regression actual=0.9777777777777777 status=success; prediction=accuracy around 0.90-0.97; recommendation=run; lesson=Run succeeded, but the prediction missed at least one quantitative detail.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option."
@@ -553,13 +584,14 @@
         "C": 0.1
       }
     },
+    "agent_signal_used": true,
     "world_model_signal_used": true,
     "selector_policy_signal_used": true,
     "causal_signal_type": "mixed",
-    "observed_state_signal": "Need at least 3 single-run model results before top-model verification.",
+    "observed_state_signal": "Need at least 5 single-run model results before top-model verification.",
     "world_model_signal": "prediction contained an action-specific research signal",
-    "selector_policy_signal": "after an unscaled logistic baseline, scaling is the direct intervention to test",
-    "selected_score": 63.0,
+    "selector_policy_signal": "agent preferred action accepted into safety scoring; after an unscaled logistic baseline, scaling is the direct intervention to test",
+    "selected_score": 105.0,
     "score_breakdown": {
       "expected_gain": 45.0,
       "uncertainty": 0.0,
@@ -568,11 +600,16 @@
       "qwen_signal": 30.0,
       "redundancy_penalty": -12.0,
       "compute_cost_penalty": 0.0,
-      "unsupported_claim_risk": 0.0
+      "unsupported_claim_risk": 0.0,
+      "agent_preference": 42.0
     },
     "qwen_suggested_action": "action_logistic_regression_C-0p1_scale-True",
     "catalog_validation": "accepted",
-    "causal_reason": "Selected logistic_regression because score=63.0; world model recommended run; candidate is a variant of an already tested family; after an unscaled logistic baseline, scaling is the direct world-model intervention to test. World model predicted accuracy around 0.95-0.98, runtime under 5, recommendation=run, risks=minor convergence warning possible. Causal signal type: mixed.",
+    "agent_rationale": "Given state state_002 with budget_remaining=6, the planner chooses action_logistic_regression_C-0p1_scale-True to collect the most decision-relevant evidence.",
+    "preferred_action_id": "action_logistic_regression_C-0p1_scale-True",
+    "selection_overrode_agent": false,
+    "override_reason": null,
+    "causal_reason": "Selected logistic_regression because score=105.0; autoresearch agent preferred this catalog action; world model recommended run; candidate is a variant of an already tested family; after an unscaled logistic baseline, scaling is the direct world-model intervention to test. Agent hypothesis: Feature scaling should improve or stabilize scale-sensitive linear classification.. World model predicted accuracy around 0.95-0.98, runtime under 5, recommendation=run, risks=minor convergence warning possible. Causal signal type: mixed.",
     "rejected_candidates": [
       {
         "action": {
@@ -585,7 +622,7 @@
             "C": 1.0
           }
         },
-        "reason": "score=63.0; world model recommended run; candidate is a variant of an already tested family; after an unscaled logistic baseline, scaling is the direct world-model intervention to test",
+        "reason": "score=71.0; autoresearch agent included this action in its candidate shortlist; world model recommended run; candidate is a variant of an already tested family; after an unscaled logistic baseline, scaling is the direct world-model intervention to test",
         "score_breakdown": {
           "expected_gain": 45.0,
           "uncertainty": 0.0,
@@ -594,7 +631,8 @@
           "qwen_signal": 30.0,
           "redundancy_penalty": -12.0,
           "compute_cost_penalty": 0.0,
-          "unsupported_claim_risk": 0.0
+          "unsupported_claim_risk": 0.0,
+          "agent_preference": 8.0
         }
       },
       {
@@ -608,7 +646,7 @@
             "C": 10.0
           }
         },
-        "reason": "score=63.0; world model recommended run; candidate is a variant of an already tested family; after an unscaled logistic baseline, scaling is the direct world-model intervention to test",
+        "reason": "score=71.0; autoresearch agent included this action in its candidate shortlist; world model recommended run; candidate is a variant of an already tested family; after an unscaled logistic baseline, scaling is the direct world-model intervention to test",
         "score_breakdown": {
           "expected_gain": 45.0,
           "uncertainty": 0.0,
@@ -617,7 +655,8 @@
           "qwen_signal": 30.0,
           "redundancy_penalty": -12.0,
           "compute_cost_penalty": 0.0,
-          "unsupported_claim_risk": 0.0
+          "unsupported_claim_risk": 0.0,
+          "agent_preference": 8.0
         }
       },
       {
@@ -641,7 +680,8 @@
           "qwen_signal": 30.0,
           "redundancy_penalty": 0.0,
           "compute_cost_penalty": 0.0,
-          "unsupported_claim_risk": 0.0
+          "unsupported_claim_risk": 0.0,
+          "agent_preference": 0.0
         }
       },
       {
@@ -665,7 +705,8 @@
           "qwen_signal": 30.0,
           "redundancy_penalty": 0.0,
           "compute_cost_penalty": 0.0,
-          "unsupported_claim_risk": 0.0
+          "unsupported_claim_risk": 0.0,
+          "agent_preference": 0.0
         }
       },
       {
@@ -689,7 +730,8 @@
           "qwen_signal": 30.0,
           "redundancy_penalty": 0.0,
           "compute_cost_penalty": 0.0,
-          "unsupported_claim_risk": 0.0
+          "unsupported_claim_risk": 0.0,
+          "agent_preference": 0.0
         }
       },
       {
@@ -712,7 +754,8 @@
           "qwen_signal": 30.0,
           "redundancy_penalty": 0.0,
           "compute_cost_penalty": -4.0,
-          "unsupported_claim_risk": 0.0
+          "unsupported_claim_risk": 0.0,
+          "agent_preference": 0.0
         }
       },
       {
@@ -735,7 +778,8 @@
           "qwen_signal": 30.0,
           "redundancy_penalty": 0.0,
           "compute_cost_penalty": -4.0,
-          "unsupported_claim_risk": 0.0
+          "unsupported_claim_risk": 0.0,
+          "agent_preference": 0.0
         }
       },
       {
@@ -758,7 +802,8 @@
           "qwen_signal": 30.0,
           "redundancy_penalty": 0.0,
           "compute_cost_penalty": -4.0,
-          "unsupported_claim_risk": 0.0
+          "unsupported_claim_risk": 0.0,
+          "agent_preference": 0.0
         }
       },
       {
@@ -772,7 +817,7 @@
             "C": 0.1
           }
         },
-        "reason": "score=18.0; world model recommended run; candidate is a variant of an already tested family",
+        "reason": "score=26.0; autoresearch agent included this action in its candidate shortlist; world model recommended run; candidate is a variant of an already tested family",
         "score_breakdown": {
           "expected_gain": 0.0,
           "uncertainty": 0.0,
@@ -781,7 +826,8 @@
           "qwen_signal": 30.0,
           "redundancy_penalty": -12.0,
           "compute_cost_penalty": 0.0,
-          "unsupported_claim_risk": 0.0
+          "unsupported_claim_risk": 0.0,
+          "agent_preference": 8.0
         }
       },
       {
@@ -795,7 +841,7 @@
             "C": 1.0
           }
         },
-        "reason": "score=18.0; world model recommended run; candidate is a variant of an already tested family",
+        "reason": "score=26.0; autoresearch agent included this action in its candidate shortlist; world model recommended run; candidate is a variant of an already tested family",
         "score_breakdown": {
           "expected_gain": 0.0,
           "uncertainty": 0.0,
@@ -804,7 +850,8 @@
           "qwen_signal": 30.0,
           "redundancy_penalty": -12.0,
           "compute_cost_penalty": 0.0,
-          "unsupported_claim_risk": 0.0
+          "unsupported_claim_risk": 0.0,
+          "agent_preference": 8.0
         }
       },
       {
@@ -818,7 +865,7 @@
             "C": 10.0
           }
         },
-        "reason": "score=18.0; world model recommended run; candidate is a variant of an already tested family",
+        "reason": "score=26.0; autoresearch agent included this action in its candidate shortlist; world model recommended run; candidate is a variant of an already tested family",
         "score_breakdown": {
           "expected_gain": 0.0,
           "uncertainty": 0.0,
@@ -827,7 +874,8 @@
           "qwen_signal": 30.0,
           "redundancy_penalty": -12.0,
           "compute_cost_penalty": 0.0,
-          "unsupported_claim_risk": 0.0
+          "unsupported_claim_risk": 0.0,
+          "agent_preference": 8.0
         }
       }
     ]
@@ -851,7 +899,7 @@
     ],
     "top_gap": null,
     "needs_robustness_verification": false,
-    "reason": "Need at least 3 single-run model results before top-model verification.",
+    "reason": "Need at least 5 single-run model results before top-model verification.",
     "verification_action_key": null
   },
   "artifacts": {

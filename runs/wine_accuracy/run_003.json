@@ -1,72 +1,102 @@
 {
   "run_id": "run_003",
   "goal": "Maximize validation accuracy on sklearn wine under a small compute budget, while avoiding unsupported claims.",
-  "hypothesis": "Selected random_forest because score=71.0; world model recommended run; new model family increases search coverage; strong linear baseline makes a different inductive bias useful; world model predicted overfitting risk; high best score increases claim risk for additional single-run score chasing. World model predicted accuracy around 0.90-0.98, runtime under 10, recommendation=run, risks=overfitting or split variance if depth is unconstrained. Causal signal type: mixed.",
+  "hypothesis": "Selected svc because score=82.0; autoresearch agent preferred this catalog action; world model recommended run; new model family increases search coverage; high best score increases claim risk for additional single-run score chasing. Agent hypothesis: A prediction miss should trigger exploration of a different inductive bias.. World model predicted accuracy around 0.90-0.99, runtime under 10, recommendation=run, risks=sensitive to scaling and C. Causal signal type: mixed.",
   "proposed_action": {
-    "action_id": "action_random_forest_n_estimators-100",
-    "command": "python experiments/train_sklearn.py --dataset wine --model random_forest --n-estimators 100",
-    "model": "random_forest",
+    "action_id": "action_svc_C-0p5_kernel-rbf_scale-True",
+    "command": "python experiments/train_sklearn.py --dataset wine --model svc --scale --C 0.5 --kernel rbf",
+    "model": "svc",
     "params": {
       "dataset": "wine",
-      "n_estimators": 100,
-      "max_depth": null
+      "scale": true,
+      "C": 0.5,
+      "kernel": "rbf"
     }
   },
   "world_model_prediction": {
-    "expected_metric": "accuracy around 0.90-0.98",
+    "expected_metric": "accuracy around 0.90-0.99",
     "expected_runtime_seconds": "under 10",
     "risks": [
-      "overfitting or split variance if depth is unconstrained"
+      "sensitive to scaling and C"
     ],
     "recommendation": "run",
-    "rationale": "Tree ensembles test a different inductive bias, but may not beat a strong scaled linear model on small tabular datasets.",
-    "action_specific_signal": "Use random forest to test whether nonlinear interactions improve over the linear baseline.",
-    "claim_risk": "A single tree-ensemble score should be treated as observation until checked across seeds."
+    "rationale": "Scaled SVC can be strong on small numeric classification tasks but needs careful comparison.",
+    "action_specific_signal": "SVC tests a margin-based nonlinear hypothesis after linear/tree baselines.",
+    "claim_risk": "SVC should not be declared best without repeated-seed evidence."
   },
   "actual_result": {
     "status": "success",
-    "accuracy": 1.0,
-    "f1": 1.0,
-    "runtime_seconds": 0.3752,
-    "stdout_tail": "{\n  \"accuracy\": 1.0,\n  \"dataset\": \"wine\",\n  \"f1\": 1.0,\n  \"model\": \"random_forest\",\n  \"n_label_noise_flips\": 0,\n  \"n_test\": 45,\n  \"n_train\": 133,\n  \"params\": {\n    \"C\": 1.0,\n    \"dataset\": \"wine\",\n    \"kernel\": \"rbf\",\n    \"label_noise\": 0.0,\n    \"learning_rate\": 0.1,\n    \"max_depth\": null,\n    \"max_iter\": 1000,\n    \"model\": \"random_forest\",\n    \"n_estimators\": 100,\n    \"scale\": false,\n    \"seed\": 42,\n    \"test_size\": 0.25\n  },\n  \"runtime_seconds\": 0.3752,\n  \"status\": \"success\"\n}\n",
+    "accuracy": 0.9777777777777777,
+    "f1": 0.9775949862906386,
+    "runtime_seconds": 0.0074,
+    "stdout_tail": "{\n  \"accuracy\": 0.9777777777777777,\n  \"dataset\": \"wine\",\n  \"f1\": 0.9775949862906386,\n  \"model\": \"svc\",\n  \"n_label_noise_flips\": 0,\n  \"n_test\": 45,\n  \"n_train\": 133,\n  \"params\": {\n    \"C\": 0.5,\n    \"dataset\": \"wine\",\n    \"kernel\": \"rbf\",\n    \"label_noise\": 0.0,\n    \"learning_rate\": 0.1,\n    \"max_depth\": null,\n    \"max_iter\": 1000,\n    \"model\": \"svc\",\n    \"n_estimators\": 200,\n    \"scale\": true,\n    \"seed\": 42,\n    \"test_size\": 0.25\n  },\n  \"runtime_seconds\": 0.0074,\n  \"status\": \"success\"\n}\n",
     "stderr_tail": "",
     "raw": {
-      "accuracy": 1.0,
+      "accuracy": 0.9777777777777777,
       "dataset": "wine",
-      "f1": 1.0,
-      "model": "random_forest",
+      "f1": 0.9775949862906386,
+      "model": "svc",
       "n_label_noise_flips": 0,
       "n_test": 45,
       "n_train": 133,
       "params": {
-        "C": 1.0,
+        "C": 0.5,
         "dataset": "wine",
         "kernel": "rbf",
         "label_noise": 0.0,
         "learning_rate": 0.1,
         "max_depth": null,
         "max_iter": 1000,
-        "model": "random_forest",
-        "n_estimators": 100,
-        "scale": false,
+        "model": "svc",
+        "n_estimators": 200,
+        "scale": true,
         "seed": 42,
         "test_size": 0.25
       },
-      "runtime_seconds": 0.3752,
+      "runtime_seconds": 0.0074,
       "status": "success"
     }
   },
   "comparison": {
-    "metric_match": false,
+    "metric_match": true,
     "runtime_match": true,
-    "unexpected_events": [
-      "accuracy 1.0000 outside predicted range 0.90-0.98"
-    ],
-    "lesson": "Run succeeded, but the prediction missed at least one quantitative detail."
+    "unexpected_events": [],
+    "lesson": "Prediction was broadly consistent with the real run."
   },
   "next_decision": "Continue: regenerate candidates from the updated state and ask the world model to predict each option.",
   "verification": null,
-  "schema_version": "2.0",
+  "schema_version": "3.0",
+  "planner_mode": "replay",
+  "agent_backend": "replay",
+  "agent_model": "replay-agent-v1",
+  "agent_prompt_hash": "beee6551080a8abf",
+  "agent_decision": {
+    "research_question": "Maximize validation accuracy on sklearn wine under a small compute budget, while avoiding unsupported claims.",
+    "working_hypothesis": "A prediction miss should trigger exploration of a different inductive bias.",
+    "candidate_action_ids": [
+      "action_logistic_regression_C-1p0_scale-True",
+      "action_logistic_regression_C-10p0_scale-True",
+      "action_logistic_regression_C-0p1_scale-False",
+      "action_logistic_regression_C-1p0_scale-False",
+      "action_logistic_regression_C-10p0_scale-False",
+      "action_svc_C-0p5_kernel-rbf_scale-True"
+    ],
+    "preferred_action_id": "action_svc_C-0p5_kernel-rbf_scale-True",
+    "rationale": "Given state state_003 with budget_remaining=5, the planner chooses action_svc_C-0p5_kernel-rbf_scale-True to collect the most decision-relevant evidence.",
+    "expected_evidence_needed": "Run an untested model family and compare prediction error against actual metrics.",
+    "claim_risk": "Prediction misses must be logged, not hidden behind a better score.",
+    "stop_or_continue": "continue"
+  },
+  "safety_validation": {
+    "valid_agent_action": true,
+    "selected_action_id": "action_svc_C-0p5_kernel-rbf_scale-True",
+    "selection_overrode_agent": false,
+    "override_reason": null,
+    "validation_notes": [
+      "agent preferred action_svc_C-0p5_kernel-rbf_scale-True"
+    ]
+  },
+  "research_hypothesis": "A prediction miss should trigger exploration of a different inductive bias.",
   "state_before": {
     "state_id": "state_003",
     "goal": "Maximize validation accuracy on sklearn wine under a small compute budget, while avoiding unsupported claims.",
@@ -133,7 +163,7 @@
       ],
       "top_gap": null,
       "needs_robustness_verification": false,
-      "reason": "Need at least 3 single-run model results before top-model verification.",
+      "reason": "Need at least 5 single-run model results before top-model verification.",
       "verification_action_key": null
     },
     "summary": "Task=wine_accuracy; dataset=wine; primary_metric=accuracy. Goal: Maximize validation accuracy on sklearn wine under a small compute budget, while avoiding unsupported claims.\nNo experiments have been run yet. Dataset: sklearn wine. Primary metric: accuracy; secondary metrics: f1.\nrun_001: logistic_regression actual=0.9777777777777777 status=success; prediction=accuracy around 0.90-0.97; recommendation=run; lesson=Run succeeded, but the prediction missed at least one quantitative detail.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_002: logistic_regression actual=1.0 status=success; prediction=accuracy around 0.95-0.98; recommendation=run; lesson=Run succeeded, but the prediction missed at least one quantitative detail.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option."
@@ -557,47 +587,79 @@
     }
   ],
   "selected_action": {
-    "action_id": "action_random_forest_n_estimators-100",
-    "command": "python experiments/train_sklearn.py --dataset wine --model random_forest --n-estimators 100",
-    "model": "random_forest",
+    "action_id": "action_svc_C-0p5_kernel-rbf_scale-True",
+    "command": "python experiments/train_sklearn.py --dataset wine --model svc --scale --C 0.5 --kernel rbf",
+    "model": "svc",
     "params": {
       "dataset": "wine",
-      "n_estimators": 100,
-      "max_depth": null
+      "scale": true,
+      "C": 0.5,
+      "kernel": "rbf"
     }
   },
   "decision_trace": {
     "selected_action": {
-      "action_id": "action_random_forest_n_estimators-100",
-      "command": "python experiments/train_sklearn.py --dataset wine --model random_forest --n-estimators 100",
-      "model": "random_forest",
+      "action_id": "action_svc_C-0p5_kernel-rbf_scale-True",
+      "command": "python experiments/train_sklearn.py --dataset wine --model svc --scale --C 0.5 --kernel rbf",
+      "model": "svc",
       "params": {
         "dataset": "wine",
-        "n_estimators": 100,
-        "max_depth": null
+        "scale": true,
+        "C": 0.5,
+        "kernel": "rbf"
       }
     },
+    "agent_signal_used": true,
     "world_model_signal_used": true,
     "selector_policy_signal_used": true,
     "causal_signal_type": "mixed",
-    "observed_state_signal": "Need at least 3 single-run model results before top-model verification.",
-    "world_model_signal": "prediction contained an action-specific research signal; world model predicted overfitting risk",
-    "selector_policy_signal": "new model family increases search coverage; strong linear baseline makes a different inductive bias useful",
-    "selected_score": 71.0,
+    "observed_state_signal": "Need at least 5 single-run model results before top-model verification.",
+    "world_model_signal": "prediction contained an action-specific research signal",
+    "selector_policy_signal": "agent preferred action accepted into safety scoring; new model family increases search coverage",
+    "selected_score": 82.0,
     "score_breakdown": {
       "expected_gain": 0.0,
       "uncertainty": 0.0,
-      "novelty": 53.0,
+      "novelty": 18.0,
       "verification_value": 0.0,
       "qwen_signal": 30.0,
       "redundancy_penalty": 0.0,
-      "compute_cost_penalty": -4.0,
-      "unsupported_claim_risk": -8.0
+      "compute_cost_penalty": 0.0,
+      "unsupported_claim_risk": -8.0,
+      "agent_preference": 42.0
     },
-    "qwen_suggested_action": "action_random_forest_n_estimators-100",
+    "qwen_suggested_action": "action_svc_C-0p5_kernel-rbf_scale-True",
     "catalog_validation": "accepted",
-    "causal_reason": "Selected random_forest because score=71.0; world model recommended run; new model family increases search coverage; strong linear baseline makes a different inductive bias useful; world model predicted overfitting risk; high best score increases claim risk for additional single-run score chasing. World model predicted accuracy around 0.90-0.98, runtime under 10, recommendation=run, risks=overfitting or split variance if depth is unconstrained. Causal signal type: mixed.",
+    "agent_rationale": "Given state state_003 with budget_remaining=5, the planner chooses action_svc_C-0p5_kernel-rbf_scale-True to collect the most decision-relevant evidence.",
+    "preferred_action_id": "action_svc_C-0p5_kernel-rbf_scale-True",
+    "selection_overrode_agent": false,
+    "override_reason": null,
+    "causal_reason": "Selected svc because score=82.0; autoresearch agent preferred this catalog action; world model recommended run; new model family increases search coverage; high best score increases claim risk for additional single-run score chasing. Agent hypothesis: A prediction miss should trigger exploration of a different inductive bias.. World model predicted accuracy around 0.90-0.99, runtime under 10, recommendation=run, risks=sensitive to scaling and C. Causal signal type: mixed.",
     "rejected_candidates": [
+      {
+        "action": {
+          "action_id": "action_random_forest_n_estimators-100",
+          "command": "python experiments/train_sklearn.py --dataset wine --model random_forest --n-estimators 100",
+          "model": "random_forest",
+          "params": {
+            "dataset": "wine",
+            "n_estimators": 100,
+            "max_depth": null
+          }
+        },
+        "reason": "score=71.0; world model recommended run; new model family increases search coverage; strong linear baseline makes a different inductive bias useful; world model predicted overfitting risk; high best score increases claim risk for additional single-run score chasing",
+        "score_breakdown": {
+          "expected_gain": 0.0,
+          "uncertainty": 0.0,
+          "novelty": 53.0,
+          "verification_value": 0.0,
+          "qwen_signal": 30.0,
+          "redundancy_penalty": 0.0,
+          "compute_cost_penalty": -4.0,
+          "unsupported_claim_risk": -8.0,
+          "agent_preference": 0.0
+        }
+      },
       {
         "action": {
           "action_id": "action_random_forest_max_depth-4_n_estimators-100",
@@ -618,7 +680,8 @@
           "qwen_signal": 30.0,
           "redundancy_penalty": 0.0,
           "compute_cost_penalty": -4.0,
-          "unsupported_claim_risk": -8.0
+          "unsupported_claim_risk": -8.0,
+          "agent_preference": 0.0
         }
       },
       {
@@ -641,7 +704,8 @@
           "qwen_signal": 30.0,
           "redundancy_penalty": 0.0,
           "compute_cost_penalty": -4.0,
-          "unsupported_claim_risk": -8.0
+          "unsupported_claim_risk": -8.0,
+          "agent_preference": 0.0
         }
       },
       {
@@ -664,7 +728,8 @@
           "qwen_signal": 30.0,
           "redundancy_penalty": 0.0,
           "compute_cost_penalty": -4.0,
-          "unsupported_claim_risk": -8.0
+          "unsupported_claim_risk": -8.0,
+          "agent_preference": 0.0
         }
       },
       {
@@ -678,7 +743,7 @@
             "C": 1.0
           }
         },
-        "reason": "score=55.0; world model recommended run; candidate is a variant of an already tested family; after an unscaled logistic baseline, scaling is the direct world-model intervention to test; high best score increases claim risk for additional single-run score chasing",
+        "reason": "score=63.0; autoresearch agent included this action in its candidate shortlist; world model recommended run; candidate is a variant of an already tested family; after an unscaled logistic baseline, scaling is the direct world-model intervention to test; high best score increases claim risk for additional single-run score chasing",
         "score_breakdown": {
           "expected_gain": 45.0,
           "uncertainty": 0.0,
@@ -687,7 +752,8 @@
           "qwen_signal": 30.0,
           "redundancy_penalty": -12.0,
           "compute_cost_penalty": 0.0,
-          "unsupported_claim_risk": -8.0
+          "unsupported_claim_risk": -8.0,
+          "agent_preference": 8.0
         }
       },
       {
@@ -701,7 +767,7 @@
             "C": 10.0
           }
         },
-        "reason": "score=55.0; world model recommended run; candidate is a variant of an already tested family; after an unscaled logistic baseline, scaling is the direct world-model intervention to test; high best score increases claim risk for additional single-run score chasing",
+        "reason": "score=63.0; autoresearch agent included this action in its candidate shortlist; world model recommended run; candidate is a variant of an already tested family; after an unscaled logistic baseline, scaling is the direct world-model intervention to test; high best score increases claim risk for additional single-run score chasing",
         "score_breakdown": {
           "expected_gain": 45.0,
           "uncertainty": 0.0,
@@ -710,31 +776,8 @@
           "qwen_signal": 30.0,
           "redundancy_penalty": -12.0,
           "compute_cost_penalty": 0.0,
-          "unsupported_claim_risk": -8.0
-        }
-      },
-      {
-        "action": {
-          "action_id": "action_svc_C-0p5_kernel-rbf_scale-True",
-          "command": "python experiments/train_sklearn.py --dataset wine --model svc --scale --C 0.5 --kernel rbf",
-          "model": "svc",
-          "params": {
-            "dataset": "wine",
-            "scale": true,
-            "C": 0.5,
-            "kernel": "rbf"
-          }
-        },
-        "reason": "score=40.0; world model recommended run; new model family increases search coverage; high best score increases claim risk for additional single-run score chasing",
-        "score_breakdown": {
-          "expected_gain": 0.0,
-          "uncertainty": 0.0,
-          "novelty": 18.0,
-          "verification_value": 0.0,
-          "qwen_signal": 30.0,
-          "redundancy_penalty": 0.0,
-          "compute_cost_penalty": 0.0,
-          "unsupported_claim_risk": -8.0
+          "unsupported_claim_risk": -8.0,
+          "agent_preference": 8.0
         }
       },
       {
@@ -758,7 +801,8 @@
           "qwen_signal": 30.0,
           "redundancy_penalty": 0.0,
           "compute_cost_penalty": 0.0,
-          "unsupported_claim_risk": -8.0
+          "unsupported_claim_risk": -8.0,
+          "agent_preference": 0.0
         }
       },
       {
@@ -782,7 +826,8 @@
           "qwen_signal": 30.0,
           "redundancy_penalty": 0.0,
           "compute_cost_penalty": 0.0,
-          "unsupported_claim_risk": -8.0
+          "unsupported_claim_risk": -8.0,
+          "agent_preference": 0.0
         }
       },
       {
@@ -796,7 +841,7 @@
             "C": 0.1
           }
         },
-        "reason": "score=10.0; world model recommended run; candidate is a variant of an already tested family; high best score increases claim risk for additional single-run score chasing",
+        "reason": "score=18.0; autoresearch agent included this action in its candidate shortlist; world model recommended run; candidate is a variant of an already tested family; high best score increases claim risk for additional single-run score chasing",
         "score_breakdown": {
           "expected_gain": 0.0,
           "uncertainty": 0.0,
@@ -805,7 +850,8 @@
           "qwen_signal": 30.0,
           "redundancy_penalty": -12.0,
           "compute_cost_penalty": 0.0,
-          "unsupported_claim_risk": -8.0
+          "unsupported_claim_risk": -8.0,
+          "agent_preference": 8.0
         }
       },
       {
@@ -819,7 +865,7 @@
             "C": 1.0
           }
         },
-        "reason": "score=10.0; world model recommended run; candidate is a variant of an already tested family; high best score increases claim risk for additional single-run score chasing",
+        "reason": "score=18.0; autoresearch agent included this action in its candidate shortlist; world model recommended run; candidate is a variant of an already tested family; high best score increases claim risk for additional single-run score chasing",
         "score_breakdown": {
           "expected_gain": 0.0,
           "uncertainty": 0.0,
@@ -828,7 +874,8 @@
           "qwen_signal": 30.0,
           "redundancy_penalty": -12.0,
           "compute_cost_penalty": 0.0,
-          "unsupported_claim_risk": -8.0
+          "unsupported_claim_risk": -8.0,
+          "agent_preference": 8.0
         }
       },
       {
@@ -842,7 +889,7 @@
             "C": 10.0
           }
         },
-        "reason": "score=10.0; world model recommended run; candidate is a variant of an already tested family; high best score increases claim risk for additional single-run score chasing",
+        "reason": "score=18.0; autoresearch agent included this action in its candidate shortlist; world model recommended run; candidate is a variant of an already tested family; high best score increases claim risk for additional single-run score chasing",
         "score_breakdown": {
           "expected_gain": 0.0,
           "uncertainty": 0.0,
@@ -851,7 +898,8 @@
           "qwen_signal": 30.0,
           "redundancy_penalty": -12.0,
           "compute_cost_penalty": 0.0,
-          "unsupported_claim_risk": -8.0
+          "unsupported_claim_risk": -8.0,
+          "agent_preference": 8.0
         }
       }
     ]
@@ -886,7 +934,7 @@
     ],
     "top_gap": null,
     "needs_robustness_verification": false,
-    "reason": "Need at least 3 single-run model results before top-model verification.",
+    "reason": "Need at least 5 single-run model results before top-model verification.",
     "verification_action_key": null
   },
   "artifacts": {

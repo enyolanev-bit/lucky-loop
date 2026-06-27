@@ -2,18 +2,18 @@
   "schema_version": "1.0",
   "entries": [
     {
-      "claim_id": "run_007_claim_001",
-      "claim": "svc_scaled_C=0.5_kernel=rbf is robustly better than logistic_regression_scaled_C=1.0.",
+      "claim_id": "run_006_claim_001",
+      "claim": "svc_scaled_C=0.5_kernel=rbf is robustly better than logistic_regression_scaled_C=0.1.",
       "status": "blocked",
       "evidence_run_ids": [
-        "run_007"
+        "run_006"
       ],
       "blocked_reason": "Measured top-model effect is not larger than inter-seed noise. The report must not claim a robust best model.",
       "allowed_rewrite": "svc_scaled_C=0.5_kernel=rbf had the best multi-seed mean accuracy, but the effect was smaller than seed noise; no robust best-model claim is allowed.",
       "metrics": {
-        "effect_size": 0.007111,
+        "effect_size": 0.009333,
         "seed_noise": 0.011111,
-        "effect_to_noise_ratio": 0.639996,
+        "effect_to_noise_ratio": 0.839978,
         "min_seed_count": 5,
         "low_n_warning": false
       }

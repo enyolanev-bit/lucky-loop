@@ -10,6 +10,7 @@ from .comparator import compare
 from .executor import execute
 from .planner import action_key, generate_candidates, initial_hypothesis, predict_candidates, select_candidate
 from .reporter import generate_report
+from .research_agent import make_research_agent, prompt_hash
 from .schemas import ExperimentTrace, ResearchState, TaskSpec
 from .tasks import load_task
 from .top_models import detect_top_models
@@ -95,6 +96,7 @@ def run(
     max_experiments: int | None = None,
     task: TaskSpec | None = None,
     output_namespace: str | None = None,
+    planner_mode: str = "replay",
 ) -> list[ExperimentTrace]:
     task = task or load_task(None)
     goal = goal or task.goal
@@ -109,6 +111,7 @@ def run(
     reports_dir.mkdir(exist_ok=True)
     traces: list[ExperimentTrace] = []
     seen: set[str] = set()
+    agent = make_research_agent(planner_mode)
     state = (
         f"Goal: {goal}\n"
         f"No experiments have been run yet. Dataset: sklearn {task.dataset}. "
@@ -121,8 +124,17 @@ def run(
         candidates = generate_candidates(task, state_before, traces, seen)
         if not candidates:
             break
+        agent_decision = None
+        agent_prompt = ""
+        if agent is not None:
+            agent_decision, agent_prompt = agent.propose_next_step(task, state_before, candidates, traces)
         candidate_predictions = predict_candidates(task, state_before, candidates, simulator_configured())
-        selected_candidate, decision_trace = select_candidate(state_before, candidate_predictions, traces)
+        selected_candidate, decision_trace, safety_validation = select_candidate(
+            state_before,
+            candidate_predictions,
+            traces,
+            agent_decision=agent_decision,
+        )
         action = selected_candidate.action
         prediction = selected_candidate.prediction
         seen.add(action_key(action))
@@ -149,7 +161,14 @@ def run(
             comparison=comparison,
             next_decision=next_decision,
             verification=verification,
-            schema_version="2.0",
+            schema_version="3.0",
+            planner_mode=planner_mode,
+            agent_backend=agent.backend if agent is not None else "selector",
+            agent_model=agent.model_name if agent is not None else None,
+            agent_prompt_hash=prompt_hash(agent_prompt) if agent_prompt else None,
+            agent_decision=agent_decision,
+            safety_validation=safety_validation,
+            research_hypothesis=agent_decision.working_hypothesis if agent_decision else hypothesis,
             state_before=state_before,
             candidate_actions=candidates,
             candidate_predictions=candidate_predictions,
@@ -198,9 +217,10 @@ def main() -> None:
     ap.add_argument("--max-experiments", type=int, default=None)
     ap.add_argument("--task", default=None, help="Path to a TaskSpec JSON file.")
     ap.add_argument("--output-namespace", default=None, help="Optional subdirectory under runs/ and reports/.")
+    ap.add_argument("--planner-mode", choices=["llm", "replay", "selector"], default="replay")
     args = ap.parse_args()
     task = load_task(args.task)
-    traces = run(args.goal, args.max_experiments, task=task, output_namespace=args.output_namespace)
+    traces = run(args.goal, args.max_experiments, task=task, output_namespace=args.output_namespace, planner_mode=args.planner_mode)
     successful = [t for t in traces if t.actual_result.accuracy is not None]
     best = max(successful, key=lambda t: t.actual_result.accuracy or -1, default=None)
     if args.output_namespace:

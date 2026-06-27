@@ -23,9 +23,9 @@ Lucky Loop adds both layers. The world model is the signature: Qwen-AgentWorld a
 
 ```text
 research state
--> autoresearch agent proposes candidate experiments
+-> API-backed autoresearch agent proposes candidate experiments
 -> Qwen-AgentWorld predicts outcome / runtime / risks for each candidate
--> planner selects an action using the world-model signal
+-> safety selector validates the agent choice using world-model and evidence-risk signals
 -> executor runs the real sklearn experiment
 -> comparator measures prediction vs reality
 -> verifier gates claims with evidence
@@ -42,8 +42,9 @@ The important distinction:
 
 Operating mode:
 
-- **Hackathon implementation:** the autoresearch agent is the planner/selector in `src/luckyloop/`. It proposes actions, asks Qwen-AgentWorld for predictions, runs experiments, and records evidence.
-- **Autonomous extension:** the same role can be backed by a planner API while preserving the same state/action/prediction trace format.
+- **Product path:** the autoresearch agent is an OpenAI-compatible planner API. It proposes hypotheses and chooses action IDs from a safe catalog.
+- **Development path:** `--planner-mode replay` uses the same `AgentDecision` schema without requiring credentials, so the pipeline can be tested before an API key is available.
+- **Compatibility path:** `--planner-mode selector` keeps the previous transparent selector available, but it is not the main demo path.
 
 Qwen-AgentWorld is never treated as the research agent or verifier. It is the world model that forecasts candidate-action outcomes.
 
@@ -53,6 +54,7 @@ Qwen-AgentWorld is never treated as the research agent or verifier. It is the wo
 - OpenAI-compatible endpoint: `http://134.199.205.222:8000/v1`.
 - `src/luckyloop/` contains the runnable task-agnostic ML research loop:
   - task specs for sklearn benchmarks
+  - API-first autoresearch planner interface
   - adaptive candidate generation from dataset/model/search-space config
   - world-model prediction
   - real experiment execution
@@ -89,15 +91,27 @@ export LUCKYWORLD_SIMULATOR_BASE_URL=http://134.199.205.222:8000/v1
 export LUCKYWORLD_SIMULATOR_MODEL=Qwen/Qwen-AgentWorld-35B-A3B
 export LUCKYWORLD_SIMULATOR_API_KEY=dummy
 
-python3 -m luckyloop.loop --task configs/tasks/breast_cancer_accuracy.json
+python3 -m luckyloop.loop --task configs/tasks/breast_cancer_accuracy.json --planner-mode replay
 ```
 
 If the simulator endpoint is unavailable, Lucky Loop keeps a deterministic heuristic fallback for local smoke tests. The live presentation path uses Qwen-AgentWorld.
 
+The future API-backed autoresearch agent uses:
+
+```bash
+export LUCKYLOOP_AGENT_BASE_URL=...
+export LUCKYLOOP_AGENT_MODEL=...
+export LUCKYLOOP_AGENT_API_KEY=...
+
+PYTHONPATH=src python3 -m luckyloop.loop \
+  --task configs/tasks/breast_cancer_accuracy.json \
+  --planner-mode llm
+```
+
 Run all real benchmark tasks:
 
 ```bash
-PYTHONPATH=src python3 scripts/run_benchmark_suite.py
+PYTHONPATH=src python3 scripts/run_benchmark_suite.py --planner-mode replay
 ```
 
 ## Artifacts
