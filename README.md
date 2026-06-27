@@ -40,10 +40,10 @@ The important distinction:
 - **Comparator:** records whether the prediction matched reality.
 - **Verifier:** deterministic claim gate, not an LLM judge.
 
-Current operating mode:
+Operating mode:
 
-- **Now:** Codex / human-in-the-loop operates as the autoresearch agent during build and demo preparation. It proposes actions, asks Qwen-AgentWorld for predictions, runs experiments, and records evidence.
-- **Autonomous version:** the autoresearch agent becomes a planner API or deterministic selector inside `src/luckyloop/`, using the same state/action/prediction trace format.
+- **Hackathon implementation:** the autoresearch agent is the planner/selector in `src/luckyloop/`. It proposes actions, asks Qwen-AgentWorld for predictions, runs experiments, and records evidence.
+- **Autonomous extension:** the same role can be backed by a planner API while preserving the same state/action/prediction trace format.
 
 Qwen-AgentWorld is never treated as the research agent or verifier. It is the world model that forecasts candidate-action outcomes.
 

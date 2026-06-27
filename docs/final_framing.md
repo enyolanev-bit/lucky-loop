@@ -46,18 +46,18 @@ Claim ledger / reporter / UI
 ## Mode actuel vs version autonome
 
 ```text
-Maintenant:
-    Autoresearch agent = Codex / human-in-the-loop operator
+Hackathon implementation:
+    Autoresearch agent = planner / selector dans src/luckyloop
     World model = Qwen-AgentWorld
     Executor / Comparator / Verifier = code Python dans le repo
 
-Version autonome:
+Autonomous extension:
     Autoresearch agent = planner API ou deterministic selector
     World model = Qwen-AgentWorld
     Executor / Comparator / Verifier = mêmes modules Python
 ```
 
-Pendant le build hackathon, Codex joue donc le rôle de l'agent autoresearch. Le repo doit quand même produire des traces dans le format final: état, candidates, prédictions, décision, exécution, comparaison, verifier, claims. Quand on remplacera Codex par un planner autonome, les artifacts et l'UI ne doivent pas changer.
+Le point important: l'agent autoresearch est distinct de Qwen-AgentWorld. L'agent propose et décide; Qwen-AgentWorld prédit. Si on remplace plus tard le selector par une API planner plus avancée, les artifacts et l'UI ne doivent pas changer.
 
 ## Boucle cible
 
