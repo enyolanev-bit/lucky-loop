@@ -1,0 +1,91 @@
+{
+  "points": {
+    "breast_cancer": {
+      "calibration": 0.774,
+      "calib_err": 0.179,
+      "saving_pct": 36.5,
+      "saving_err": 92.9,
+      "n_samples": 569
+    },
+    "wine": {
+      "calibration": 0.595,
+      "calib_err": 0.179,
+      "saving_pct": 11.6,
+      "saving_err": 69.6,
+      "n_samples": 178
+    },
+    "digits": {
+      "calibration": -0.179,
+      "calib_err": 0.232,
+      "saving_pct": -97.8,
+      "saving_err": 25.6,
+      "n_samples": 1797
+    },
+    "iris": {
+      "calibration": -0.345,
+      "calib_err": 0.089,
+      "saving_pct": 0.4,
+      "saving_err": 144.0,
+      "n_samples": 150
+    },
+    "synth_easy": {
+      "calibration": -0.238,
+      "calib_err": 0.143,
+      "saving_pct": -166.7,
+      "saving_err": 45.8,
+      "n_samples": 800
+    },
+    "synth_med": {
+      "calibration": -0.274,
+      "calib_err": 0.071,
+      "saving_pct": -101.0,
+      "saving_err": 14.1,
+      "n_samples": 800
+    },
+    "synth_hard": {
+      "calibration": -0.345,
+      "calib_err": 0.018,
+      "saving_pct": -98.0,
+      "saving_err": 14.1,
+      "n_samples": 800
+    },
+    "synth_hi_dim": {
+      "calibration": -0.19,
+      "calib_err": 0.107,
+      "saving_pct": -101.5,
+      "saving_err": 6.6,
+      "n_samples": 600
+    },
+    "synth_3cls": {
+      "calibration": -0.345,
+      "calib_err": 0.036,
+      "saving_pct": -98.0,
+      "saving_err": 18.9,
+      "n_samples": 800
+    },
+    "synth_noisy": {
+      "calibration": -0.393,
+      "calib_err": 0.089,
+      "saving_pct": -115.1,
+      "saving_err": 14.5,
+      "n_samples": 800
+    },
+    "synth_small": {
+      "calibration": -0.345,
+      "calib_err": 0.107,
+      "saving_pct": -94.6,
+      "saving_err": 10.0,
+      "n_samples": 200
+    },
+    "synth_big": {
+      "calibration": -0.393,
+      "calib_err": 0.054,
+      "saving_pct": -99.3,
+      "saving_err": 8.5,
+      "n_samples": 2500
+    }
+  },
+  "n_datasets": 12,
+  "pearson_r_calibration_vs_saving": 0.75,
+  "confound_r_size_vs_saving": -0.388
+}
