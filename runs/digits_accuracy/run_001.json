@@ -12,22 +12,24 @@
     }
   },
   "world_model_prediction": {
-    "expected_metric": "accuracy around 0.90-0.97",
+    "expected_metric": "accuracy around 0.85-0.90",
     "expected_runtime_seconds": "under 5",
     "risks": [
-      "unscaled features can slow convergence or underperform when feature scales differ"
+      "logistic regression without feature scaling may underperform on pixel features",
+      "single-run best score may not justify a scientific claim",
+      "small-dataset variance could overstate a model win"
     ],
-    "recommendation": "run",
-    "rationale": "A simple linear baseline is cheap and informative for sklearn tabular classification.",
-    "action_specific_signal": "Establish a baseline before testing scaling, nonlinear models, or sweeps.",
-    "claim_risk": "Baseline-only evidence cannot support a best-model claim."
+    "recommendation": "modify",
+    "rationale": "The proposed action trains logistic regression without scaling on the digits dataset, which typically requires feature scaling for optimal performance. Enabling scaling is expected to improve accuracy significantly. Additionally, a single run without robustness verification or multiple seeds may not provide a reliable signal for claim-making.",
+    "action_specific_signal": "logistic regression on unscaled 64-dimensional pixel features typically yields lower accuracy compared to scaled variants; consider setting scale=true",
+    "claim_risk": "single-run best score may not justify a scientific claim"
   },
   "actual_result": {
     "status": "success",
     "accuracy": 0.9622222222222222,
     "f1": 0.9622547774599621,
-    "runtime_seconds": 2.0795,
-    "stdout_tail": "{\n  \"accuracy\": 0.9622222222222222,\n  \"dataset\": \"digits\",\n  \"f1\": 0.9622547774599621,\n  \"model\": \"logistic_regression\",\n  \"n_label_noise_flips\": 0,\n  \"n_test\": 450,\n  \"n_train\": 1347,\n  \"params\": {\n    \"C\": 1.0,\n    \"dataset\": \"digits\",\n    \"kernel\": \"rbf\",\n    \"label_noise\": 0.0,\n    \"learning_rate\": 0.1,\n    \"max_depth\": null,\n    \"max_iter\": 1000,\n    \"model\": \"logistic_regression\",\n    \"n_estimators\": 200,\n    \"scale\": false,\n    \"seed\": 42,\n    \"test_size\": 0.25\n  },\n  \"runtime_seconds\": 2.0795,\n  \"status\": \"success\"\n}\n",
+    "runtime_seconds": 2.0929,
+    "stdout_tail": "{\n  \"accuracy\": 0.9622222222222222,\n  \"dataset\": \"digits\",\n  \"f1\": 0.9622547774599621,\n  \"model\": \"logistic_regression\",\n  \"n_label_noise_flips\": 0,\n  \"n_test\": 450,\n  \"n_train\": 1347,\n  \"params\": {\n    \"C\": 1.0,\n    \"dataset\": \"digits\",\n    \"kernel\": \"rbf\",\n    \"label_noise\": 0.0,\n    \"learning_rate\": 0.1,\n    \"max_depth\": null,\n    \"max_iter\": 1000,\n    \"model\": \"logistic_regression\",\n    \"n_estimators\": 200,\n    \"scale\": false,\n    \"seed\": 42,\n    \"test_size\": 0.25\n  },\n  \"runtime_seconds\": 2.0929,\n  \"status\": \"success\"\n}\n",
     "stderr_tail": "",
     "raw": {
       "accuracy": 0.9622222222222222,
@@ -51,15 +53,17 @@
         "seed": 42,
         "test_size": 0.25
       },
-      "runtime_seconds": 2.0795,
+      "runtime_seconds": 2.0929,
       "status": "success"
     }
   },
   "comparison": {
-    "metric_match": true,
+    "metric_match": false,
     "runtime_match": true,
-    "unexpected_events": [],
-    "lesson": "Prediction was broadly consistent with the real run."
+    "unexpected_events": [
+      "accuracy 0.9622 outside predicted range 0.85-0.90"
+    ],
+    "lesson": "Run succeeded, but the prediction missed at least one quantitative detail."
   },
   "next_decision": "Continue: regenerate candidates from the updated state and ask the world model to predict each option.",
   "verification": null,
@@ -254,17 +258,19 @@
         }
       },
       "prediction": {
-        "expected_metric": "accuracy around 0.90-0.97",
+        "expected_metric": "accuracy around 0.85-0.90",
         "expected_runtime_seconds": "under 5",
         "risks": [
-          "unscaled features can slow convergence or underperform when feature scales differ"
+          "logistic regression without feature scaling may underperform on pixel features",
+          "single-run best score may not justify a scientific claim",
+          "small-dataset variance could overstate a model win"
         ],
-        "recommendation": "run",
-        "rationale": "A simple linear baseline is cheap and informative for sklearn tabular classification.",
-        "action_specific_signal": "Establish a baseline before testing scaling, nonlinear models, or sweeps.",
-        "claim_risk": "Baseline-only evidence cannot support a best-model claim."
+        "recommendation": "modify",
+        "rationale": "The proposed action trains logistic regression without scaling on the digits dataset, which typically requires feature scaling for optimal performance. Enabling scaling is expected to improve accuracy significantly. Additionally, a single run without robustness verification or multiple seeds may not provide a reliable signal for claim-making.",
+        "action_specific_signal": "logistic regression on unscaled 64-dimensional pixel features typically yields lower accuracy compared to scaled variants; consider setting scale=true",
+        "claim_risk": "single-run best score may not justify a scientific claim"
       },
-      "source": "heuristic_fallback"
+      "source": "qwen_agentworld"
     },
     {
       "action": {
@@ -278,17 +284,18 @@
         }
       },
       "prediction": {
-        "expected_metric": "accuracy around 0.90-0.97",
+        "expected_metric": "accuracy around 0.85-0.89",
         "expected_runtime_seconds": "under 5",
         "risks": [
-          "unscaled features can slow convergence or underperform when feature scales differ"
+          "logistic regression without feature scaling may underperform on pixel features",
+          "single-run best score may not justify a scientific claim"
         ],
         "recommendation": "run",
-        "rationale": "A simple linear baseline is cheap and informative for sklearn tabular classification.",
-        "action_specific_signal": "Establish a baseline before testing scaling, nonlinear models, or sweeps.",
-        "claim_risk": "Baseline-only evidence cannot support a best-model claim."
+        "rationale": "The action tests logistic regression with C=0.1 and no scaling on the digits dataset. Since the dataset has 64 numeric pixel features, feature scaling is relevant for logistic regression; without it, performance may be suboptimal. This is an initial single-run experiment, so the observed score should be treated cautiously and not overstate model performance. A robustness sweep across seeds will be needed before strong claims.",
+        "action_specific_signal": "logistic regression without scaling on pixel features typically yields lower accuracy compared to scaled variants or tree-based models",
+        "claim_risk": "single-run best score may not justify a scientific claim"
       },
-      "source": "heuristic_fallback"
+      "source": "qwen_agentworld"
     },
     {
       "action": {
@@ -302,17 +309,19 @@
         }
       },
       "prediction": {
-        "expected_metric": "accuracy around 0.90-0.97",
+        "expected_metric": "accuracy around 0.90-0.93",
         "expected_runtime_seconds": "under 5",
         "risks": [
-          "unscaled features can slow convergence or underperform when feature scales differ"
+          "logistic regression without feature scaling may underperform on pixel intensity features",
+          "single-run best score may not justify a scientific claim",
+          "small-dataset variance when a single split could overstate a model win"
         ],
         "recommendation": "run",
-        "rationale": "A simple linear baseline is cheap and informative for sklearn tabular classification.",
-        "action_specific_signal": "Establish a baseline before testing scaling, nonlinear models, or sweeps.",
-        "claim_risk": "Baseline-only evidence cannot support a best-model claim."
+        "rationale": "The action tests logistic regression with C=1.0 and scale=false on the digits dataset. Since the digits dataset has pixel intensity features that benefit from scaling, this configuration is expected to yield moderate accuracy (around 0.90-0.93). However, this is a single-run experiment and the digits dataset is small, so variance across splits could affect the result. This run helps establish a baseline for logistic regression performance without scaling, which is necessary before making claims about model superiority.",
+        "action_specific_signal": "logistic regression without scaling on pixel features typically yields lower accuracy than scaled versions or tree-based models",
+        "claim_risk": "single-run best score may not justify a scientific claim"
       },
-      "source": "heuristic_fallback"
+      "source": "qwen_agentworld"
     },
     {
       "action": {
@@ -326,17 +335,19 @@
         }
       },
       "prediction": {
-        "expected_metric": "accuracy around 0.90-0.97",
+        "expected_metric": "accuracy around 0.92-0.95",
         "expected_runtime_seconds": "under 5",
         "risks": [
-          "unscaled features can slow convergence or underperform when feature scales differ"
+          "logistic regression without feature scaling may underperform on pixel features",
+          "single-run best score may not justify a scientific claim",
+          "small-dataset variance could overstate a model win"
         ],
         "recommendation": "run",
-        "rationale": "A simple linear baseline is cheap and informative for sklearn tabular classification.",
-        "action_specific_signal": "Establish a baseline before testing scaling, nonlinear models, or sweeps.",
-        "claim_risk": "Baseline-only evidence cannot support a best-model claim."
+        "rationale": "The action tests logistic regression with C=10.0 and scale=false on the digits dataset. Since logistic regression is sensitive to feature scaling and the digits dataset has pixel features, unscaled features may reduce accuracy relative to scaled variants. However, this is a valid baseline to explore the candidate space. A single run is appropriate at this stage to gather initial results, but robustness sweeps across seeds will be needed before making strong claims.",
+        "action_specific_signal": "logistic regression without scaling on pixel features typically yields lower accuracy than scaled variants or tree-based models",
+        "claim_risk": "single-run best score may not justify a scientific claim"
       },
-      "source": "heuristic_fallback"
+      "source": "qwen_agentworld"
     },
     {
       "action": {
@@ -350,17 +361,18 @@
         }
       },
       "prediction": {
-        "expected_metric": "accuracy around 0.95-0.98",
+        "expected_metric": "accuracy around 0.95-0.97",
         "expected_runtime_seconds": "under 5",
         "risks": [
-          "minor convergence warning possible"
+          "single-run best score may not justify a scientific claim",
+          "small-dataset variance when a single split could overstate a model win"
         ],
         "recommendation": "run",
-        "rationale": "Scaling usually helps logistic regression on tabular numeric features.",
-        "action_specific_signal": "Feature scaling is the direct intervention for a linear model after an unscaled baseline.",
-        "claim_risk": "Single-run best score should not be claimed as robust without repeated seeds."
+        "rationale": "The action tests logistic regression with scaling and C=0.1 on the digits dataset, which is a reasonable baseline. Since no experiments have been run yet, this is a valid first step. However, single-run results on small datasets like digits can have variance, so robustness verification with multiple seeds will be needed later.",
+        "action_specific_signal": "feature scaling is relevant for logistic regression and is applied; this should yield stable performance around 0.95-0.97 accuracy on digits",
+        "claim_risk": "single-run best score may not justify a scientific claim"
       },
-      "source": "heuristic_fallback"
+      "source": "qwen_agentworld"
     },
     {
       "action": {
@@ -374,17 +386,18 @@
         }
       },
       "prediction": {
-        "expected_metric": "accuracy around 0.95-0.98",
+        "expected_metric": "accuracy around 0.95-0.97",
         "expected_runtime_seconds": "under 5",
         "risks": [
-          "minor convergence warning possible"
+          "single-run best score may not justify a scientific claim",
+          "small-dataset variance for a single split could overstate a model win"
         ],
         "recommendation": "run",
-        "rationale": "Scaling usually helps logistic regression on tabular numeric features.",
-        "action_specific_signal": "Feature scaling is the direct intervention for a linear model after an unscaled baseline.",
-        "claim_risk": "Single-run best score should not be claimed as robust without repeated seeds."
+        "rationale": "The proposed action runs logistic regression with scaling and C=1.0 on the digits dataset, which is a standard and effective baseline for this tabular image-feature classification task. Feature scaling is relevant and included. However, a single-run result may not be sufficient to justify a scientific claim due to small-dataset variance, and robustness sweeps across seeds will be needed before strong claims.",
+        "action_specific_signal": "Logistic regression with scaling on digits typically achieves high accuracy (0.95-0.97) with low variance; C=1.0 is a reasonable default.",
+        "claim_risk": "single-run best score may not justify a scientific claim"
       },
-      "source": "heuristic_fallback"
+      "source": "qwen_agentworld"
     },
     {
       "action": {
@@ -398,17 +411,18 @@
         }
       },
       "prediction": {
-        "expected_metric": "accuracy around 0.95-0.98",
+        "expected_metric": "accuracy around 0.96-0.98",
         "expected_runtime_seconds": "under 5",
         "risks": [
-          "minor convergence warning possible"
+          "single-run best score may not justify a scientific claim",
+          "feature scaling is required for logistic regression to perform well on pixel features"
         ],
         "recommendation": "run",
-        "rationale": "Scaling usually helps logistic regression on tabular numeric features.",
-        "action_specific_signal": "Feature scaling is the direct intervention for a linear model after an unscaled baseline.",
-        "claim_risk": "Single-run best score should not be claimed as robust without repeated seeds."
+        "rationale": "The logistic regression model with scaling and C=10.0 is expected to achieve high accuracy on the digits dataset due to the linear separability of the pixel features when scaled. However, a single-run result may not be sufficient to justify a scientific claim without robustness verification across seeds.",
+        "action_specific_signal": "logistic regression with scaling and C=10.0 is expected to perform well on the digits dataset, but robustness across seeds should be verified before making strong claims.",
+        "claim_risk": "single-run best score may not justify a scientific claim"
       },
-      "source": "heuristic_fallback"
+      "source": "qwen_agentworld"
     },
     {
       "action": {
@@ -423,17 +437,18 @@
         }
       },
       "prediction": {
-        "expected_metric": "accuracy around 0.90-0.99",
-        "expected_runtime_seconds": "under 10",
+        "expected_metric": "accuracy around 0.97-0.98",
+        "expected_runtime_seconds": "under 5",
         "risks": [
-          "sensitive to scaling and C"
+          "single-run best score may not justify a scientific claim",
+          "SVC performance can vary across seeds; robustness sweeps required before strong claims"
         ],
         "recommendation": "run",
-        "rationale": "Scaled SVC can be strong on small numeric classification tasks but needs careful comparison.",
-        "action_specific_signal": "SVC tests a margin-based nonlinear hypothesis after linear/tree baselines.",
-        "claim_risk": "SVC should not be declared best without repeated-seed evidence."
+        "rationale": "The proposed action runs an SVC with C=0.5, kernel=rbf, and scaling enabled on the digits dataset. SVC with RBF kernel typically achieves high accuracy on digits, but a single-run score may overstate performance. Robustness verification across seeds is needed before claiming superiority.",
+        "action_specific_signal": "SVC with RBF kernel and feature scaling is expected to perform strongly on the digits dataset, but variance across seeds should be checked.",
+        "claim_risk": "single-run best score may not justify a scientific claim"
       },
-      "source": "heuristic_fallback"
+      "source": "qwen_agentworld"
     },
     {
       "action": {
@@ -448,17 +463,19 @@
         }
       },
       "prediction": {
-        "expected_metric": "accuracy around 0.90-0.99",
-        "expected_runtime_seconds": "under 10",
+        "expected_metric": "accuracy around 0.97-0.98",
+        "expected_runtime_seconds": "under 5",
         "risks": [
-          "sensitive to scaling and C"
+          "single-run best score may not justify a scientific claim",
+          "small-dataset variance for a single split could overstate a model win",
+          "robustness sweeps required before strong claims"
         ],
         "recommendation": "run",
-        "rationale": "Scaled SVC can be strong on small numeric classification tasks but needs careful comparison.",
-        "action_specific_signal": "SVC tests a margin-based nonlinear hypothesis after linear/tree baselines.",
-        "claim_risk": "SVC should not be declared best without repeated-seed evidence."
+        "rationale": "The proposed action trains an SVC with C=2.0, kernel=rbf, and scaling enabled on the digits dataset. SVC with RBF kernel and feature scaling is expected to perform strongly on this 64-dimensional pixel feature space, likely achieving high accuracy. However, a single-run result on a small dataset like digits may not be robust; repeated seeds or a robustness sweep should follow to verify the claim.",
+        "action_specific_signal": "SVC with RBF kernel and scaling is competitive on digits; expect high single-run accuracy but require seed robustness verification.",
+        "claim_risk": "single-run best score may not justify a scientific claim without repeated seeds or robustness verification"
       },
-      "source": "heuristic_fallback"
+      "source": "qwen_agentworld"
     },
     {
       "action": {
@@ -473,17 +490,18 @@
         }
       },
       "prediction": {
-        "expected_metric": "accuracy around 0.90-0.99",
-        "expected_runtime_seconds": "under 10",
+        "expected_metric": "accuracy around 0.97-0.98",
+        "expected_runtime_seconds": "under 5",
         "risks": [
-          "sensitive to scaling and C"
+          "single-run best score may not justify a scientific claim",
+          "SVC performance can vary across seeds; robustness sweep recommended before strong claims"
         ],
         "recommendation": "run",
-        "rationale": "Scaled SVC can be strong on small numeric classification tasks but needs careful comparison.",
-        "action_specific_signal": "SVC tests a margin-based nonlinear hypothesis after linear/tree baselines.",
-        "claim_risk": "SVC should not be declared best without repeated-seed evidence."
+        "rationale": "The proposed action tests SVC with C=5.0, scale=True, and rbf kernel on the digits dataset. SVC is known to perform well on this dataset with proper scaling. However, a single-run result may overstate performance; a robustness sweep across seeds is recommended before making strong claims.",
+        "action_specific_signal": "SVC with RBF kernel and scaling is competitive on digits; expect high accuracy but verify seed robustness.",
+        "claim_risk": "single-run best score may not justify a scientific claim without seed robustness verification"
       },
-      "source": "heuristic_fallback"
+      "source": "qwen_agentworld"
     },
     {
       "action": {
@@ -497,17 +515,18 @@
         }
       },
       "prediction": {
-        "expected_metric": "accuracy around 0.90-0.98",
-        "expected_runtime_seconds": "under 10",
+        "expected_metric": "accuracy around 0.96-0.97",
+        "expected_runtime_seconds": "under 5",
         "risks": [
-          "overfitting or split variance if depth is unconstrained"
+          "single-run best score may not justify a scientific claim",
+          "tree ensembles can show overfitting or variance on small datasets"
         ],
         "recommendation": "run",
-        "rationale": "Tree ensembles test a different inductive bias, but may not beat a strong scaled linear model on small tabular datasets.",
-        "action_specific_signal": "Use random forest to test whether nonlinear interactions improve over the linear baseline.",
-        "claim_risk": "A single tree-ensemble score should be treated as observation until checked across seeds."
+        "rationale": "Random forest with 100 estimators and default max_depth is a strong baseline for the digits dataset and should achieve high accuracy. However, a single run may overstate performance due to small-dataset variance, and tree ensembles can exhibit overfitting or variance. Robustness sweeps across seeds are recommended before making strong claims.",
+        "action_specific_signal": "random_forest with n_estimators=100 and max_depth=null is expected to perform competitively on digits, but single-run results should be verified with multiple seeds to ensure robustness.",
+        "claim_risk": "single-run best score may not justify a scientific claim"
       },
-      "source": "heuristic_fallback"
+      "source": "qwen_agentworld"
     },
     {
       "action": {
@@ -521,17 +540,18 @@
         }
       },
       "prediction": {
-        "expected_metric": "accuracy around 0.90-0.98",
-        "expected_runtime_seconds": "under 10",
+        "expected_metric": "accuracy around 0.95-0.97",
+        "expected_runtime_seconds": "under 5",
         "risks": [
-          "overfitting or split variance if depth is unconstrained"
+          "small-dataset variance: a single split could overstate a model win",
+          "tree ensembles can overfit on small datasets if not properly constrained"
         ],
         "recommendation": "run",
-        "rationale": "Tree ensembles test a different inductive bias, but may not beat a strong scaled linear model on small tabular datasets.",
-        "action_specific_signal": "Use random forest to test whether nonlinear interactions improve over the linear baseline.",
-        "claim_risk": "A single tree-ensemble score should be treated as observation until checked across seeds."
+        "rationale": "Random forest with n_estimators=100 and max_depth=4 is a reasonable baseline for the digits dataset. Given the small dataset size and single-run nature, results should be interpreted with caution regarding variance. This experiment will provide a baseline to compare against linear models and SVMs.",
+        "action_specific_signal": "Random forest with max_depth=4 should achieve strong accuracy on the digits dataset due to its ability to capture non-linear pixel relationships while limiting overfitting through depth constraint.",
+        "claim_risk": "single-run best score may not justify a scientific claim without robustness verification across seeds"
       },
-      "source": "heuristic_fallback"
+      "source": "qwen_agentworld"
     }
   ],
   "selected_action": {
@@ -558,15 +578,15 @@
     "selector_policy_signal_used": true,
     "causal_signal_type": "mixed",
     "observed_state_signal": "Need at least 5 single-run model results before top-model verification.",
-    "world_model_signal": "prediction contained an action-specific research signal",
+    "world_model_signal": "world model recommended modification; prediction contained an action-specific research signal",
     "selector_policy_signal": "agent preferred action accepted into safety scoring; new model family increases search coverage; first run should establish the unscaled baseline before interventions",
-    "selected_score": 170.0,
+    "selected_score": 162.0,
     "score_breakdown": {
       "expected_gain": 0.0,
       "uncertainty": 0.0,
       "novelty": 98.0,
       "verification_value": 0.0,
-      "qwen_signal": 30.0,
+      "qwen_signal": 22.0,
       "redundancy_penalty": 0.0,
       "compute_cost_penalty": 0.0,
       "unsupported_claim_risk": 0.0,
@@ -578,7 +598,7 @@
     "preferred_action_id": "action_001",
     "selection_overrode_agent": false,
     "override_reason": null,
-    "causal_reason": "Selected logistic_regression because score=170.0; autoresearch agent preferred this catalog action; world model recommended run; new model family increases search coverage; first run should establish the unscaled baseline before interventions. Agent hypothesis: A simple unscaled linear baseline should anchor the search before interventions.. World model predicted accuracy around 0.90-0.97, runtime under 5, recommendation=run, risks=unscaled features can slow convergence or underperform when feature scales differ. Causal signal type: mixed.",
+    "causal_reason": "Selected logistic_regression because score=162.0; autoresearch agent preferred this catalog action; world model recommended modification, so the action remains informative but lower priority; new model family increases search coverage; first run should establish the unscaled baseline before interventions. Agent hypothesis: A simple unscaled linear baseline should anchor the search before interventions.. World model predicted accuracy around 0.85-0.90, runtime under 5, recommendation=modify, risks=logistic regression without feature scaling may underperform on pixel features, single-run best score may not justify a scientific claim, small-dataset variance could overstate a model win. Causal signal type: mixed.",
     "rejected_candidates": [
       {
         "action": {

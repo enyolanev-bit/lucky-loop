@@ -1,67 +1,70 @@
 {
   "run_id": "run_005",
   "goal": "Maximize validation accuracy on sklearn digits under a small compute budget, while avoiding unsupported claims.",
-  "hypothesis": "Selected hist_gradient_boosting because score=86.0; autoresearch agent preferred this catalog action; world model recommended run; new model family increases search coverage; world model predicted overfitting risk. Agent hypothesis: Testing a new model family can reveal whether the current best score depends on inductive bias.. World model predicted accuracy around 0.90-0.98, runtime under 15, recommendation=run, risks=can overfit with too many estimators. Causal signal type: mixed.",
+  "hypothesis": "Selected logistic_regression because score=71.0; autoresearch agent included this action in its candidate shortlist; world model recommended run; candidate is a variant of an already tested family; after an unscaled logistic baseline, scaling is the direct world-model intervention to test. Agent hypothesis: A prediction miss should trigger exploration of a different inductive bias.. World model predicted accuracy around 0.977-0.98, runtime under 5, recommendation=run, risks=single-run best score may not justify a scientific claim, small-dataset variance could overstate a model win, robustness sweeps required before strong claims. Causal signal type: mixed.",
   "proposed_action": {
-    "action_id": "action_hist_gradient_boosting_learning_rate-0p05_n_estimators-100",
-    "command": "python experiments/train_sklearn.py --dataset digits --model hist_gradient_boosting --n-estimators 100 --learning-rate 0.05",
-    "model": "hist_gradient_boosting",
+    "action_id": "action_logistic_regression_C-10p0_scale-True",
+    "command": "python experiments/train_sklearn.py --dataset digits --model logistic_regression --scale --C 10.0",
+    "model": "logistic_regression",
     "params": {
       "dataset": "digits",
-      "n_estimators": 100,
-      "learning_rate": 0.05,
-      "max_depth": null
+      "scale": true,
+      "C": 10.0
     }
   },
   "world_model_prediction": {
-    "expected_metric": "accuracy around 0.90-0.98",
-    "expected_runtime_seconds": "under 15",
+    "expected_metric": "accuracy around 0.977-0.98",
+    "expected_runtime_seconds": "under 5",
     "risks": [
-      "can overfit with too many estimators"
+      "single-run best score may not justify a scientific claim",
+      "small-dataset variance could overstate a model win",
+      "robustness sweeps required before strong claims"
     ],
     "recommendation": "run",
-    "rationale": "Boosting is a useful late comparison when linear and bagged-tree baselines are known.",
-    "action_specific_signal": "Use boosting to test a staged-tree alternative under the remaining budget.",
-    "claim_risk": "Do not report a robust winner from one boosted run."
+    "rationale": "The proposed logistic regression with scaling and C=10.0 is a natural extension of the successful scaled logistic regression runs (C=0.1 and C=1.0) that achieved ~0.9777 accuracy. Given the digits dataset characteristics and previous results, this configuration should perform similarly well. However, single-run results on this small dataset may not justify strong scientific claims without robustness verification across multiple seeds.",
+    "action_specific_signal": "feature scaling is relevant for logistic regression and this action includes it; previous scaled logistic regression runs achieved 0.9777 accuracy with C=1.0",
+    "claim_risk": "single-run best score may not justify a scientific claim without effect-vs-noise verification across seeds"
   },
   "actual_result": {
     "status": "success",
-    "accuracy": 0.9577777777777777,
-    "f1": 0.957637544524637,
-    "runtime_seconds": 3.9033,
-    "stdout_tail": "{\n  \"accuracy\": 0.9577777777777777,\n  \"dataset\": \"digits\",\n  \"f1\": 0.957637544524637,\n  \"model\": \"hist_gradient_boosting\",\n  \"n_label_noise_flips\": 0,\n  \"n_test\": 450,\n  \"n_train\": 1347,\n  \"params\": {\n    \"C\": 1.0,\n    \"dataset\": \"digits\",\n    \"kernel\": \"rbf\",\n    \"label_noise\": 0.0,\n    \"learning_rate\": 0.05,\n    \"max_depth\": null,\n    \"max_iter\": 1000,\n    \"model\": \"hist_gradient_boosting\",\n    \"n_estimators\": 100,\n    \"scale\": false,\n    \"seed\": 42,\n    \"test_size\": 0.25\n  },\n  \"runtime_seconds\": 3.9033,\n  \"status\": \"success\"\n}\n",
+    "accuracy": 0.9644444444444444,
+    "f1": 0.9642646794912701,
+    "runtime_seconds": 0.4827,
+    "stdout_tail": "{\n  \"accuracy\": 0.9644444444444444,\n  \"dataset\": \"digits\",\n  \"f1\": 0.9642646794912701,\n  \"model\": \"logistic_regression\",\n  \"n_label_noise_flips\": 0,\n  \"n_test\": 450,\n  \"n_train\": 1347,\n  \"params\": {\n    \"C\": 10.0,\n    \"dataset\": \"digits\",\n    \"kernel\": \"rbf\",\n    \"label_noise\": 0.0,\n    \"learning_rate\": 0.1,\n    \"max_depth\": null,\n    \"max_iter\": 1000,\n    \"model\": \"logistic_regression\",\n    \"n_estimators\": 200,\n    \"scale\": true,\n    \"seed\": 42,\n    \"test_size\": 0.25\n  },\n  \"runtime_seconds\": 0.4827,\n  \"status\": \"success\"\n}\n",
     "stderr_tail": "",
     "raw": {
-      "accuracy": 0.9577777777777777,
+      "accuracy": 0.9644444444444444,
       "dataset": "digits",
-      "f1": 0.957637544524637,
-      "model": "hist_gradient_boosting",
+      "f1": 0.9642646794912701,
+      "model": "logistic_regression",
       "n_label_noise_flips": 0,
       "n_test": 450,
       "n_train": 1347,
       "params": {
-        "C": 1.0,
+        "C": 10.0,
         "dataset": "digits",
         "kernel": "rbf",
         "label_noise": 0.0,
-        "learning_rate": 0.05,
+        "learning_rate": 0.1,
         "max_depth": null,
         "max_iter": 1000,
-        "model": "hist_gradient_boosting",
-        "n_estimators": 100,
-        "scale": false,
+        "model": "logistic_regression",
+        "n_estimators": 200,
+        "scale": true,
         "seed": 42,
         "test_size": 0.25
       },
-      "runtime_seconds": 3.9033,
+      "runtime_seconds": 0.4827,
       "status": "success"
     }
   },
   "comparison": {
-    "metric_match": true,
+    "metric_match": false,
     "runtime_match": true,
-    "unexpected_events": [],
-    "lesson": "Prediction was broadly consistent with the real run."
+    "unexpected_events": [
+      "accuracy 0.9644 outside predicted range 0.98-0.98"
+    ],
+    "lesson": "Run succeeded, but the prediction missed at least one quantitative detail."
   },
   "next_decision": "Continue: regenerate candidates from the updated state and ask the world model to predict each option.",
   "verification": null,
@@ -69,34 +72,35 @@
   "planner_mode": "replay",
   "agent_backend": "replay",
   "agent_model": "replay-agent-v1",
-  "agent_prompt_hash": "9517c4632a50696f",
+  "agent_prompt_hash": "65796ee4298cc951",
   "agent_decision": {
     "research_question": "Maximize validation accuracy on sklearn digits under a small compute budget, while avoiding unsupported claims.",
-    "working_hypothesis": "Testing a new model family can reveal whether the current best score depends on inductive bias.",
+    "working_hypothesis": "A prediction miss should trigger exploration of a different inductive bias.",
     "candidate_action_ids": [
-      "action_logistic_regression_C-1p0_scale-True",
       "action_logistic_regression_C-10p0_scale-True",
       "action_svc_C-2p0_kernel-rbf_scale-True",
       "action_svc_C-5p0_kernel-rbf_scale-True",
-      "action_hist_gradient_boosting_learning_rate-0p05_n_estimators-100",
-      "action_hist_gradient_boosting_learning_rate-0p05_max_depth-8_n_estimators-100"
+      "action_random_forest_n_estimators-100",
+      "action_random_forest_max_depth-4_n_estimators-100",
+      "action_random_forest_max_depth-8_n_estimators-100"
     ],
-    "preferred_action_id": "action_hist_gradient_boosting_learning_rate-0p05_n_estimators-100",
-    "rationale": "Given state state_005 with budget_remaining=3, the planner chooses action_hist_gradient_boosting_learning_rate-0p05_n_estimators-100 to collect the most decision-relevant evidence.",
-    "expected_evidence_needed": "Run a real single-model experiment from the safe catalog.",
-    "claim_risk": "The result is still an observation until robustness is checked.",
+    "preferred_action_id": "action_svc_C-2p0_kernel-rbf_scale-True",
+    "rationale": "Given state state_005 with budget_remaining=3, the planner chooses action_svc_C-2p0_kernel-rbf_scale-True to collect the most decision-relevant evidence.",
+    "expected_evidence_needed": "Run an untested model family and compare prediction error against actual metrics.",
+    "claim_risk": "Prediction misses must be logged, not hidden behind a better score.",
     "stop_or_continue": "continue"
   },
   "safety_validation": {
     "valid_agent_action": true,
-    "selected_action_id": "action_hist_gradient_boosting_learning_rate-0p05_n_estimators-100",
-    "selection_overrode_agent": false,
-    "override_reason": null,
+    "selected_action_id": "action_logistic_regression_C-10p0_scale-True",
+    "selection_overrode_agent": true,
+    "override_reason": "safety selector chose a higher-scoring action after world-model and evidence-risk scoring",
     "validation_notes": [
-      "agent preferred action_hist_gradient_boosting_learning_rate-0p05_n_estimators-100"
+      "agent preferred action_svc_C-2p0_kernel-rbf_scale-True",
+      "safety selector chose a higher-scoring action after world-model and evidence-risk scoring"
     ]
   },
-  "research_hypothesis": "Testing a new model family can reveal whether the current best score depends on inductive bias.",
+  "research_hypothesis": "A prediction miss should trigger exploration of a different inductive bias.",
   "state_before": {
     "state_id": "state_005",
     "goal": "Maximize validation accuracy on sklearn digits under a small compute budget, while avoiding unsupported claims.",
@@ -136,23 +140,25 @@
       },
       {
         "run_id": "run_004",
-        "model": "random_forest",
-        "accuracy": 0.96,
-        "f1": 0.9597281558755765,
+        "model": "logistic_regression",
+        "accuracy": 0.9777777777777777,
+        "f1": 0.9778294499565325,
         "params": {
           "dataset": "digits",
-          "n_estimators": 100,
-          "max_depth": null
+          "scale": true,
+          "C": 1.0
         }
       }
     ],
     "budget_remaining": 3,
     "open_questions": [
       "Which candidate should receive the next compute budget?",
-      "Do apparent improvements survive an effect-vs-noise verifier?"
+      "Do apparent improvements survive an effect-vs-noise verifier?",
+      "What did the world model miss, and should the next action test that failure mode?"
     ],
     "risks_to_check": [
-      "single-run best score may not justify a scientific claim"
+      "single-run best score may not justify a scientific claim",
+      "world-model predictions may miss quantitative details"
     ],
     "top_model_summary": {
       "best_observed_model": null,
@@ -168,6 +174,17 @@
             "scale": true,
             "C": 0.5,
             "kernel": "rbf"
+          }
+        },
+        {
+          "run_id": "run_004",
+          "model": "logistic_regression",
+          "model_key": "logistic_regression_scaled_C=1.0",
+          "metric": 0.9777777777777777,
+          "params": {
+            "dataset": "digits",
+            "scale": true,
+            "C": 1.0
           }
         },
         {
@@ -190,17 +207,6 @@
             "dataset": "digits",
             "scale": false
           }
-        },
-        {
-          "run_id": "run_004",
-          "model": "random_forest",
-          "model_key": "random_forest_n=100",
-          "metric": 0.96,
-          "params": {
-            "dataset": "digits",
-            "n_estimators": 100,
-            "max_depth": null
-          }
         }
       ],
       "top_gap": null,
@@ -208,19 +214,9 @@
       "reason": "Need at least 5 single-run model results before top-model verification.",
       "verification_action_key": null
     },
-    "summary": "Task=digits_accuracy; dataset=digits; primary_metric=accuracy. Goal: Maximize validation accuracy on sklearn digits under a small compute budget, while avoiding unsupported claims.\nNo experiments have been run yet. Dataset: sklearn digits. Primary metric: accuracy; secondary metrics: f1.\nrun_001: logistic_regression actual=0.9622222222222222 status=success; prediction=accuracy around 0.90-0.97; recommendation=run; lesson=Prediction was broadly consistent with the real run.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_002: logistic_regression actual=0.9711111111111111 status=success; prediction=accuracy around 0.95-0.98; recommendation=run; lesson=Prediction was broadly consistent with the real run.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_003: svc actual=0.9777777777777777 status=success; prediction=accuracy around 0.90-0.99; recommendation=run; lesson=Prediction was broadly consistent with the real run.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_004: random_forest actual=0.96 status=success; prediction=accuracy around 0.90-0.98; recommendation=run; lesson=Prediction was broadly consistent with the real run.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option."
+    "summary": "Task=digits_accuracy; dataset=digits; primary_metric=accuracy. Goal: Maximize validation accuracy on sklearn digits under a small compute budget, while avoiding unsupported claims.\nNo experiments have been run yet. Dataset: sklearn digits. Primary metric: accuracy; secondary metrics: f1.\nrun_001: logistic_regression actual=0.9622222222222222 status=success; prediction=accuracy around 0.85-0.90; recommendation=modify; lesson=Run succeeded, but the prediction missed at least one quantitative detail.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_002: logistic_regression actual=0.9711111111111111 status=success; prediction=accuracy around 0.97-0.98; recommendation=run; lesson=Prediction was broadly consistent with the real run.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_003: svc actual=0.9777777777777777 status=success; prediction=accuracy around 0.97-0.98; recommendation=run; lesson=Prediction was broadly consistent with the real run.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_004: logistic_regression actual=0.9777777777777777 status=success; prediction=accuracy around 0.97-0.98; recommendation=run; lesson=Prediction was broadly consistent with the real run.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option."
   },
   "candidate_actions": [
-    {
-      "action_id": "action_logistic_regression_C-1p0_scale-True",
-      "command": "python experiments/train_sklearn.py --dataset digits --model logistic_regression --scale",
-      "model": "logistic_regression",
-      "params": {
-        "dataset": "digits",
-        "scale": true,
-        "C": 1.0
-      }
-    },
     {
       "action_id": "action_logistic_regression_C-10p0_scale-True",
       "command": "python experiments/train_sklearn.py --dataset digits --model logistic_regression --scale --C 10.0",
@@ -251,6 +247,66 @@
         "scale": true,
         "C": 5.0,
         "kernel": "rbf"
+      }
+    },
+    {
+      "action_id": "action_random_forest_n_estimators-100",
+      "command": "python experiments/train_sklearn.py --dataset digits --model random_forest --n-estimators 100",
+      "model": "random_forest",
+      "params": {
+        "dataset": "digits",
+        "n_estimators": 100,
+        "max_depth": null
+      }
+    },
+    {
+      "action_id": "action_random_forest_max_depth-4_n_estimators-100",
+      "command": "python experiments/train_sklearn.py --dataset digits --model random_forest --n-estimators 100 --max-depth 4",
+      "model": "random_forest",
+      "params": {
+        "dataset": "digits",
+        "n_estimators": 100,
+        "max_depth": 4
+      }
+    },
+    {
+      "action_id": "action_random_forest_max_depth-8_n_estimators-100",
+      "command": "python experiments/train_sklearn.py --dataset digits --model random_forest --n-estimators 100 --max-depth 8",
+      "model": "random_forest",
+      "params": {
+        "dataset": "digits",
+        "n_estimators": 100,
+        "max_depth": 8
+      }
+    },
+    {
+      "action_id": "action_random_forest_n_estimators-300",
+      "command": "python experiments/train_sklearn.py --dataset digits --model random_forest --n-estimators 300",
+      "model": "random_forest",
+      "params": {
+        "dataset": "digits",
+        "n_estimators": 300,
+        "max_depth": null
+      }
+    },
+    {
+      "action_id": "action_random_forest_max_depth-4_n_estimators-300",
+      "command": "python experiments/train_sklearn.py --dataset digits --model random_forest --n-estimators 300 --max-depth 4",
+      "model": "random_forest",
+      "params": {
+        "dataset": "digits",
+        "n_estimators": 300,
+        "max_depth": 4
+      }
+    },
+    {
+      "action_id": "action_random_forest_max_depth-8_n_estimators-300",
+      "command": "python experiments/train_sklearn.py --dataset digits --model random_forest --n-estimators 300 --max-depth 8",
+      "model": "random_forest",
+      "params": {
+        "dataset": "digits",
+        "n_estimators": 300,
+        "max_depth": 8
       }
     },
     {
@@ -285,88 +341,9 @@
         "learning_rate": 0.08,
         "max_depth": null
       }
-    },
-    {
-      "action_id": "action_hist_gradient_boosting_learning_rate-0p08_max_depth-8_n_estimators-100",
-      "command": "python experiments/train_sklearn.py --dataset digits --model hist_gradient_boosting --n-estimators 100 --learning-rate 0.08 --max-depth 8",
-      "model": "hist_gradient_boosting",
-      "params": {
-        "dataset": "digits",
-        "n_estimators": 100,
-        "learning_rate": 0.08,
-        "max_depth": 8
-      }
-    },
-    {
-      "action_id": "action_hist_gradient_boosting_learning_rate-0p05_n_estimators-150",
-      "command": "python experiments/train_sklearn.py --dataset digits --model hist_gradient_boosting --n-estimators 150 --learning-rate 0.05",
-      "model": "hist_gradient_boosting",
-      "params": {
-        "dataset": "digits",
-        "n_estimators": 150,
-        "learning_rate": 0.05,
-        "max_depth": null
-      }
-    },
-    {
-      "action_id": "action_hist_gradient_boosting_learning_rate-0p05_max_depth-8_n_estimators-150",
-      "command": "python experiments/train_sklearn.py --dataset digits --model hist_gradient_boosting --n-estimators 150 --learning-rate 0.05 --max-depth 8",
-      "model": "hist_gradient_boosting",
-      "params": {
-        "dataset": "digits",
-        "n_estimators": 150,
-        "learning_rate": 0.05,
-        "max_depth": 8
-      }
-    },
-    {
-      "action_id": "action_hist_gradient_boosting_learning_rate-0p08_n_estimators-150",
-      "command": "python experiments/train_sklearn.py --dataset digits --model hist_gradient_boosting --n-estimators 150 --learning-rate 0.08",
-      "model": "hist_gradient_boosting",
-      "params": {
-        "dataset": "digits",
-        "n_estimators": 150,
-        "learning_rate": 0.08,
-        "max_depth": null
-      }
-    },
-    {
-      "action_id": "action_hist_gradient_boosting_learning_rate-0p08_max_depth-8_n_estimators-150",
-      "command": "python experiments/train_sklearn.py --dataset digits --model hist_gradient_boosting --n-estimators 150 --learning-rate 0.08 --max-depth 8",
-      "model": "hist_gradient_boosting",
-      "params": {
-        "dataset": "digits",
-        "n_estimators": 150,
-        "learning_rate": 0.08,
-        "max_depth": 8
-      }
     }
   ],
   "candidate_predictions": [
-    {
-      "action": {
-        "action_id": "action_logistic_regression_C-1p0_scale-True",
-        "command": "python experiments/train_sklearn.py --dataset digits --model logistic_regression --scale",
-        "model": "logistic_regression",
-        "params": {
-          "dataset": "digits",
-          "scale": true,
-          "C": 1.0
-        }
-      },
-      "prediction": {
-        "expected_metric": "accuracy around 0.95-0.98",
-        "expected_runtime_seconds": "under 5",
-        "risks": [
-          "minor convergence warning possible"
-        ],
-        "recommendation": "run",
-        "rationale": "Scaling usually helps logistic regression on tabular numeric features.",
-        "action_specific_signal": "Feature scaling is the direct intervention for a linear model after an unscaled baseline.",
-        "claim_risk": "Single-run best score should not be claimed as robust without repeated seeds."
-      },
-      "source": "heuristic_fallback"
-    },
     {
       "action": {
         "action_id": "action_logistic_regression_C-10p0_scale-True",
@@ -379,17 +356,19 @@
         }
       },
       "prediction": {
-        "expected_metric": "accuracy around 0.95-0.98",
+        "expected_metric": "accuracy around 0.977-0.98",
         "expected_runtime_seconds": "under 5",
         "risks": [
-          "minor convergence warning possible"
+          "single-run best score may not justify a scientific claim",
+          "small-dataset variance could overstate a model win",
+          "robustness sweeps required before strong claims"
         ],
         "recommendation": "run",
-        "rationale": "Scaling usually helps logistic regression on tabular numeric features.",
-        "action_specific_signal": "Feature scaling is the direct intervention for a linear model after an unscaled baseline.",
-        "claim_risk": "Single-run best score should not be claimed as robust without repeated seeds."
+        "rationale": "The proposed logistic regression with scaling and C=10.0 is a natural extension of the successful scaled logistic regression runs (C=0.1 and C=1.0) that achieved ~0.9777 accuracy. Given the digits dataset characteristics and previous results, this configuration should perform similarly well. However, single-run results on this small dataset may not justify strong scientific claims without robustness verification across multiple seeds.",
+        "action_specific_signal": "feature scaling is relevant for logistic regression and this action includes it; previous scaled logistic regression runs achieved 0.9777 accuracy with C=1.0",
+        "claim_risk": "single-run best score may not justify a scientific claim without effect-vs-noise verification across seeds"
       },
-      "source": "heuristic_fallback"
+      "source": "qwen_agentworld"
     },
     {
       "action": {
@@ -404,17 +383,19 @@
         }
       },
       "prediction": {
-        "expected_metric": "accuracy around 0.90-0.99",
-        "expected_runtime_seconds": "under 10",
+        "expected_metric": "accuracy around 0.97-0.98",
+        "expected_runtime_seconds": "under 5",
         "risks": [
-          "sensitive to scaling and C"
+          "single-run best score may not justify a scientific claim",
+          "small-dataset variance could overstate a model win",
+          "robustness sweeps required before strong claims"
         ],
         "recommendation": "run",
-        "rationale": "Scaled SVC can be strong on small numeric classification tasks but needs careful comparison.",
-        "action_specific_signal": "SVC tests a margin-based nonlinear hypothesis after linear/tree baselines.",
-        "claim_risk": "SVC should not be declared best without repeated-seed evidence."
+        "rationale": "The proposed action tests SVC with C=2.0 and RBF kernel on scaled digits data, which is consistent with the candidate space and previous successful SVC run (C=0.5, accuracy 0.9778). Given the small dataset and single-run nature, robustness verification across seeds is needed before claiming superiority over logistic regression with C=1.0 (also 0.9778).",
+        "action_specific_signal": "SVC with RBF kernel and scaling is competitive on digits; C=2.0 may yield similar or slightly better accuracy than C=0.5, but variance across seeds should be checked.",
+        "claim_risk": "single-run best score may not justify a scientific claim without repeated seeds or robustness sweeps"
       },
-      "source": "heuristic_fallback"
+      "source": "qwen_agentworld"
     },
     {
       "action": {
@@ -429,17 +410,170 @@
         }
       },
       "prediction": {
-        "expected_metric": "accuracy around 0.90-0.99",
-        "expected_runtime_seconds": "under 10",
+        "expected_metric": "accuracy around 0.97-0.98",
+        "expected_runtime_seconds": "under 5",
         "risks": [
-          "sensitive to scaling and C"
+          "single-run best score may not justify a scientific claim",
+          "SVC performance can vary with C and requires robustness sweeps across seeds before claiming superiority",
+          "label-noise sweeps test claim robustness, not leaderboard performance"
         ],
         "recommendation": "run",
-        "rationale": "Scaled SVC can be strong on small numeric classification tasks but needs careful comparison.",
-        "action_specific_signal": "SVC tests a margin-based nonlinear hypothesis after linear/tree baselines.",
-        "claim_risk": "SVC should not be declared best without repeated-seed evidence."
+        "rationale": "The proposed action tests SVC with C=5.0 and RBF kernel on scaled digits data. Given that SVC with C=0.5 achieved 0.9777 accuracy and logistic regression with C=1.0 also achieved 0.9777, this C=5.0 configuration is likely to yield similar or slightly lower accuracy due to potential overfitting with higher C values. However, robustness verification across multiple seeds is still needed before making strong claims about model superiority.",
+        "action_specific_signal": "SVC with RBF kernel and scaling is competitive on digits; higher C values may not improve and could reduce generalization",
+        "claim_risk": "single-run best score may not justify a scientific claim without robustness verification across seeds"
       },
-      "source": "heuristic_fallback"
+      "source": "qwen_agentworld"
+    },
+    {
+      "action": {
+        "action_id": "action_random_forest_n_estimators-100",
+        "command": "python experiments/train_sklearn.py --dataset digits --model random_forest --n-estimators 100",
+        "model": "random_forest",
+        "params": {
+          "dataset": "digits",
+          "n_estimators": 100,
+          "max_depth": null
+        }
+      },
+      "prediction": {
+        "expected_metric": "accuracy around 0.97-0.98",
+        "expected_runtime_seconds": "under 5",
+        "risks": [
+          "small-dataset variance for a single split could overstate a model win",
+          "tree ensembles may show overfitting or variance on small datasets"
+        ],
+        "recommendation": "run",
+        "rationale": "Random forest with 100 estimators and no max depth is expected to achieve accuracy around 0.97-0.98 on the digits dataset, consistent with other top models. However, small-dataset variance means a single split could overstate its performance relative to SVC or logistic regression, and tree ensembles may exhibit overfitting or variance. A robustness sweep across seeds would be needed before claiming superiority.",
+        "action_specific_signal": "Random forest with n_estimators=100 and max_depth=null is competitive but may show variance; single-run score should be verified with repeated seeds.",
+        "claim_risk": "single-run best score may not justify a scientific claim without robustness verification across seeds"
+      },
+      "source": "qwen_agentworld"
+    },
+    {
+      "action": {
+        "action_id": "action_random_forest_max_depth-4_n_estimators-100",
+        "command": "python experiments/train_sklearn.py --dataset digits --model random_forest --n-estimators 100 --max-depth 4",
+        "model": "random_forest",
+        "params": {
+          "dataset": "digits",
+          "n_estimators": 100,
+          "max_depth": 4
+        }
+      },
+      "prediction": {
+        "expected_metric": "accuracy around 0.96-0.97",
+        "expected_runtime_seconds": "under 5",
+        "risks": [
+          "single-run best score may not justify a scientific claim",
+          "small-dataset variance for a single split could overstate a model win",
+          "tree ensembles can overfit or show variance on small splits"
+        ],
+        "recommendation": "run",
+        "rationale": "Random forest with n_estimators=100 and max_depth=4 is a reasonable candidate to test against the current top scores (~0.9778). However, single-run results on the digits dataset may exhibit variance, and tree ensembles can show overfitting or split-dependent variance. A robustness sweep across seeds would be needed before claiming superiority over SVC or logistic regression.",
+        "action_specific_signal": "Random forest with max_depth=4 and 100 estimators typically achieves strong but not state-of-the-art accuracy on digits; expect performance near the upper 0.96–0.97 range, potentially slightly below the best logistic regression and SVC runs.",
+        "claim_risk": "single-run best score may not justify a scientific claim without seed robustness verification"
+      },
+      "source": "qwen_agentworld"
+    },
+    {
+      "action": {
+        "action_id": "action_random_forest_max_depth-8_n_estimators-100",
+        "command": "python experiments/train_sklearn.py --dataset digits --model random_forest --n-estimators 100 --max-depth 8",
+        "model": "random_forest",
+        "params": {
+          "dataset": "digits",
+          "n_estimators": 100,
+          "max_depth": 8
+        }
+      },
+      "prediction": {
+        "expected_metric": "accuracy around 0.96-0.98",
+        "expected_runtime_seconds": "under 5",
+        "risks": [
+          "small-dataset variance for a single split may overstate a model win",
+          "tree ensembles can overfit on small datasets, leading to variance across seeds"
+        ],
+        "recommendation": "run",
+        "rationale": "The random forest with n_estimators=100 and max_depth=8 is a reasonable candidate to test against the current top models (svc and logistic regression at ~0.9778). However, due to the small dataset and potential for overfitting or variance in tree ensembles, robustness sweeps across seeds should be considered before making strong claims about its performance relative to the top models.",
+        "action_specific_signal": "random_forest with max_depth=8 and n_estimators=100 is expected to perform competitively but may show variance across different data splits or seeds.",
+        "claim_risk": "single-run best score may not justify a scientific claim without robustness verification across seeds"
+      },
+      "source": "qwen_agentworld"
+    },
+    {
+      "action": {
+        "action_id": "action_random_forest_n_estimators-300",
+        "command": "python experiments/train_sklearn.py --dataset digits --model random_forest --n-estimators 300",
+        "model": "random_forest",
+        "params": {
+          "dataset": "digits",
+          "n_estimators": 300,
+          "max_depth": null
+        }
+      },
+      "prediction": {
+        "expected_metric": "accuracy around 0.97-0.98",
+        "expected_runtime_seconds": "under 5",
+        "risks": [
+          "small-dataset variance for a single split could overstate a model win",
+          "tree ensembles may show slight overfitting or variance on small datasets"
+        ],
+        "recommendation": "run",
+        "rationale": "Random forest with 300 estimators and no max depth is a strong baseline for the digits dataset and should achieve accuracy in the 0.97-0.98 range, consistent with other top models. However, a single split may overstate performance due to small-dataset variance, and tree ensembles can exhibit slight overfitting or variance on this dataset.",
+        "action_specific_signal": "random_forest with n_estimators=300 and max_depth=null is expected to be competitive with svc and logistic_regression on digits, but robustness sweeps across seeds are recommended before claiming superiority.",
+        "claim_risk": "single-run best score may not justify a scientific claim without repeated seeds or robustness verification"
+      },
+      "source": "qwen_agentworld"
+    },
+    {
+      "action": {
+        "action_id": "action_random_forest_max_depth-4_n_estimators-300",
+        "command": "python experiments/train_sklearn.py --dataset digits --model random_forest --n-estimators 300 --max-depth 4",
+        "model": "random_forest",
+        "params": {
+          "dataset": "digits",
+          "n_estimators": 300,
+          "max_depth": 4
+        }
+      },
+      "prediction": {
+        "expected_metric": "accuracy around 0.97-0.98",
+        "expected_runtime_seconds": "under 5",
+        "risks": [
+          "small-dataset variance for a single split could overstate a model win",
+          "tree ensembles may show slight overfitting or variance across seeds"
+        ],
+        "recommendation": "run",
+        "rationale": "The random forest with n_estimators=300 and max_depth=4 is a strong candidate on the digits dataset and is expected to achieve accuracy in the 0.97-0.98 range, consistent with other top models like SVC and logistic regression with scaling. However, due to the small dataset and single-run nature, variance across seeds should be checked before making strong claims.",
+        "action_specific_signal": "Random forest with max_depth=4 and 300 estimators typically captures non-linear patterns well on digits, but robustness sweeps across seeds are recommended to confirm stability.",
+        "claim_risk": "single-run best score may not justify a scientific claim without robustness verification across seeds"
+      },
+      "source": "qwen_agentworld"
+    },
+    {
+      "action": {
+        "action_id": "action_random_forest_max_depth-8_n_estimators-300",
+        "command": "python experiments/train_sklearn.py --dataset digits --model random_forest --n-estimators 300 --max-depth 8",
+        "model": "random_forest",
+        "params": {
+          "dataset": "digits",
+          "n_estimators": 300,
+          "max_depth": 8
+        }
+      },
+      "prediction": {
+        "expected_metric": "accuracy around 0.97-0.98",
+        "expected_runtime_seconds": "under 10",
+        "risks": [
+          "small-dataset variance for a single split could overstate a model win",
+          "tree ensembles may show overfitting or variance on small datasets"
+        ],
+        "recommendation": "run",
+        "rationale": "The random forest with n_estimators=300 and max_depth=8 is a strong candidate that has not been evaluated yet. Given the digits dataset's 64 numeric pixel features and the goal to maximize validation accuracy, this configuration is likely to achieve accuracy in the 0.97-0.98 range, consistent with other top-performing models like SVC and logistic regression with scaling. However, small-dataset variance for a single split could overstate a model win, and tree ensembles may show overfitting or variance on small datasets, so robustness sweeps before strong claims are recommended when a high single-run score exists.",
+        "action_specific_signal": "random_forest with n_estimators=300 and max_depth=8 is expected to be competitive with svc and logistic_regression on the digits dataset, but single-run results should be verified with repeated seeds to ensure robustness.",
+        "claim_risk": "single-run best score may not justify a scientific claim without robustness verification across seeds"
+      },
+      "source": "qwen_agentworld"
     },
     {
       "action": {
@@ -454,17 +588,19 @@
         }
       },
       "prediction": {
-        "expected_metric": "accuracy around 0.90-0.98",
-        "expected_runtime_seconds": "under 15",
+        "expected_metric": "accuracy around 0.97-0.98",
+        "expected_runtime_seconds": "under 5",
         "risks": [
-          "can overfit with too many estimators"
+          "single-run best score may not justify a scientific claim",
+          "hist_gradient_boosting may overfit or show variance on small splits",
+          "robustness sweeps required before claiming superiority over svc or logistic_regression"
         ],
         "recommendation": "run",
-        "rationale": "Boosting is a useful late comparison when linear and bagged-tree baselines are known.",
-        "action_specific_signal": "Use boosting to test a staged-tree alternative under the remaining budget.",
-        "claim_risk": "Do not report a robust winner from one boosted run."
+        "rationale": "The hist_gradient_boosting model with n_estimators=100 and learning_rate=0.05 is a reasonable candidate to explore after logistic_regression and svc achieved ~0.9777 accuracy. Given the digits dataset's structure and the model's capacity, we expect competitive performance. However, single-run results for tree ensembles can be sensitive to split variance, and robustness verification across seeds is needed before claiming superiority.",
+        "action_specific_signal": "hist_gradient_boosting with low learning rate and moderate n_estimators typically achieves strong accuracy on digits but may require seed robustness checks to confirm stability against svc and logistic_regression.",
+        "claim_risk": "high_single_run_score_without_seed_robustness"
       },
-      "source": "heuristic_fallback"
+      "source": "qwen_agentworld"
     },
     {
       "action": {
@@ -479,17 +615,19 @@
         }
       },
       "prediction": {
-        "expected_metric": "accuracy around 0.90-0.98",
-        "expected_runtime_seconds": "under 15",
+        "expected_metric": "accuracy around 0.97-0.98",
+        "expected_runtime_seconds": "under 5",
         "risks": [
-          "can overfit with too many estimators"
+          "small-dataset variance for a single split may overstate a model win",
+          "tree ensembles like hist_gradient_boosting can show overfitting or variance on small datasets",
+          "robustness sweeps before strong claims when a high single-run score exists"
         ],
         "recommendation": "run",
-        "rationale": "Boosting is a useful late comparison when linear and bagged-tree baselines are known.",
-        "action_specific_signal": "Use boosting to test a staged-tree alternative under the remaining budget.",
-        "claim_risk": "Do not report a robust winner from one boosted run."
+        "rationale": "The hist_gradient_boosting model with the given parameters is expected to achieve high accuracy on the digits dataset, similar to the top-performing logistic_regression and svc models. However, due to the small dataset and single split, there is a risk of overestimating performance due to variance. A robustness sweep across seeds is recommended before making strong claims about its superiority.",
+        "action_specific_signal": "hist_gradient_boosting with learning_rate=0.05 and max_depth=8 is expected to perform competitively, but variance across seeds should be checked.",
+        "claim_risk": "single-run best score may not justify a scientific claim without robustness verification"
       },
-      "source": "heuristic_fallback"
+      "source": "qwen_agentworld"
     },
     {
       "action": {
@@ -504,208 +642,84 @@
         }
       },
       "prediction": {
-        "expected_metric": "accuracy around 0.90-0.98",
-        "expected_runtime_seconds": "under 15",
+        "expected_metric": "accuracy around 0.975-0.985",
+        "expected_runtime_seconds": "under 5",
         "risks": [
-          "can overfit with too many estimators"
+          "hist_gradient_boosting may overfit on small datasets without careful depth/learning-rate tuning",
+          "single-run best score may not justify a scientific claim",
+          "robustness sweeps required before claiming superiority over svc/logistic_regression"
         ],
         "recommendation": "run",
-        "rationale": "Boosting is a useful late comparison when linear and bagged-tree baselines are known.",
-        "action_specific_signal": "Use boosting to test a staged-tree alternative under the remaining budget.",
-        "claim_risk": "Do not report a robust winner from one boosted run."
+        "rationale": "The hist_gradient_boosting model with n_estimators=100 and learning_rate=0.08 is expected to achieve high accuracy on the digits dataset, potentially matching or slightly exceeding the current best of 0.9777. However, tree ensembles can exhibit variance on small datasets, and a single run may overstate performance. Robustness verification across seeds is recommended before making strong claims.",
+        "action_specific_signal": "hist_gradient_boosting with learning_rate=0.08 and n_estimators=100 typically achieves strong performance on image-feature classification tasks like digits, but may require depth constraints to avoid overfitting.",
+        "claim_risk": "single-run best score may not justify a scientific claim without repeated seeds or robustness verification"
       },
-      "source": "heuristic_fallback"
-    },
-    {
-      "action": {
-        "action_id": "action_hist_gradient_boosting_learning_rate-0p08_max_depth-8_n_estimators-100",
-        "command": "python experiments/train_sklearn.py --dataset digits --model hist_gradient_boosting --n-estimators 100 --learning-rate 0.08 --max-depth 8",
-        "model": "hist_gradient_boosting",
-        "params": {
-          "dataset": "digits",
-          "n_estimators": 100,
-          "learning_rate": 0.08,
-          "max_depth": 8
-        }
-      },
-      "prediction": {
-        "expected_metric": "accuracy around 0.90-0.98",
-        "expected_runtime_seconds": "under 15",
-        "risks": [
-          "can overfit with too many estimators"
-        ],
-        "recommendation": "run",
-        "rationale": "Boosting is a useful late comparison when linear and bagged-tree baselines are known.",
-        "action_specific_signal": "Use boosting to test a staged-tree alternative under the remaining budget.",
-        "claim_risk": "Do not report a robust winner from one boosted run."
-      },
-      "source": "heuristic_fallback"
-    },
-    {
-      "action": {
-        "action_id": "action_hist_gradient_boosting_learning_rate-0p05_n_estimators-150",
-        "command": "python experiments/train_sklearn.py --dataset digits --model hist_gradient_boosting --n-estimators 150 --learning-rate 0.05",
-        "model": "hist_gradient_boosting",
-        "params": {
-          "dataset": "digits",
-          "n_estimators": 150,
-          "learning_rate": 0.05,
-          "max_depth": null
-        }
-      },
-      "prediction": {
-        "expected_metric": "accuracy around 0.90-0.98",
-        "expected_runtime_seconds": "under 15",
-        "risks": [
-          "can overfit with too many estimators"
-        ],
-        "recommendation": "run",
-        "rationale": "Boosting is a useful late comparison when linear and bagged-tree baselines are known.",
-        "action_specific_signal": "Use boosting to test a staged-tree alternative under the remaining budget.",
-        "claim_risk": "Do not report a robust winner from one boosted run."
-      },
-      "source": "heuristic_fallback"
-    },
-    {
-      "action": {
-        "action_id": "action_hist_gradient_boosting_learning_rate-0p05_max_depth-8_n_estimators-150",
-        "command": "python experiments/train_sklearn.py --dataset digits --model hist_gradient_boosting --n-estimators 150 --learning-rate 0.05 --max-depth 8",
-        "model": "hist_gradient_boosting",
-        "params": {
-          "dataset": "digits",
-          "n_estimators": 150,
-          "learning_rate": 0.05,
-          "max_depth": 8
-        }
-      },
-      "prediction": {
-        "expected_metric": "accuracy around 0.90-0.98",
-        "expected_runtime_seconds": "under 15",
-        "risks": [
-          "can overfit with too many estimators"
-        ],
-        "recommendation": "run",
-        "rationale": "Boosting is a useful late comparison when linear and bagged-tree baselines are known.",
-        "action_specific_signal": "Use boosting to test a staged-tree alternative under the remaining budget.",
-        "claim_risk": "Do not report a robust winner from one boosted run."
-      },
-      "source": "heuristic_fallback"
-    },
-    {
-      "action": {
-        "action_id": "action_hist_gradient_boosting_learning_rate-0p08_n_estimators-150",
-        "command": "python experiments/train_sklearn.py --dataset digits --model hist_gradient_boosting --n-estimators 150 --learning-rate 0.08",
-        "model": "hist_gradient_boosting",
-        "params": {
-          "dataset": "digits",
-          "n_estimators": 150,
-          "learning_rate": 0.08,
-          "max_depth": null
-        }
-      },
-      "prediction": {
-        "expected_metric": "accuracy around 0.90-0.98",
-        "expected_runtime_seconds": "under 15",
-        "risks": [
-          "can overfit with too many estimators"
-        ],
-        "recommendation": "run",
-        "rationale": "Boosting is a useful late comparison when linear and bagged-tree baselines are known.",
-        "action_specific_signal": "Use boosting to test a staged-tree alternative under the remaining budget.",
-        "claim_risk": "Do not report a robust winner from one boosted run."
-      },
-      "source": "heuristic_fallback"
-    },
-    {
-      "action": {
-        "action_id": "action_hist_gradient_boosting_learning_rate-0p08_max_depth-8_n_estimators-150",
-        "command": "python experiments/train_sklearn.py --dataset digits --model hist_gradient_boosting --n-estimators 150 --learning-rate 0.08 --max-depth 8",
-        "model": "hist_gradient_boosting",
-        "params": {
-          "dataset": "digits",
-          "n_estimators": 150,
-          "learning_rate": 0.08,
-          "max_depth": 8
-        }
-      },
-      "prediction": {
-        "expected_metric": "accuracy around 0.90-0.98",
-        "expected_runtime_seconds": "under 15",
-        "risks": [
-          "can overfit with too many estimators"
-        ],
-        "recommendation": "run",
-        "rationale": "Boosting is a useful late comparison when linear and bagged-tree baselines are known.",
-        "action_specific_signal": "Use boosting to test a staged-tree alternative under the remaining budget.",
-        "claim_risk": "Do not report a robust winner from one boosted run."
-      },
-      "source": "heuristic_fallback"
+      "source": "qwen_agentworld"
     }
   ],
   "selected_action": {
-    "action_id": "action_hist_gradient_boosting_learning_rate-0p05_n_estimators-100",
-    "command": "python experiments/train_sklearn.py --dataset digits --model hist_gradient_boosting --n-estimators 100 --learning-rate 0.05",
-    "model": "hist_gradient_boosting",
+    "action_id": "action_logistic_regression_C-10p0_scale-True",
+    "command": "python experiments/train_sklearn.py --dataset digits --model logistic_regression --scale --C 10.0",
+    "model": "logistic_regression",
     "params": {
       "dataset": "digits",
-      "n_estimators": 100,
-      "learning_rate": 0.05,
-      "max_depth": null
+      "scale": true,
+      "C": 10.0
     }
   },
   "decision_trace": {
     "selected_action": {
-      "action_id": "action_hist_gradient_boosting_learning_rate-0p05_n_estimators-100",
-      "command": "python experiments/train_sklearn.py --dataset digits --model hist_gradient_boosting --n-estimators 100 --learning-rate 0.05",
-      "model": "hist_gradient_boosting",
+      "action_id": "action_logistic_regression_C-10p0_scale-True",
+      "command": "python experiments/train_sklearn.py --dataset digits --model logistic_regression --scale --C 10.0",
+      "model": "logistic_regression",
       "params": {
         "dataset": "digits",
-        "n_estimators": 100,
-        "learning_rate": 0.05,
-        "max_depth": null
+        "scale": true,
+        "C": 10.0
       }
     },
-    "agent_signal_used": true,
+    "agent_signal_used": false,
     "world_model_signal_used": true,
     "selector_policy_signal_used": true,
     "causal_signal_type": "mixed",
     "observed_state_signal": "Need at least 5 single-run model results before top-model verification.",
-    "world_model_signal": "prediction contained an action-specific research signal; world model predicted overfitting risk",
-    "selector_policy_signal": "agent preferred action accepted into safety scoring; new model family increases search coverage",
-    "selected_score": 86.0,
+    "world_model_signal": "prediction contained an action-specific research signal",
+    "selector_policy_signal": "after an unscaled logistic baseline, scaling is the direct intervention to test",
+    "selected_score": 71.0,
     "score_breakdown": {
-      "expected_gain": 0.0,
+      "expected_gain": 45.0,
       "uncertainty": 0.0,
-      "novelty": 18.0,
+      "novelty": 0.0,
       "verification_value": 0.0,
       "qwen_signal": 30.0,
-      "redundancy_penalty": 0.0,
-      "compute_cost_penalty": -4.0,
+      "redundancy_penalty": -12.0,
+      "compute_cost_penalty": 0.0,
       "unsupported_claim_risk": 0.0,
-      "agent_preference": 42.0
+      "agent_preference": 8.0
     },
-    "qwen_suggested_action": "action_hist_gradient_boosting_learning_rate-0p05_n_estimators-100",
+    "qwen_suggested_action": "action_logistic_regression_C-10p0_scale-True",
     "catalog_validation": "accepted",
-    "agent_rationale": "Given state state_005 with budget_remaining=3, the planner chooses action_hist_gradient_boosting_learning_rate-0p05_n_estimators-100 to collect the most decision-relevant evidence.",
-    "preferred_action_id": "action_hist_gradient_boosting_learning_rate-0p05_n_estimators-100",
-    "selection_overrode_agent": false,
-    "override_reason": null,
-    "causal_reason": "Selected hist_gradient_boosting because score=86.0; autoresearch agent preferred this catalog action; world model recommended run; new model family increases search coverage; world model predicted overfitting risk. Agent hypothesis: Testing a new model family can reveal whether the current best score depends on inductive bias.. World model predicted accuracy around 0.90-0.98, runtime under 15, recommendation=run, risks=can overfit with too many estimators. Causal signal type: mixed.",
+    "agent_rationale": "Given state state_005 with budget_remaining=3, the planner chooses action_svc_C-2p0_kernel-rbf_scale-True to collect the most decision-relevant evidence.",
+    "preferred_action_id": "action_svc_C-2p0_kernel-rbf_scale-True",
+    "selection_overrode_agent": true,
+    "override_reason": "safety selector chose a higher-scoring action after world-model and evidence-risk scoring",
+    "causal_reason": "Selected logistic_regression because score=71.0; autoresearch agent included this action in its candidate shortlist; world model recommended run; candidate is a variant of an already tested family; after an unscaled logistic baseline, scaling is the direct world-model intervention to test. Agent hypothesis: A prediction miss should trigger exploration of a different inductive bias.. World model predicted accuracy around 0.977-0.98, runtime under 5, recommendation=run, risks=single-run best score may not justify a scientific claim, small-dataset variance could overstate a model win, robustness sweeps required before strong claims. Causal signal type: mixed.",
     "rejected_candidates": [
       {
         "action": {
-          "action_id": "action_logistic_regression_C-1p0_scale-True",
-          "command": "python experiments/train_sklearn.py --dataset digits --model logistic_regression --scale",
-          "model": "logistic_regression",
+          "action_id": "action_svc_C-2p0_kernel-rbf_scale-True",
+          "command": "python experiments/train_sklearn.py --dataset digits --model svc --scale --C 2.0 --kernel rbf",
+          "model": "svc",
           "params": {
             "dataset": "digits",
             "scale": true,
-            "C": 1.0
+            "C": 2.0,
+            "kernel": "rbf"
           }
         },
-        "reason": "score=71.0; autoresearch agent included this action in its candidate shortlist; world model recommended run; candidate is a variant of an already tested family; after an unscaled logistic baseline, scaling is the direct world-model intervention to test",
+        "reason": "score=60.0; autoresearch agent preferred this catalog action; world model recommended run; candidate is a variant of an already tested family",
         "score_breakdown": {
-          "expected_gain": 45.0,
+          "expected_gain": 0.0,
           "uncertainty": 0.0,
           "novelty": 0.0,
           "verification_value": 0.0,
@@ -713,42 +727,65 @@
           "redundancy_penalty": -12.0,
           "compute_cost_penalty": 0.0,
           "unsupported_claim_risk": 0.0,
-          "agent_preference": 8.0
+          "agent_preference": 42.0
         }
       },
       {
         "action": {
-          "action_id": "action_logistic_regression_C-10p0_scale-True",
-          "command": "python experiments/train_sklearn.py --dataset digits --model logistic_regression --scale --C 10.0",
-          "model": "logistic_regression",
-          "params": {
-            "dataset": "digits",
-            "scale": true,
-            "C": 10.0
-          }
-        },
-        "reason": "score=71.0; autoresearch agent included this action in its candidate shortlist; world model recommended run; candidate is a variant of an already tested family; after an unscaled logistic baseline, scaling is the direct world-model intervention to test",
-        "score_breakdown": {
-          "expected_gain": 45.0,
-          "uncertainty": 0.0,
-          "novelty": 0.0,
-          "verification_value": 0.0,
-          "qwen_signal": 30.0,
-          "redundancy_penalty": -12.0,
-          "compute_cost_penalty": 0.0,
-          "unsupported_claim_risk": 0.0,
-          "agent_preference": 8.0
-        }
-      },
-      {
-        "action": {
-          "action_id": "action_hist_gradient_boosting_learning_rate-0p05_max_depth-8_n_estimators-100",
-          "command": "python experiments/train_sklearn.py --dataset digits --model hist_gradient_boosting --n-estimators 100 --learning-rate 0.05 --max-depth 8",
-          "model": "hist_gradient_boosting",
+          "action_id": "action_random_forest_n_estimators-100",
+          "command": "python experiments/train_sklearn.py --dataset digits --model random_forest --n-estimators 100",
+          "model": "random_forest",
           "params": {
             "dataset": "digits",
             "n_estimators": 100,
-            "learning_rate": 0.05,
+            "max_depth": null
+          }
+        },
+        "reason": "score=52.0; autoresearch agent included this action in its candidate shortlist; world model recommended run; new model family increases search coverage; world model predicted overfitting risk",
+        "score_breakdown": {
+          "expected_gain": 0.0,
+          "uncertainty": 0.0,
+          "novelty": 18.0,
+          "verification_value": 0.0,
+          "qwen_signal": 30.0,
+          "redundancy_penalty": 0.0,
+          "compute_cost_penalty": -4.0,
+          "unsupported_claim_risk": 0.0,
+          "agent_preference": 8.0
+        }
+      },
+      {
+        "action": {
+          "action_id": "action_random_forest_max_depth-4_n_estimators-100",
+          "command": "python experiments/train_sklearn.py --dataset digits --model random_forest --n-estimators 100 --max-depth 4",
+          "model": "random_forest",
+          "params": {
+            "dataset": "digits",
+            "n_estimators": 100,
+            "max_depth": 4
+          }
+        },
+        "reason": "score=52.0; autoresearch agent included this action in its candidate shortlist; world model recommended run; new model family increases search coverage; world model predicted overfitting risk",
+        "score_breakdown": {
+          "expected_gain": 0.0,
+          "uncertainty": 0.0,
+          "novelty": 18.0,
+          "verification_value": 0.0,
+          "qwen_signal": 30.0,
+          "redundancy_penalty": 0.0,
+          "compute_cost_penalty": -4.0,
+          "unsupported_claim_risk": 0.0,
+          "agent_preference": 8.0
+        }
+      },
+      {
+        "action": {
+          "action_id": "action_random_forest_max_depth-8_n_estimators-100",
+          "command": "python experiments/train_sklearn.py --dataset digits --model random_forest --n-estimators 100 --max-depth 8",
+          "model": "random_forest",
+          "params": {
+            "dataset": "digits",
+            "n_estimators": 100,
             "max_depth": 8
           }
         },
@@ -763,6 +800,128 @@
           "compute_cost_penalty": -4.0,
           "unsupported_claim_risk": 0.0,
           "agent_preference": 8.0
+        }
+      },
+      {
+        "action": {
+          "action_id": "action_random_forest_n_estimators-300",
+          "command": "python experiments/train_sklearn.py --dataset digits --model random_forest --n-estimators 300",
+          "model": "random_forest",
+          "params": {
+            "dataset": "digits",
+            "n_estimators": 300,
+            "max_depth": null
+          }
+        },
+        "reason": "score=44.0; world model recommended run; new model family increases search coverage; world model predicted overfitting risk",
+        "score_breakdown": {
+          "expected_gain": 0.0,
+          "uncertainty": 0.0,
+          "novelty": 18.0,
+          "verification_value": 0.0,
+          "qwen_signal": 30.0,
+          "redundancy_penalty": 0.0,
+          "compute_cost_penalty": -4.0,
+          "unsupported_claim_risk": 0.0,
+          "agent_preference": 0.0
+        }
+      },
+      {
+        "action": {
+          "action_id": "action_random_forest_max_depth-4_n_estimators-300",
+          "command": "python experiments/train_sklearn.py --dataset digits --model random_forest --n-estimators 300 --max-depth 4",
+          "model": "random_forest",
+          "params": {
+            "dataset": "digits",
+            "n_estimators": 300,
+            "max_depth": 4
+          }
+        },
+        "reason": "score=44.0; world model recommended run; new model family increases search coverage; world model predicted overfitting risk",
+        "score_breakdown": {
+          "expected_gain": 0.0,
+          "uncertainty": 0.0,
+          "novelty": 18.0,
+          "verification_value": 0.0,
+          "qwen_signal": 30.0,
+          "redundancy_penalty": 0.0,
+          "compute_cost_penalty": -4.0,
+          "unsupported_claim_risk": 0.0,
+          "agent_preference": 0.0
+        }
+      },
+      {
+        "action": {
+          "action_id": "action_random_forest_max_depth-8_n_estimators-300",
+          "command": "python experiments/train_sklearn.py --dataset digits --model random_forest --n-estimators 300 --max-depth 8",
+          "model": "random_forest",
+          "params": {
+            "dataset": "digits",
+            "n_estimators": 300,
+            "max_depth": 8
+          }
+        },
+        "reason": "score=44.0; world model recommended run; new model family increases search coverage; world model predicted overfitting risk",
+        "score_breakdown": {
+          "expected_gain": 0.0,
+          "uncertainty": 0.0,
+          "novelty": 18.0,
+          "verification_value": 0.0,
+          "qwen_signal": 30.0,
+          "redundancy_penalty": 0.0,
+          "compute_cost_penalty": -4.0,
+          "unsupported_claim_risk": 0.0,
+          "agent_preference": 0.0
+        }
+      },
+      {
+        "action": {
+          "action_id": "action_hist_gradient_boosting_learning_rate-0p05_n_estimators-100",
+          "command": "python experiments/train_sklearn.py --dataset digits --model hist_gradient_boosting --n-estimators 100 --learning-rate 0.05",
+          "model": "hist_gradient_boosting",
+          "params": {
+            "dataset": "digits",
+            "n_estimators": 100,
+            "learning_rate": 0.05,
+            "max_depth": null
+          }
+        },
+        "reason": "score=44.0; world model recommended run; new model family increases search coverage; world model predicted overfitting risk",
+        "score_breakdown": {
+          "expected_gain": 0.0,
+          "uncertainty": 0.0,
+          "novelty": 18.0,
+          "verification_value": 0.0,
+          "qwen_signal": 30.0,
+          "redundancy_penalty": 0.0,
+          "compute_cost_penalty": -4.0,
+          "unsupported_claim_risk": 0.0,
+          "agent_preference": 0.0
+        }
+      },
+      {
+        "action": {
+          "action_id": "action_hist_gradient_boosting_learning_rate-0p05_max_depth-8_n_estimators-100",
+          "command": "python experiments/train_sklearn.py --dataset digits --model hist_gradient_boosting --n-estimators 100 --learning-rate 0.05 --max-depth 8",
+          "model": "hist_gradient_boosting",
+          "params": {
+            "dataset": "digits",
+            "n_estimators": 100,
+            "learning_rate": 0.05,
+            "max_depth": 8
+          }
+        },
+        "reason": "score=44.0; world model recommended run; new model family increases search coverage; world model predicted overfitting risk",
+        "score_breakdown": {
+          "expected_gain": 0.0,
+          "uncertainty": 0.0,
+          "novelty": 18.0,
+          "verification_value": 0.0,
+          "qwen_signal": 30.0,
+          "redundancy_penalty": 0.0,
+          "compute_cost_penalty": -4.0,
+          "unsupported_claim_risk": 0.0,
+          "agent_preference": 0.0
         }
       },
       {
@@ -792,156 +951,6 @@
       },
       {
         "action": {
-          "action_id": "action_hist_gradient_boosting_learning_rate-0p08_max_depth-8_n_estimators-100",
-          "command": "python experiments/train_sklearn.py --dataset digits --model hist_gradient_boosting --n-estimators 100 --learning-rate 0.08 --max-depth 8",
-          "model": "hist_gradient_boosting",
-          "params": {
-            "dataset": "digits",
-            "n_estimators": 100,
-            "learning_rate": 0.08,
-            "max_depth": 8
-          }
-        },
-        "reason": "score=44.0; world model recommended run; new model family increases search coverage; world model predicted overfitting risk",
-        "score_breakdown": {
-          "expected_gain": 0.0,
-          "uncertainty": 0.0,
-          "novelty": 18.0,
-          "verification_value": 0.0,
-          "qwen_signal": 30.0,
-          "redundancy_penalty": 0.0,
-          "compute_cost_penalty": -4.0,
-          "unsupported_claim_risk": 0.0,
-          "agent_preference": 0.0
-        }
-      },
-      {
-        "action": {
-          "action_id": "action_hist_gradient_boosting_learning_rate-0p05_n_estimators-150",
-          "command": "python experiments/train_sklearn.py --dataset digits --model hist_gradient_boosting --n-estimators 150 --learning-rate 0.05",
-          "model": "hist_gradient_boosting",
-          "params": {
-            "dataset": "digits",
-            "n_estimators": 150,
-            "learning_rate": 0.05,
-            "max_depth": null
-          }
-        },
-        "reason": "score=44.0; world model recommended run; new model family increases search coverage; world model predicted overfitting risk",
-        "score_breakdown": {
-          "expected_gain": 0.0,
-          "uncertainty": 0.0,
-          "novelty": 18.0,
-          "verification_value": 0.0,
-          "qwen_signal": 30.0,
-          "redundancy_penalty": 0.0,
-          "compute_cost_penalty": -4.0,
-          "unsupported_claim_risk": 0.0,
-          "agent_preference": 0.0
-        }
-      },
-      {
-        "action": {
-          "action_id": "action_hist_gradient_boosting_learning_rate-0p05_max_depth-8_n_estimators-150",
-          "command": "python experiments/train_sklearn.py --dataset digits --model hist_gradient_boosting --n-estimators 150 --learning-rate 0.05 --max-depth 8",
-          "model": "hist_gradient_boosting",
-          "params": {
-            "dataset": "digits",
-            "n_estimators": 150,
-            "learning_rate": 0.05,
-            "max_depth": 8
-          }
-        },
-        "reason": "score=44.0; world model recommended run; new model family increases search coverage; world model predicted overfitting risk",
-        "score_breakdown": {
-          "expected_gain": 0.0,
-          "uncertainty": 0.0,
-          "novelty": 18.0,
-          "verification_value": 0.0,
-          "qwen_signal": 30.0,
-          "redundancy_penalty": 0.0,
-          "compute_cost_penalty": -4.0,
-          "unsupported_claim_risk": 0.0,
-          "agent_preference": 0.0
-        }
-      },
-      {
-        "action": {
-          "action_id": "action_hist_gradient_boosting_learning_rate-0p08_n_estimators-150",
-          "command": "python experiments/train_sklearn.py --dataset digits --model hist_gradient_boosting --n-estimators 150 --learning-rate 0.08",
-          "model": "hist_gradient_boosting",
-          "params": {
-            "dataset": "digits",
-            "n_estimators": 150,
-            "learning_rate": 0.08,
-            "max_depth": null
-          }
-        },
-        "reason": "score=44.0; world model recommended run; new model family increases search coverage; world model predicted overfitting risk",
-        "score_breakdown": {
-          "expected_gain": 0.0,
-          "uncertainty": 0.0,
-          "novelty": 18.0,
-          "verification_value": 0.0,
-          "qwen_signal": 30.0,
-          "redundancy_penalty": 0.0,
-          "compute_cost_penalty": -4.0,
-          "unsupported_claim_risk": 0.0,
-          "agent_preference": 0.0
-        }
-      },
-      {
-        "action": {
-          "action_id": "action_hist_gradient_boosting_learning_rate-0p08_max_depth-8_n_estimators-150",
-          "command": "python experiments/train_sklearn.py --dataset digits --model hist_gradient_boosting --n-estimators 150 --learning-rate 0.08 --max-depth 8",
-          "model": "hist_gradient_boosting",
-          "params": {
-            "dataset": "digits",
-            "n_estimators": 150,
-            "learning_rate": 0.08,
-            "max_depth": 8
-          }
-        },
-        "reason": "score=44.0; world model recommended run; new model family increases search coverage; world model predicted overfitting risk",
-        "score_breakdown": {
-          "expected_gain": 0.0,
-          "uncertainty": 0.0,
-          "novelty": 18.0,
-          "verification_value": 0.0,
-          "qwen_signal": 30.0,
-          "redundancy_penalty": 0.0,
-          "compute_cost_penalty": -4.0,
-          "unsupported_claim_risk": 0.0,
-          "agent_preference": 0.0
-        }
-      },
-      {
-        "action": {
-          "action_id": "action_svc_C-2p0_kernel-rbf_scale-True",
-          "command": "python experiments/train_sklearn.py --dataset digits --model svc --scale --C 2.0 --kernel rbf",
-          "model": "svc",
-          "params": {
-            "dataset": "digits",
-            "scale": true,
-            "C": 2.0,
-            "kernel": "rbf"
-          }
-        },
-        "reason": "score=26.0; autoresearch agent included this action in its candidate shortlist; world model recommended run; candidate is a variant of an already tested family",
-        "score_breakdown": {
-          "expected_gain": 0.0,
-          "uncertainty": 0.0,
-          "novelty": 0.0,
-          "verification_value": 0.0,
-          "qwen_signal": 30.0,
-          "redundancy_penalty": -12.0,
-          "compute_cost_penalty": 0.0,
-          "unsupported_claim_risk": 0.0,
-          "agent_preference": 8.0
-        }
-      },
-      {
-        "action": {
           "action_id": "action_svc_C-5p0_kernel-rbf_scale-True",
           "command": "python experiments/train_sklearn.py --dataset digits --model svc --scale --C 5.0 --kernel rbf",
           "model": "svc",
@@ -952,7 +961,7 @@
             "kernel": "rbf"
           }
         },
-        "reason": "score=26.0; autoresearch agent included this action in its candidate shortlist; world model recommended run; candidate is a variant of an already tested family",
+        "reason": "score=22.0; autoresearch agent included this action in its candidate shortlist; world model recommended run; candidate is a variant of an already tested family; world model predicted overfitting risk",
         "score_breakdown": {
           "expected_gain": 0.0,
           "uncertainty": 0.0,
@@ -960,7 +969,7 @@
           "verification_value": 0.0,
           "qwen_signal": 30.0,
           "redundancy_penalty": -12.0,
-          "compute_cost_penalty": 0.0,
+          "compute_cost_penalty": -4.0,
           "unsupported_claim_risk": 0.0,
           "agent_preference": 8.0
         }
@@ -986,6 +995,17 @@
         }
       },
       {
+        "run_id": "run_004",
+        "model": "logistic_regression",
+        "model_key": "logistic_regression_scaled_C=1.0",
+        "metric": 0.9777777777777777,
+        "params": {
+          "dataset": "digits",
+          "scale": true,
+          "C": 1.0
+        }
+      },
+      {
         "run_id": "run_002",
         "model": "logistic_regression",
         "model_key": "logistic_regression_scaled_C=0.1",
@@ -1004,17 +1024,6 @@
         "params": {
           "dataset": "digits",
           "scale": false
-        }
-      },
-      {
-        "run_id": "run_004",
-        "model": "random_forest",
-        "model_key": "random_forest_n=100",
-        "metric": 0.96,
-        "params": {
-          "dataset": "digits",
-          "n_estimators": 100,
-          "max_depth": null
         }
       }
     ],

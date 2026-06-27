@@ -4,11 +4,11 @@ Lucky Loop records whether Qwen-AgentWorld predictions matched real experiment o
 
 ## Summary
 
-- Metric interval coverage: 100.00%
+- Metric interval coverage: 71.43%
 - Runtime interval coverage: 85.71%
-- Mean metric absolute error outside interval: 0.0000
-- Mean runtime relative error above bound: 1.31%
-- Prediction miss count: 1
+- Mean metric absolute error outside interval: 0.0107
+- Mean runtime relative error above bound: 24.87%
+- Prediction miss count: 3
 - Risk recall approximation: 14.29%
 - Useful decision signals: 7/7
 
@@ -16,34 +16,34 @@ Lucky Loop records whether Qwen-AgentWorld predictions matched real experiment o
 
 | Run | Model | Predicted metric | Actual metric | Metric hit | Predicted runtime | Actual runtime | Runtime hit | Observed miss |
 |---|---|---|---:|---|---|---:|---|---|
-| run_001 | logistic_regression | accuracy around 0.90-0.97 | 0.9622 | yes | under 5 | 2.08s | yes |  |
-| run_002 | logistic_regression | accuracy around 0.95-0.98 | 0.9711 | yes | under 5 | 0.68s | yes |  |
-| run_003 | svc | accuracy around 0.90-0.99 | 0.9778 | yes | under 10 | 0.16s | yes |  |
-| run_004 | random_forest | accuracy around 0.90-0.98 | 0.9600 | yes | under 10 | 0.46s | yes |  |
-| run_005 | hist_gradient_boosting | accuracy around 0.90-0.98 | 0.9578 | yes | under 15 | 3.90s | yes |  |
-| run_006 | top_model_verification | accuracy around 0.90-0.99 | 0.9764 | yes | under 45 | 49.13s | no | runtime 49.13s exceeded predicted 45s |
-| run_007 | logistic_regression | accuracy around 0.95-0.98 | 0.9778 | yes | under 5 | 0.31s | yes |  |
+| run_001 | logistic_regression | accuracy around 0.85-0.90 | 0.9622 | no | under 5 | 2.09s | yes | accuracy 0.9622 outside predicted range 0.85-0.90 |
+| run_002 | logistic_regression | accuracy around 0.97-0.98 | 0.9711 | yes | under 5 | 0.37s | yes |  |
+| run_003 | svc | accuracy around 0.97-0.98 | 0.9778 | yes | under 5 | 0.15s | yes |  |
+| run_004 | logistic_regression | accuracy around 0.97-0.98 | 0.9778 | yes | under 5 | 1.14s | yes |  |
+| run_005 | logistic_regression | accuracy around 0.977-0.98 | 0.9644 | no | under 5 | 0.48s | yes | accuracy 0.9644 outside predicted range 0.98-0.98 |
+| run_006 | top_model_verification | accuracy around 0.97-0.98 with small seed variance | 0.9764 | yes | under 15 | 41.12s | no | runtime 41.12s exceeded predicted 15s |
+| run_007 | svc | accuracy around 0.975-0.98 | 0.9800 | yes | under 5 | 0.10s | yes |  |
 
 ## Risk Signals
 
 | Run | Predicted risks | Observed evidence | Risk hit |
 |---|---|---|---|
-| run_001 | unscaled features can slow convergence or underperform when feature scales differ | none | no |
-| run_002 | minor convergence warning possible | none | no |
-| run_003 | sensitive to scaling and C | none | no |
-| run_004 | overfitting or split variance if depth is unconstrained | none | no |
-| run_005 | can overfit with too many estimators | none | no |
-| run_006 | top single-run models may be tied across seeds; seed variance may exceed the observed top-model gap | runtime 49.13s exceeded predicted 45s; Measured top-model effect is not larger than inter-seed noise. The report must not claim a robust best model. | yes |
-| run_007 | minor convergence warning possible | none | no |
+| run_001 | logistic regression without feature scaling may underperform on pixel features; single-run best score may not justify a scientific claim; small-dataset variance could overstate a model win | accuracy 0.9622 outside predicted range 0.85-0.90 | no |
+| run_002 | single-run best score may not justify a scientific claim; feature scaling is relevant for logistic regression and should be verified across seeds | none | no |
+| run_003 | single-run best score may not justify a scientific claim; feature scaling is required for SVC and is applied; small-dataset variance may cause a single split to overstate a model win | none | no |
+| run_004 | single-run best score may not justify a scientific claim; small-dataset variance could overstate a model win on a single split | none | no |
+| run_005 | single-run best score may not justify a scientific claim; small-dataset variance could overstate a model win; robustness sweeps required before strong claims | accuracy 0.9644 outside predicted range 0.98-0.98 | no |
+| run_006 | single-run best score may not justify a scientific claim; Top models are tied on single-split evidence; robust best-model claim requires multi-seed verification.; label-noise sweeps test claim robustness, not leaderboard performance | runtime 41.12s exceeded predicted 15s; Measured top-model effect is not larger than inter-seed noise. The report must not claim a robust best model. | yes |
+| run_007 | single-run best score may not justify a scientific claim; small-dataset variance could overstate a model win; robustness sweeps required before strong claims | none | no |
 
 ## Decision Usefulness
 
 | Run | Selected action | World-model signal used | Decision useful | Reason |
 |---|---|---|---|---|
-| run_001 | logistic_regression | yes | yes | Selected logistic_regression because score=170.0; autoresearch agent preferred this catalog action; world model recommended run; new model family increases search coverage; first run should establish the unscaled baseline before interventions. Agent hypothesis: A simple unscaled linear baseline should anchor the search before interventions.. World model predicted accuracy around 0.90-0.97, runtime under 5, recommendation=run, risks=unscaled features can slow convergence or underperform when feature scales differ. Causal signal type: mixed. |
-| run_002 | logistic_regression | yes | yes | Selected logistic_regression because score=105.0; autoresearch agent preferred this catalog action; world model recommended run; candidate is a variant of an already tested family; after an unscaled logistic baseline, scaling is the direct world-model intervention to test. Agent hypothesis: Feature scaling should improve or stabilize scale-sensitive linear classification.. World model predicted accuracy around 0.95-0.98, runtime under 5, recommendation=run, risks=minor convergence warning possible. Causal signal type: mixed. |
-| run_003 | svc | yes | yes | Selected svc because score=90.0; autoresearch agent preferred this catalog action; world model recommended run; new model family increases search coverage. Agent hypothesis: Testing a new model family can reveal whether the current best score depends on inductive bias.. World model predicted accuracy around 0.90-0.99, runtime under 10, recommendation=run, risks=sensitive to scaling and C. Causal signal type: mixed. |
-| run_004 | random_forest | yes | yes | Selected random_forest because score=86.0; autoresearch agent preferred this catalog action; world model recommended run; new model family increases search coverage; world model predicted overfitting risk. Agent hypothesis: Testing a new model family can reveal whether the current best score depends on inductive bias.. World model predicted accuracy around 0.90-0.98, runtime under 10, recommendation=run, risks=overfitting or split variance if depth is unconstrained. Causal signal type: mixed. |
-| run_005 | hist_gradient_boosting | yes | yes | Selected hist_gradient_boosting because score=86.0; autoresearch agent preferred this catalog action; world model recommended run; new model family increases search coverage; world model predicted overfitting risk. Agent hypothesis: Testing a new model family can reveal whether the current best score depends on inductive bias.. World model predicted accuracy around 0.90-0.98, runtime under 15, recommendation=run, risks=can overfit with too many estimators. Causal signal type: mixed. |
-| run_006 | top_model_verification | yes | yes | Selected top_model_verification because score=152.0; autoresearch agent preferred this catalog action; world model recommended run; top observed models need multi-seed verification before a robust best-model claim; world model predicted top-model robustness or claim risk. Agent hypothesis: The best single-run model may not be robust across matched seeds.. World model predicted accuracy around 0.90-0.99, runtime under 45, recommendation=run, risks=top single-run models may be tied across seeds, seed variance may exceed the observed top-model gap. Causal signal type: mixed. |
-| run_007 | logistic_regression | yes | yes | Selected logistic_regression because score=71.0; autoresearch agent included this action in its candidate shortlist; world model recommended run; candidate is a variant of an already tested family; after an unscaled logistic baseline, scaling is the direct world-model intervention to test. Agent hypothesis: A prediction miss should trigger exploration of a different inductive bias.. World model predicted accuracy around 0.95-0.98, runtime under 5, recommendation=run, risks=minor convergence warning possible. Causal signal type: mixed. |
+| run_001 | logistic_regression | yes | yes | Selected logistic_regression because score=162.0; autoresearch agent preferred this catalog action; world model recommended modification, so the action remains informative but lower priority; new model family increases search coverage; first run should establish the unscaled baseline before interventions. Agent hypothesis: A simple unscaled linear baseline should anchor the search before interventions.. World model predicted accuracy around 0.85-0.90, runtime under 5, recommendation=modify, risks=logistic regression without feature scaling may underperform on pixel features, single-run best score may not justify a scientific claim, small-dataset variance could overstate a model win. Causal signal type: mixed. |
+| run_002 | logistic_regression | yes | yes | Selected logistic_regression because score=105.0; autoresearch agent preferred this catalog action; world model recommended run; candidate is a variant of an already tested family; after an unscaled logistic baseline, scaling is the direct world-model intervention to test. Agent hypothesis: Feature scaling should improve or stabilize scale-sensitive linear classification.. World model predicted accuracy around 0.97-0.98, runtime under 5, recommendation=run, risks=single-run best score may not justify a scientific claim, feature scaling is relevant for logistic regression and should be verified across seeds. Causal signal type: mixed. |
+| run_003 | svc | yes | yes | Selected svc because score=90.0; autoresearch agent preferred this catalog action; world model recommended run; new model family increases search coverage. Agent hypothesis: A prediction miss should trigger exploration of a different inductive bias.. World model predicted accuracy around 0.97-0.98, runtime under 5, recommendation=run, risks=single-run best score may not justify a scientific claim, feature scaling is required for SVC and is applied, small-dataset variance may cause a single split to overstate a model win. Causal signal type: mixed. |
+| run_004 | logistic_regression | yes | yes | Selected logistic_regression because score=71.0; autoresearch agent included this action in its candidate shortlist; world model recommended run; candidate is a variant of an already tested family; after an unscaled logistic baseline, scaling is the direct world-model intervention to test. Agent hypothesis: A prediction miss should trigger exploration of a different inductive bias.. World model predicted accuracy around 0.97-0.98, runtime under 5, recommendation=run, risks=single-run best score may not justify a scientific claim, small-dataset variance could overstate a model win on a single split. Causal signal type: mixed. |
+| run_005 | logistic_regression | yes | yes | Selected logistic_regression because score=71.0; autoresearch agent included this action in its candidate shortlist; world model recommended run; candidate is a variant of an already tested family; after an unscaled logistic baseline, scaling is the direct world-model intervention to test. Agent hypothesis: A prediction miss should trigger exploration of a different inductive bias.. World model predicted accuracy around 0.977-0.98, runtime under 5, recommendation=run, risks=single-run best score may not justify a scientific claim, small-dataset variance could overstate a model win, robustness sweeps required before strong claims. Causal signal type: mixed. |
+| run_006 | top_model_verification | yes | yes | Selected top_model_verification because score=152.0; autoresearch agent preferred this catalog action; world model recommended run; top observed models need multi-seed verification before a robust best-model claim; world model predicted top-model robustness or claim risk. Agent hypothesis: The best single-run model may not be robust across matched seeds.. World model predicted accuracy around 0.97-0.98 with small seed variance, runtime under 15, recommendation=run, risks=single-run best score may not justify a scientific claim, Top models are tied on single-split evidence; robust best-model claim requires multi-seed verification., label-noise sweeps test claim robustness, not leaderboard performance. Causal signal type: mixed. |
+| run_007 | svc | yes | yes | Selected svc because score=60.0; autoresearch agent preferred this catalog action; world model recommended run; candidate is a variant of an already tested family. Agent hypothesis: A prediction miss should trigger exploration of a different inductive bias.. World model predicted accuracy around 0.975-0.98, runtime under 5, recommendation=run, risks=single-run best score may not justify a scientific claim, small-dataset variance could overstate a model win, robustness sweeps required before strong claims. Causal signal type: mixed. |
