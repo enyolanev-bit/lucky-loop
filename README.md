@@ -46,13 +46,13 @@ For the hackathon build, Codex can operate as the autoresearch agent while the r
 
 - Qwen-AgentWorld-35B-A3B is served through vLLM on Team Pegasus MI300X.
 - OpenAI-compatible endpoint: `http://134.199.205.222:8000/v1`.
-- `luckyworld/` runs a real sklearn loop:
+- `src/luckyloop/` contains the runnable research loop:
   - world-model prediction
   - real experiment execution
   - prediction-vs-actual comparison
   - JSON evidence traces
   - Markdown report
-- Six real runs exist under `luckyworld/runs/`.
+- Six real runs exist under `runs/`.
 - The current verifier already blocks an overclaim in `run_005`:
   - `effect_size = 0.020979`
   - `seed_noise = 0.027972`
@@ -70,7 +70,6 @@ and only claims what survives verification.
 ## Run
 
 ```bash
-cd luckyworld
 python3 -m venv .venv
 . .venv/bin/activate
 pip install -r requirements.txt
@@ -80,7 +79,7 @@ export LUCKYWORLD_SIMULATOR_BASE_URL=http://134.199.205.222:8000/v1
 export LUCKYWORLD_SIMULATOR_MODEL=Qwen/Qwen-AgentWorld-35B-A3B
 export LUCKYWORLD_SIMULATOR_API_KEY=dummy
 
-python3 -m luckyworld.loop --max-experiments 6
+python3 -m luckyloop.loop --max-experiments 6
 ```
 
 If the simulator endpoint is unavailable, Lucky Loop keeps a deterministic heuristic fallback for local smoke tests. The live presentation path uses Qwen-AgentWorld.
@@ -88,9 +87,9 @@ If the simulator endpoint is unavailable, Lucky Loop keeps a deterministic heuri
 ## Artifacts
 
 ```text
-luckyworld/runs/run_001.json ... run_006.json
-luckyworld/reports/final_report.md
-luckyworld/app/streamlit_app.py
+runs/run_001.json ... run_006.json
+reports/final_report.md
+app/streamlit_app.py
 ```
 
 Next build targets:

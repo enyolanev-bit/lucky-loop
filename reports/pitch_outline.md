@@ -1,7 +1,7 @@
-# LuckyWorld pitch outline
+# Lucky Loop pitch outline
 
 ## One-liner
-LuckyWorld is a world-model-guided autonomous research loop: it predicts experiment outcomes before running real compute, then compares prediction vs reality and writes an auditable report.
+Lucky Loop is a world-model-guided autonomous research loop: it predicts experiment outcomes before running real compute, then compares prediction vs reality and writes an auditable report.
 
 ## Tagline
 Predict before you compute.
@@ -13,7 +13,7 @@ Autonomous research agents are usually reactive. They launch code, observe failu
 Qwen-AgentWorld shows that language world models can simulate agent environments such as terminal, search, code editing, and tool/API calls. We apply that idea directly to research automation.
 
 ## Solution
-LuckyWorld inserts Qwen-AgentWorld between planning and execution:
+Lucky Loop inserts Qwen-AgentWorld between planning and execution:
 
 1. propose a research experiment
 2. ask Qwen-AgentWorld to predict metric range, runtime, risks, and recommendation
@@ -38,7 +38,7 @@ Observed loop:
 Best observed model: scaled logistic regression, accuracy 0.9860.
 
 ## Why this is not just AutoML
-AutoML searches configurations. LuckyWorld records a scientific loop:
+AutoML searches configurations. Lucky Loop records a scientific loop:
 
 - hypothesis
 - prediction

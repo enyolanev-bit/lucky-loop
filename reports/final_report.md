@@ -1,4 +1,4 @@
-# LuckyWorld Research Report
+# Lucky Loop Research Report
 
 Goal: Maximize validation accuracy on sklearn breast cancer dataset in five experiments.
 

@@ -86,7 +86,7 @@ def main() -> None:
     status = os.getenv("LUCKYWORLD_STATUS", "Working prototype: Qwen-AgentWorld predicts experiments before real sklearn execution; traces and report are generated.")
     next_step = os.getenv("LUCKYWORLD_NEXT", "Add a controlled perturbation scenario: noisy labels / data leakage / timeout trap.")
     blocks = [
-        heading(f"LuckyWorld update - {now}", 2),
+        heading(f"Lucky Loop update - {now}", 2),
         paragraph(status),
         bullet("Qwen-AgentWorld-35B-A3B is running on Team Pegasus MI300X through vLLM."),
         bullet("Endpoint: http://134.199.205.222:8000/v1"),

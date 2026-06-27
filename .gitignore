@@ -2,9 +2,10 @@
 __pycache__/
 *.pyc
 reports/
-!luckyworld/reports/
-!luckyworld/reports/*.md
-!luckyworld/reports/.gitkeep
+!reports/
+!reports/*.md
+!reports/*.json
+!reports/.gitkeep
 *.env
 .env
 .entire/local*

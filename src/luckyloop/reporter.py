@@ -6,7 +6,7 @@ from .schemas import ExperimentTrace
 def generate_report(goal: str, traces: list[ExperimentTrace], path: Path) -> None:
     best = max((t for t in traces if t.actual_result.accuracy is not None), key=lambda t: t.actual_result.accuracy or -1, default=None)
     lines = [
-        "# LuckyWorld Research Report",
+        "# Lucky Loop Research Report",
         "",
         f"Goal: {goal}",
         "",

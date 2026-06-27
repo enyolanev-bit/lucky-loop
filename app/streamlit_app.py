@@ -4,12 +4,12 @@ import pandas as pd
 import streamlit as st
 
 ROOT = Path(__file__).resolve().parents[1]
-st.set_page_config(page_title="LuckyWorld", layout="wide")
-st.title("LuckyWorld")
-st.caption("Predict before you compute: world-model-guided autonomous research loops")
+st.set_page_config(page_title="Lucky Loop", layout="wide")
+st.title("Lucky Loop")
+st.caption("Predict before compute. Verify before claim.")
 run_files = sorted((ROOT / "runs").glob("run_*.json"))
 if not run_files:
-    st.warning("No runs yet. Run: python -m src.luckyworld.loop")
+    st.warning("No runs yet. Run: PYTHONPATH=src python3 -m luckyloop.loop")
     st.stop()
 traces = [json.loads(p.read_text()) for p in run_files]
 rows=[]
