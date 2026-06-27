@@ -70,17 +70,27 @@ The script writes:
 | `reports/post_training_lora_probe/result.json` | machine-readable probe result |
 | `reports/post_training_lora_probe/README.md` | human-readable summary |
 
-## Honest status
+## Real run result (Team Pegasus / MI300X)
 
-This is a **ready-to-run post-training probe**, not yet a completed LoRA result on the local Mac environment. Current local environment lacks at least some required ML dependencies outside the project venv. The dry run and dependency-check paths are executable and verified.
+The probe ran end-to-end on the hackathon GPU container. Real numbers (`reports/post_training_lora_probe/result.json`, `status: completed`):
 
-For the hackathon GPU path, install:
+| Metric | Value |
+|---|---|
+| Baseline held-out accuracy | `0.484375` (31/64) |
+| Post-training held-out accuracy | `0.5` (32/64) |
+| Delta | `+0.015625` |
+| Trainable params (LoRA) | `5,046,272` (0.84% of 601M) |
+| Runtime | `37.05 s` |
+| Dataset | `SetFit/sst2`, train=64 / test=64 |
 
-```bash
-pip install torch transformers datasets peft accelerate
-```
+### Claim-calibrated verdict
 
-Then run the real command above.
+The delta is **one flipped test example**. It is indistinguishable from zero:
+
+- Two-proportion z-test: `z ≈ 0.18`, `p ≈ 0.86`.
+- McNemar (≥1 discordant pair): `p ≈ 1.0`.
+
+**No improvement claim.** Applying Lucky Loop's own effect-vs-noise gate, this is `inconclusive` → blocked. The system refuses to oversell its own experiment. What is established: the post-training path runs end-to-end (Qwen3-0.6B, clean train/test split, 5.0M trainable params, 37s) — a real candidate the loop can reason about under the same "verify before claim" discipline.
 
 ## Why this helps selection
 
