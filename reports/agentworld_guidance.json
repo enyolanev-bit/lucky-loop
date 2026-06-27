@@ -1,0 +1,66 @@
+{
+  "model": "Qwen/Qwen-AgentWorld-35B-A3B",
+  "n_datasets": 8,
+  "avg_compute_saved_vs_random_pct": 4.4,
+  "avg_saved_canonical_pct": 53.8,
+  "avg_saved_synthetic_pct": -45.0,
+  "r_calibration_vs_saving_REAL": 0.136,
+  "by_dataset": {
+    "breast_cancer": {
+      "calibration_real_agentworld": -0.214,
+      "guided_cost_s": 0.2133,
+      "random_cost_s": 0.2011,
+      "worst_cost_s": 0.0041,
+      "compute_saved_vs_random_pct": -6.0
+    },
+    "wine": {
+      "calibration_real_agentworld": 0.357,
+      "guided_cost_s": 0.1053,
+      "random_cost_s": 0.1488,
+      "worst_cost_s": 0.3013,
+      "compute_saved_vs_random_pct": 29.2
+    },
+    "digits": {
+      "calibration_real_agentworld": 0.286,
+      "guided_cost_s": 0.0985,
+      "random_cost_s": 3.2498,
+      "worst_cost_s": 6.489,
+      "compute_saved_vs_random_pct": 97.0
+    },
+    "iris": {
+      "calibration_real_agentworld": 0.786,
+      "guided_cost_s": 0.0094,
+      "random_cost_s": 0.1837,
+      "worst_cost_s": 0.5223,
+      "compute_saved_vs_random_pct": 94.9
+    },
+    "synth_0": {
+      "calibration_real_agentworld": 0.464,
+      "guided_cost_s": 0.864,
+      "random_cost_s": 0.4284,
+      "worst_cost_s": 0.0087,
+      "compute_saved_vs_random_pct": -101.7
+    },
+    "synth_1": {
+      "calibration_real_agentworld": 0.143,
+      "guided_cost_s": 0.2621,
+      "random_cost_s": 1.0964,
+      "worst_cost_s": 0.0163,
+      "compute_saved_vs_random_pct": 76.1
+    },
+    "synth_2": {
+      "calibration_real_agentworld": 0.393,
+      "guided_cost_s": 2.3071,
+      "random_cost_s": 1.2104,
+      "worst_cost_s": 0.008,
+      "compute_saved_vs_random_pct": -90.6
+    },
+    "synth_3": {
+      "calibration_real_agentworld": 0.143,
+      "guided_cost_s": 1.5148,
+      "random_cost_s": 0.9237,
+      "worst_cost_s": 0.0108,
+      "compute_saved_vs_random_pct": -64.0
+    }
+  }
+}

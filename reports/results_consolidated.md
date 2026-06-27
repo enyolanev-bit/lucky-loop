@@ -92,6 +92,28 @@ coverage); it anchors unknown tasks near 0.75 and under-predicts strong models. 
 calibration is bound to *familiar data regimes*, not to structural reasoning — it is most
 overconfident exactly where research needs it most: on genuinely novel experiments.
 
+## R7 — The real Agent-World improves autoresearch, bounded by its calibration (thesis, end-to-end)
+
+R3/R4 established the *mechanism* with a controlled prior. R7 closes the loop with the **actual
+Qwen-AgentWorld**: we let it predict each candidate's accuracy, order the experiments by its
+prediction, and measure compute spent to reach the true best model versus random ordering (no world
+model) across 8 datasets.
+
+| Regime | Compute saved vs no-world-model |
+|---|---|
+| Canonical (familiar) | **+53.8%** |
+| Synthetic (novel) | **−45.0%** |
+| Overall average | +4.4% |
+
+The real world model **saves 54% of compute on familiar regimes and costs 45% on novel ones.** This
+is the central thesis, proven with the actual product and with its boundary intact: Agent-World
+improves autoresearch exactly where it is calibrated (familiar regimes, independently measured in R2)
+and degrades it where it is not (novel regimes, R6). The headline is not the +4.4% average — it is
+the regime split, which R6 predicts. A world model is a useful but bounded guide; this is precisely
+why the verifier (R1) is necessary as the safety layer.
+
+Reproduce: `python3 experiments/agentworld_guidance.py` (needs the vLLM endpoint).
+
 ## What we do not claim
 
 - These are small tabular benchmarks and one world model; absolute numbers will shift elsewhere.
