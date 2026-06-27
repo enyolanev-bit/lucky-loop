@@ -1,0 +1,100 @@
+{
+  "task": "wine_accuracy",
+  "case_id": "case_001",
+  "state_id": "state_006",
+  "run_index": 6,
+  "state_needs_verification": true,
+  "lucky_action": {
+    "action_id": "action_verify_top_models",
+    "command": "python experiments/compare_models_sklearn.py --dataset wine --models logistic_regression:scale=true,C=0.1 random_forest:n_estimators=100 logistic_regression --seeds 0 1 2 3 4",
+    "model": "top_model_verification",
+    "params": {
+      "dataset": "wine",
+      "models": [
+        {
+          "run_id": "run_002",
+          "model": "logistic_regression",
+          "model_key": "logistic_regression_scaled_C=0.1",
+          "metric": 1.0,
+          "params": {
+            "dataset": "wine",
+            "scale": true,
+            "C": 0.1
+          }
+        },
+        {
+          "run_id": "run_005",
+          "model": "random_forest",
+          "model_key": "random_forest_n=100",
+          "metric": 1.0,
+          "params": {
+            "dataset": "wine",
+            "n_estimators": 100,
+            "max_depth": null
+          }
+        },
+        {
+          "run_id": "run_001",
+          "model": "logistic_regression",
+          "model_key": "logistic_regression",
+          "metric": 0.9777777777777777,
+          "params": {
+            "dataset": "wine",
+            "scale": false
+          }
+        }
+      ],
+      "seeds": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "reason": "Top models are tied on single-split evidence; robust best-model claim requires multi-seed verification.",
+      "verification_action_key": "logistic_regression:logistic_regression_scaled_C=0.1:random_forest_n=100"
+    }
+  },
+  "classic_action": {
+    "action_id": "action_logistic_regression_C-1p0_scale-True",
+    "command": "python experiments/train_sklearn.py --dataset wine --model logistic_regression --scale",
+    "model": "logistic_regression",
+    "params": {
+      "dataset": "wine",
+      "scale": true,
+      "C": 1.0
+    }
+  },
+  "lucky_actual_metric": 0.9955555555555555,
+  "classic_actual_metric": 1.0,
+  "lucky_verification": {
+    "status": "inconclusive",
+    "metric": "accuracy",
+    "effect_size": 0.0,
+    "seed_noise": 0.022222,
+    "effect_to_noise_ratio": 0.0,
+    "min_seed_count": 5,
+    "low_n_warning": false,
+    "trustworthy": false,
+    "best_config": "logistic_regression_scaled_C=0.1",
+    "worst_config": "random_forest_n=100",
+    "blocked_claim": "logistic_regression_scaled_C=0.1 is robustly better than random_forest_n=100.",
+    "allowed_claim": "logistic_regression_scaled_C=0.1 had the best multi-seed mean accuracy, but the effect was smaller than seed noise; no robust best-model claim is allowed.",
+    "supported_claims": [],
+    "inconclusive_findings": [
+      "Best config 'logistic_regression_scaled_C=0.1' improves over 'random_forest_n=100' by 0.0000 accuracy, but best-config seed noise is 0.0222."
+    ],
+    "rationale": "Measured top-model effect is not larger than inter-seed noise. The report must not claim a robust best model."
+  },
+  "classic_verification": null,
+  "verdict": {
+    "score_verdict": "classic_win",
+    "claim_safety_verdict": "lucky_win",
+    "overall_verdict": "lucky_win",
+    "reason": "Lucky choice ran verification and prevented a robust claim that classic score-chasing would leave unsupported."
+  },
+  "artifacts": {
+    "lucky_choice": "runs/counterfactuals/wine_accuracy/case_001/lucky_choice.json",
+    "classic_choice": "runs/counterfactuals/wine_accuracy/case_001/classic_choice.json"
+  }
+}

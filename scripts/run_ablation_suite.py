@@ -8,6 +8,9 @@ import shutil
 from pathlib import Path
 from typing import Iterable
 
+from luckyloop.benchmark_metrics import actual_metric as shared_actual_metric
+from luckyloop.benchmark_metrics import best_single_run as shared_best_single_run
+from luckyloop.benchmark_metrics import claimable_evidence_summary
 from luckyloop.calibration import write_calibration_report
 from luckyloop.claim_ledger import entries_from_verification, write_claim_ledger
 from luckyloop.comparator import compare
@@ -55,22 +58,11 @@ def _clean_namespace(namespace: str) -> tuple[Path, Path]:
 
 
 def _actual_metric(trace: ExperimentTrace) -> float | None:
-    if trace.actual_result.accuracy is not None:
-        return trace.actual_result.accuracy
-    metric = trace.actual_result.raw.get("metric", "accuracy")
-    best = trace.actual_result.raw.get("best") or {}
-    value = best.get(f"mean_{metric}")
-    return float(value) if value is not None else None
+    return shared_actual_metric(trace)
 
 
 def _best_single_run(traces: Iterable[ExperimentTrace]) -> ExperimentTrace | None:
-    singles = [
-        trace
-        for trace in traces
-        if _actual_metric(trace) is not None
-        and trace.proposed_action.model not in {"verification_sweep", "top_model_verification"}
-    ]
-    return max(singles, key=lambda trace: _actual_metric(trace) or -1, default=None)
+    return shared_best_single_run(traces)
 
 
 def _nop_prediction(action: ProposedAction) -> Prediction:
@@ -306,8 +298,17 @@ def run_policy(policy: str, task: TaskSpec, max_experiments: int | None, operato
     return run_classic_policy(policy, task, max_experiments=max_experiments)
 
 
+def load_policy_traces(policy: str, task: TaskSpec) -> list[ExperimentTrace]:
+    run_dir = ROOT / "runs" / "ablations" / policy / task.task_id
+    return [
+        ExperimentTrace.model_validate_json(path.read_text(encoding="utf-8"))
+        for path in sorted(run_dir.glob("run_*.json"))
+    ]
+
+
 def summarize_traces(policy: str, task_id: str, traces: list[ExperimentTrace]) -> dict:
     best = _best_single_run(traces)
+    claimable = claimable_evidence_summary(traces)
     top_verifications = [trace for trace in traces if trace.proposed_action.model == "top_model_verification"]
     verification_traces = [trace for trace in traces if trace.verification]
     blocked = sum(1 for trace in verification_traces if trace.verification and not trace.verification.trustworthy)
@@ -341,6 +342,14 @@ def summarize_traces(policy: str, task_id: str, traces: list[ExperimentTrace]) -
             for trace in traces
             if trace.decision_trace and trace.decision_trace.world_model_signal_used
         ),
+        "best_verified_mean_score": claimable["best_verified_mean_score"],
+        "best_claimable_score": claimable["best_claimable_score"],
+        "runs_to_first_verification": claimable["runs_to_first_verification"],
+        "total_runtime_seconds": claimable["total_runtime_seconds"],
+        "compute_per_claimable_claim": claimable["compute_per_claimable_claim"],
+        "wasted_score_chasing_runs": claimable["wasted_score_chasing_runs"],
+        "qwen_triggered_verification": claimable["qwen_triggered_verification"],
+        "qwen_choice_usefulness": None,
         "action_sequence": [trace.proposed_action.model for trace in traces],
     }
 
@@ -354,9 +363,35 @@ def _fmt_metric(value: float | None) -> str:
     return "" if value is None else f"{value:.4f}"
 
 
+def _fmt_nullable(value) -> str:
+    if value is None:
+        return "∞"
+    if isinstance(value, float):
+        return f"{value:.4f}"
+    return str(value)
+
+
+def _counterfactual_usefulness_by_task() -> dict[str, float]:
+    path = ROOT / "reports" / "counterfactuals" / "counterfactual_evaluation.json"
+    if not path.exists():
+        return {}
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    by_task: dict[str, list[bool]] = {}
+    for row in payload.get("rows", []):
+        task = row.get("task")
+        if not task:
+            continue
+        by_task.setdefault(task, []).append(row.get("verdict", {}).get("overall_verdict") == "lucky_win")
+    return {task: sum(values) / len(values) for task, values in by_task.items() if values}
+
+
 def write_ablation_reports(rows: list[dict]) -> None:
     out_dir = ROOT / "reports" / "ablations"
     out_dir.mkdir(parents=True, exist_ok=True)
+    usefulness = _counterfactual_usefulness_by_task()
+    for row in rows:
+        if row["policy"] == "lucky_loop_full" and row["task"] in usefulness:
+            row["qwen_choice_usefulness"] = usefulness[row["task"]]
     _write_json(out_dir / "world_model_ablation.json", {"schema_version": "1.0", "rows": rows})
 
     lines = [
@@ -368,17 +403,37 @@ def write_ablation_reports(rows: list[dict]) -> None:
         "- `classic_verified`: same no-world-model planner, but with deterministic top-model verification.",
         "- `lucky_loop_full`: agent-in-repo planner plus Qwen-AgentWorld predictions before compute and deterministic claim verification.",
         "",
-        "| Task | Policy | Runs | Best single-run | Top-model verification | Unsupported best-model claims | Claims blocked | Supported claims | Qwen predictions | Useful WM decisions |",
-        "|---|---|---:|---:|---|---:|---:|---:|---:|---:|",
+        "| Task | Policy | Runs | Best single-run | Best verified mean | Best claimable | Runs to verification | Compute / claimable claim | Wasted score-chasing | Unsupported claims | Claims blocked | Qwen predictions | Qwen triggered verification | Qwen choice usefulness |",
+        "|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|---:|",
     ]
     for row in rows:
+        qwen_usefulness = "" if row["qwen_choice_usefulness"] is None else f"{row['qwen_choice_usefulness']:.2%}"
         lines.append(
             f"| {row['task']} | {row['policy']} | {row['runs']} | "
             f"{_fmt_metric(row['best_single_run_metric'])} | "
-            f"{'yes' if row['top_model_verification_performed'] else 'no'} | "
+            f"{_fmt_metric(row['best_verified_mean_score'])} | "
+            f"{_fmt_metric(row['best_claimable_score'])} | "
+            f"{_fmt_nullable(row['runs_to_first_verification'])} | "
+            f"{_fmt_nullable(row['compute_per_claimable_claim'])} | "
+            f"{row['wasted_score_chasing_runs']} | "
             f"{row['unsupported_best_model_claims']} | {row['claims_blocked']} | "
-            f"{row['supported_claims']} | {row['world_model_prediction_count']} | "
-            f"{row['useful_world_model_decisions']} |"
+            f"{row['world_model_prediction_count']} | "
+            f"{'yes' if row['qwen_triggered_verification'] else 'no'} | "
+            f"{qwen_usefulness} |"
+        )
+    lines += [
+        "",
+        "## Claimable Evidence Per Compute",
+        "",
+        "`best_claimable_score` is strict: inconclusive verifier outcomes do not count. `∞` means no claim reached the trust ladder threshold.",
+        "",
+        "| Task | Policy | Best claimable | Runtime | Compute / claimable claim |",
+        "|---|---|---:|---:|---:|",
+    ]
+    for row in rows:
+        lines.append(
+            f"| {row['task']} | {row['policy']} | {_fmt_metric(row['best_claimable_score'])} | "
+            f"{row['total_runtime_seconds']:.2f}s | {_fmt_nullable(row['compute_per_claimable_claim'])} |"
         )
     (out_dir / "world_model_ablation.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
 
@@ -395,16 +450,23 @@ def write_ablation_reports(rows: list[dict]) -> None:
         verified = task_rows.get("classic_verified")
         paired.append(f"## {task}")
         if classic and full:
+            full_usefulness = "" if full["qwen_choice_usefulness"] is None else f"{full['qwen_choice_usefulness']:.2%}"
             paired.append(
                 f"- Classic autoresearch best single-run={_fmt_metric(classic['best_single_run_metric'])}, "
+                f"best claimable={_fmt_metric(classic['best_claimable_score']) or 'none'}, "
                 f"unsupported best-model claims={classic['unsupported_best_model_claims']}, "
+                f"wasted score-chasing runs={classic['wasted_score_chasing_runs']}, "
                 f"Qwen predictions={classic['world_model_prediction_count']}."
             )
             paired.append(
                 f"- Lucky Loop full best single-run={_fmt_metric(full['best_single_run_metric'])}, "
+                f"best verified mean={_fmt_metric(full['best_verified_mean_score'])}, "
+                f"best claimable={_fmt_metric(full['best_claimable_score']) or 'none'}, "
                 f"unsupported best-model claims={full['unsupported_best_model_claims']}, "
                 f"Qwen predictions={full['world_model_prediction_count']}, "
-                f"claims blocked={full['claims_blocked']}, supported claims={full['supported_claims']}."
+                f"claims blocked={full['claims_blocked']}, supported claims={full['supported_claims']}, "
+                f"Qwen triggered verification={'yes' if full['qwen_triggered_verification'] else 'no'}, "
+                f"Qwen choice usefulness={full_usefulness}."
             )
         if verified:
             paired.append(
@@ -425,6 +487,7 @@ def write_ablation_reports(rows: list[dict]) -> None:
         "- Classic autoresearch can find good single-run scores, but has no pre-compute prediction trace.",
         "- Classic verified shows the trust gate alone can reduce overclaims, but still lacks prospective simulation.",
         "- Lucky Loop full adds the missing world-model layer: every candidate is predicted before compute and every miss is logged.",
+        "- Claimable-score metrics are strict: inconclusive verifier outcomes block robust claims rather than becoming claimable wins.",
         "",
         "## Artifacts",
         "",
@@ -442,6 +505,7 @@ def main() -> None:
     parser.add_argument("--policies", nargs="*", choices=POLICIES, default=POLICIES)
     parser.add_argument("--max-experiments", type=int, default=None)
     parser.add_argument("--operator-agent", default="codex_operator")
+    parser.add_argument("--reuse-existing", action="store_true", help="Recompute reports from existing runs/ablations traces.")
     parser.add_argument(
         "--world-model",
         choices=["auto", "heuristic"],
@@ -461,7 +525,10 @@ def main() -> None:
         for task_path in args.tasks:
             task = load_task(task_path)
             for policy in args.policies:
-                traces = run_policy(policy, task, args.max_experiments, args.operator_agent)
+                if args.reuse_existing:
+                    traces = load_policy_traces(policy, task)
+                else:
+                    traces = run_policy(policy, task, args.max_experiments, args.operator_agent)
                 rows.append(summarize_traces(policy, task.task_id, traces))
     finally:
         if old_base is not None:

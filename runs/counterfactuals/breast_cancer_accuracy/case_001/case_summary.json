@@ -1,0 +1,102 @@
+{
+  "task": "breast_cancer_accuracy",
+  "case_id": "case_001",
+  "state_id": "state_006",
+  "run_index": 6,
+  "state_needs_verification": true,
+  "lucky_action": {
+    "action_id": "action_verify_top_models",
+    "command": "python experiments/compare_models_sklearn.py --dataset breast_cancer --models logistic_regression:scale=true,C=1.0 logistic_regression:scale=true,C=0.1 svc:scale=true,C=0.5,kernel=rbf --seeds 0 1 2 3 4",
+    "model": "top_model_verification",
+    "params": {
+      "dataset": "breast_cancer",
+      "models": [
+        {
+          "run_id": "run_005",
+          "model": "logistic_regression",
+          "model_key": "logistic_regression_scaled_C=1.0",
+          "metric": 0.986013986013986,
+          "params": {
+            "dataset": "breast_cancer",
+            "scale": true,
+            "C": 1.0
+          }
+        },
+        {
+          "run_id": "run_002",
+          "model": "logistic_regression",
+          "model_key": "logistic_regression_scaled_C=0.1",
+          "metric": 0.9790209790209791,
+          "params": {
+            "dataset": "breast_cancer",
+            "scale": true,
+            "C": 0.1
+          }
+        },
+        {
+          "run_id": "run_003",
+          "model": "svc",
+          "model_key": "svc_scaled_C=0.5_kernel=rbf",
+          "metric": 0.972027972027972,
+          "params": {
+            "dataset": "breast_cancer",
+            "scale": true,
+            "C": 0.5,
+            "kernel": "rbf"
+          }
+        }
+      ],
+      "seeds": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "reason": "Top-model gap 0.0070 is within margin 0.0100; verify before claiming a winner.",
+      "verification_action_key": "logistic_regression_scaled_C=0.1:logistic_regression_scaled_C=1.0:svc_scaled_C=0.5_kernel=rbf"
+    }
+  },
+  "classic_action": {
+    "action_id": "action_logistic_regression_C-10p0_scale-True",
+    "command": "python experiments/train_sklearn.py --dataset breast_cancer --model logistic_regression --scale --C 10.0",
+    "model": "logistic_regression",
+    "params": {
+      "dataset": "breast_cancer",
+      "scale": true,
+      "C": 10.0
+    }
+  },
+  "lucky_actual_metric": 0.9706293706293707,
+  "classic_actual_metric": 0.972027972027972,
+  "lucky_verification": {
+    "status": "inconclusive",
+    "metric": "accuracy",
+    "effect_size": 0.006993,
+    "seed_noise": 0.027972,
+    "effect_to_noise_ratio": 0.25,
+    "min_seed_count": 5,
+    "low_n_warning": false,
+    "trustworthy": false,
+    "best_config": "logistic_regression_scaled_C=1.0",
+    "worst_config": "logistic_regression_scaled_C=0.1",
+    "blocked_claim": "logistic_regression_scaled_C=1.0 is robustly better than logistic_regression_scaled_C=0.1.",
+    "allowed_claim": "logistic_regression_scaled_C=1.0 had the best multi-seed mean accuracy, but the effect was smaller than seed noise; no robust best-model claim is allowed.",
+    "supported_claims": [],
+    "inconclusive_findings": [
+      "Best config 'logistic_regression_scaled_C=1.0' improves over 'logistic_regression_scaled_C=0.1' by 0.0070 accuracy, but best-config seed noise is 0.0280."
+    ],
+    "rationale": "Measured top-model effect is not larger than inter-seed noise. The report must not claim a robust best model."
+  },
+  "classic_verification": null,
+  "verdict": {
+    "score_verdict": "classic_win",
+    "claim_safety_verdict": "lucky_win",
+    "overall_verdict": "lucky_win",
+    "reason": "Lucky choice ran verification and prevented a robust claim that classic score-chasing would leave unsupported."
+  },
+  "artifacts": {
+    "lucky_choice": "runs/counterfactuals/breast_cancer_accuracy/case_001/lucky_choice.json",
+    "classic_choice": "runs/counterfactuals/breast_cancer_accuracy/case_001/classic_choice.json"
+  }
+}

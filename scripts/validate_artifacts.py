@@ -67,6 +67,8 @@ def main() -> None:
                 ROOT / "reports" / "ablations" / "world_model_ablation.md",
                 ROOT / "reports" / "ablations" / "classic_vs_lucky_loop.md",
                 ROOT / "reports" / "ablations" / "world_model_ablation.json",
+                ROOT / "reports" / "counterfactuals" / "counterfactual_evaluation.md",
+                ROOT / "reports" / "counterfactuals" / "counterfactual_evaluation.json",
             ]
         )
         for policy in ["classic_autoresearch", "classic_verified", "lucky_loop_full"]:
@@ -90,6 +92,19 @@ def main() -> None:
         expected = 9
         if len(rows) < expected:
             failures.append(f"ablation json has {len(rows)} rows, expected at least {expected}")
+        for key in ["best_claimable_score", "best_verified_mean_score", "runs_to_first_verification", "qwen_choice_usefulness"]:
+            if any(key not in row for row in rows):
+                failures.append(f"ablation json rows missing {key}")
+
+    counterfactual_json = ROOT / "reports" / "counterfactuals" / "counterfactual_evaluation.json"
+    if args.check_ablations and counterfactual_json.exists():
+        payload = json.loads(counterfactual_json.read_text(encoding="utf-8"))
+        rows = payload.get("rows") or []
+        if not rows:
+            failures.append("counterfactual json has no rows")
+        summary = payload.get("summary") or {}
+        if summary.get("qwen_choice_usefulness") is None:
+            failures.append("counterfactual json missing qwen_choice_usefulness")
 
     if failures:
         print("Artifact validation failed:")

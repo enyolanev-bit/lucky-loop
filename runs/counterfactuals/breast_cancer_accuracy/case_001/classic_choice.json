@@ -1,0 +1,47 @@
+{
+  "action": {
+    "action_id": "action_logistic_regression_C-10p0_scale-True",
+    "command": "python experiments/train_sklearn.py --dataset breast_cancer --model logistic_regression --scale --C 10.0",
+    "model": "logistic_regression",
+    "params": {
+      "dataset": "breast_cancer",
+      "scale": true,
+      "C": 10.0
+    }
+  },
+  "actual_result": {
+    "status": "success",
+    "accuracy": 0.972027972027972,
+    "f1": 0.9719127026819333,
+    "runtime_seconds": 0.0247,
+    "stdout_tail": "{\n  \"accuracy\": 0.972027972027972,\n  \"dataset\": \"breast_cancer\",\n  \"f1\": 0.9719127026819333,\n  \"model\": \"logistic_regression\",\n  \"n_label_noise_flips\": 0,\n  \"n_test\": 143,\n  \"n_train\": 426,\n  \"params\": {\n    \"C\": 10.0,\n    \"dataset\": \"breast_cancer\",\n    \"kernel\": \"rbf\",\n    \"label_noise\": 0.0,\n    \"learning_rate\": 0.1,\n    \"max_depth\": null,\n    \"max_iter\": 1000,\n    \"model\": \"logistic_regression\",\n    \"n_estimators\": 200,\n    \"scale\": true,\n    \"seed\": 42,\n    \"test_size\": 0.25\n  },\n  \"runtime_seconds\": 0.0247,\n  \"status\": \"success\"\n}\n",
+    "stderr_tail": "",
+    "raw": {
+      "accuracy": 0.972027972027972,
+      "dataset": "breast_cancer",
+      "f1": 0.9719127026819333,
+      "model": "logistic_regression",
+      "n_label_noise_flips": 0,
+      "n_test": 143,
+      "n_train": 426,
+      "params": {
+        "C": 10.0,
+        "dataset": "breast_cancer",
+        "kernel": "rbf",
+        "label_noise": 0.0,
+        "learning_rate": 0.1,
+        "max_depth": null,
+        "max_iter": 1000,
+        "model": "logistic_regression",
+        "n_estimators": 200,
+        "scale": true,
+        "seed": 42,
+        "test_size": 0.25
+      },
+      "runtime_seconds": 0.0247,
+      "status": "success"
+    }
+  },
+  "actual_metric": 0.972027972027972,
+  "verification": null
+}

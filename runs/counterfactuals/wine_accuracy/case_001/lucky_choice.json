@@ -1,0 +1,297 @@
+{
+  "action": {
+    "action_id": "action_verify_top_models",
+    "command": "python experiments/compare_models_sklearn.py --dataset wine --models logistic_regression:scale=true,C=0.1 random_forest:n_estimators=100 logistic_regression --seeds 0 1 2 3 4",
+    "model": "top_model_verification",
+    "params": {
+      "dataset": "wine",
+      "models": [
+        {
+          "run_id": "run_002",
+          "model": "logistic_regression",
+          "model_key": "logistic_regression_scaled_C=0.1",
+          "metric": 1.0,
+          "params": {
+            "dataset": "wine",
+            "scale": true,
+            "C": 0.1
+          }
+        },
+        {
+          "run_id": "run_005",
+          "model": "random_forest",
+          "model_key": "random_forest_n=100",
+          "metric": 1.0,
+          "params": {
+            "dataset": "wine",
+            "n_estimators": 100,
+            "max_depth": null
+          }
+        },
+        {
+          "run_id": "run_001",
+          "model": "logistic_regression",
+          "model_key": "logistic_regression",
+          "metric": 0.9777777777777777,
+          "params": {
+            "dataset": "wine",
+            "scale": false
+          }
+        }
+      ],
+      "seeds": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "reason": "Top models are tied on single-split evidence; robust best-model claim requires multi-seed verification.",
+      "verification_action_key": "logistic_regression:logistic_regression_scaled_C=0.1:random_forest_n=100"
+    }
+  },
+  "actual_result": {
+    "status": "success",
+    "accuracy": null,
+    "f1": null,
+    "runtime_seconds": 39.1195,
+    "stdout_tail": " },\n    {\n      \"accuracy\": 0.9111111111111111,\n      \"config_key\": \"logistic_regression\",\n      \"f1\": 0.9110439432690072,\n      \"label\": \"logistic_regression\",\n      \"runtime_seconds\": 0.6396,\n      \"seed\": 1,\n      \"sweep_param\": \"model\",\n      \"value\": \"logistic_regression\"\n    },\n    {\n      \"accuracy\": 1.0,\n      \"config_key\": \"logistic_regression\",\n      \"f1\": 1.0,\n      \"label\": \"logistic_regression\",\n      \"runtime_seconds\": 0.5005,\n      \"seed\": 2,\n      \"sweep_param\": \"model\",\n      \"value\": \"logistic_regression\"\n    },\n    {\n      \"accuracy\": 0.9333333333333333,\n      \"config_key\": \"logistic_regression\",\n      \"f1\": 0.9328253968253967,\n      \"label\": \"logistic_regression\",\n      \"runtime_seconds\": 0.6315,\n      \"seed\": 3,\n      \"sweep_param\": \"model\",\n      \"value\": \"logistic_regression\"\n    },\n    {\n      \"accuracy\": 0.9777777777777777,\n      \"config_key\": \"logistic_regression\",\n      \"f1\": 0.9779047619047617,\n      \"label\": \"logistic_regression\",\n      \"runtime_seconds\": 0.5028,\n      \"seed\": 4,\n      \"sweep_param\": \"model\",\n      \"value\": \"logistic_regression\"\n    }\n  ],\n  \"runtime_seconds\": 39.1195,\n  \"seeds\": [\n    0,\n    1,\n    2,\n    3,\n    4\n  ],\n  \"status\": \"success\",\n  \"summary_by_value\": {\n    \"logistic_regression\": {\n      \"max_accuracy\": 1.0,\n      \"mean_accuracy\": 0.9511111111111111,\n      \"mean_f1\": 0.9509198997649124,\n      \"min_accuracy\": 0.9111111111111111,\n      \"n\": 5\n    },\n    \"logistic_regression_scaled_C=0.1\": {\n      \"max_accuracy\": 1.0,\n      \"mean_accuracy\": 0.9955555555555555,\n      \"mean_f1\": 0.9955637480798771,\n      \"min_accuracy\": 0.9777777777777777,\n      \"n\": 5\n    },\n    \"random_forest_n=100\": {\n      \"max_accuracy\": 1.0,\n      \"mean_accuracy\": 0.9955555555555555,\n      \"mean_f1\": 0.9955389872631253,\n      \"min_accuracy\": 0.9777777777777777,\n      \"n\": 5\n    }\n  },\n  \"type\": \"top_model_verification\",\n  \"verified_models\": [\n    \"logistic_regression_scaled_C=0.1\",\n    \"random_forest_n=100\",\n    \"logistic_regression\"\n  ]\n}\n",
+    "stderr_tail": "",
+    "raw": {
+      "best": {
+        "max_accuracy": 1.0,
+        "mean_accuracy": 0.9955555555555555,
+        "mean_f1": 0.9955637480798771,
+        "min_accuracy": 0.9777777777777777,
+        "n": 5,
+        "value": "logistic_regression_scaled_C=0.1"
+      },
+      "dataset": "wine",
+      "failures": [],
+      "metric": "accuracy",
+      "models": [
+        "logistic_regression:scale=true,C=0.1",
+        "random_forest:n_estimators=100",
+        "logistic_regression"
+      ],
+      "runner_up": {
+        "max_accuracy": 1.0,
+        "mean_accuracy": 0.9955555555555555,
+        "mean_f1": 0.9955389872631253,
+        "min_accuracy": 0.9777777777777777,
+        "n": 5,
+        "value": "random_forest_n=100"
+      },
+      "runs": [
+        {
+          "accuracy": 1.0,
+          "config_key": "logistic_regression_scaled_C=0.1",
+          "f1": 1.0,
+          "label": "logistic_regression_scaled_C=0.1",
+          "runtime_seconds": 0.0315,
+          "seed": 0,
+          "sweep_param": "model",
+          "value": "logistic_regression_scaled_C=0.1"
+        },
+        {
+          "accuracy": 0.9777777777777777,
+          "config_key": "logistic_regression_scaled_C=0.1",
+          "f1": 0.9778187403993854,
+          "label": "logistic_regression_scaled_C=0.1",
+          "runtime_seconds": 0.0121,
+          "seed": 1,
+          "sweep_param": "model",
+          "value": "logistic_regression_scaled_C=0.1"
+        },
+        {
+          "accuracy": 1.0,
+          "config_key": "logistic_regression_scaled_C=0.1",
+          "f1": 1.0,
+          "label": "logistic_regression_scaled_C=0.1",
+          "runtime_seconds": 0.0375,
+          "seed": 2,
+          "sweep_param": "model",
+          "value": "logistic_regression_scaled_C=0.1"
+        },
+        {
+          "accuracy": 1.0,
+          "config_key": "logistic_regression_scaled_C=0.1",
+          "f1": 1.0,
+          "label": "logistic_regression_scaled_C=0.1",
+          "runtime_seconds": 0.0115,
+          "seed": 3,
+          "sweep_param": "model",
+          "value": "logistic_regression_scaled_C=0.1"
+        },
+        {
+          "accuracy": 1.0,
+          "config_key": "logistic_regression_scaled_C=0.1",
+          "f1": 1.0,
+          "label": "logistic_regression_scaled_C=0.1",
+          "runtime_seconds": 0.0108,
+          "seed": 4,
+          "sweep_param": "model",
+          "value": "logistic_regression_scaled_C=0.1"
+        },
+        {
+          "accuracy": 1.0,
+          "config_key": "random_forest_n=100",
+          "f1": 1.0,
+          "label": "random_forest_n=100",
+          "runtime_seconds": 0.3071,
+          "seed": 0,
+          "sweep_param": "model",
+          "value": "random_forest_n=100"
+        },
+        {
+          "accuracy": 1.0,
+          "config_key": "random_forest_n=100",
+          "f1": 1.0,
+          "label": "random_forest_n=100",
+          "runtime_seconds": 0.3263,
+          "seed": 1,
+          "sweep_param": "model",
+          "value": "random_forest_n=100"
+        },
+        {
+          "accuracy": 0.9777777777777777,
+          "config_key": "random_forest_n=100",
+          "f1": 0.9776949363156261,
+          "label": "random_forest_n=100",
+          "runtime_seconds": 0.309,
+          "seed": 2,
+          "sweep_param": "model",
+          "value": "random_forest_n=100"
+        },
+        {
+          "accuracy": 1.0,
+          "config_key": "random_forest_n=100",
+          "f1": 1.0,
+          "label": "random_forest_n=100",
+          "runtime_seconds": 0.3072,
+          "seed": 3,
+          "sweep_param": "model",
+          "value": "random_forest_n=100"
+        },
+        {
+          "accuracy": 1.0,
+          "config_key": "random_forest_n=100",
+          "f1": 1.0,
+          "label": "random_forest_n=100",
+          "runtime_seconds": 0.3867,
+          "seed": 4,
+          "sweep_param": "model",
+          "value": "random_forest_n=100"
+        },
+        {
+          "accuracy": 0.9333333333333333,
+          "config_key": "logistic_regression",
+          "f1": 0.9328253968253967,
+          "label": "logistic_regression",
+          "runtime_seconds": 0.7905,
+          "seed": 0,
+          "sweep_param": "model",
+          "value": "logistic_regression"
+        },
+        {
+          "accuracy": 0.9111111111111111,
+          "config_key": "logistic_regression",
+          "f1": 0.9110439432690072,
+          "label": "logistic_regression",
+          "runtime_seconds": 0.6396,
+          "seed": 1,
+          "sweep_param": "model",
+          "value": "logistic_regression"
+        },
+        {
+          "accuracy": 1.0,
+          "config_key": "logistic_regression",
+          "f1": 1.0,
+          "label": "logistic_regression",
+          "runtime_seconds": 0.5005,
+          "seed": 2,
+          "sweep_param": "model",
+          "value": "logistic_regression"
+        },
+        {
+          "accuracy": 0.9333333333333333,
+          "config_key": "logistic_regression",
+          "f1": 0.9328253968253967,
+          "label": "logistic_regression",
+          "runtime_seconds": 0.6315,
+          "seed": 3,
+          "sweep_param": "model",
+          "value": "logistic_regression"
+        },
+        {
+          "accuracy": 0.9777777777777777,
+          "config_key": "logistic_regression",
+          "f1": 0.9779047619047617,
+          "label": "logistic_regression",
+          "runtime_seconds": 0.5028,
+          "seed": 4,
+          "sweep_param": "model",
+          "value": "logistic_regression"
+        }
+      ],
+      "runtime_seconds": 39.1195,
+      "seeds": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "status": "success",
+      "summary_by_value": {
+        "logistic_regression": {
+          "max_accuracy": 1.0,
+          "mean_accuracy": 0.9511111111111111,
+          "mean_f1": 0.9509198997649124,
+          "min_accuracy": 0.9111111111111111,
+          "n": 5
+        },
+        "logistic_regression_scaled_C=0.1": {
+          "max_accuracy": 1.0,
+          "mean_accuracy": 0.9955555555555555,
+          "mean_f1": 0.9955637480798771,
+          "min_accuracy": 0.9777777777777777,
+          "n": 5
+        },
+        "random_forest_n=100": {
+          "max_accuracy": 1.0,
+          "mean_accuracy": 0.9955555555555555,
+          "mean_f1": 0.9955389872631253,
+          "min_accuracy": 0.9777777777777777,
+          "n": 5
+        }
+      },
+      "type": "top_model_verification",
+      "verified_models": [
+        "logistic_regression_scaled_C=0.1",
+        "random_forest_n=100",
+        "logistic_regression"
+      ]
+    }
+  },
+  "actual_metric": 0.9955555555555555,
+  "verification": {
+    "status": "inconclusive",
+    "metric": "accuracy",
+    "effect_size": 0.0,
+    "seed_noise": 0.022222,
+    "effect_to_noise_ratio": 0.0,
+    "min_seed_count": 5,
+    "low_n_warning": false,
+    "trustworthy": false,
+    "best_config": "logistic_regression_scaled_C=0.1",
+    "worst_config": "random_forest_n=100",
+    "blocked_claim": "logistic_regression_scaled_C=0.1 is robustly better than random_forest_n=100.",
+    "allowed_claim": "logistic_regression_scaled_C=0.1 had the best multi-seed mean accuracy, but the effect was smaller than seed noise; no robust best-model claim is allowed.",
+    "supported_claims": [],
+    "inconclusive_findings": [
+      "Best config 'logistic_regression_scaled_C=0.1' improves over 'random_forest_n=100' by 0.0000 accuracy, but best-config seed noise is 0.0222."
+    ],
+    "rationale": "Measured top-model effect is not larger than inter-seed noise. The report must not claim a robust best model."
+  }
+}

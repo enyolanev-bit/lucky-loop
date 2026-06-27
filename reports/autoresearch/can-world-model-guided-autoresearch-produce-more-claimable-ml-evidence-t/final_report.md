@@ -20,24 +20,33 @@ A coding agent operates inside the repository. Lucky Loop supplies the research 
 - Experiment plan: `experiment_plan.json`
 - Evidence manifest: `evidence_manifest.json`
 - Backend ablation: `reports/ablations/world_model_ablation.md`
+- Counterfactual evaluation: `reports/counterfactuals/counterfactual_evaluation.md`
 
 ## Ablation Snapshot
 
-| Task | Policy | Best single-run | Unsupported best-model claims | Claims blocked | Qwen predictions |
-|---|---|---:|---:|---:|---:|
-| breast_cancer_accuracy | classic_autoresearch | 0.9860 | 1 | 0 | 0 |
-| breast_cancer_accuracy | classic_verified | 0.9860 | 0 | 1 | 0 |
-| breast_cancer_accuracy | lucky_loop_full | 0.9860 | 0 | 1 | 84 |
-| wine_accuracy | classic_autoresearch | 1.0000 | 1 | 0 | 0 |
-| wine_accuracy | classic_verified | 1.0000 | 0 | 1 | 0 |
-| wine_accuracy | lucky_loop_full | 1.0000 | 0 | 2 | 83 |
-| digits_accuracy | classic_autoresearch | 0.9778 | 1 | 0 | 0 |
-| digits_accuracy | classic_verified | 0.9778 | 0 | 1 | 0 |
-| digits_accuracy | lucky_loop_full | 0.9800 | 0 | 1 | 84 |
+| Task | Policy | Best single-run | Best verified mean | Best claimable | Unsupported best-model claims | Claims blocked | Qwen predictions |
+|---|---|---:|---:|---:|---:|---:|---:|
+| breast_cancer_accuracy | classic_autoresearch | 0.9860 |  |  | 1 | 0 | 0 |
+| breast_cancer_accuracy | classic_verified | 0.9860 | 0.9706 |  | 0 | 1 | 0 |
+| breast_cancer_accuracy | lucky_loop_full | 0.9860 | 0.9706 |  | 0 | 1 | 84 |
+| wine_accuracy | classic_autoresearch | 1.0000 |  |  | 1 | 0 | 0 |
+| wine_accuracy | classic_verified | 1.0000 | 0.9956 |  | 0 | 1 | 0 |
+| wine_accuracy | lucky_loop_full | 1.0000 | 0.9956 |  | 0 | 2 | 83 |
+| digits_accuracy | classic_autoresearch | 0.9778 |  |  | 1 | 0 | 0 |
+| digits_accuracy | classic_verified | 0.9778 | 0.9764 |  | 0 | 1 | 0 |
+| digits_accuracy | lucky_loop_full | 0.9800 | 0.9764 |  | 0 | 1 | 84 |
+
+## Counterfactual Result
+
+- Cases: 3
+- Lucky wins: 3
+- Qwen choice usefulness: 100.00%
 
 ## Claim Discipline
 
 Classic autoresearch can find good single-run scores, but those are not robust claims. Lucky Loop full adds auditable pre-compute predictions and keeps unsupported best-model claims at zero in the generated ablation artifacts.
+
+Strict result: on these tasks, the verifier did not allow a robust best-model claim. That is the point of the evidence gate: Lucky Loop surfaces verified means and blocked overclaims instead of converting close single-run wins into publication claims.
 
 ## Source Mapping
 

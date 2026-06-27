@@ -1,0 +1,47 @@
+{
+  "action": {
+    "action_id": "action_random_forest_n_estimators-100",
+    "command": "python experiments/train_sklearn.py --dataset digits --model random_forest --n-estimators 100",
+    "model": "random_forest",
+    "params": {
+      "dataset": "digits",
+      "n_estimators": 100,
+      "max_depth": null
+    }
+  },
+  "actual_result": {
+    "status": "success",
+    "accuracy": 0.96,
+    "f1": 0.9597281558755765,
+    "runtime_seconds": 0.4696,
+    "stdout_tail": "{\n  \"accuracy\": 0.96,\n  \"dataset\": \"digits\",\n  \"f1\": 0.9597281558755765,\n  \"model\": \"random_forest\",\n  \"n_label_noise_flips\": 0,\n  \"n_test\": 450,\n  \"n_train\": 1347,\n  \"params\": {\n    \"C\": 1.0,\n    \"dataset\": \"digits\",\n    \"kernel\": \"rbf\",\n    \"label_noise\": 0.0,\n    \"learning_rate\": 0.1,\n    \"max_depth\": null,\n    \"max_iter\": 1000,\n    \"model\": \"random_forest\",\n    \"n_estimators\": 100,\n    \"scale\": false,\n    \"seed\": 42,\n    \"test_size\": 0.25\n  },\n  \"runtime_seconds\": 0.4696,\n  \"status\": \"success\"\n}\n",
+    "stderr_tail": "",
+    "raw": {
+      "accuracy": 0.96,
+      "dataset": "digits",
+      "f1": 0.9597281558755765,
+      "model": "random_forest",
+      "n_label_noise_flips": 0,
+      "n_test": 450,
+      "n_train": 1347,
+      "params": {
+        "C": 1.0,
+        "dataset": "digits",
+        "kernel": "rbf",
+        "label_noise": 0.0,
+        "learning_rate": 0.1,
+        "max_depth": null,
+        "max_iter": 1000,
+        "model": "random_forest",
+        "n_estimators": 100,
+        "scale": false,
+        "seed": 42,
+        "test_size": 0.25
+      },
+      "runtime_seconds": 0.4696,
+      "status": "success"
+    }
+  },
+  "actual_metric": 0.96,
+  "verification": null
+}

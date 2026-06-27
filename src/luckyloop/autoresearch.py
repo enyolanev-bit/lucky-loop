@@ -192,6 +192,7 @@ def collect_evidence_manifest(out_dir: Path, task_paths: list[str], executed: bo
             "summary": "reports/benchmark_summary.md",
             "ablation": "reports/ablations/world_model_ablation.md",
             "classic_vs_lucky_loop": "reports/ablations/classic_vs_lucky_loop.md",
+            "counterfactuals": "reports/counterfactuals/counterfactual_evaluation.md",
             "backend_pitch": "reports/pitch_backend_summary.md",
         },
         "task_artifacts": [],
@@ -226,9 +227,13 @@ def execute_backend(task_paths: list[str], agent: str, rerun_experiments: bool) 
 
 def write_final_report(out_dir: Path, question: str, context, evidence: dict) -> None:
     ablation_path = ROOT / "reports" / "ablations" / "world_model_ablation.json"
+    counterfactual_path = ROOT / "reports" / "counterfactuals" / "counterfactual_evaluation.json"
     rows = []
     if ablation_path.exists():
         rows = json.loads(ablation_path.read_text(encoding="utf-8")).get("rows", [])
+    counterfactual_summary = {}
+    if counterfactual_path.exists():
+        counterfactual_summary = json.loads(counterfactual_path.read_text(encoding="utf-8")).get("summary", {})
     lines = [
         "# Agent-Operated Autoresearch Report",
         "",
@@ -256,20 +261,36 @@ def write_final_report(out_dir: Path, question: str, context, evidence: dict) ->
         "- Experiment plan: `experiment_plan.json`",
         "- Evidence manifest: `evidence_manifest.json`",
         "- Backend ablation: `reports/ablations/world_model_ablation.md`",
+        "- Counterfactual evaluation: `reports/counterfactuals/counterfactual_evaluation.md`",
         "",
         "## Ablation Snapshot",
         "",
-        "| Task | Policy | Best single-run | Unsupported best-model claims | Claims blocked | Qwen predictions |",
-        "|---|---|---:|---:|---:|---:|",
+        "| Task | Policy | Best single-run | Best verified mean | Best claimable | Unsupported best-model claims | Claims blocked | Qwen predictions |",
+        "|---|---|---:|---:|---:|---:|---:|---:|",
     ]
     for row in rows:
         metric = row.get("best_single_run_metric")
         metric_text = "" if metric is None else f"{metric:.4f}"
+        verified = row.get("best_verified_mean_score")
+        verified_text = "" if verified is None else f"{verified:.4f}"
+        claimable = row.get("best_claimable_score")
+        claimable_text = "" if claimable is None else f"{claimable:.4f}"
         lines.append(
-            f"| {row.get('task')} | {row.get('policy')} | {metric_text} | "
+            f"| {row.get('task')} | {row.get('policy')} | {metric_text} | {verified_text} | {claimable_text} | "
             f"{row.get('unsupported_best_model_claims')} | {row.get('claims_blocked')} | "
             f"{row.get('world_model_prediction_count')} |"
         )
+    if counterfactual_summary:
+        usefulness = counterfactual_summary.get("qwen_choice_usefulness")
+        usefulness_text = "" if usefulness is None else f"{usefulness:.2%}"
+        lines += [
+            "",
+            "## Counterfactual Result",
+            "",
+            f"- Cases: {counterfactual_summary.get('cases')}",
+            f"- Lucky wins: {counterfactual_summary.get('lucky_wins')}",
+            f"- Qwen choice usefulness: {usefulness_text}",
+        ]
     lines += [
         "",
         "## Claim Discipline",

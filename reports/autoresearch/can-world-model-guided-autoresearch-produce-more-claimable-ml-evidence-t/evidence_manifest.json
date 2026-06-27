@@ -12,6 +12,7 @@
     "summary": "reports/benchmark_summary.md",
     "ablation": "reports/ablations/world_model_ablation.md",
     "classic_vs_lucky_loop": "reports/ablations/classic_vs_lucky_loop.md",
+    "counterfactuals": "reports/counterfactuals/counterfactual_evaluation.md",
     "backend_pitch": "reports/pitch_backend_summary.md"
   },
   "task_artifacts": [
