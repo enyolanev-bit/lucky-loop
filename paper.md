@@ -95,7 +95,9 @@ Lucky Loop is implemented as a small auditable pipeline:
 6. **Claim ledger** records blocked and allowed claims with evidence run IDs.
 7. **Reporter/UI** show the timeline and only write evidence-backed claims.
 
-During the hackathon build, Codex can operate as the autoresearch agent while Lucky Loop records the same state/action/prediction/execution traces that an autonomous planner will later produce.
+During the hackathon build, Codex operates as the autoresearch agent in a human-in-the-loop mode: it proposes candidate actions, queries Qwen-AgentWorld for predicted outcomes, runs the selected experiment, and records evidence. In the autonomous version, this role is replaced by either a planner API or a deterministic selector inside the Lucky Loop package. The rest of the system remains unchanged: Qwen-AgentWorld is the world model, the executor tests reality, the comparator measures prediction-vs-reality, and the verifier gates claims.
+
+This separation is central to the design. Qwen-AgentWorld is not the research agent and not the verifier. It is the simulator used by the agent before compute.
 
 ## 5. Experiments
 

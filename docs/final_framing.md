@@ -43,7 +43,21 @@ Claim ledger / reporter / UI
     expose les preuves et n'écrit que les claims autorisés
 ```
 
-Pendant le build hackathon, Codex peut jouer le rôle de l'agent autoresearch. Le repo doit quand même produire des traces dans le format final: état, candidates, prédictions, décision, exécution, comparaison, verifier, claims.
+## Mode actuel vs version autonome
+
+```text
+Maintenant:
+    Autoresearch agent = Codex / human-in-the-loop operator
+    World model = Qwen-AgentWorld
+    Executor / Comparator / Verifier = code Python dans le repo
+
+Version autonome:
+    Autoresearch agent = planner API ou deterministic selector
+    World model = Qwen-AgentWorld
+    Executor / Comparator / Verifier = mêmes modules Python
+```
+
+Pendant le build hackathon, Codex joue donc le rôle de l'agent autoresearch. Le repo doit quand même produire des traces dans le format final: état, candidates, prédictions, décision, exécution, comparaison, verifier, claims. Quand on remplacera Codex par un planner autonome, les artifacts et l'UI ne doivent pas changer.
 
 ## Boucle cible
 
