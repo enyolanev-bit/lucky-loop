@@ -63,6 +63,21 @@ The Verifier abstains, and only at heavy noise (0.4) does the CI clear zero (a g
 Result holds under the rigorous gate (independently reviewed, see `CODEX-REVIEW.md`).
 *(Figure: `reports/noise_sweep.png`.)*
 
+**Generalization (3 datasets):** the mechanism is not benchmark-specific.
+
+| Dataset | Naive winners | Verifier-confirmed | Unsupported claims avoided |
+|---|---|---|---|
+| breast_cancer | 4 | 1 | 3 |
+| wine (n=178) | 4 | 0 | 4 |
+| digits (n=1797) | 4 | 1 | 3 |
+| **Total** | **12** | **2** | **10** |
+
+Crucially, the Verifier **adapts to variance**: on the small/noisy `wine` set it stays cautious
+(CI always crosses 0, 0 confirmed); on the larger `digits` set it confirms a real winner with a
+**tight** CI [+0.0144, +0.0279]. More data → more confidence — the hallmark of a sound statistical
+gate, not a hand-tuned threshold. Across 3 datasets, a naive agent would assert **12 winners**; ours
+confirms **2** and abstains on **10**.
+
 ## 6. Limitations
 - **Scope of the claim**: our contribution is a *calibration mechanism*, not a general empirical proof that autoresearch agents are unreliable. Evidence is one small `sklearn` benchmark, 4 seeds, accuracy only.
 - "Unsupported winner claims avoided" ≠ proven false positives; the gate can still be fooled by biased protocols, non-independent seeds, post-hoc benchmark selection, or config p-hacking.

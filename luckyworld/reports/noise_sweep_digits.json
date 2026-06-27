@@ -1,0 +1,172 @@
+{
+  "dataset": "digits",
+  "noise_levels": [
+    0.0,
+    0.1,
+    0.2,
+    0.4
+  ],
+  "seeds": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "levels": [
+    {
+      "noise": 0.0,
+      "per_method": {
+        "logreg_scaled": [
+          0.9689,
+          0.9689,
+          0.9489,
+          0.98
+        ],
+        "random_forest": [
+          0.9822,
+          0.9644,
+          0.98,
+          0.98
+        ],
+        "svc_rbf": [
+          0.9822,
+          0.9889,
+          0.9778,
+          0.98
+        ],
+        "hist_gb": [
+          0.9733,
+          0.9689,
+          0.9711,
+          0.9822
+        ]
+      },
+      "verdict": {
+        "best_method": "svc_rbf",
+        "best_acc": 0.9822,
+        "second_method": "random_forest",
+        "effect_size": 0.0056,
+        "seed_noise": 0.0201,
+        "trustworthy": false,
+        "statement": "AUCUN gagnant fiable : \u00e9cart best-2e 0.0056, marge IC95 appari\u00e9 0.0201 (borne basse -0.0146) \u2192 inconclusive (within noise)."
+      }
+    },
+    {
+      "noise": 0.1,
+      "per_method": {
+        "logreg_scaled": [
+          0.9222,
+          0.9156,
+          0.9111,
+          0.9133
+        ],
+        "random_forest": [
+          0.9711,
+          0.9667,
+          0.9689,
+          0.9733
+        ],
+        "svc_rbf": [
+          0.9778,
+          0.9844,
+          0.9733,
+          0.9733
+        ],
+        "hist_gb": [
+          0.9578,
+          0.9733,
+          0.9511,
+          0.9689
+        ]
+      },
+      "verdict": {
+        "best_method": "svc_rbf",
+        "best_acc": 0.9772,
+        "second_method": "random_forest",
+        "effect_size": 0.0072,
+        "seed_noise": 0.012,
+        "trustworthy": false,
+        "statement": "AUCUN gagnant fiable : \u00e9cart best-2e 0.0072, marge IC95 appari\u00e9 0.0120 (borne basse -0.0048) \u2192 inconclusive (within noise)."
+      }
+    },
+    {
+      "noise": 0.2,
+      "per_method": {
+        "logreg_scaled": [
+          0.8689,
+          0.9022,
+          0.8822,
+          0.9089
+        ],
+        "random_forest": [
+          0.96,
+          0.9578,
+          0.9689,
+          0.9689
+        ],
+        "svc_rbf": [
+          0.9689,
+          0.9644,
+          0.9667,
+          0.9711
+        ],
+        "hist_gb": [
+          0.9489,
+          0.9489,
+          0.9511,
+          0.96
+        ]
+      },
+      "verdict": {
+        "best_method": "svc_rbf",
+        "best_acc": 0.9678,
+        "second_method": "random_forest",
+        "effect_size": 0.0039,
+        "seed_noise": 0.0078,
+        "trustworthy": false,
+        "statement": "AUCUN gagnant fiable : \u00e9cart best-2e 0.0039, marge IC95 appari\u00e9 0.0078 (borne basse -0.0039) \u2192 inconclusive (within noise)."
+      }
+    },
+    {
+      "noise": 0.4,
+      "per_method": {
+        "logreg_scaled": [
+          0.8089,
+          0.8444,
+          0.8333,
+          0.8444
+        ],
+        "random_forest": [
+          0.9222,
+          0.94,
+          0.9311,
+          0.9333
+        ],
+        "svc_rbf": [
+          0.9378,
+          0.9644,
+          0.9511,
+          0.9578
+        ],
+        "hist_gb": [
+          0.8422,
+          0.8644,
+          0.8667,
+          0.8489
+        ]
+      },
+      "verdict": {
+        "best_method": "svc_rbf",
+        "best_acc": 0.9528,
+        "second_method": "random_forest",
+        "effect_size": 0.0211,
+        "seed_noise": 0.0067,
+        "trustworthy": true,
+        "statement": "'svc_rbf' est le meilleur : \u00e9cart 0.0211, IC95 appari\u00e9 [0.0144, 0.0279] \u2014 finding fiable."
+      }
+    }
+  ],
+  "naive_claims": 4,
+  "verifier_claims": 1,
+  "false_winners_avoided": 3
+}
