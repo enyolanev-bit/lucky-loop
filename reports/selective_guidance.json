@@ -1,0 +1,17 @@
+{
+  "n_tasks": 720,
+  "naive_saving_pct": 35.79,
+  "random_saving_pct": 0.0,
+  "oracle_saving_pct": 40.65,
+  "selective_saving_pct": 39.87,
+  "selective_best_threshold": -0.1,
+  "pct_oracle_recovered": 98.1,
+  "value_of_confidence_vs_naive": 4.08,
+  "conf_noise_sigma": 0.3,
+  "selective_by_conf_noise": {
+    "0.0": 41.3,
+    "0.3": 38.39,
+    "0.6": 37.99,
+    "1.0": 35.14
+  }
+}
