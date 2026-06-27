@@ -2,12 +2,13 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 from pathlib import Path
 
 from .comparator import compare
 from .executor import execute
 from .reporter import generate_report
-from .schemas import ExperimentTrace, ProposedAction
+from .schemas import CandidatePrediction, DecisionTrace, ExperimentTrace, ProposedAction, RejectedCandidate, ResearchState
 from .simulator import predict
 from .verifier import verify_sweep
 
@@ -16,6 +17,74 @@ ROOT = Path(__file__).resolve().parents[2]
 
 def action_key(action: ProposedAction) -> str:
     return f"{action.model}:{json.dumps(action.params, sort_keys=True)}"
+
+
+def with_action_id(action: ProposedAction, action_id: str) -> ProposedAction:
+    return ProposedAction(action_id=action_id, command=action.command, model=action.model, params=action.params)
+
+
+def prediction_source(prediction) -> str:
+    if not os.getenv("LUCKYWORLD_SIMULATOR_BASE_URL") or not os.getenv("LUCKYWORLD_SIMULATOR_MODEL"):
+        return "heuristic_fallback"
+    text = " ".join([prediction.rationale, *prediction.risks]).lower()
+    return "heuristic_fallback" if "fallback" in text or "heuristic" in text else "qwen_agentworld"
+
+
+def best_accuracy_results(traces: list[ExperimentTrace]) -> list[dict]:
+    rows = []
+    for t in traces:
+        if t.actual_result.accuracy is not None:
+            rows.append(
+                {
+                    "run_id": t.run_id,
+                    "model": t.proposed_action.model,
+                    "accuracy": t.actual_result.accuracy,
+                    "f1": t.actual_result.f1,
+                    "params": t.proposed_action.params,
+                }
+            )
+        elif t.actual_result.raw.get("best"):
+            rows.append(
+                {
+                    "run_id": t.run_id,
+                    "model": t.proposed_action.model,
+                    "best": t.actual_result.raw["best"],
+                    "params": t.proposed_action.params,
+                }
+            )
+    return rows
+
+
+def open_questions_for(traces: list[ExperimentTrace]) -> list[str]:
+    questions = ["Which candidate should receive the next compute budget?"]
+    if any(t.actual_result.accuracy and t.actual_result.accuracy >= 0.98 for t in traces):
+        questions.append("Is the best observed score robust across seeds or perturbations?")
+    if not any(t.verification for t in traces):
+        questions.append("Do apparent improvements survive an effect-vs-noise verifier?")
+    if any(t.comparison.unexpected_events for t in traces):
+        questions.append("What did the world model miss, and should the next action test that failure mode?")
+    return questions
+
+
+def risks_for(traces: list[ExperimentTrace]) -> list[str]:
+    risks = ["single-run best score may not justify a scientific claim"]
+    if any(t.actual_result.accuracy and t.actual_result.accuracy >= 0.98 for t in traces):
+        risks.append("seed variance may exceed apparent model or hyperparameter effects")
+    if any(t.comparison.unexpected_events for t in traces):
+        risks.append("world-model predictions may miss quantitative details")
+    return risks
+
+
+def build_state(goal: str, traces: list[ExperimentTrace], run_index: int, max_experiments: int, summary: str) -> ResearchState:
+    return ResearchState(
+        state_id=f"state_{run_index:03d}",
+        goal=goal,
+        known_results=best_accuracy_results(traces),
+        budget_remaining=max(max_experiments - run_index + 1, 0),
+        open_questions=open_questions_for(traces),
+        risks_to_check=risks_for(traces),
+        summary=summary,
+    )
 
 
 def initial_experiment() -> tuple[str, ProposedAction]:
@@ -136,6 +205,69 @@ def choose_next(traces: list[ExperimentTrace], seen: set[str]) -> tuple[str, Pro
     return None
 
 
+def v2_candidate_list(selected: ProposedAction, next_choice: tuple[str, ProposedAction] | None) -> list[ProposedAction]:
+    candidates = [with_action_id(selected, "action_selected")]
+    if next_choice is not None:
+        candidates.append(with_action_id(next_choice[1], "action_next_candidate"))
+    return candidates
+
+
+def build_decision_trace(
+    selected: ProposedAction,
+    prediction,
+    next_choice: tuple[str, ProposedAction] | None,
+    next_decision: str,
+) -> DecisionTrace:
+    rejected = []
+    if next_choice is not None:
+        rejected.append(
+            RejectedCandidate(
+                action=with_action_id(next_choice[1], "action_next_candidate"),
+                reason="Not executed in this step; it is the queued candidate for the next research iteration.",
+            )
+        )
+    risk_text = ", ".join(prediction.risks) or "no specific risk"
+    return DecisionTrace(
+        selected_action=with_action_id(selected, "action_selected"),
+        world_model_signal_used=True,
+        causal_reason=(
+            f"Executed the selected action after the world model predicted {prediction.expected_metric}, "
+            f"runtime {prediction.expected_runtime_seconds}, recommendation={prediction.recommendation}, "
+            f"risks={risk_text}. Next decision: {next_decision}"
+        ),
+        rejected_candidates=rejected,
+    )
+
+
+def claim_updates_for(run_id: str, verification) -> list:
+    if verification is None:
+        return []
+    entries = []
+    for i, claim in enumerate(verification.supported_claims, start=1):
+        entries.append(
+            {
+                "claim_id": f"{run_id}_claim_{i:03d}",
+                "claim": claim,
+                "status": "supported",
+                "evidence_run_ids": [run_id],
+                "metrics": {"effect_size": verification.effect_size, "seed_noise": verification.seed_noise},
+            }
+        )
+    for i, finding in enumerate(verification.inconclusive_findings, start=len(entries) + 1):
+        entries.append(
+            {
+                "claim_id": f"{run_id}_claim_{i:03d}",
+                "claim": finding,
+                "status": "blocked",
+                "evidence_run_ids": [run_id],
+                "blocked_reason": verification.rationale,
+                "allowed_rewrite": finding,
+                "metrics": {"effect_size": verification.effect_size, "seed_noise": verification.seed_noise},
+            }
+        )
+    return entries
+
+
 def run(goal: str, max_experiments: int = 5) -> list[ExperimentTrace]:
     runs_dir = ROOT / "runs"
     reports_dir = ROOT / "reports"
@@ -151,6 +283,7 @@ def run(goal: str, max_experiments: int = 5) -> list[ExperimentTrace]:
 
     for i in range(1, max_experiments + 1):
         run_id = f"run_{i:03d}"
+        state_before = build_state(goal, traces, i, max_experiments, state)
         seen.add(action_key(action))
         prediction = predict(action, state)
         actual = execute(action.command, cwd=ROOT)
@@ -167,6 +300,17 @@ def run(goal: str, max_experiments: int = 5) -> list[ExperimentTrace]:
             comparison=comparison,
             next_decision="pending",
             verification=verification,
+            schema_version="2.0",
+            state_before=state_before,
+            candidate_actions=[with_action_id(action, "action_selected")],
+            candidate_predictions=[
+                CandidatePrediction(
+                    action=with_action_id(action, "action_selected"),
+                    prediction=prediction,
+                    source=prediction_source(prediction),
+                )
+            ],
+            selected_action=with_action_id(action, "action_selected"),
         )
         next_choice = choose_next(traces + [provisional], seen)
         if i >= max_experiments or next_choice is None:
@@ -186,6 +330,23 @@ def run(goal: str, max_experiments: int = 5) -> list[ExperimentTrace]:
             comparison=comparison,
             next_decision=next_decision,
             verification=verification,
+            schema_version="2.0",
+            state_before=state_before,
+            candidate_actions=v2_candidate_list(action, next_choice),
+            candidate_predictions=[
+                CandidatePrediction(
+                    action=with_action_id(action, "action_selected"),
+                    prediction=prediction,
+                    source=prediction_source(prediction),
+                )
+            ],
+            selected_action=with_action_id(action, "action_selected"),
+            decision_trace=build_decision_trace(action, prediction, next_choice, next_decision),
+            claim_ledger_updates=claim_updates_for(run_id, verification),
+            artifacts={
+                "trace_path": f"runs/{run_id}.json",
+                "report_path": "reports/final_report.md",
+            },
         )
         traces.append(trace)
         (runs_dir / f"{run_id}.json").write_text(trace.model_dump_json(indent=2), encoding="utf-8")

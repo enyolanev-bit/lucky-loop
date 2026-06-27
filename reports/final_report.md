@@ -10,12 +10,12 @@ Predict before you compute, then verify before you claim: each experiment is sim
 
 | Run | Hypothesis | Model | Prediction | Actual accuracy | Match | Verifier | Decision |
 |---|---|---|---|---:|---|---|---|
-| run_001 | Establish a simple linear baseline before spending search budget. | logistic_regression | accuracy around 0.95-0.97, weighted F1 around 0.95-0.97 | 0.9510 | yes |  | Next selected by world-model-guided policy: World model warned that unscaled logistic regression may underperform; rerun the same baseline with feature scaling. |
-| run_002 | World model warned that unscaled logistic regression may underperform; rerun the same baseline with feature scaling. | logistic_regression | accuracy around 0.95-0.97, weighted F1 around 0.95-0.97 | 0.9860 | partial/no |  | Next selected by world-model-guided policy: The current linear baseline is already strong; test a different inductive bias for robustness rather than only chasing accuracy. |
-| run_003 | The current linear baseline is already strong; test a different inductive bias for robustness rather than only chasing accuracy. | random_forest | accuracy around 0.96-0.98, weighted F1 around 0.96-0.98 | 0.9580 | partial/no |  | Next selected by world-model-guided policy: The world model overestimated the tree ensemble; try a scaled margin-based model as a different hypothesis. |
-| run_004 | The world model overestimated the tree ensemble; try a scaled margin-based model as a different hypothesis. | svc | accuracy around 0.97-0.99, weighted F1 around 0.97-0.99 | 0.9860 | yes |  | Next selected by world-model-guided policy: Run a controlled noisy-label multi-seed sweep so the deterministic Verifier can decide whether an apparent improvement is larger than seed noise. |
-| run_005 | Run a controlled noisy-label multi-seed sweep so the deterministic Verifier can decide whether an apparent improvement is larger than seed noise. | verification_sweep | accuracy around 0.95-0.97, weighted F1 around 0.95-0.97 | best mean 0.9615 | partial/no | inconclusive; effect=0.020979; noise=0.027972 | Next selected by world-model-guided policy: Try conservative gradient boosting as a final ensemble baseline and compare prediction accuracy against actual metrics. |
-| run_006 | Try conservative gradient boosting as a final ensemble baseline and compare prediction accuracy against actual metrics. | gradient_boosting | accuracy around 0.97-0.99, weighted F1 around 0.97-0.99 | 0.9510 | partial/no |  | Stop and report the best observed model. |
+| run_001 | Establish a simple linear baseline before spending search budget. | logistic_regression | accuracy around 0.92-0.96 | 0.9510 | yes |  | Executed the selected action after the world model predicted accuracy around 0.92-0.96, runtime under 5, recommendation=run, risks=unscaled features can slow convergence. Next decision: Next selected by world-model-guided policy: World model warned that unscaled logistic regression may underperform; rerun the same baseline with feature scaling. |
+| run_002 | World model warned that unscaled logistic regression may underperform; rerun the same baseline with feature scaling. | logistic_regression | accuracy around 0.95-0.98 | 0.9860 | partial/no |  | Executed the selected action after the world model predicted accuracy around 0.95-0.98, runtime under 5, recommendation=run, risks=minor convergence warning possible. Next decision: Next selected by world-model-guided policy: The current linear baseline is already strong; test a different inductive bias for robustness rather than only chasing accuracy. |
+| run_003 | The current linear baseline is already strong; test a different inductive bias for robustness rather than only chasing accuracy. | random_forest | accuracy around 0.94-0.98 | 0.9580 | yes |  | Executed the selected action after the world model predicted accuracy around 0.94-0.98, runtime under 10, recommendation=run, risks=overfitting if max_depth is unconstrained. Next decision: Next selected by world-model-guided policy: Try a scaled RBF SVC because Qwen-AgentWorld expects scaling-sensitive models to be competitive on small tabular data. |
+| run_004 | Try a scaled RBF SVC because Qwen-AgentWorld expects scaling-sensitive models to be competitive on small tabular data. | svc | accuracy around 0.94-0.98 | 0.9860 | partial/no |  | Executed the selected action after the world model predicted accuracy around 0.94-0.98, runtime under 10, recommendation=run, risks=sensitive to scaling and C. Next decision: Next selected by world-model-guided policy: Run a controlled noisy-label multi-seed sweep so the deterministic Verifier can decide whether an apparent improvement is larger than seed noise. |
+| run_005 | Run a controlled noisy-label multi-seed sweep so the deterministic Verifier can decide whether an apparent improvement is larger than seed noise. | verification_sweep | accuracy around 0.94-0.98 | best mean 0.9615 | partial/no | inconclusive; effect=0.020979; noise=0.027972 | Executed the selected action after the world model predicted accuracy around 0.94-0.98, runtime under 25, recommendation=run, risks=label noise can make small hyperparameter differences non-robust, seed variance may exceed apparent gains. Next decision: Next selected by world-model-guided policy: Try conservative gradient boosting as a final ensemble baseline and compare prediction accuracy against actual metrics. |
+| run_006 | Try conservative gradient boosting as a final ensemble baseline and compare prediction accuracy against actual metrics. | gradient_boosting | accuracy around 0.94-0.98 | 0.9510 | yes |  | Executed the selected action after the world model predicted accuracy around 0.94-0.98, runtime under 15, recommendation=run, risks=can overfit with too many estimators. Next decision: Stop and report the best observed model. |
 
 ## Best result
 
@@ -31,51 +31,72 @@ Best single run: run_002, model=logistic_regression, accuracy=0.9860, f1=0.9860.
 
 ## Prediction misses
 
-- run_002: accuracy 0.9860 outside predicted range 0.95-0.97
-- run_003: accuracy 0.9580 outside predicted range 0.96-0.98
-- run_005: runtime 20.35s exceeded predicted 10s
-- run_006: accuracy 0.9510 outside predicted range 0.97-0.99
+- run_002: accuracy 0.9860 outside predicted range 0.95-0.98
+- run_004: accuracy 0.9860 outside predicted range 0.94-0.98
+- run_005: runtime 48.65s exceeded predicted 25s
 
 ## Evidence notes
 
 ### run_001
-- Prediction rationale: Logistic regression on the breast cancer dataset typically achieves high accuracy even without scaling, though scaling might improve it slightly. The experiment is quick to run and provides a baseline for comparison.
-- Risks: Model may not be fully optimized without scaling, Potential for slightly lower accuracy compared to scaled models
-- Actual status: success, runtime: 0.291s
+- Prediction rationale: Good baseline for breast cancer dataset.
+- Risks: unscaled features can slow convergence
+- State before: state_001; budget_remaining=6; known_results=0
+- Candidates considered: action_selected:logistic_regression, action_next_candidate:logistic_regression
+- Planner decision: Executed the selected action after the world model predicted accuracy around 0.92-0.96, runtime under 5, recommendation=run, risks=unscaled features can slow convergence. Next decision: Next selected by world-model-guided policy: World model warned that unscaled logistic regression may underperform; rerun the same baseline with feature scaling.
+- Rejected / deferred: logistic_regression: Not executed in this step; it is the queued candidate for the next research iteration.
+- Actual status: success, runtime: 1.006s
 - Lesson: Prediction was broadly consistent with the real run.
 
 ### run_002
-- Prediction rationale: The proposed experiment applies feature scaling to logistic regression on the breast cancer dataset, which aligns with the lesson from run_001 that unscaled logistic regression may underperform. Given the dataset's characteristics and the model's typical performance with scaling, accuracy and weighted F1 are expected to remain within the 0.95-0.97 range. The runtime is expected to be under 5 seconds, and there are minimal risks of failure.
-- Risks: minimal risk of failure due to known dataset and model compatibility
-- Actual status: success, runtime: 0.0192s
-- Unexpected: accuracy 0.9860 outside predicted range 0.95-0.97
+- Prediction rationale: Scaling usually helps logistic regression on tabular medical data.
+- Risks: minor convergence warning possible
+- State before: state_002; budget_remaining=5; known_results=1
+- Candidates considered: action_selected:logistic_regression, action_next_candidate:random_forest
+- Planner decision: Executed the selected action after the world model predicted accuracy around 0.95-0.98, runtime under 5, recommendation=run, risks=minor convergence warning possible. Next decision: Next selected by world-model-guided policy: The current linear baseline is already strong; test a different inductive bias for robustness rather than only chasing accuracy.
+- Rejected / deferred: random_forest: Not executed in this step; it is the queued candidate for the next research iteration.
+- Actual status: success, runtime: 0.0342s
+- Unexpected: accuracy 0.9860 outside predicted range 0.95-0.98
 - Lesson: Run succeeded, but the prediction missed at least one quantitative detail.
 
 ### run_003
-- Prediction rationale: Random forest is a robust non-linear model that should perform well on the breast cancer dataset. Given the success of scaled logistic regression with high accuracy, a random forest with 300 estimators is likely to achieve similar or slightly better performance. The main risks are overfitting and higher variance, but these are mitigated by the relatively small size of the dataset and the use of an ensemble method.
-- Risks: Overfitting on small dataset, Higher variance in performance compared to linear models
-- Actual status: success, runtime: 0.6423s
-- Unexpected: accuracy 0.9580 outside predicted range 0.96-0.98
-- Lesson: Run succeeded, but the prediction missed at least one quantitative detail.
-
-### run_004
-- Prediction rationale: The proposed SVC model with scaling and RBF kernel follows the world model's suggestion to test a scaled margin-based model. Previous linear and tree models showed strong performance, and an RBF SVM could potentially capture non-linear patterns while maintaining good generalization. The scaling parameter addresses previous concerns about unscaled features.
-- Risks: SVC with RBF kernel may overfit if not properly tuned, Scaling is applied but C=2.0 might not be optimal for this dataset
-- Actual status: success, runtime: 0.0212s
+- Prediction rationale: Tree ensembles are strong baselines and robust to scaling.
+- Risks: overfitting if max_depth is unconstrained
+- State before: state_003; budget_remaining=4; known_results=2
+- Candidates considered: action_selected:random_forest, action_next_candidate:svc
+- Planner decision: Executed the selected action after the world model predicted accuracy around 0.94-0.98, runtime under 10, recommendation=run, risks=overfitting if max_depth is unconstrained. Next decision: Next selected by world-model-guided policy: Try a scaled RBF SVC because Qwen-AgentWorld expects scaling-sensitive models to be competitive on small tabular data.
+- Rejected / deferred: svc: Not executed in this step; it is the queued candidate for the next research iteration.
+- Actual status: success, runtime: 1.0894s
 - Lesson: Prediction was broadly consistent with the real run.
 
+### run_004
+- Prediction rationale: Scaled RBF SVC is strong on small tabular datasets.
+- Risks: sensitive to scaling and C
+- State before: state_004; budget_remaining=3; known_results=3
+- Candidates considered: action_selected:svc, action_next_candidate:verification_sweep
+- Planner decision: Executed the selected action after the world model predicted accuracy around 0.94-0.98, runtime under 10, recommendation=run, risks=sensitive to scaling and C. Next decision: Next selected by world-model-guided policy: Run a controlled noisy-label multi-seed sweep so the deterministic Verifier can decide whether an apparent improvement is larger than seed noise.
+- Rejected / deferred: verification_sweep: Not executed in this step; it is the queued candidate for the next research iteration.
+- Actual status: success, runtime: 0.0226s
+- Unexpected: accuracy 0.9860 outside predicted range 0.94-0.98
+- Lesson: Run succeeded, but the prediction missed at least one quantitative detail.
+
 ### run_005
-- Prediction rationale: The proposed experiment introduces label noise (0.08) which is not typical for the sklearn breast_cancer dataset and may artificially degrade performance. Additionally, the logistic regression with scaling has already achieved high accuracy (0.986) in run_002, so a sweep over C values with noise is unlikely to yield meaningful improvements. Consider removing the label noise parameter or testing on a different model variant.
-- Risks: Label noise may reduce validation accuracy and F1 scores, Hyperparameter sweep may not significantly improve over best baseline, Seed variance could lead to inconsistent results across runs
-- Actual status: success, runtime: 20.3479s
-- Unexpected: runtime 20.35s exceeded predicted 10s
+- Prediction rationale: A multi-seed sweep is useful for the deterministic verifier: it tests whether an apparent gain survives effect-vs-noise scrutiny.
+- Risks: label noise can make small hyperparameter differences non-robust, seed variance may exceed apparent gains
+- State before: state_005; budget_remaining=2; known_results=4
+- Candidates considered: action_selected:verification_sweep, action_next_candidate:gradient_boosting
+- Planner decision: Executed the selected action after the world model predicted accuracy around 0.94-0.98, runtime under 25, recommendation=run, risks=label noise can make small hyperparameter differences non-robust, seed variance may exceed apparent gains. Next decision: Next selected by world-model-guided policy: Try conservative gradient boosting as a final ensemble baseline and compare prediction accuracy against actual metrics.
+- Rejected / deferred: gradient_boosting: Not executed in this step; it is the queued candidate for the next research iteration.
+- Actual status: success, runtime: 48.6546s
+- Unexpected: runtime 48.65s exceeded predicted 25s
 - Lesson: Run succeeded, but the prediction missed at least one quantitative detail.
 - Verifier verdict: inconclusive; trustworthy=False; effect_size=0.020979; seed_noise=0.027972
 - Verifier rationale: Measured effect is not larger than inter-seed noise. The report must not oversell this as a robust discovery.
 
 ### run_006
-- Prediction rationale: The gradient boosting model with conservative parameters (n_estimators=150, learning_rate=0.05) aligns with the world-model-guided policy to try a conservative gradient boosting ensemble baseline. Previous models achieved 0.986 accuracy with SVC and logistic regression with scaling, so gradient boosting should perform similarly or slightly better. The small dataset size and conservative hyperparameters reduce overfitting risks while maintaining reasonable runtime expectations.
-- Risks: Gradient boosting may overfit on small datasets like breast_cancer if not properly regularized, Prediction accuracy might still miss quantitative details as seen in previous runs, Performance may not significantly exceed existing SVC and logistic regression baselines
-- Actual status: success, runtime: 0.5161s
-- Unexpected: accuracy 0.9510 outside predicted range 0.97-0.99
-- Lesson: Run succeeded, but the prediction missed at least one quantitative detail.
+- Prediction rationale: Boosting often performs well but needs tuning.
+- Risks: can overfit with too many estimators
+- State before: state_006; budget_remaining=1; known_results=5
+- Candidates considered: action_selected:gradient_boosting
+- Planner decision: Executed the selected action after the world model predicted accuracy around 0.94-0.98, runtime under 15, recommendation=run, risks=can overfit with too many estimators. Next decision: Stop and report the best observed model.
+- Actual status: success, runtime: 0.943s
+- Lesson: Prediction was broadly consistent with the real run.

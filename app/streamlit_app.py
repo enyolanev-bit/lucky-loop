@@ -14,10 +14,13 @@ if not run_files:
 traces = [json.loads(p.read_text()) for p in run_files]
 rows=[]
 for t in traces:
+    decision_trace = t.get("decision_trace") or {}
     rows.append({
         "run": t["run_id"],
+        "schema": t.get("schema_version", "1.0"),
         "hypothesis": t["hypothesis"],
         "model": t["proposed_action"]["model"],
+        "candidates": len(t.get("candidate_actions") or []),
         "predicted": t["world_model_prediction"]["expected_metric"],
         "actual_accuracy": t["actual_result"].get("accuracy"),
         "runtime_s": t["actual_result"].get("runtime_seconds"),
@@ -26,7 +29,7 @@ for t in traces:
         "effect_size": (t.get("verification") or {}).get("effect_size"),
         "seed_noise": (t.get("verification") or {}).get("seed_noise"),
         "trustworthy": (t.get("verification") or {}).get("trustworthy"),
-        "decision": t["next_decision"],
+        "decision": decision_trace.get("causal_reason") or t["next_decision"],
     })
 st.dataframe(pd.DataFrame(rows), use_container_width=True)
 for t in traces:

@@ -29,7 +29,8 @@ def generate_report(goal: str, traces: list[ExperimentTrace], path: Path) -> Non
         verifier = ""
         if t.verification:
             verifier = f"{t.verification.status}; effect={t.verification.effect_size}; noise={t.verification.seed_noise}"
-        lines.append(f"| {t.run_id} | {t.hypothesis} | {t.proposed_action.model} | {t.world_model_prediction.expected_metric} | {acc} | {match} | {verifier} | {t.next_decision} |")
+        decision = t.decision_trace.causal_reason if t.decision_trace else t.next_decision
+        lines.append(f"| {t.run_id} | {t.hypothesis} | {t.proposed_action.model} | {t.world_model_prediction.expected_metric} | {acc} | {match} | {verifier} | {decision} |")
 
     lines += ["", "## Best result", ""]
     if best:
@@ -63,6 +64,16 @@ def generate_report(goal: str, traces: list[ExperimentTrace], path: Path) -> Non
         lines.append(f"### {t.run_id}")
         lines.append(f"- Prediction rationale: {t.world_model_prediction.rationale}")
         lines.append(f"- Risks: {', '.join(t.world_model_prediction.risks) or 'none'}")
+        if t.state_before:
+            lines.append(f"- State before: {t.state_before.state_id}; budget_remaining={t.state_before.budget_remaining}; known_results={len(t.state_before.known_results)}")
+        if t.candidate_actions:
+            candidates = ", ".join(f"{c.action_id or 'candidate'}:{c.model}" for c in t.candidate_actions)
+            lines.append(f"- Candidates considered: {candidates}")
+        if t.decision_trace:
+            lines.append(f"- Planner decision: {t.decision_trace.causal_reason}")
+            if t.decision_trace.rejected_candidates:
+                rejected = "; ".join(f"{r.action.model}: {r.reason}" for r in t.decision_trace.rejected_candidates)
+                lines.append(f"- Rejected / deferred: {rejected}")
         lines.append(f"- Actual status: {t.actual_result.status}, runtime: {t.actual_result.runtime_seconds}s")
         if t.comparison.unexpected_events:
             lines.append(f"- Unexpected: {'; '.join(t.comparison.unexpected_events)}")
