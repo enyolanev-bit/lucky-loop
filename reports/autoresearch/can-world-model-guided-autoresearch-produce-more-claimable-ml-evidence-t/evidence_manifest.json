@@ -5,6 +5,7 @@
   "literature": {
     "related_work": "reports/autoresearch/can-world-model-guided-autoresearch-produce-more-claimable-ml-evidence-t/literature/related_work.md",
     "research_context": "reports/autoresearch/can-world-model-guided-autoresearch-produce-more-claimable-ml-evidence-t/literature/research_context.json",
+    "sources_json": "reports/autoresearch/can-world-model-guided-autoresearch-produce-more-claimable-ml-evidence-t/literature/sources.json",
     "sources_bib": "reports/autoresearch/can-world-model-guided-autoresearch-produce-more-claimable-ml-evidence-t/literature/sources.bib"
   },
   "benchmark_reports": {

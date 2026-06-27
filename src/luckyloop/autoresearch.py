@@ -185,6 +185,7 @@ def collect_evidence_manifest(out_dir: Path, task_paths: list[str], executed: bo
         "literature": {
             "related_work": _rel(out_dir / "literature" / "related_work.md"),
             "research_context": _rel(out_dir / "literature" / "research_context.json"),
+            "sources_json": _rel(out_dir / "literature" / "sources.json"),
             "sources_bib": _rel(out_dir / "literature" / "sources.bib"),
         },
         "benchmark_reports": {
@@ -239,11 +240,19 @@ def write_final_report(out_dir: Path, question: str, context, evidence: dict) ->
         "",
         "## Literature-Derived Gaps",
         "",
-        *[f"- {gap}" for gap in context.known_gaps],
+        *[
+            (
+                f"- {gap.claim} Sources: "
+                f"{', '.join(f'[{source_id}]' for source_id in gap.source_ids) or '[no_source]'}. "
+                f"Implication: {gap.implication}"
+            )
+            for gap in context.gap_findings
+        ],
         "",
         "## Evidence Summary",
         "",
         "- Related work: `literature/related_work.md`",
+        "- Sources: `literature/sources.json` and `literature/sources.bib`",
         "- Experiment plan: `experiment_plan.json`",
         "- Evidence manifest: `evidence_manifest.json`",
         "- Backend ablation: `reports/ablations/world_model_ablation.md`",
@@ -266,6 +275,16 @@ def write_final_report(out_dir: Path, question: str, context, evidence: dict) ->
         "## Claim Discipline",
         "",
         "Classic autoresearch can find good single-run scores, but those are not robust claims. Lucky Loop full adds auditable pre-compute predictions and keeps unsupported best-model claims at zero in the generated ablation artifacts.",
+        "",
+        "## Source Mapping",
+        "",
+        "| Gap | Sources | Metric | Experiment |",
+        "|---|---|---|---|",
+    ]
+    for gap in context.gap_findings:
+        sources = ", ".join(f"[{source_id}]" for source_id in gap.source_ids) or "[no_source]"
+        lines.append(f"| {gap.gap_id} | {sources} | `{gap.metric}` | {gap.experiment} |")
+    lines += [
         "",
         "## Manifest",
         "",

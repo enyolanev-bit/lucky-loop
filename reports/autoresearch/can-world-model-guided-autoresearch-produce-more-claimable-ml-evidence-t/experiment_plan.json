@@ -56,7 +56,8 @@
     "prediction_interval_coverage",
     "prediction_miss_count",
     "runs_to_first_verification",
-    "compute_per_claimable_claim"
+    "compute_per_claimable_claim",
+    "evidence_manifest_completeness"
   ],
   "steps": [
     "literature_review",

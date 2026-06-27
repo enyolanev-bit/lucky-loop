@@ -102,6 +102,20 @@ python3 -m luckyloop.autoresearch \
 
 This is the main agent-operated path: Codex, Claude Code, OpenClaw, Hermes, or an API planner acts as the autoresearch agent in the repo. Lucky Loop provides the world-model prediction layer, real execution harness, comparator, verifier, claim ledger, and evidence reports.
 
+The autoresearch workspace includes an auditable literature layer:
+
+- official arXiv Atom API search with curated fallback
+- deduplicated `sources.json`
+- stable arXiv IDs/versions where available
+- source -> gap -> metric -> experiment mapping
+- citations carried into the final report
+
+Search arXiv directly:
+
+```bash
+PYTHONPATH=src python3 scripts/search_arxiv.py "Qwen-AgentWorld language world models" --max-results 5
+```
+
 To run one task directly:
 
 ```bash
@@ -179,6 +193,7 @@ reports/benchmark_summary.md
 reports/ablations/world_model_ablation.md
 reports/ablations/classic_vs_lucky_loop.md
 reports/autoresearch/<question_slug>/
+reports/autoresearch/<question_slug>/literature/sources.json
 reports/pitch_backend_summary.md
 app/streamlit_app.py
 ```

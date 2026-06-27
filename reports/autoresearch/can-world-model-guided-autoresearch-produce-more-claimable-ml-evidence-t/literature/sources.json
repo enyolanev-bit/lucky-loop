@@ -1,15 +1,7 @@
 {
+  "schema_version": "1.0",
   "question": "Can world-model-guided autoresearch produce more claimable ML evidence than classic autoresearch?",
-  "queries": [
-    "Can world-model-guided autoresearch produce more claimable ML evidence than classic autoresearch?",
-    "ti:\"AI Scientist\" OR abs:\"autonomous scientific discovery\"",
-    "all:\"Agent Laboratory\" \"research assistants\"",
-    "all:\"MLE-bench\" \"machine learning agents\"",
-    "all:\"Qwen-AgentWorld\" OR all:\"language world models\"",
-    "all:\"AI scientists fail\" implementation capability",
-    "all:\"claim verification\" \"AI scientist\" hallucinated findings"
-  ],
-  "papers": [
+  "sources": [
     {
       "title": "Agentic AI Scientists Are Not Built For Autonomous Scientific Discovery",
       "authors": [
@@ -455,7 +447,7 @@
       "exclusion_reason": null
     }
   ],
-  "excluded_papers": [
+  "excluded_sources": [
     {
       "title": "EAIRA: Establishing a Methodology for Evaluating AI Models as Scientific Research Assistants",
       "authors": [
@@ -609,27 +601,5 @@
       "metric": "evidence_manifest_completeness",
       "experiment": "Generate reports/autoresearch/<slug>/ with sources.json, research_context.json, experiment_plan.json, and evidence_manifest.json."
     }
-  ],
-  "recommended_metrics": [
-    "best_single_run_score",
-    "best_verified_mean_score",
-    "best_claimable_score",
-    "unsupported_best_model_claims",
-    "prediction_interval_coverage",
-    "prediction_miss_count",
-    "runs_to_first_verification",
-    "compute_per_claimable_claim",
-    "evidence_manifest_completeness"
-  ],
-  "recommended_baselines": [
-    "classic_autoresearch",
-    "classic_verified",
-    "lucky_loop_full"
-  ],
-  "recommended_experiment_plan": [
-    "Run classic autoresearch to measure score-chasing behavior without prospective simulation.",
-    "Run classic verified to isolate the deterministic verifier contribution.",
-    "Run Lucky Loop full with Qwen-AgentWorld candidate predictions before compute.",
-    "Compare unsupported claim rate, prediction-vs-reality traces, verification timing, and claimable evidence."
   ]
 }
