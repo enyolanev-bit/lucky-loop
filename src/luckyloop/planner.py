@@ -134,11 +134,9 @@ def _score_candidate(candidate_prediction: CandidatePrediction, traces: list[Exp
 
     if action.model == "logistic_regression" and action.params.get("scale") and traces:
         first = traces[0]
-        first_risks = " ".join(first.world_model_prediction.risks).lower()
         if first.proposed_action.model == "logistic_regression" and not first.proposed_action.params.get("scale"):
-            if "scal" in first_risks or "unscaled" in first_risks:
-                score += 45
-                reasons.append("previous world-model risk flagged unscaled features")
+            score += 45
+            reasons.append("after an unscaled logistic baseline, scaling is the direct world-model intervention to test")
 
     if action.model == "verification_sweep" and _best_accuracy(traces) >= 0.98:
         score += 35
