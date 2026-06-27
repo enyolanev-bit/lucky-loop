@@ -1,0 +1,17 @@
+{
+  "candidate_action_ids": [
+    "action_verify_top_models",
+    "action_logistic_regression_C-1p0_scale-True",
+    "action_logistic_regression_C-10p0_scale-True",
+    "action_logistic_regression_C-0p1_scale-False",
+    "action_logistic_regression_C-1p0_scale-False",
+    "action_logistic_regression_C-10p0_scale-False"
+  ],
+  "claim_risk": "A single-split leaderboard can overstate model quality.",
+  "expected_evidence_needed": "Run top-model verification before allowing a robust best-model claim.",
+  "preferred_action_id": "action_verify_top_models",
+  "rationale": "Fake command backend selected action_verify_top_models from the safe catalog for state state_006.",
+  "research_question": "Maximize validation accuracy on sklearn wine under a small compute budget, while avoiding unsupported claims.",
+  "stop_or_continue": "continue",
+  "working_hypothesis": "The best observed single-run model may not be robust across matched seeds."
+}

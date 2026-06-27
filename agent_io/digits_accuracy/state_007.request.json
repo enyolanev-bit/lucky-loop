@@ -1,0 +1,575 @@
+{
+  "candidate_catalog": [
+    {
+      "action_id": "action_logistic_regression_C-1p0_scale-True",
+      "command": "python experiments/train_sklearn.py --dataset digits --model logistic_regression --scale",
+      "model": "logistic_regression",
+      "params": {
+        "C": 1.0,
+        "dataset": "digits",
+        "scale": true
+      }
+    },
+    {
+      "action_id": "action_logistic_regression_C-10p0_scale-True",
+      "command": "python experiments/train_sklearn.py --dataset digits --model logistic_regression --scale --C 10.0",
+      "model": "logistic_regression",
+      "params": {
+        "C": 10.0,
+        "dataset": "digits",
+        "scale": true
+      }
+    },
+    {
+      "action_id": "action_svc_C-2p0_kernel-rbf_scale-True",
+      "command": "python experiments/train_sklearn.py --dataset digits --model svc --scale --C 2.0 --kernel rbf",
+      "model": "svc",
+      "params": {
+        "C": 2.0,
+        "dataset": "digits",
+        "kernel": "rbf",
+        "scale": true
+      }
+    },
+    {
+      "action_id": "action_svc_C-5p0_kernel-rbf_scale-True",
+      "command": "python experiments/train_sklearn.py --dataset digits --model svc --scale --C 5.0 --kernel rbf",
+      "model": "svc",
+      "params": {
+        "C": 5.0,
+        "dataset": "digits",
+        "kernel": "rbf",
+        "scale": true
+      }
+    },
+    {
+      "action_id": "action_hist_gradient_boosting_learning_rate-0p05_max_depth-8_n_estimators-100",
+      "command": "python experiments/train_sklearn.py --dataset digits --model hist_gradient_boosting --n-estimators 100 --learning-rate 0.05 --max-depth 8",
+      "model": "hist_gradient_boosting",
+      "params": {
+        "dataset": "digits",
+        "learning_rate": 0.05,
+        "max_depth": 8,
+        "n_estimators": 100
+      }
+    },
+    {
+      "action_id": "action_hist_gradient_boosting_learning_rate-0p08_n_estimators-100",
+      "command": "python experiments/train_sklearn.py --dataset digits --model hist_gradient_boosting --n-estimators 100 --learning-rate 0.08",
+      "model": "hist_gradient_boosting",
+      "params": {
+        "dataset": "digits",
+        "learning_rate": 0.08,
+        "max_depth": null,
+        "n_estimators": 100
+      }
+    },
+    {
+      "action_id": "action_hist_gradient_boosting_learning_rate-0p08_max_depth-8_n_estimators-100",
+      "command": "python experiments/train_sklearn.py --dataset digits --model hist_gradient_boosting --n-estimators 100 --learning-rate 0.08 --max-depth 8",
+      "model": "hist_gradient_boosting",
+      "params": {
+        "dataset": "digits",
+        "learning_rate": 0.08,
+        "max_depth": 8,
+        "n_estimators": 100
+      }
+    },
+    {
+      "action_id": "action_hist_gradient_boosting_learning_rate-0p05_n_estimators-150",
+      "command": "python experiments/train_sklearn.py --dataset digits --model hist_gradient_boosting --n-estimators 150 --learning-rate 0.05",
+      "model": "hist_gradient_boosting",
+      "params": {
+        "dataset": "digits",
+        "learning_rate": 0.05,
+        "max_depth": null,
+        "n_estimators": 150
+      }
+    },
+    {
+      "action_id": "action_hist_gradient_boosting_learning_rate-0p05_max_depth-8_n_estimators-150",
+      "command": "python experiments/train_sklearn.py --dataset digits --model hist_gradient_boosting --n-estimators 150 --learning-rate 0.05 --max-depth 8",
+      "model": "hist_gradient_boosting",
+      "params": {
+        "dataset": "digits",
+        "learning_rate": 0.05,
+        "max_depth": 8,
+        "n_estimators": 150
+      }
+    },
+    {
+      "action_id": "action_hist_gradient_boosting_learning_rate-0p08_n_estimators-150",
+      "command": "python experiments/train_sklearn.py --dataset digits --model hist_gradient_boosting --n-estimators 150 --learning-rate 0.08",
+      "model": "hist_gradient_boosting",
+      "params": {
+        "dataset": "digits",
+        "learning_rate": 0.08,
+        "max_depth": null,
+        "n_estimators": 150
+      }
+    },
+    {
+      "action_id": "action_hist_gradient_boosting_learning_rate-0p08_max_depth-8_n_estimators-150",
+      "command": "python experiments/train_sklearn.py --dataset digits --model hist_gradient_boosting --n-estimators 150 --learning-rate 0.08 --max-depth 8",
+      "model": "hist_gradient_boosting",
+      "params": {
+        "dataset": "digits",
+        "learning_rate": 0.08,
+        "max_depth": 8,
+        "n_estimators": 150
+      }
+    },
+    {
+      "action_id": "action_sweep_1_svc_C",
+      "command": "python experiments/sweep_sklearn.py --dataset digits --model svc --sweep-param C --values 0.5 1.0 2.0 --seeds 0 1 2 3 --scale --label-noise 0.03",
+      "model": "verification_sweep",
+      "params": {
+        "base_model": "svc",
+        "dataset": "digits",
+        "label_noise": 0.03,
+        "scale": true,
+        "seeds": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "sweep_param": "C",
+        "values": [
+          0.5,
+          1.0,
+          2.0
+        ]
+      }
+    }
+  ],
+  "planner_contract": {
+    "choose_action_id_only": true,
+    "no_freeform_commands": true,
+    "qwen_agentworld_is_world_model_not_planner": true,
+    "safe_catalog_only": true
+  },
+  "prior_traces_summary": [
+    {
+      "accuracy": 0.9622222222222222,
+      "f1": 0.9622547774599621,
+      "model": "logistic_regression",
+      "params": {
+        "dataset": "digits",
+        "scale": false
+      },
+      "prediction_match": false,
+      "run_id": "run_001",
+      "status": "success",
+      "unexpected_events": [
+        "accuracy 0.9622 outside predicted range 0.92-0.95"
+      ],
+      "verification_status": null
+    },
+    {
+      "accuracy": 0.9711111111111111,
+      "f1": 0.971272803460932,
+      "model": "logistic_regression",
+      "params": {
+        "C": 0.1,
+        "dataset": "digits",
+        "scale": true
+      },
+      "prediction_match": false,
+      "run_id": "run_002",
+      "status": "success",
+      "unexpected_events": [
+        "accuracy 0.9711 outside predicted range 0.96-0.97"
+      ],
+      "verification_status": null
+    },
+    {
+      "accuracy": 0.9777777777777777,
+      "f1": 0.9777414294282201,
+      "model": "svc",
+      "params": {
+        "C": 0.5,
+        "dataset": "digits",
+        "kernel": "rbf",
+        "scale": true
+      },
+      "prediction_match": true,
+      "run_id": "run_003",
+      "status": "success",
+      "unexpected_events": [],
+      "verification_status": null
+    },
+    {
+      "accuracy": 0.96,
+      "f1": 0.9597281558755765,
+      "model": "random_forest",
+      "params": {
+        "dataset": "digits",
+        "max_depth": null,
+        "n_estimators": 100
+      },
+      "prediction_match": false,
+      "run_id": "run_004",
+      "status": "success",
+      "unexpected_events": [
+        "accuracy 0.9600 outside predicted range 0.97-0.98"
+      ],
+      "verification_status": null
+    },
+    {
+      "accuracy": 0.9577777777777777,
+      "f1": 0.957637544524637,
+      "model": "hist_gradient_boosting",
+      "params": {
+        "dataset": "digits",
+        "learning_rate": 0.05,
+        "max_depth": null,
+        "n_estimators": 100
+      },
+      "prediction_match": false,
+      "run_id": "run_005",
+      "status": "success",
+      "unexpected_events": [
+        "accuracy 0.9578 outside predicted range 0.97-0.98"
+      ],
+      "verification_status": null
+    },
+    {
+      "accuracy": null,
+      "f1": null,
+      "model": "top_model_verification",
+      "params": {
+        "dataset": "digits",
+        "models": [
+          {
+            "metric": 0.9777777777777777,
+            "model": "svc",
+            "model_key": "svc_scaled_C=0.5_kernel=rbf",
+            "params": {
+              "C": 0.5,
+              "dataset": "digits",
+              "kernel": "rbf",
+              "scale": true
+            },
+            "run_id": "run_003"
+          },
+          {
+            "metric": 0.9711111111111111,
+            "model": "logistic_regression",
+            "model_key": "logistic_regression_scaled_C=0.1",
+            "params": {
+              "C": 0.1,
+              "dataset": "digits",
+              "scale": true
+            },
+            "run_id": "run_002"
+          },
+          {
+            "metric": 0.9622222222222222,
+            "model": "logistic_regression",
+            "model_key": "logistic_regression",
+            "params": {
+              "dataset": "digits",
+              "scale": false
+            },
+            "run_id": "run_001"
+          }
+        ],
+        "reason": "Top-model gap 0.0067 is within margin 0.0100; verify before claiming a winner.",
+        "seeds": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "verification_action_key": "logistic_regression:logistic_regression_scaled_C=0.1:svc_scaled_C=0.5_kernel=rbf"
+      },
+      "prediction_match": true,
+      "run_id": "run_006",
+      "status": "success",
+      "unexpected_events": [
+        "runtime 53.04s exceeded predicted 10s"
+      ],
+      "verification_status": "inconclusive"
+    }
+  ],
+  "response_schema": {
+    "candidate_action_ids": [
+      "action_id"
+    ],
+    "claim_risk": "string",
+    "expected_evidence_needed": "string",
+    "preferred_action_id": "action_id from candidate_catalog",
+    "rationale": "string",
+    "research_question": "string",
+    "stop_or_continue": "continue | stop_and_report",
+    "working_hypothesis": "string"
+  },
+  "schema_version": "1.0",
+  "state": {
+    "budget_remaining": 1,
+    "goal": "Maximize validation accuracy on sklearn digits under a small compute budget, while avoiding unsupported claims.",
+    "known_results": [
+      {
+        "accuracy": 0.9622222222222222,
+        "f1": 0.9622547774599621,
+        "model": "logistic_regression",
+        "params": {
+          "dataset": "digits",
+          "scale": false
+        },
+        "run_id": "run_001"
+      },
+      {
+        "accuracy": 0.9711111111111111,
+        "f1": 0.971272803460932,
+        "model": "logistic_regression",
+        "params": {
+          "C": 0.1,
+          "dataset": "digits",
+          "scale": true
+        },
+        "run_id": "run_002"
+      },
+      {
+        "accuracy": 0.9777777777777777,
+        "f1": 0.9777414294282201,
+        "model": "svc",
+        "params": {
+          "C": 0.5,
+          "dataset": "digits",
+          "kernel": "rbf",
+          "scale": true
+        },
+        "run_id": "run_003"
+      },
+      {
+        "accuracy": 0.96,
+        "f1": 0.9597281558755765,
+        "model": "random_forest",
+        "params": {
+          "dataset": "digits",
+          "max_depth": null,
+          "n_estimators": 100
+        },
+        "run_id": "run_004"
+      },
+      {
+        "accuracy": 0.9577777777777777,
+        "f1": 0.957637544524637,
+        "model": "hist_gradient_boosting",
+        "params": {
+          "dataset": "digits",
+          "learning_rate": 0.05,
+          "max_depth": null,
+          "n_estimators": 100
+        },
+        "run_id": "run_005"
+      },
+      {
+        "best": {
+          "max_accuracy": 0.9822222222222222,
+          "mean_accuracy": 0.9764444444444444,
+          "mean_f1": 0.9765097023471897,
+          "min_accuracy": 0.9711111111111111,
+          "n": 5,
+          "value": "svc_scaled_C=0.5_kernel=rbf"
+        },
+        "model": "top_model_verification",
+        "params": {
+          "dataset": "digits",
+          "models": [
+            {
+              "metric": 0.9777777777777777,
+              "model": "svc",
+              "model_key": "svc_scaled_C=0.5_kernel=rbf",
+              "params": {
+                "C": 0.5,
+                "dataset": "digits",
+                "kernel": "rbf",
+                "scale": true
+              },
+              "run_id": "run_003"
+            },
+            {
+              "metric": 0.9711111111111111,
+              "model": "logistic_regression",
+              "model_key": "logistic_regression_scaled_C=0.1",
+              "params": {
+                "C": 0.1,
+                "dataset": "digits",
+                "scale": true
+              },
+              "run_id": "run_002"
+            },
+            {
+              "metric": 0.9622222222222222,
+              "model": "logistic_regression",
+              "model_key": "logistic_regression",
+              "params": {
+                "dataset": "digits",
+                "scale": false
+              },
+              "run_id": "run_001"
+            }
+          ],
+          "reason": "Top-model gap 0.0067 is within margin 0.0100; verify before claiming a winner.",
+          "seeds": [
+            0,
+            1,
+            2,
+            3,
+            4
+          ],
+          "verification_action_key": "logistic_regression:logistic_regression_scaled_C=0.1:svc_scaled_C=0.5_kernel=rbf"
+        },
+        "run_id": "run_006"
+      }
+    ],
+    "open_questions": [
+      "Which candidate should receive the next compute budget?",
+      "What did the world model miss, and should the next action test that failure mode?"
+    ],
+    "risks_to_check": [
+      "single-run best score may not justify a scientific claim",
+      "world-model predictions may miss quantitative details"
+    ],
+    "state_id": "state_007",
+    "summary": "Task=digits_accuracy; dataset=digits; primary_metric=accuracy. Goal: Maximize validation accuracy on sklearn digits under a small compute budget, while avoiding unsupported claims.\nNo experiments have been run yet. Dataset: sklearn digits. Primary metric: accuracy; secondary metrics: f1.\nrun_001: logistic_regression actual=0.9622222222222222 status=success; prediction=accuracy around 0.92-0.95; recommendation=modify; lesson=Run succeeded, but the prediction missed at least one quantitative detail.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_002: logistic_regression actual=0.9711111111111111 status=success; prediction=accuracy around 0.96-0.97; recommendation=run; lesson=Run succeeded, but the prediction missed at least one quantitative detail.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_003: svc actual=0.9777777777777777 status=success; prediction=accuracy around 0.96-0.98; recommendation=run; lesson=Prediction was broadly consistent with the real run.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_004: random_forest actual=0.96 status=success; prediction=accuracy around 0.97-0.98; recommendation=run; lesson=Run succeeded, but the prediction missed at least one quantitative detail.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_005: hist_gradient_boosting actual=0.9577777777777777 status=success; prediction=accuracy around 0.97-0.98; recommendation=run; lesson=Run succeeded, but the prediction missed at least one quantitative detail.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_006: top_model_verification actual=None status=success; prediction=accuracy around 0.97-0.98 with small seed variance; recommendation=run; lesson=Run succeeded, but the prediction missed at least one quantitative detail.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.",
+    "top_model_summary": {
+      "best_observed_metric": 0.9777777777777777,
+      "best_observed_model": "svc_scaled_C=0.5_kernel=rbf",
+      "needs_robustness_verification": false,
+      "reason": "Top observed models already have a multi-seed verification run.",
+      "top_gap": 0.006667,
+      "top_models": [
+        {
+          "metric": 0.9777777777777777,
+          "model": "svc",
+          "model_key": "svc_scaled_C=0.5_kernel=rbf",
+          "params": {
+            "C": 0.5,
+            "dataset": "digits",
+            "kernel": "rbf",
+            "scale": true
+          },
+          "run_id": "run_003"
+        },
+        {
+          "metric": 0.9711111111111111,
+          "model": "logistic_regression",
+          "model_key": "logistic_regression_scaled_C=0.1",
+          "params": {
+            "C": 0.1,
+            "dataset": "digits",
+            "scale": true
+          },
+          "run_id": "run_002"
+        },
+        {
+          "metric": 0.9622222222222222,
+          "model": "logistic_regression",
+          "model_key": "logistic_regression",
+          "params": {
+            "dataset": "digits",
+            "scale": false
+          },
+          "run_id": "run_001"
+        }
+      ],
+      "verification_action_key": "logistic_regression:logistic_regression_scaled_C=0.1:svc_scaled_C=0.5_kernel=rbf"
+    }
+  },
+  "task": {
+    "budget_runs": 7,
+    "candidate_space": {
+      "hist_gradient_boosting": {
+        "learning_rate": [
+          0.05,
+          0.08
+        ],
+        "max_depth": [
+          null,
+          8
+        ],
+        "n_estimators": [
+          100,
+          150
+        ]
+      },
+      "logistic_regression": {
+        "C": [
+          0.1,
+          1.0,
+          10.0
+        ],
+        "scale": [
+          false,
+          true
+        ]
+      },
+      "random_forest": {
+        "max_depth": [
+          null,
+          4,
+          8
+        ],
+        "n_estimators": [
+          100,
+          300
+        ]
+      },
+      "svc": {
+        "C": [
+          0.5,
+          2.0,
+          5.0
+        ],
+        "kernel": [
+          "rbf"
+        ],
+        "scale": [
+          true
+        ]
+      }
+    },
+    "dataset": "digits",
+    "goal": "Maximize validation accuracy on sklearn digits under a small compute budget, while avoiding unsupported claims.",
+    "models": [
+      "logistic_regression",
+      "random_forest",
+      "svc",
+      "hist_gradient_boosting"
+    ],
+    "notes": [
+      "Multiclass image-feature classification with 64 numeric pixel features.",
+      "SVC and logistic regression can be competitive; robustness still requires repeated seeds."
+    ],
+    "primary_metric": "accuracy",
+    "problem_type": "classification",
+    "secondary_metrics": [
+      "f1"
+    ],
+    "sweeps": [
+      {
+        "label_noise": 0.03,
+        "model": "svc",
+        "param": "C",
+        "scale": true,
+        "seeds": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "values": [
+          0.5,
+          1.0,
+          2.0
+        ]
+      }
+    ],
+    "task_id": "digits_accuracy"
+  }
+}

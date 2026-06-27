@@ -1,0 +1,17 @@
+{
+  "candidate_action_ids": [
+    "action_logistic_regression_C-1p0_scale-True",
+    "action_logistic_regression_C-10p0_scale-True",
+    "action_logistic_regression_C-0p1_scale-False",
+    "action_logistic_regression_C-1p0_scale-False",
+    "action_logistic_regression_C-10p0_scale-False",
+    "action_random_forest_n_estimators-100"
+  ],
+  "claim_risk": "Do not report a robust winner from a single split.",
+  "expected_evidence_needed": "Run a real experiment from an untested model family.",
+  "preferred_action_id": "action_random_forest_n_estimators-100",
+  "rationale": "Fake command backend selected action_random_forest_n_estimators-100 from the safe catalog for state state_004.",
+  "research_question": "Maximize validation accuracy on sklearn wine under a small compute budget, while avoiding unsupported claims.",
+  "stop_or_continue": "continue",
+  "working_hypothesis": "A new model family tests whether the current evidence depends on inductive bias."
+}

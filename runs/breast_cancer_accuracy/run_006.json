@@ -1,25 +1,14 @@
 {
   "run_id": "run_006",
   "goal": "Maximize validation accuracy on sklearn breast_cancer under a small compute budget, while avoiding unsupported claims.",
-  "hypothesis": "Selected top_model_verification because score=152.0; autoresearch agent preferred this catalog action; world model recommended run; top observed models need multi-seed verification before a robust best-model claim; world model predicted top-model robustness or claim risk. Agent hypothesis: The best single-run model may not be robust across matched seeds.. World model predicted accuracy around 0.975-0.985 across seeds, runtime under 10, recommendation=run, risks=small-dataset variance may cause single-run best score to overstate a model win, seed variance may exceed apparent model or hyperparameter effects, top-model gap 0.0070 is within margin 0.0100; verify before claiming a winner. Causal signal type: mixed.",
+  "hypothesis": "Selected top_model_verification because score=152.0; autoresearch agent preferred this catalog action; world model recommended run; top observed models need multi-seed verification before a robust best-model claim; world model predicted top-model robustness or claim risk. Agent hypothesis: The best observed single-run model may not be robust across matched seeds.. World model predicted accuracy around 0.97-0.98 for logistic_regression_scaled_C=0.1, 0.96-0.97 for svc_scaled_C=0.5_kernel=rbf, 0.95-0.96 for random_forest_n=100, runtime under 15, recommendation=run, risks=small-dataset variance may cause single-run best score to overstate a model win, top-model gap 0.0070 is within margin 0.0100; verify before claiming a winner, label-noise sweeps test claim robustness, not leaderboard performance. Causal signal type: mixed.",
   "proposed_action": {
     "action_id": "action_verify_top_models",
-    "command": "python experiments/compare_models_sklearn.py --dataset breast_cancer --models logistic_regression:scale=true,C=1.0 logistic_regression:scale=true,C=0.1 svc:scale=true,C=0.5,kernel=rbf --seeds 0 1 2 3 4",
+    "command": "python experiments/compare_models_sklearn.py --dataset breast_cancer --models logistic_regression:scale=true,C=0.1 svc:scale=true,C=0.5,kernel=rbf random_forest:n_estimators=100 --seeds 0 1 2 3 4",
     "model": "top_model_verification",
     "params": {
       "dataset": "breast_cancer",
       "models": [
-        {
-          "run_id": "run_005",
-          "model": "logistic_regression",
-          "model_key": "logistic_regression_scaled_C=1.0",
-          "metric": 0.986013986013986,
-          "params": {
-            "dataset": "breast_cancer",
-            "scale": true,
-            "C": 1.0
-          }
-        },
         {
           "run_id": "run_002",
           "model": "logistic_regression",
@@ -42,6 +31,17 @@
             "C": 0.5,
             "kernel": "rbf"
           }
+        },
+        {
+          "run_id": "run_004",
+          "model": "random_forest",
+          "model_key": "random_forest_n=100",
+          "metric": 0.958041958041958,
+          "params": {
+            "dataset": "breast_cancer",
+            "n_estimators": 100,
+            "max_depth": null
+          }
         }
       ],
       "seeds": [
@@ -52,47 +52,31 @@
         4
       ],
       "reason": "Top-model gap 0.0070 is within margin 0.0100; verify before claiming a winner.",
-      "verification_action_key": "logistic_regression_scaled_C=0.1:logistic_regression_scaled_C=1.0:svc_scaled_C=0.5_kernel=rbf"
+      "verification_action_key": "logistic_regression_scaled_C=0.1:random_forest_n=100:svc_scaled_C=0.5_kernel=rbf"
     }
   },
   "world_model_prediction": {
-    "expected_metric": "accuracy around 0.975-0.985 across seeds",
-    "expected_runtime_seconds": "under 10",
+    "expected_metric": "accuracy around 0.97-0.98 for logistic_regression_scaled_C=0.1, 0.96-0.97 for svc_scaled_C=0.5_kernel=rbf, 0.95-0.96 for random_forest_n=100",
+    "expected_runtime_seconds": "under 15",
     "risks": [
       "small-dataset variance may cause single-run best score to overstate a model win",
-      "seed variance may exceed apparent model or hyperparameter effects",
-      "top-model gap 0.0070 is within margin 0.0100; verify before claiming a winner"
+      "top-model gap 0.0070 is within margin 0.0100; verify before claiming a winner",
+      "label-noise sweeps test claim robustness, not leaderboard performance"
     ],
     "recommendation": "run",
-    "rationale": "The top_model_verification action is appropriate to assess robustness of the best observed models (logistic_regression_scaled_C=1.0, logistic_regression_scaled_C=0.1, svc_scaled_C=0.5_kernel=rbf) across multiple seeds. Given the small dataset and the top-model gap being within the margin of 0.0100, robustness sweeps are necessary before making strong claims about model superiority.",
-    "action_specific_signal": "Top-model verification across 5 seeds for logistic_regression_scaled_C=1.0, logistic_regression_scaled_C=0.1, and svc_scaled_C=0.5_kernel=rbf on breast_cancer dataset",
+    "rationale": "The proposed top_model_verification action is necessary to determine whether the apparent top model (logistic_regression_scaled_C=0.1) is robustly separated from svc and random_forest across multiple seeds. Given the top-model gap of 0.0070 is within the 0.0100 margin, robustness sweeps are required before strong claims. Logistic regression and SVC both require feature scaling, which is correctly applied in the verification. The small dataset size means single-split accuracy should not become a robust claim without repeated seeds.",
+    "action_specific_signal": "top_model_verification: logistic_regression_scaled_C=0.1 is likely robustly separated from svc_scaled_C=0.5_kernel=rbf and random_forest_n=100 across seeds, but the gap may remain within 0.0100 margin",
     "claim_risk": "Top-model gap 0.0070 is within margin 0.0100; verify before claiming a winner."
   },
   "actual_result": {
     "status": "success",
     "accuracy": null,
     "f1": null,
-    "runtime_seconds": 34.4152,
-    "stdout_tail": "238,\n      \"seed\": 1,\n      \"sweep_param\": \"model\",\n      \"value\": \"svc_scaled_C=0.5_kernel=rbf\"\n    },\n    {\n      \"accuracy\": 0.972027972027972,\n      \"config_key\": \"svc_scaled_C=0.5_kernel=rbf\",\n      \"f1\": 0.9717835446735703,\n      \"label\": \"svc_scaled_C=0.5_kernel=rbf\",\n      \"runtime_seconds\": 0.0203,\n      \"seed\": 2,\n      \"sweep_param\": \"model\",\n      \"value\": \"svc_scaled_C=0.5_kernel=rbf\"\n    },\n    {\n      \"accuracy\": 0.958041958041958,\n      \"config_key\": \"svc_scaled_C=0.5_kernel=rbf\",\n      \"f1\": 0.958041958041958,\n      \"label\": \"svc_scaled_C=0.5_kernel=rbf\",\n      \"runtime_seconds\": 0.0181,\n      \"seed\": 3,\n      \"sweep_param\": \"model\",\n      \"value\": \"svc_scaled_C=0.5_kernel=rbf\"\n    },\n    {\n      \"accuracy\": 0.965034965034965,\n      \"config_key\": \"svc_scaled_C=0.5_kernel=rbf\",\n      \"f1\": 0.9649650533628434,\n      \"label\": \"svc_scaled_C=0.5_kernel=rbf\",\n      \"runtime_seconds\": 0.0168,\n      \"seed\": 4,\n      \"sweep_param\": \"model\",\n      \"value\": \"svc_scaled_C=0.5_kernel=rbf\"\n    }\n  ],\n  \"runtime_seconds\": 34.4152,\n  \"seeds\": [\n    0,\n    1,\n    2,\n    3,\n    4\n  ],\n  \"status\": \"success\",\n  \"summary_by_value\": {\n    \"logistic_regression_scaled_C=0.1\": {\n      \"max_accuracy\": 0.972027972027972,\n      \"mean_accuracy\": 0.9636363636363636,\n      \"mean_f1\": 0.9633776129980862,\n      \"min_accuracy\": 0.958041958041958,\n      \"n\": 5\n    },\n    \"logistic_regression_scaled_C=1.0\": {\n      \"max_accuracy\": 0.986013986013986,\n      \"mean_accuracy\": 0.9706293706293707,\n      \"mean_f1\": 0.9705692805565308,\n      \"min_accuracy\": 0.958041958041958,\n      \"n\": 5\n    },\n    \"svc_scaled_C=0.5_kernel=rbf\": {\n      \"max_accuracy\": 0.9790209790209791,\n      \"mean_accuracy\": 0.9636363636363636,\n      \"mean_f1\": 0.9635467837241304,\n      \"min_accuracy\": 0.9440559440559441,\n      \"n\": 5\n    }\n  },\n  \"type\": \"top_model_verification\",\n  \"verified_models\": [\n    \"logistic_regression_scaled_C=1.0\",\n    \"logistic_regression_scaled_C=0.1\",\n    \"svc_scaled_C=0.5_kernel=rbf\"\n  ]\n}\n",
+    "runtime_seconds": 36.4196,
+    "stdout_tail": "100\",\n      \"f1\": 0.9440559440559441,\n      \"label\": \"random_forest_n=100\",\n      \"runtime_seconds\": 0.3101,\n      \"seed\": 1,\n      \"sweep_param\": \"model\",\n      \"value\": \"random_forest_n=100\"\n    },\n    {\n      \"accuracy\": 0.958041958041958,\n      \"config_key\": \"random_forest_n=100\",\n      \"f1\": 0.9574599593954431,\n      \"label\": \"random_forest_n=100\",\n      \"runtime_seconds\": 0.2925,\n      \"seed\": 2,\n      \"sweep_param\": \"model\",\n      \"value\": \"random_forest_n=100\"\n    },\n    {\n      \"accuracy\": 0.972027972027972,\n      \"config_key\": \"random_forest_n=100\",\n      \"f1\": 0.9719127026819333,\n      \"label\": \"random_forest_n=100\",\n      \"runtime_seconds\": 0.3883,\n      \"seed\": 3,\n      \"sweep_param\": \"model\",\n      \"value\": \"random_forest_n=100\"\n    },\n    {\n      \"accuracy\": 0.9790209790209791,\n      \"config_key\": \"random_forest_n=100\",\n      \"f1\": 0.9788874184863361,\n      \"label\": \"random_forest_n=100\",\n      \"runtime_seconds\": 0.36,\n      \"seed\": 4,\n      \"sweep_param\": \"model\",\n      \"value\": \"random_forest_n=100\"\n    }\n  ],\n  \"runtime_seconds\": 36.4196,\n  \"seeds\": [\n    0,\n    1,\n    2,\n    3,\n    4\n  ],\n  \"status\": \"success\",\n  \"summary_by_value\": {\n    \"logistic_regression_scaled_C=0.1\": {\n      \"max_accuracy\": 0.972027972027972,\n      \"mean_accuracy\": 0.9636363636363636,\n      \"mean_f1\": 0.9633776129980862,\n      \"min_accuracy\": 0.958041958041958,\n      \"n\": 5\n    },\n    \"random_forest_n=100\": {\n      \"max_accuracy\": 0.9790209790209791,\n      \"mean_accuracy\": 0.9594405594405595,\n      \"mean_f1\": 0.9592743937351201,\n      \"min_accuracy\": 0.9440559440559441,\n      \"n\": 5\n    },\n    \"svc_scaled_C=0.5_kernel=rbf\": {\n      \"max_accuracy\": 0.9790209790209791,\n      \"mean_accuracy\": 0.9636363636363636,\n      \"mean_f1\": 0.9635467837241304,\n      \"min_accuracy\": 0.9440559440559441,\n      \"n\": 5\n    }\n  },\n  \"type\": \"top_model_verification\",\n  \"verified_models\": [\n    \"logistic_regression_scaled_C=0.1\",\n    \"svc_scaled_C=0.5_kernel=rbf\",\n    \"random_forest_n=100\"\n  ]\n}\n",
     "stderr_tail": "",
     "raw": {
       "best": {
-        "max_accuracy": 0.986013986013986,
-        "mean_accuracy": 0.9706293706293707,
-        "mean_f1": 0.9705692805565308,
-        "min_accuracy": 0.958041958041958,
-        "n": 5,
-        "value": "logistic_regression_scaled_C=1.0"
-      },
-      "dataset": "breast_cancer",
-      "failures": [],
-      "metric": "accuracy",
-      "models": [
-        "logistic_regression:scale=true,C=1.0",
-        "logistic_regression:scale=true,C=0.1",
-        "svc:scale=true,C=0.5,kernel=rbf"
-      ],
-      "runner_up": {
         "max_accuracy": 0.972027972027972,
         "mean_accuracy": 0.9636363636363636,
         "mean_f1": 0.9633776129980862,
@@ -100,63 +84,29 @@
         "n": 5,
         "value": "logistic_regression_scaled_C=0.1"
       },
+      "dataset": "breast_cancer",
+      "failures": [],
+      "metric": "accuracy",
+      "models": [
+        "logistic_regression:scale=true,C=0.1",
+        "svc:scale=true,C=0.5,kernel=rbf",
+        "random_forest:n_estimators=100"
+      ],
+      "runner_up": {
+        "max_accuracy": 0.9790209790209791,
+        "mean_accuracy": 0.9636363636363636,
+        "mean_f1": 0.9635467837241304,
+        "min_accuracy": 0.9440559440559441,
+        "n": 5,
+        "value": "svc_scaled_C=0.5_kernel=rbf"
+      },
       "runs": [
         {
           "accuracy": 0.958041958041958,
-          "config_key": "logistic_regression_scaled_C=1.0",
-          "f1": 0.958041958041958,
-          "label": "logistic_regression_scaled_C=1.0",
-          "runtime_seconds": 0.0818,
-          "seed": 0,
-          "sweep_param": "model",
-          "value": "logistic_regression_scaled_C=1.0"
-        },
-        {
-          "accuracy": 0.965034965034965,
-          "config_key": "logistic_regression_scaled_C=1.0",
-          "f1": 0.9649650533628434,
-          "label": "logistic_regression_scaled_C=1.0",
-          "runtime_seconds": 0.0247,
-          "seed": 1,
-          "sweep_param": "model",
-          "value": "logistic_regression_scaled_C=1.0"
-        },
-        {
-          "accuracy": 0.972027972027972,
-          "config_key": "logistic_regression_scaled_C=1.0",
-          "f1": 0.9719127026819333,
-          "label": "logistic_regression_scaled_C=1.0",
-          "runtime_seconds": 0.0515,
-          "seed": 2,
-          "sweep_param": "model",
-          "value": "logistic_regression_scaled_C=1.0"
-        },
-        {
-          "accuracy": 0.986013986013986,
-          "config_key": "logistic_regression_scaled_C=1.0",
-          "f1": 0.986013986013986,
-          "label": "logistic_regression_scaled_C=1.0",
-          "runtime_seconds": 0.0185,
-          "seed": 3,
-          "sweep_param": "model",
-          "value": "logistic_regression_scaled_C=1.0"
-        },
-        {
-          "accuracy": 0.972027972027972,
-          "config_key": "logistic_regression_scaled_C=1.0",
-          "f1": 0.9719127026819333,
-          "label": "logistic_regression_scaled_C=1.0",
-          "runtime_seconds": 0.0172,
-          "seed": 4,
-          "sweep_param": "model",
-          "value": "logistic_regression_scaled_C=1.0"
-        },
-        {
-          "accuracy": 0.958041958041958,
           "config_key": "logistic_regression_scaled_C=0.1",
           "f1": 0.9576753170103554,
           "label": "logistic_regression_scaled_C=0.1",
-          "runtime_seconds": 0.0187,
+          "runtime_seconds": 0.0595,
           "seed": 0,
           "sweep_param": "model",
           "value": "logistic_regression_scaled_C=0.1"
@@ -166,7 +116,7 @@
           "config_key": "logistic_regression_scaled_C=0.1",
           "f1": 0.9648123641438936,
           "label": "logistic_regression_scaled_C=0.1",
-          "runtime_seconds": 0.0259,
+          "runtime_seconds": 0.0364,
           "seed": 1,
           "sweep_param": "model",
           "value": "logistic_regression_scaled_C=0.1"
@@ -176,7 +126,7 @@
           "config_key": "logistic_regression_scaled_C=0.1",
           "f1": 0.9576753170103554,
           "label": "logistic_regression_scaled_C=0.1",
-          "runtime_seconds": 0.0166,
+          "runtime_seconds": 0.0286,
           "seed": 2,
           "sweep_param": "model",
           "value": "logistic_regression_scaled_C=0.1"
@@ -186,7 +136,7 @@
           "config_key": "logistic_regression_scaled_C=0.1",
           "f1": 0.9648123641438936,
           "label": "logistic_regression_scaled_C=0.1",
-          "runtime_seconds": 0.0157,
+          "runtime_seconds": 0.0215,
           "seed": 3,
           "sweep_param": "model",
           "value": "logistic_regression_scaled_C=0.1"
@@ -196,7 +146,7 @@
           "config_key": "logistic_regression_scaled_C=0.1",
           "f1": 0.9719127026819333,
           "label": "logistic_regression_scaled_C=0.1",
-          "runtime_seconds": 0.0164,
+          "runtime_seconds": 0.0768,
           "seed": 4,
           "sweep_param": "model",
           "value": "logistic_regression_scaled_C=0.1"
@@ -206,7 +156,7 @@
           "config_key": "svc_scaled_C=0.5_kernel=rbf",
           "f1": 0.9440559440559441,
           "label": "svc_scaled_C=0.5_kernel=rbf",
-          "runtime_seconds": 0.0314,
+          "runtime_seconds": 0.0207,
           "seed": 0,
           "sweep_param": "model",
           "value": "svc_scaled_C=0.5_kernel=rbf"
@@ -216,7 +166,7 @@
           "config_key": "svc_scaled_C=0.5_kernel=rbf",
           "f1": 0.9788874184863361,
           "label": "svc_scaled_C=0.5_kernel=rbf",
-          "runtime_seconds": 0.0238,
+          "runtime_seconds": 0.0199,
           "seed": 1,
           "sweep_param": "model",
           "value": "svc_scaled_C=0.5_kernel=rbf"
@@ -226,7 +176,7 @@
           "config_key": "svc_scaled_C=0.5_kernel=rbf",
           "f1": 0.9717835446735703,
           "label": "svc_scaled_C=0.5_kernel=rbf",
-          "runtime_seconds": 0.0203,
+          "runtime_seconds": 0.03,
           "seed": 2,
           "sweep_param": "model",
           "value": "svc_scaled_C=0.5_kernel=rbf"
@@ -236,7 +186,7 @@
           "config_key": "svc_scaled_C=0.5_kernel=rbf",
           "f1": 0.958041958041958,
           "label": "svc_scaled_C=0.5_kernel=rbf",
-          "runtime_seconds": 0.0181,
+          "runtime_seconds": 0.0209,
           "seed": 3,
           "sweep_param": "model",
           "value": "svc_scaled_C=0.5_kernel=rbf"
@@ -246,13 +196,63 @@
           "config_key": "svc_scaled_C=0.5_kernel=rbf",
           "f1": 0.9649650533628434,
           "label": "svc_scaled_C=0.5_kernel=rbf",
-          "runtime_seconds": 0.0168,
+          "runtime_seconds": 0.0175,
           "seed": 4,
           "sweep_param": "model",
           "value": "svc_scaled_C=0.5_kernel=rbf"
+        },
+        {
+          "accuracy": 0.9440559440559441,
+          "config_key": "random_forest_n=100",
+          "f1": 0.9440559440559441,
+          "label": "random_forest_n=100",
+          "runtime_seconds": 0.3149,
+          "seed": 0,
+          "sweep_param": "model",
+          "value": "random_forest_n=100"
+        },
+        {
+          "accuracy": 0.9440559440559441,
+          "config_key": "random_forest_n=100",
+          "f1": 0.9440559440559441,
+          "label": "random_forest_n=100",
+          "runtime_seconds": 0.3101,
+          "seed": 1,
+          "sweep_param": "model",
+          "value": "random_forest_n=100"
+        },
+        {
+          "accuracy": 0.958041958041958,
+          "config_key": "random_forest_n=100",
+          "f1": 0.9574599593954431,
+          "label": "random_forest_n=100",
+          "runtime_seconds": 0.2925,
+          "seed": 2,
+          "sweep_param": "model",
+          "value": "random_forest_n=100"
+        },
+        {
+          "accuracy": 0.972027972027972,
+          "config_key": "random_forest_n=100",
+          "f1": 0.9719127026819333,
+          "label": "random_forest_n=100",
+          "runtime_seconds": 0.3883,
+          "seed": 3,
+          "sweep_param": "model",
+          "value": "random_forest_n=100"
+        },
+        {
+          "accuracy": 0.9790209790209791,
+          "config_key": "random_forest_n=100",
+          "f1": 0.9788874184863361,
+          "label": "random_forest_n=100",
+          "runtime_seconds": 0.36,
+          "seed": 4,
+          "sweep_param": "model",
+          "value": "random_forest_n=100"
         }
       ],
-      "runtime_seconds": 34.4152,
+      "runtime_seconds": 36.4196,
       "seeds": [
         0,
         1,
@@ -269,11 +269,11 @@
           "min_accuracy": 0.958041958041958,
           "n": 5
         },
-        "logistic_regression_scaled_C=1.0": {
-          "max_accuracy": 0.986013986013986,
-          "mean_accuracy": 0.9706293706293707,
-          "mean_f1": 0.9705692805565308,
-          "min_accuracy": 0.958041958041958,
+        "random_forest_n=100": {
+          "max_accuracy": 0.9790209790209791,
+          "mean_accuracy": 0.9594405594405595,
+          "mean_f1": 0.9592743937351201,
+          "min_accuracy": 0.9440559440559441,
           "n": 5
         },
         "svc_scaled_C=0.5_kernel=rbf": {
@@ -286,18 +286,17 @@
       },
       "type": "top_model_verification",
       "verified_models": [
-        "logistic_regression_scaled_C=1.0",
         "logistic_regression_scaled_C=0.1",
-        "svc_scaled_C=0.5_kernel=rbf"
+        "svc_scaled_C=0.5_kernel=rbf",
+        "random_forest_n=100"
       ]
     }
   },
   "comparison": {
-    "metric_match": false,
+    "metric_match": true,
     "runtime_match": false,
     "unexpected_events": [
-      "accuracy 0.9706 outside predicted range 0.97-0.98",
-      "runtime 34.42s exceeded predicted 10s"
+      "runtime 36.42s exceeded predicted 15s"
     ],
     "lesson": "Run succeeded, but the prediction missed at least one quantitative detail."
   },
@@ -305,42 +304,42 @@
   "verification": {
     "status": "inconclusive",
     "metric": "accuracy",
-    "effect_size": 0.006993,
-    "seed_noise": 0.027972,
-    "effect_to_noise_ratio": 0.25,
+    "effect_size": 0.0,
+    "seed_noise": 0.013986,
+    "effect_to_noise_ratio": 0.0,
     "min_seed_count": 5,
     "low_n_warning": false,
     "trustworthy": false,
-    "best_config": "logistic_regression_scaled_C=1.0",
-    "worst_config": "logistic_regression_scaled_C=0.1",
-    "blocked_claim": "logistic_regression_scaled_C=1.0 is robustly better than logistic_regression_scaled_C=0.1.",
-    "allowed_claim": "logistic_regression_scaled_C=1.0 had the best multi-seed mean accuracy, but the effect was smaller than seed noise; no robust best-model claim is allowed.",
+    "best_config": "logistic_regression_scaled_C=0.1",
+    "worst_config": "svc_scaled_C=0.5_kernel=rbf",
+    "blocked_claim": "logistic_regression_scaled_C=0.1 is robustly better than svc_scaled_C=0.5_kernel=rbf.",
+    "allowed_claim": "logistic_regression_scaled_C=0.1 had the best multi-seed mean accuracy, but the effect was smaller than seed noise; no robust best-model claim is allowed.",
     "supported_claims": [],
     "inconclusive_findings": [
-      "Best config 'logistic_regression_scaled_C=1.0' improves over 'logistic_regression_scaled_C=0.1' by 0.0070 accuracy, but best-config seed noise is 0.0280."
+      "Best config 'logistic_regression_scaled_C=0.1' improves over 'svc_scaled_C=0.5_kernel=rbf' by 0.0000 accuracy, but best-config seed noise is 0.0140."
     ],
     "rationale": "Measured top-model effect is not larger than inter-seed noise. The report must not claim a robust best model."
   },
   "schema_version": "3.0",
-  "planner_mode": "replay",
-  "agent_backend": "replay",
-  "agent_model": "replay-agent-v1",
-  "agent_prompt_hash": "703bf73f6a1e9229",
+  "planner_mode": "agent_command",
+  "agent_backend": "generic_command",
+  "agent_model": "external-agent-command",
+  "agent_prompt_hash": "5a79aff098992324",
   "agent_decision": {
     "research_question": "Maximize validation accuracy on sklearn breast_cancer under a small compute budget, while avoiding unsupported claims.",
-    "working_hypothesis": "The best single-run model may not be robust across matched seeds.",
+    "working_hypothesis": "The best observed single-run model may not be robust across matched seeds.",
     "candidate_action_ids": [
       "action_verify_top_models",
+      "action_logistic_regression_C-1p0_scale-True",
       "action_logistic_regression_C-10p0_scale-True",
       "action_logistic_regression_C-0p1_scale-False",
       "action_logistic_regression_C-1p0_scale-False",
-      "action_logistic_regression_C-10p0_scale-False",
-      "action_random_forest_n_estimators-100"
+      "action_logistic_regression_C-10p0_scale-False"
     ],
     "preferred_action_id": "action_verify_top_models",
-    "rationale": "Given state state_006 with budget_remaining=2, the planner chooses action_verify_top_models to collect the most decision-relevant evidence.",
-    "expected_evidence_needed": "Run matched multi-seed verification on the observed top models before allowing a robust winner claim.",
-    "claim_risk": "A single-split leaderboard can overstate a fragile best-model claim.",
+    "rationale": "Fake command backend selected action_verify_top_models from the safe catalog for state state_006.",
+    "expected_evidence_needed": "Run top-model verification before allowing a robust best-model claim.",
+    "claim_risk": "A single-split leaderboard can overstate model quality.",
     "stop_or_continue": "continue"
   },
   "safety_validation": {
@@ -352,7 +351,7 @@
       "agent preferred action_verify_top_models"
     ]
   },
-  "research_hypothesis": "The best single-run model may not be robust across matched seeds.",
+  "research_hypothesis": "The best observed single-run model may not be robust across matched seeds.",
   "state_before": {
     "state_id": "state_006",
     "goal": "Maximize validation accuracy on sklearn breast_cancer under a small compute budget, while avoiding unsupported claims.",
@@ -392,6 +391,17 @@
       },
       {
         "run_id": "run_004",
+        "model": "random_forest",
+        "accuracy": 0.958041958041958,
+        "f1": 0.9578690540229003,
+        "params": {
+          "dataset": "breast_cancer",
+          "n_estimators": 100,
+          "max_depth": null
+        }
+      },
+      {
+        "run_id": "run_005",
         "model": "gradient_boosting",
         "accuracy": 0.9440559440559441,
         "f1": 0.9438254053638668,
@@ -401,48 +411,24 @@
           "learning_rate": 0.05,
           "max_depth": null
         }
-      },
-      {
-        "run_id": "run_005",
-        "model": "logistic_regression",
-        "accuracy": 0.986013986013986,
-        "f1": 0.986013986013986,
-        "params": {
-          "dataset": "breast_cancer",
-          "scale": true,
-          "C": 1.0
-        }
       }
     ],
     "budget_remaining": 2,
     "open_questions": [
       "Which candidate should receive the next compute budget?",
-      "Is the best observed score robust across seeds or perturbations?",
       "Do apparent improvements survive an effect-vs-noise verifier?",
       "What did the world model miss, and should the next action test that failure mode?",
       "Can the observed top model survive matched multi-seed verification?"
     ],
     "risks_to_check": [
       "single-run best score may not justify a scientific claim",
-      "seed variance may exceed apparent model or hyperparameter effects",
       "world-model predictions may miss quantitative details",
       "Top-model gap 0.0070 is within margin 0.0100; verify before claiming a winner."
     ],
     "top_model_summary": {
-      "best_observed_model": "logistic_regression_scaled_C=1.0",
-      "best_observed_metric": 0.986013986013986,
+      "best_observed_model": "logistic_regression_scaled_C=0.1",
+      "best_observed_metric": 0.9790209790209791,
       "top_models": [
-        {
-          "run_id": "run_005",
-          "model": "logistic_regression",
-          "model_key": "logistic_regression_scaled_C=1.0",
-          "metric": 0.986013986013986,
-          "params": {
-            "dataset": "breast_cancer",
-            "scale": true,
-            "C": 1.0
-          }
-        },
         {
           "run_id": "run_002",
           "model": "logistic_regression",
@@ -465,34 +451,34 @@
             "C": 0.5,
             "kernel": "rbf"
           }
+        },
+        {
+          "run_id": "run_004",
+          "model": "random_forest",
+          "model_key": "random_forest_n=100",
+          "metric": 0.958041958041958,
+          "params": {
+            "dataset": "breast_cancer",
+            "n_estimators": 100,
+            "max_depth": null
+          }
         }
       ],
       "top_gap": 0.006993,
       "needs_robustness_verification": true,
       "reason": "Top-model gap 0.0070 is within margin 0.0100; verify before claiming a winner.",
-      "verification_action_key": "logistic_regression_scaled_C=0.1:logistic_regression_scaled_C=1.0:svc_scaled_C=0.5_kernel=rbf"
+      "verification_action_key": "logistic_regression_scaled_C=0.1:random_forest_n=100:svc_scaled_C=0.5_kernel=rbf"
     },
-    "summary": "Task=breast_cancer_accuracy; dataset=breast_cancer; primary_metric=accuracy. Goal: Maximize validation accuracy on sklearn breast_cancer under a small compute budget, while avoiding unsupported claims.\nNo experiments have been run yet. Dataset: sklearn breast_cancer. Primary metric: accuracy; secondary metrics: f1.\nrun_001: logistic_regression actual=0.951048951048951 status=success; prediction=accuracy around 0.93-0.95; recommendation=modify; lesson=Run succeeded, but the prediction missed at least one quantitative detail.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_002: logistic_regression actual=0.9790209790209791 status=success; prediction=accuracy around 0.95-0.97; recommendation=run; lesson=Run succeeded, but the prediction missed at least one quantitative detail.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_003: svc actual=0.972027972027972 status=success; prediction=accuracy around 0.96-0.98; recommendation=run; lesson=Prediction was broadly consistent with the real run.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_004: gradient_boosting actual=0.9440559440559441 status=success; prediction=accuracy around 0.96-0.98; recommendation=run; lesson=Run succeeded, but the prediction missed at least one quantitative detail.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_005: logistic_regression actual=0.986013986013986 status=success; prediction=accuracy around 0.972-0.979; recommendation=run; lesson=Run succeeded, but the prediction missed at least one quantitative detail.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option."
+    "summary": "Task=breast_cancer_accuracy; dataset=breast_cancer; primary_metric=accuracy. Goal: Maximize validation accuracy on sklearn breast_cancer under a small compute budget, while avoiding unsupported claims.\nNo experiments have been run yet. Dataset: sklearn breast_cancer. Primary metric: accuracy; secondary metrics: f1.\nrun_001: logistic_regression actual=0.951048951048951 status=success; prediction=accuracy around 0.93-0.95; recommendation=modify; lesson=Run succeeded, but the prediction missed at least one quantitative detail.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_002: logistic_regression actual=0.9790209790209791 status=success; prediction=accuracy around 0.95-0.97; recommendation=run; lesson=Run succeeded, but the prediction missed at least one quantitative detail.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_003: svc actual=0.972027972027972 status=success; prediction=accuracy around 0.96-0.98; recommendation=run; lesson=Prediction was broadly consistent with the real run.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_004: random_forest actual=0.958041958041958 status=success; prediction=accuracy around 0.96-0.98; recommendation=run; lesson=Run succeeded, but the prediction missed at least one quantitative detail.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_005: gradient_boosting actual=0.9440559440559441 status=success; prediction=accuracy around 0.96-0.98; recommendation=run; lesson=Run succeeded, but the prediction missed at least one quantitative detail.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option."
   },
   "candidate_actions": [
     {
       "action_id": "action_verify_top_models",
-      "command": "python experiments/compare_models_sklearn.py --dataset breast_cancer --models logistic_regression:scale=true,C=1.0 logistic_regression:scale=true,C=0.1 svc:scale=true,C=0.5,kernel=rbf --seeds 0 1 2 3 4",
+      "command": "python experiments/compare_models_sklearn.py --dataset breast_cancer --models logistic_regression:scale=true,C=0.1 svc:scale=true,C=0.5,kernel=rbf random_forest:n_estimators=100 --seeds 0 1 2 3 4",
       "model": "top_model_verification",
       "params": {
         "dataset": "breast_cancer",
         "models": [
-          {
-            "run_id": "run_005",
-            "model": "logistic_regression",
-            "model_key": "logistic_regression_scaled_C=1.0",
-            "metric": 0.986013986013986,
-            "params": {
-              "dataset": "breast_cancer",
-              "scale": true,
-              "C": 1.0
-            }
-          },
           {
             "run_id": "run_002",
             "model": "logistic_regression",
@@ -515,6 +501,17 @@
               "C": 0.5,
               "kernel": "rbf"
             }
+          },
+          {
+            "run_id": "run_004",
+            "model": "random_forest",
+            "model_key": "random_forest_n=100",
+            "metric": 0.958041958041958,
+            "params": {
+              "dataset": "breast_cancer",
+              "n_estimators": 100,
+              "max_depth": null
+            }
           }
         ],
         "seeds": [
@@ -525,7 +522,17 @@
           4
         ],
         "reason": "Top-model gap 0.0070 is within margin 0.0100; verify before claiming a winner.",
-        "verification_action_key": "logistic_regression_scaled_C=0.1:logistic_regression_scaled_C=1.0:svc_scaled_C=0.5_kernel=rbf"
+        "verification_action_key": "logistic_regression_scaled_C=0.1:random_forest_n=100:svc_scaled_C=0.5_kernel=rbf"
+      }
+    },
+    {
+      "action_id": "action_logistic_regression_C-1p0_scale-True",
+      "command": "python experiments/train_sklearn.py --dataset breast_cancer --model logistic_regression --scale",
+      "model": "logistic_regression",
+      "params": {
+        "dataset": "breast_cancer",
+        "scale": true,
+        "C": 1.0
       }
     },
     {
@@ -569,66 +576,6 @@
       }
     },
     {
-      "action_id": "action_random_forest_n_estimators-100",
-      "command": "python experiments/train_sklearn.py --dataset breast_cancer --model random_forest --n-estimators 100",
-      "model": "random_forest",
-      "params": {
-        "dataset": "breast_cancer",
-        "n_estimators": 100,
-        "max_depth": null
-      }
-    },
-    {
-      "action_id": "action_random_forest_max_depth-4_n_estimators-100",
-      "command": "python experiments/train_sklearn.py --dataset breast_cancer --model random_forest --n-estimators 100 --max-depth 4",
-      "model": "random_forest",
-      "params": {
-        "dataset": "breast_cancer",
-        "n_estimators": 100,
-        "max_depth": 4
-      }
-    },
-    {
-      "action_id": "action_random_forest_max_depth-8_n_estimators-100",
-      "command": "python experiments/train_sklearn.py --dataset breast_cancer --model random_forest --n-estimators 100 --max-depth 8",
-      "model": "random_forest",
-      "params": {
-        "dataset": "breast_cancer",
-        "n_estimators": 100,
-        "max_depth": 8
-      }
-    },
-    {
-      "action_id": "action_random_forest_n_estimators-300",
-      "command": "python experiments/train_sklearn.py --dataset breast_cancer --model random_forest --n-estimators 300",
-      "model": "random_forest",
-      "params": {
-        "dataset": "breast_cancer",
-        "n_estimators": 300,
-        "max_depth": null
-      }
-    },
-    {
-      "action_id": "action_random_forest_max_depth-4_n_estimators-300",
-      "command": "python experiments/train_sklearn.py --dataset breast_cancer --model random_forest --n-estimators 300 --max-depth 4",
-      "model": "random_forest",
-      "params": {
-        "dataset": "breast_cancer",
-        "n_estimators": 300,
-        "max_depth": 4
-      }
-    },
-    {
-      "action_id": "action_random_forest_max_depth-8_n_estimators-300",
-      "command": "python experiments/train_sklearn.py --dataset breast_cancer --model random_forest --n-estimators 300 --max-depth 8",
-      "model": "random_forest",
-      "params": {
-        "dataset": "breast_cancer",
-        "n_estimators": 300,
-        "max_depth": 8
-      }
-    },
-    {
       "action_id": "action_svc_C-2p0_kernel-rbf_scale-True",
       "command": "python experiments/train_sklearn.py --dataset breast_cancer --model svc --scale --C 2.0 --kernel rbf",
       "model": "svc",
@@ -638,28 +585,84 @@
         "C": 2.0,
         "kernel": "rbf"
       }
+    },
+    {
+      "action_id": "action_svc_C-5p0_kernel-rbf_scale-True",
+      "command": "python experiments/train_sklearn.py --dataset breast_cancer --model svc --scale --C 5.0 --kernel rbf",
+      "model": "svc",
+      "params": {
+        "dataset": "breast_cancer",
+        "scale": true,
+        "C": 5.0,
+        "kernel": "rbf"
+      }
+    },
+    {
+      "action_id": "action_gradient_boosting_learning_rate-0p1_n_estimators-100",
+      "command": "python experiments/train_sklearn.py --dataset breast_cancer --model gradient_boosting --n-estimators 100 --learning-rate 0.1",
+      "model": "gradient_boosting",
+      "params": {
+        "dataset": "breast_cancer",
+        "n_estimators": 100,
+        "learning_rate": 0.1,
+        "max_depth": null
+      }
+    },
+    {
+      "action_id": "action_gradient_boosting_learning_rate-0p05_n_estimators-150",
+      "command": "python experiments/train_sklearn.py --dataset breast_cancer --model gradient_boosting --n-estimators 150 --learning-rate 0.05",
+      "model": "gradient_boosting",
+      "params": {
+        "dataset": "breast_cancer",
+        "n_estimators": 150,
+        "learning_rate": 0.05,
+        "max_depth": null
+      }
+    },
+    {
+      "action_id": "action_gradient_boosting_learning_rate-0p1_n_estimators-150",
+      "command": "python experiments/train_sklearn.py --dataset breast_cancer --model gradient_boosting --n-estimators 150 --learning-rate 0.1",
+      "model": "gradient_boosting",
+      "params": {
+        "dataset": "breast_cancer",
+        "n_estimators": 150,
+        "learning_rate": 0.1,
+        "max_depth": null
+      }
+    },
+    {
+      "action_id": "action_sweep_1_logistic_regression_C",
+      "command": "python experiments/sweep_sklearn.py --dataset breast_cancer --model logistic_regression --sweep-param C --values 0.1 1.0 10.0 --seeds 0 1 2 3 --scale --label-noise 0.08",
+      "model": "verification_sweep",
+      "params": {
+        "dataset": "breast_cancer",
+        "base_model": "logistic_regression",
+        "scale": true,
+        "sweep_param": "C",
+        "values": [
+          0.1,
+          1.0,
+          10.0
+        ],
+        "seeds": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "label_noise": 0.08
+      }
     }
   ],
   "candidate_predictions": [
     {
       "action": {
         "action_id": "action_verify_top_models",
-        "command": "python experiments/compare_models_sklearn.py --dataset breast_cancer --models logistic_regression:scale=true,C=1.0 logistic_regression:scale=true,C=0.1 svc:scale=true,C=0.5,kernel=rbf --seeds 0 1 2 3 4",
+        "command": "python experiments/compare_models_sklearn.py --dataset breast_cancer --models logistic_regression:scale=true,C=0.1 svc:scale=true,C=0.5,kernel=rbf random_forest:n_estimators=100 --seeds 0 1 2 3 4",
         "model": "top_model_verification",
         "params": {
           "dataset": "breast_cancer",
           "models": [
-            {
-              "run_id": "run_005",
-              "model": "logistic_regression",
-              "model_key": "logistic_regression_scaled_C=1.0",
-              "metric": 0.986013986013986,
-              "params": {
-                "dataset": "breast_cancer",
-                "scale": true,
-                "C": 1.0
-              }
-            },
             {
               "run_id": "run_002",
               "model": "logistic_regression",
@@ -682,6 +685,17 @@
                 "C": 0.5,
                 "kernel": "rbf"
               }
+            },
+            {
+              "run_id": "run_004",
+              "model": "random_forest",
+              "model_key": "random_forest_n=100",
+              "metric": 0.958041958041958,
+              "params": {
+                "dataset": "breast_cancer",
+                "n_estimators": 100,
+                "max_depth": null
+              }
             }
           ],
           "seeds": [
@@ -692,20 +706,46 @@
             4
           ],
           "reason": "Top-model gap 0.0070 is within margin 0.0100; verify before claiming a winner.",
-          "verification_action_key": "logistic_regression_scaled_C=0.1:logistic_regression_scaled_C=1.0:svc_scaled_C=0.5_kernel=rbf"
+          "verification_action_key": "logistic_regression_scaled_C=0.1:random_forest_n=100:svc_scaled_C=0.5_kernel=rbf"
         }
       },
       "prediction": {
-        "expected_metric": "accuracy around 0.975-0.985 across seeds",
-        "expected_runtime_seconds": "under 10",
+        "expected_metric": "accuracy around 0.97-0.98 for logistic_regression_scaled_C=0.1, 0.96-0.97 for svc_scaled_C=0.5_kernel=rbf, 0.95-0.96 for random_forest_n=100",
+        "expected_runtime_seconds": "under 15",
         "risks": [
           "small-dataset variance may cause single-run best score to overstate a model win",
-          "seed variance may exceed apparent model or hyperparameter effects",
-          "top-model gap 0.0070 is within margin 0.0100; verify before claiming a winner"
+          "top-model gap 0.0070 is within margin 0.0100; verify before claiming a winner",
+          "label-noise sweeps test claim robustness, not leaderboard performance"
         ],
         "recommendation": "run",
-        "rationale": "The top_model_verification action is appropriate to assess robustness of the best observed models (logistic_regression_scaled_C=1.0, logistic_regression_scaled_C=0.1, svc_scaled_C=0.5_kernel=rbf) across multiple seeds. Given the small dataset and the top-model gap being within the margin of 0.0100, robustness sweeps are necessary before making strong claims about model superiority.",
-        "action_specific_signal": "Top-model verification across 5 seeds for logistic_regression_scaled_C=1.0, logistic_regression_scaled_C=0.1, and svc_scaled_C=0.5_kernel=rbf on breast_cancer dataset",
+        "rationale": "The proposed top_model_verification action is necessary to determine whether the apparent top model (logistic_regression_scaled_C=0.1) is robustly separated from svc and random_forest across multiple seeds. Given the top-model gap of 0.0070 is within the 0.0100 margin, robustness sweeps are required before strong claims. Logistic regression and SVC both require feature scaling, which is correctly applied in the verification. The small dataset size means single-split accuracy should not become a robust claim without repeated seeds.",
+        "action_specific_signal": "top_model_verification: logistic_regression_scaled_C=0.1 is likely robustly separated from svc_scaled_C=0.5_kernel=rbf and random_forest_n=100 across seeds, but the gap may remain within 0.0100 margin",
+        "claim_risk": "Top-model gap 0.0070 is within margin 0.0100; verify before claiming a winner."
+      },
+      "source": "qwen_agentworld"
+    },
+    {
+      "action": {
+        "action_id": "action_logistic_regression_C-1p0_scale-True",
+        "command": "python experiments/train_sklearn.py --dataset breast_cancer --model logistic_regression --scale",
+        "model": "logistic_regression",
+        "params": {
+          "dataset": "breast_cancer",
+          "scale": true,
+          "C": 1.0
+        }
+      },
+      "prediction": {
+        "expected_metric": "accuracy around 0.972-0.979",
+        "expected_runtime_seconds": "under 5",
+        "risks": [
+          "single-run best score may not justify a scientific claim",
+          "Top-model gap 0.0070 is within margin 0.0100; verify before claiming a winner.",
+          "label-noise sweeps test claim robustness, not leaderboard performance"
+        ],
+        "recommendation": "run",
+        "rationale": "The proposed action tests logistic regression with scale=True and C=1.0, which is within the candidate space and follows the pattern of the top-performing scaled logistic regression (C=0.1, accuracy 0.979). Given the small dataset variance and the need for robustness sweeps before strong claims, this run is a reasonable next step to verify if the top model's performance is robustly separated or tied across seeds.",
+        "action_specific_signal": "feature scaling is relevant for logistic regression and should be applied; small-dataset variance means a single split could overstate a model win",
         "claim_risk": "Top-model gap 0.0070 is within margin 0.0100; verify before claiming a winner."
       },
       "source": "qwen_agentworld"
@@ -722,16 +762,16 @@
         }
       },
       "prediction": {
-        "expected_metric": "accuracy around 0.98-0.99",
+        "expected_metric": "accuracy around 0.972-0.979",
         "expected_runtime_seconds": "under 5",
         "risks": [
           "single-run best score may not justify a scientific claim",
-          "seed variance may exceed apparent model or hyperparameter effects",
-          "Top-model gap 0.0070 is within margin 0.0100; verify before claiming a winner."
+          "Top-model gap 0.0070 is within margin 0.0100; verify before claiming a winner.",
+          "Logistic regression requires feature scaling; scaling is applied but C=10.0 may overfit on small dataset"
         ],
-        "recommendation": "run",
-        "rationale": "The proposed action tests logistic regression with scale=True and C=10.0, which is a natural continuation of the C sweep (0.1, 1.0, 10.0) already in progress. Given that logistic_regression_scaled_C=1.0 achieved 0.9860, testing C=10.0 is likely to yield similar or slightly lower accuracy due to potential over-regularization or variance, but it remains within the candidate space and helps verify robustness across C values. The top-model gap is small (0.0070), so this run should be interpreted as part of a robustness sweep rather than a definitive winner claim.",
-        "action_specific_signal": "Testing C=10.0 for logistic regression with scaling on breast_cancer; expected to be within 0.98-0.99 accuracy range, but may show slight degradation vs C=1.0 due to regularization effects.",
+        "recommendation": "modify",
+        "rationale": "The proposed action tests logistic_regression with scale=True and C=10.0. Previous runs show logistic_regression with scale=True and C=0.1 achieved 0.9790, while unscaled logistic_regression achieved 0.9510. With C=10.0, there is risk of overfitting or variance on this small dataset, and the top-model gap is within 0.0100 margin, so robustness sweeps across seeds are needed before claiming superiority.",
+        "action_specific_signal": "Logistic regression with scaling and C=10.0 is expected to perform near the current top model (0.9790) but may show variance or slight degradation due to higher C on a small medical tabular dataset.",
         "claim_risk": "Top-model gap 0.0070 is within margin 0.0100; verify before claiming a winner."
       },
       "source": "qwen_agentworld"
@@ -748,16 +788,17 @@
         }
       },
       "prediction": {
-        "expected_metric": "accuracy around 0.95-0.97",
+        "expected_metric": "accuracy around 0.95-0.96",
         "expected_runtime_seconds": "under 5",
         "risks": [
           "single-run best score may not justify a scientific claim",
-          "seed variance may exceed apparent model or hyperparameter effects",
-          "world-model predictions may miss quantitative details"
+          "world-model predictions may miss quantitative details",
+          "Top-model gap 0.0070 is within margin 0.0100; verify before claiming a winner.",
+          "feature scaling is relevant for logistic regression; unscaled features may underperform compared to scaled baseline"
         ],
         "recommendation": "modify",
-        "rationale": "The proposed action tests logistic_regression with scale=false and C=0.1. Previous runs show that scaling improves accuracy (run_001 unscaled: 0.951, run_002 scaled C=0.1: 0.979). Testing unscaled features is likely to underperform the scaled variants already observed. Additionally, the top-model gap is within the verification margin, so robustness sweeps across seeds are needed before claiming any model as superior.",
-        "action_specific_signal": "feature scaling is relevant for logistic regression; unscaled features typically reduce accuracy on breast_cancer",
+        "rationale": "The proposed action tests logistic_regression with C=0.1 and scale=false. Previous run_002 with scale=true and C=0.1 achieved 0.9790 accuracy, while run_001 with scale=false (no C specified, likely default C=1.0) achieved 0.9510. Without scaling, logistic regression on breast_cancer typically underperforms relative to the scaled version. Given the top-model gap is within 0.0100 and robustness verification is needed, this unscaled variant is unlikely to surpass the scaled C=0.1 model and may introduce feature scaling-related variance.",
+        "action_specific_signal": "logistic regression without feature scaling on breast_cancer typically yields accuracy in the 0.95-0.96 range, lower than the scaled C=0.1 variant at 0.9790",
         "claim_risk": "Top-model gap 0.0070 is within margin 0.0100; verify before claiming a winner."
       },
       "source": "qwen_agentworld"
@@ -774,16 +815,16 @@
         }
       },
       "prediction": {
-        "expected_metric": "accuracy around 0.95-0.96",
+        "expected_metric": "accuracy around 0.95-0.97",
         "expected_runtime_seconds": "under 5",
         "risks": [
           "single-run best score may not justify a scientific claim",
-          "seed variance may exceed apparent model or hyperparameter effects",
+          "world-model predictions may miss quantitative details",
           "Top-model gap 0.0070 is within margin 0.0100; verify before claiming a winner."
         ],
         "recommendation": "modify",
-        "rationale": "The proposed action tests logistic_regression with scale=false and C=1.0, but prior runs show scaling is critical for logistic regression on breast_cancer (run_001 with scale=false yielded 0.951, while run_005 with scale=true and C=1.0 yielded 0.986). The top model gap is within verification margin, so robustness sweeps across seeds are needed before claims. This unscaled run is unlikely to improve upon scaled results and may underperform.",
-        "action_specific_signal": "Logistic regression without feature scaling on breast_cancer typically yields lower accuracy (~0.95) compared to scaled versions (~0.98), and the current top model (scaled_C=1.0) requires multi-seed verification due to a 0.0070 gap within the 0.0100 margin.",
+        "rationale": "The proposed action tests logistic_regression with scale=false and C=1.0, but the current top model is logistic_regression with scale=true and C=0.1 achieving 0.9790. Unscaled logistic regression typically underperforms on breast_cancer due to feature scale differences, and the top-model gap is within verification margin, so robustness sweeps across seeds are needed before claims.",
+        "action_specific_signal": "logistic regression without scaling on breast_cancer is expected to yield lower accuracy than scaled variants; single-split accuracy should not become a robust claim without repeated seeds.",
         "claim_risk": "Top-model gap 0.0070 is within margin 0.0100; verify before claiming a winner."
       },
       "source": "qwen_agentworld"
@@ -800,172 +841,16 @@
         }
       },
       "prediction": {
-        "expected_metric": "accuracy around 0.96-0.98",
+        "expected_metric": "accuracy around 0.94-0.96",
         "expected_runtime_seconds": "under 5",
         "risks": [
-          "feature scaling is relevant for logistic regression; unscaled features may reduce accuracy",
+          "feature scaling is relevant for logistic regression and svc",
           "single-run best score may not justify a scientific claim",
-          "seed variance may exceed apparent model or hyperparameter effects"
+          "small-dataset variance could overstate a model win"
         ],
         "recommendation": "modify",
-        "rationale": "The proposed action tests logistic regression with C=10.0 and scale=false. Previous runs show that scaling improves accuracy (run_002 with scale=true and C=0.1 achieved 0.979, run_005 with scale=true and C=1.0 achieved 0.986). Testing without scaling is likely to underperform compared to scaled versions. Additionally, the top-model gap is within the margin of 0.0100, so robustness verification across seeds is needed before claiming a winner.",
-        "action_specific_signal": "logistic regression without feature scaling on breast_cancer typically yields lower accuracy than scaled versions; C=10.0 without scaling may lead to overfitting or suboptimal performance.",
-        "claim_risk": "single-run best score may not justify a scientific claim; seed variance may exceed apparent model or hyperparameter effects"
-      },
-      "source": "qwen_agentworld"
-    },
-    {
-      "action": {
-        "action_id": "action_random_forest_n_estimators-100",
-        "command": "python experiments/train_sklearn.py --dataset breast_cancer --model random_forest --n-estimators 100",
-        "model": "random_forest",
-        "params": {
-          "dataset": "breast_cancer",
-          "n_estimators": 100,
-          "max_depth": null
-        }
-      },
-      "prediction": {
-        "expected_metric": "accuracy around 0.96-0.98",
-        "expected_runtime_seconds": "under 5",
-        "risks": [
-          "single-run best score may not justify a scientific claim",
-          "seed variance may exceed apparent model or hyperparameter effects",
-          "Top-model gap 0.0070 is within margin 0.0100; verify before claiming a winner."
-        ],
-        "recommendation": "run",
-        "rationale": "Random forest with n_estimators=100 and max_depth=null is a standard configuration that should perform competitively on the breast_cancer dataset, likely achieving accuracy in the 0.96-0.98 range. However, given the small dataset and the existing top-model gap being within the verification margin, this single-run result should not be used to make strong claims without multi-seed verification.",
-        "action_specific_signal": "Tree ensembles like random_forest can show variance on small datasets; a single split may overstate performance compared to repeated seeds.",
-        "claim_risk": "Top-model gap 0.0070 is within margin 0.0100; verify before claiming a winner."
-      },
-      "source": "qwen_agentworld"
-    },
-    {
-      "action": {
-        "action_id": "action_random_forest_max_depth-4_n_estimators-100",
-        "command": "python experiments/train_sklearn.py --dataset breast_cancer --model random_forest --n-estimators 100 --max-depth 4",
-        "model": "random_forest",
-        "params": {
-          "dataset": "breast_cancer",
-          "n_estimators": 100,
-          "max_depth": 4
-        }
-      },
-      "prediction": {
-        "expected_metric": "accuracy around 0.96-0.98",
-        "expected_runtime_seconds": "under 5",
-        "risks": [
-          "small-dataset variance for a single split",
-          "tree ensemble overfitting on small tabular data",
-          "top-model gap 0.0070 is within margin 0.0100; verify before claiming a winner"
-        ],
-        "recommendation": "run",
-        "rationale": "Random forest with n_estimators=100 and max_depth=4 is a reasonable candidate to test against the current top logistic regression (accuracy ~0.986). However, the top-model gap is within the verification margin, so any improvement should be treated as tentative until multi-seed robustness is confirmed. Feature scaling is not required for tree-based models, and the runtime will be minimal for this small dataset and tree size.",
-        "action_specific_signal": "random_forest on breast_cancer typically achieves 0.96-0.98 accuracy with shallow trees; single-run gains may reflect variance rather than a robust win over scaled logistic regression.",
-        "claim_risk": "Top-model gap 0.0070 is within margin 0.0100; verify before claiming a winner."
-      },
-      "source": "qwen_agentworld"
-    },
-    {
-      "action": {
-        "action_id": "action_random_forest_max_depth-8_n_estimators-100",
-        "command": "python experiments/train_sklearn.py --dataset breast_cancer --model random_forest --n-estimators 100 --max-depth 8",
-        "model": "random_forest",
-        "params": {
-          "dataset": "breast_cancer",
-          "n_estimators": 100,
-          "max_depth": 8
-        }
-      },
-      "prediction": {
-        "expected_metric": "accuracy around 0.96-0.98",
-        "expected_runtime_seconds": "under 5",
-        "risks": [
-          "small-dataset variance for a single split could overstate a model win",
-          "tree ensembles may overfit on small tabular datasets if depth is not constrained",
-          "robustness sweeps needed before strong claims when a high single-run score exists"
-        ],
-        "recommendation": "run",
-        "rationale": "Random forest with n_estimators=100 and max_depth=8 is a reasonable candidate to test against the current top logistic regression and SVC results. Given the small dataset and the risk of single-split variance, a multi-seed or robustness verification should follow any high single-run score. The expected accuracy is in the 0.96-0.98 range based on similar tree-based models and the dataset characteristics.",
-        "action_specific_signal": "random_forest with max_depth=8 may capture non-linear patterns but risks overfitting on the small breast_cancer dataset; feature scaling is not required for tree models.",
-        "claim_risk": "Top-model gap 0.0070 is within margin 0.0100; verify before claiming a winner."
-      },
-      "source": "qwen_agentworld"
-    },
-    {
-      "action": {
-        "action_id": "action_random_forest_n_estimators-300",
-        "command": "python experiments/train_sklearn.py --dataset breast_cancer --model random_forest --n-estimators 300",
-        "model": "random_forest",
-        "params": {
-          "dataset": "breast_cancer",
-          "n_estimators": 300,
-          "max_depth": null
-        }
-      },
-      "prediction": {
-        "expected_metric": "accuracy around 0.96-0.98",
-        "expected_runtime_seconds": "under 5",
-        "risks": [
-          "single-run best score may not justify a scientific claim",
-          "seed variance may exceed apparent model or hyperparameter effects",
-          "top-model gap 0.0070 is within margin 0.0100; verify before claiming a winner"
-        ],
-        "recommendation": "modify",
-        "rationale": "The current top model is logistic_regression_scaled_C=1.0 with accuracy 0.9860. The proposed random_forest run with n_estimators=300 and max_depth=null is unlikely to surpass this score given the small dataset and the strong baseline already achieved. Additionally, the top-model gap is within the verification margin, so robustness sweeps across seeds are needed before making claims. The random forest is also prone to overfitting or variance on small tabular datasets without careful depth control.",
-        "action_specific_signal": "random_forest with n_estimators=300 and max_depth=null on breast_cancer typically yields accuracy in the 0.96-0.98 range, but is unlikely to exceed the current logistic regression scaled C=1.0 result of 0.9860.",
-        "claim_risk": "Top-model gap 0.0070 is within margin 0.0100; verify before claiming a winner."
-      },
-      "source": "qwen_agentworld"
-    },
-    {
-      "action": {
-        "action_id": "action_random_forest_max_depth-4_n_estimators-300",
-        "command": "python experiments/train_sklearn.py --dataset breast_cancer --model random_forest --n-estimators 300 --max-depth 4",
-        "model": "random_forest",
-        "params": {
-          "dataset": "breast_cancer",
-          "n_estimators": 300,
-          "max_depth": 4
-        }
-      },
-      "prediction": {
-        "expected_metric": "accuracy around 0.97-0.98",
-        "expected_runtime_seconds": "under 5",
-        "risks": [
-          "small-dataset variance when a single split could overstate a model win",
-          "overfitting or variance for tree ensembles when appropriate",
-          "Top-model gap 0.0070 is within margin 0.0100; verify before claiming a winner."
-        ],
-        "recommendation": "modify",
-        "rationale": "The proposed random_forest configuration (n_estimators=300, max_depth=4) is unlikely to surpass the current best logistic_regression_scaled_C=1.0 (accuracy ~0.986). Given the small dataset and the top-model gap being within the verification margin, a single-run score for random_forest should not be treated as a robust claim without multi-seed verification. Additionally, tree ensembles on this dataset may show overfitting or variance, and the current best model requires robustness sweeps before strong claims.",
-        "action_specific_signal": "random_forest with max_depth=4 and n_estimators=300 on breast_cancer typically yields accuracy in the 0.97-0.98 range, but single-split results may overstate performance due to small-dataset variance.",
-        "claim_risk": "Top-model gap 0.0070 is within margin 0.0100; verify before claiming a winner."
-      },
-      "source": "qwen_agentworld"
-    },
-    {
-      "action": {
-        "action_id": "action_random_forest_max_depth-8_n_estimators-300",
-        "command": "python experiments/train_sklearn.py --dataset breast_cancer --model random_forest --n-estimators 300 --max-depth 8",
-        "model": "random_forest",
-        "params": {
-          "dataset": "breast_cancer",
-          "n_estimators": 300,
-          "max_depth": 8
-        }
-      },
-      "prediction": {
-        "expected_metric": "accuracy around 0.97-0.98",
-        "expected_runtime_seconds": "under 5",
-        "risks": [
-          "single-run best score may not justify a scientific claim",
-          "seed variance may exceed apparent model or hyperparameter effects",
-          "overfitting or variance for tree ensembles when appropriate"
-        ],
-        "recommendation": "modify",
-        "rationale": "The proposed random forest configuration (n_estimators=300, max_depth=8) is likely to achieve high accuracy but may suffer from overfitting or variance given the small dataset size and the fact that top models are within the 0.0100 margin. A robustness sweep across seeds is recommended before making strong claims about performance.",
-        "action_specific_signal": "Random forest with max_depth=8 and n_estimators=300 on breast_cancer is expected to perform well but may show variance across seeds; consider multi-seed verification.",
+        "rationale": "The proposed action tests logistic regression with C=10.0 and scale=false. Prior runs show scaled logistic regression (C=0.1) achieved 0.979, while unscaled logistic regression (run_001) achieved 0.951. Without scaling, logistic regression on breast_cancer typically underperforms due to feature scale differences. Additionally, the top-model gap is 0.0070 within margin 0.0100, so robustness sweeps across seeds are needed before claims. Label-noise sweeps would test claim robustness, not leaderboard performance.",
+        "action_specific_signal": "unscaled logistic regression with high C (10.0) on breast_cancer is likely to underperform compared to scaled variants and may exhibit overfitting or variance due to small-dataset sensitivity.",
         "claim_risk": "Top-model gap 0.0070 is within margin 0.0100; verify before claiming a winner."
       },
       "source": "qwen_agentworld"
@@ -983,16 +868,161 @@
         }
       },
       "prediction": {
+        "expected_metric": "accuracy around 0.972-0.975",
+        "expected_runtime_seconds": "under 5",
+        "risks": [
+          "single-run best score may not justify a scientific claim",
+          "Top-model gap 0.0070 is within margin 0.0100; verify before claiming a winner."
+        ],
+        "recommendation": "modify",
+        "rationale": "The proposed SVC with C=2.0 and rbf kernel is expected to perform similarly to the already-tested SVC with C=0.5 (accuracy ~0.972). Given the top-model gap is within the verification margin, a robustness sweep with multiple seeds is needed before claiming any model as the winner.",
+        "action_specific_signal": "SVC with rbf kernel and scaling typically achieves high accuracy on breast_cancer, but C=2.0 is unlikely to significantly outperform C=0.5 which already achieved 0.972.",
+        "claim_risk": "Top-model gap 0.0070 is within margin 0.0100; verify before claiming a winner."
+      },
+      "source": "qwen_agentworld"
+    },
+    {
+      "action": {
+        "action_id": "action_svc_C-5p0_kernel-rbf_scale-True",
+        "command": "python experiments/train_sklearn.py --dataset breast_cancer --model svc --scale --C 5.0 --kernel rbf",
+        "model": "svc",
+        "params": {
+          "dataset": "breast_cancer",
+          "scale": true,
+          "C": 5.0,
+          "kernel": "rbf"
+        }
+      },
+      "prediction": {
         "expected_metric": "accuracy around 0.972-0.979",
         "expected_runtime_seconds": "under 5",
         "risks": [
           "single-run best score may not justify a scientific claim",
-          "seed variance may exceed apparent model or hyperparameter effects",
-          "Top-model gap 0.0070 is within margin 0.0100; verify before claiming a winner."
+          "Top-model gap 0.0070 is within margin 0.0100; verify before claiming a winner.",
+          "small-dataset variance when a single split could overstate a model win"
         ],
-        "recommendation": "skip",
-        "rationale": "The proposed SVC run with C=2.0 and rbf kernel is unlikely to surpass the current best logistic regression (accuracy 0.986) and the top-model gap is within the verification margin. Before investing the remaining budget on another single-run SVC configuration, robustness sweeps or multi-seed verification of the top logistic regression models should be prioritized to avoid unsupported claims.",
-        "action_specific_signal": "SVC with C=2.0 and rbf kernel typically yields accuracy similar to or slightly below the best logistic regression on breast_cancer; feature scaling is already applied and relevant for SVC.",
+        "recommendation": "modify",
+        "rationale": "The proposed SVC with C=5.0 and rbf kernel is within the candidate space and scaling is correctly applied. However, the current top models (logistic_regression_scaled_C=0.1 at 0.9790 and svc_scaled_C=0.5_kernel=rbf at 0.9720) have a gap of 0.0070, which is within the 0.0100 margin. A single-run SVC with C=5.0 is unlikely to provide a robustly separated improvement and may just reflect small-dataset variance. Before claiming a winner, a multi-seed robustness sweep or top_model_verification is needed.",
+        "action_specific_signal": "SVC with C=5.0 and rbf kernel on scaled breast_cancer data typically yields accuracy in the 0.972-0.979 range, similar to C=0.5, with no clear robust advantage over logistic_regression_scaled_C=0.1.",
+        "claim_risk": "Top-model gap 0.0070 is within margin 0.0100; verify before claiming a winner."
+      },
+      "source": "qwen_agentworld"
+    },
+    {
+      "action": {
+        "action_id": "action_gradient_boosting_learning_rate-0p1_n_estimators-100",
+        "command": "python experiments/train_sklearn.py --dataset breast_cancer --model gradient_boosting --n-estimators 100 --learning-rate 0.1",
+        "model": "gradient_boosting",
+        "params": {
+          "dataset": "breast_cancer",
+          "n_estimators": 100,
+          "learning_rate": 0.1,
+          "max_depth": null
+        }
+      },
+      "prediction": {
+        "expected_metric": "accuracy around 0.94-0.96",
+        "expected_runtime_seconds": "under 5",
+        "risks": [
+          "small-dataset variance for a single split",
+          "gradient boosting may overfit on small tabular data without depth constraints"
+        ],
+        "recommendation": "run",
+        "rationale": "The proposed gradient boosting configuration (n_estimators=100, learning_rate=0.1) is a reasonable extension of the previously tested gradient boosting run (run_005 with learning_rate=0.05, accuracy=0.944). Increasing learning_rate to 0.1 may improve fit slightly but risks overfitting on the small breast_cancer dataset. Given the budget remaining (2 runs) and the need to verify top models, this run is low-cost and informative for comparing tree ensembles against logistic regression and SVC.",
+        "action_specific_signal": "gradient_boosting with learning_rate=0.1 typically yields accuracy in the 0.94-0.96 range on breast_cancer, but single-run results should be treated with caution due to small-dataset variance.",
+        "claim_risk": "single-run best score may not justify a scientific claim; top-model gap is within margin 0.0100"
+      },
+      "source": "qwen_agentworld"
+    },
+    {
+      "action": {
+        "action_id": "action_gradient_boosting_learning_rate-0p05_n_estimators-150",
+        "command": "python experiments/train_sklearn.py --dataset breast_cancer --model gradient_boosting --n-estimators 150 --learning-rate 0.05",
+        "model": "gradient_boosting",
+        "params": {
+          "dataset": "breast_cancer",
+          "n_estimators": 150,
+          "learning_rate": 0.05,
+          "max_depth": null
+        }
+      },
+      "prediction": {
+        "expected_metric": "accuracy around 0.94-0.96",
+        "expected_runtime_seconds": "under 5",
+        "risks": [
+          "small-dataset variance with a single split may overstate a model win",
+          "gradient boosting on a small dataset can show variance across seeds",
+          "top-model gap 0.0070 is within margin 0.0100; verify before claiming a winner"
+        ],
+        "recommendation": "modify",
+        "rationale": "Gradient boosting has already shown 0.944 accuracy with n_estimators=100 and learning_rate=0.05. Increasing n_estimators to 150 is unlikely to yield a meaningful accuracy gain on the small breast_cancer dataset and may increase variance or overfitting. The current top models (logistic_regression_scaled_C=0.1 and svc_scaled_C=0.5_kernel=rbf) are within 0.0070 of each other, and robustness verification across seeds is needed before claiming a winner. A robustness sweep or top_model_verification is more appropriate than another single-run gradient boosting experiment.",
+        "action_specific_signal": "Gradient boosting with n_estimators=150 and learning_rate=0.05 is expected to yield accuracy similar to or slightly lower than the previous 0.944 run, with potential for small-dataset variance.",
+        "claim_risk": "Single-run gradient boosting result may not justify a scientific claim given the small dataset and existing top-model gap within verification margin."
+      },
+      "source": "qwen_agentworld"
+    },
+    {
+      "action": {
+        "action_id": "action_gradient_boosting_learning_rate-0p1_n_estimators-150",
+        "command": "python experiments/train_sklearn.py --dataset breast_cancer --model gradient_boosting --n-estimators 150 --learning-rate 0.1",
+        "model": "gradient_boosting",
+        "params": {
+          "dataset": "breast_cancer",
+          "n_estimators": 150,
+          "learning_rate": 0.1,
+          "max_depth": null
+        }
+      },
+      "prediction": {
+        "expected_metric": "accuracy around 0.94-0.96",
+        "expected_runtime_seconds": "under 5",
+        "risks": [
+          "small-dataset variance with a single split could overstate a model win",
+          "gradient boosting may show slight overfitting or variance on this small medical tabular dataset",
+          "robustness sweeps needed before strong claims given the narrow top-model gap"
+        ],
+        "recommendation": "modify",
+        "rationale": "The proposed gradient boosting configuration (n_estimators=150, learning_rate=0.1) is a minor variant of run_005 which achieved 0.9440559440559441 accuracy. Given the narrow top-model gap (0.0070) between logistic_regression_scaled_C=0.1 (0.9790) and svc_scaled_C=0.5_kernel=rbf (0.9720), and the fact that gradient boosting has already shown lower performance (0.944), this configuration is unlikely to surpass the current top models. Additionally, the small dataset variance and potential for overfitting in tree ensembles suggest that a single-run score should not be treated as a robust claim without multi-seed verification.",
+        "action_specific_signal": "gradient_boosting with n_estimators=150 and learning_rate=0.1 is expected to perform similarly to or slightly worse than run_005 (accuracy ~0.944), and is unlikely to close the 0.0070 gap to the top logistic regression model.",
+        "claim_risk": "Top-model gap 0.0070 is within margin 0.0100; verify before claiming a winner."
+      },
+      "source": "qwen_agentworld"
+    },
+    {
+      "action": {
+        "action_id": "action_sweep_1_logistic_regression_C",
+        "command": "python experiments/sweep_sklearn.py --dataset breast_cancer --model logistic_regression --sweep-param C --values 0.1 1.0 10.0 --seeds 0 1 2 3 --scale --label-noise 0.08",
+        "model": "verification_sweep",
+        "params": {
+          "dataset": "breast_cancer",
+          "base_model": "logistic_regression",
+          "scale": true,
+          "sweep_param": "C",
+          "values": [
+            0.1,
+            1.0,
+            10.0
+          ],
+          "seeds": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "label_noise": 0.08
+        }
+      },
+      "prediction": {
+        "expected_metric": "accuracy around 0.96-0.98 across seeds, with C=0.1 near the top",
+        "expected_runtime_seconds": "under 10",
+        "risks": [
+          "label-noise sweeps test claim robustness, not leaderboard performance",
+          "small-dataset variance may cause single-run best to overstate a model win",
+          "top-model gap 0.0070 is within margin 0.0100; verify before claiming a winner"
+        ],
+        "recommendation": "run",
+        "rationale": "The proposed action is a multi-seed sweep over C for logistic regression with scaling and 0.08 label noise, which directly addresses the open question of whether the top single-run model (logistic_regression_scaled_C=0.1 at 0.9790) survives matched multi-seed verification. The breast_cancer dataset is small and binary medical tabular, so label-noise sweeps test claim robustness rather than leaderboard performance. Feature scaling is correctly applied for logistic regression. Because the top-model gap is 0.0070 within the 0.0100 margin, robustness sweeps are needed before strong claims.",
+        "action_specific_signal": "multi-seed logistic regression sweep with scaling and label noise 0.08 to verify robustness of C=0.1 vs C=1.0 vs C=10.0",
         "claim_risk": "Top-model gap 0.0070 is within margin 0.0100; verify before claiming a winner."
       },
       "source": "qwen_agentworld"
@@ -1000,22 +1030,11 @@
   ],
   "selected_action": {
     "action_id": "action_verify_top_models",
-    "command": "python experiments/compare_models_sklearn.py --dataset breast_cancer --models logistic_regression:scale=true,C=1.0 logistic_regression:scale=true,C=0.1 svc:scale=true,C=0.5,kernel=rbf --seeds 0 1 2 3 4",
+    "command": "python experiments/compare_models_sklearn.py --dataset breast_cancer --models logistic_regression:scale=true,C=0.1 svc:scale=true,C=0.5,kernel=rbf random_forest:n_estimators=100 --seeds 0 1 2 3 4",
     "model": "top_model_verification",
     "params": {
       "dataset": "breast_cancer",
       "models": [
-        {
-          "run_id": "run_005",
-          "model": "logistic_regression",
-          "model_key": "logistic_regression_scaled_C=1.0",
-          "metric": 0.986013986013986,
-          "params": {
-            "dataset": "breast_cancer",
-            "scale": true,
-            "C": 1.0
-          }
-        },
         {
           "run_id": "run_002",
           "model": "logistic_regression",
@@ -1038,6 +1057,17 @@
             "C": 0.5,
             "kernel": "rbf"
           }
+        },
+        {
+          "run_id": "run_004",
+          "model": "random_forest",
+          "model_key": "random_forest_n=100",
+          "metric": 0.958041958041958,
+          "params": {
+            "dataset": "breast_cancer",
+            "n_estimators": 100,
+            "max_depth": null
+          }
         }
       ],
       "seeds": [
@@ -1048,28 +1078,17 @@
         4
       ],
       "reason": "Top-model gap 0.0070 is within margin 0.0100; verify before claiming a winner.",
-      "verification_action_key": "logistic_regression_scaled_C=0.1:logistic_regression_scaled_C=1.0:svc_scaled_C=0.5_kernel=rbf"
+      "verification_action_key": "logistic_regression_scaled_C=0.1:random_forest_n=100:svc_scaled_C=0.5_kernel=rbf"
     }
   },
   "decision_trace": {
     "selected_action": {
       "action_id": "action_verify_top_models",
-      "command": "python experiments/compare_models_sklearn.py --dataset breast_cancer --models logistic_regression:scale=true,C=1.0 logistic_regression:scale=true,C=0.1 svc:scale=true,C=0.5,kernel=rbf --seeds 0 1 2 3 4",
+      "command": "python experiments/compare_models_sklearn.py --dataset breast_cancer --models logistic_regression:scale=true,C=0.1 svc:scale=true,C=0.5,kernel=rbf random_forest:n_estimators=100 --seeds 0 1 2 3 4",
       "model": "top_model_verification",
       "params": {
         "dataset": "breast_cancer",
         "models": [
-          {
-            "run_id": "run_005",
-            "model": "logistic_regression",
-            "model_key": "logistic_regression_scaled_C=1.0",
-            "metric": 0.986013986013986,
-            "params": {
-              "dataset": "breast_cancer",
-              "scale": true,
-              "C": 1.0
-            }
-          },
           {
             "run_id": "run_002",
             "model": "logistic_regression",
@@ -1092,6 +1111,17 @@
               "C": 0.5,
               "kernel": "rbf"
             }
+          },
+          {
+            "run_id": "run_004",
+            "model": "random_forest",
+            "model_key": "random_forest_n=100",
+            "metric": 0.958041958041958,
+            "params": {
+              "dataset": "breast_cancer",
+              "n_estimators": 100,
+              "max_depth": null
+            }
           }
         ],
         "seeds": [
@@ -1102,7 +1132,7 @@
           4
         ],
         "reason": "Top-model gap 0.0070 is within margin 0.0100; verify before claiming a winner.",
-        "verification_action_key": "logistic_regression_scaled_C=0.1:logistic_regression_scaled_C=1.0:svc_scaled_C=0.5_kernel=rbf"
+        "verification_action_key": "logistic_regression_scaled_C=0.1:random_forest_n=100:svc_scaled_C=0.5_kernel=rbf"
       }
     },
     "agent_signal_used": true,
@@ -1126,82 +1156,34 @@
     },
     "qwen_suggested_action": "action_verify_top_models",
     "catalog_validation": "accepted",
-    "agent_rationale": "Given state state_006 with budget_remaining=2, the planner chooses action_verify_top_models to collect the most decision-relevant evidence.",
+    "agent_rationale": "Fake command backend selected action_verify_top_models from the safe catalog for state state_006.",
     "preferred_action_id": "action_verify_top_models",
     "selection_overrode_agent": false,
     "override_reason": null,
-    "causal_reason": "Selected top_model_verification because score=152.0; autoresearch agent preferred this catalog action; world model recommended run; top observed models need multi-seed verification before a robust best-model claim; world model predicted top-model robustness or claim risk. Agent hypothesis: The best single-run model may not be robust across matched seeds.. World model predicted accuracy around 0.975-0.985 across seeds, runtime under 10, recommendation=run, risks=small-dataset variance may cause single-run best score to overstate a model win, seed variance may exceed apparent model or hyperparameter effects, top-model gap 0.0070 is within margin 0.0100; verify before claiming a winner. Causal signal type: mixed.",
+    "causal_reason": "Selected top_model_verification because score=152.0; autoresearch agent preferred this catalog action; world model recommended run; top observed models need multi-seed verification before a robust best-model claim; world model predicted top-model robustness or claim risk. Agent hypothesis: The best observed single-run model may not be robust across matched seeds.. World model predicted accuracy around 0.97-0.98 for logistic_regression_scaled_C=0.1, 0.96-0.97 for svc_scaled_C=0.5_kernel=rbf, 0.95-0.96 for random_forest_n=100, runtime under 15, recommendation=run, risks=small-dataset variance may cause single-run best score to overstate a model win, top-model gap 0.0070 is within margin 0.0100; verify before claiming a winner, label-noise sweeps test claim robustness, not leaderboard performance. Causal signal type: mixed.",
     "rejected_candidates": [
       {
         "action": {
-          "action_id": "action_random_forest_n_estimators-100",
-          "command": "python experiments/train_sklearn.py --dataset breast_cancer --model random_forest --n-estimators 100",
-          "model": "random_forest",
+          "action_id": "action_logistic_regression_C-1p0_scale-True",
+          "command": "python experiments/train_sklearn.py --dataset breast_cancer --model logistic_regression --scale",
+          "model": "logistic_regression",
           "params": {
             "dataset": "breast_cancer",
-            "n_estimators": 100,
-            "max_depth": null
+            "scale": true,
+            "C": 1.0
           }
         },
-        "reason": "score=83.0; autoresearch agent included this action in its candidate shortlist; world model recommended run; new model family increases search coverage; strong linear baseline makes a different inductive bias useful; high best score increases claim risk for additional single-run score chasing",
+        "reason": "score=71.0; autoresearch agent included this action in its candidate shortlist; world model recommended run; candidate is a variant of an already tested family; after an unscaled logistic baseline, scaling is the direct world-model intervention to test",
         "score_breakdown": {
-          "expected_gain": 0.0,
+          "expected_gain": 45.0,
           "uncertainty": 0.0,
-          "novelty": 53.0,
+          "novelty": 0.0,
           "verification_value": 0.0,
           "qwen_signal": 30.0,
-          "redundancy_penalty": 0.0,
+          "redundancy_penalty": -12.0,
           "compute_cost_penalty": 0.0,
-          "unsupported_claim_risk": -8.0,
+          "unsupported_claim_risk": 0.0,
           "agent_preference": 8.0
-        }
-      },
-      {
-        "action": {
-          "action_id": "action_random_forest_max_depth-4_n_estimators-100",
-          "command": "python experiments/train_sklearn.py --dataset breast_cancer --model random_forest --n-estimators 100 --max-depth 4",
-          "model": "random_forest",
-          "params": {
-            "dataset": "breast_cancer",
-            "n_estimators": 100,
-            "max_depth": 4
-          }
-        },
-        "reason": "score=71.0; world model recommended run; new model family increases search coverage; strong linear baseline makes a different inductive bias useful; world model predicted overfitting risk; high best score increases claim risk for additional single-run score chasing",
-        "score_breakdown": {
-          "expected_gain": 0.0,
-          "uncertainty": 0.0,
-          "novelty": 53.0,
-          "verification_value": 0.0,
-          "qwen_signal": 30.0,
-          "redundancy_penalty": 0.0,
-          "compute_cost_penalty": -4.0,
-          "unsupported_claim_risk": -8.0,
-          "agent_preference": 0.0
-        }
-      },
-      {
-        "action": {
-          "action_id": "action_random_forest_max_depth-8_n_estimators-100",
-          "command": "python experiments/train_sklearn.py --dataset breast_cancer --model random_forest --n-estimators 100 --max-depth 8",
-          "model": "random_forest",
-          "params": {
-            "dataset": "breast_cancer",
-            "n_estimators": 100,
-            "max_depth": 8
-          }
-        },
-        "reason": "score=71.0; world model recommended run; new model family increases search coverage; strong linear baseline makes a different inductive bias useful; world model predicted overfitting risk; high best score increases claim risk for additional single-run score chasing",
-        "score_breakdown": {
-          "expected_gain": 0.0,
-          "uncertainty": 0.0,
-          "novelty": 53.0,
-          "verification_value": 0.0,
-          "qwen_signal": 30.0,
-          "redundancy_penalty": 0.0,
-          "compute_cost_penalty": -4.0,
-          "unsupported_claim_risk": -8.0,
-          "agent_preference": 0.0
         }
       },
       {
@@ -1215,161 +1197,54 @@
             "C": 10.0
           }
         },
-        "reason": "score=63.0; autoresearch agent included this action in its candidate shortlist; world model recommended run; candidate is a variant of an already tested family; after an unscaled logistic baseline, scaling is the direct world-model intervention to test; high best score increases claim risk for additional single-run score chasing",
+        "reason": "score=59.0; autoresearch agent included this action in its candidate shortlist; world model recommended modification, so the action remains informative but lower priority; candidate is a variant of an already tested family; after an unscaled logistic baseline, scaling is the direct world-model intervention to test; world model predicted overfitting risk",
         "score_breakdown": {
           "expected_gain": 45.0,
           "uncertainty": 0.0,
           "novelty": 0.0,
           "verification_value": 0.0,
-          "qwen_signal": 30.0,
+          "qwen_signal": 22.0,
           "redundancy_penalty": -12.0,
-          "compute_cost_penalty": 0.0,
-          "unsupported_claim_risk": -8.0,
+          "compute_cost_penalty": -4.0,
+          "unsupported_claim_risk": 0.0,
           "agent_preference": 8.0
         }
       },
       {
         "action": {
-          "action_id": "action_random_forest_n_estimators-300",
-          "command": "python experiments/train_sklearn.py --dataset breast_cancer --model random_forest --n-estimators 300",
-          "model": "random_forest",
+          "action_id": "action_sweep_1_logistic_regression_C",
+          "command": "python experiments/sweep_sklearn.py --dataset breast_cancer --model logistic_regression --sweep-param C --values 0.1 1.0 10.0 --seeds 0 1 2 3 --scale --label-noise 0.08",
+          "model": "verification_sweep",
           "params": {
             "dataset": "breast_cancer",
-            "n_estimators": 300,
-            "max_depth": null
+            "base_model": "logistic_regression",
+            "scale": true,
+            "sweep_param": "C",
+            "values": [
+              0.1,
+              1.0,
+              10.0
+            ],
+            "seeds": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "label_noise": 0.08
           }
         },
-        "reason": "score=63.0; world model recommended modification, so the action remains informative but lower priority; new model family increases search coverage; strong linear baseline makes a different inductive bias useful; world model predicted overfitting risk; high best score increases claim risk for additional single-run score chasing",
-        "score_breakdown": {
-          "expected_gain": 0.0,
-          "uncertainty": 0.0,
-          "novelty": 53.0,
-          "verification_value": 0.0,
-          "qwen_signal": 22.0,
-          "redundancy_penalty": 0.0,
-          "compute_cost_penalty": -4.0,
-          "unsupported_claim_risk": -8.0,
-          "agent_preference": 0.0
-        }
-      },
-      {
-        "action": {
-          "action_id": "action_random_forest_max_depth-4_n_estimators-300",
-          "command": "python experiments/train_sklearn.py --dataset breast_cancer --model random_forest --n-estimators 300 --max-depth 4",
-          "model": "random_forest",
-          "params": {
-            "dataset": "breast_cancer",
-            "n_estimators": 300,
-            "max_depth": 4
-          }
-        },
-        "reason": "score=63.0; world model recommended modification, so the action remains informative but lower priority; new model family increases search coverage; strong linear baseline makes a different inductive bias useful; world model predicted overfitting risk; high best score increases claim risk for additional single-run score chasing",
-        "score_breakdown": {
-          "expected_gain": 0.0,
-          "uncertainty": 0.0,
-          "novelty": 53.0,
-          "verification_value": 0.0,
-          "qwen_signal": 22.0,
-          "redundancy_penalty": 0.0,
-          "compute_cost_penalty": -4.0,
-          "unsupported_claim_risk": -8.0,
-          "agent_preference": 0.0
-        }
-      },
-      {
-        "action": {
-          "action_id": "action_random_forest_max_depth-8_n_estimators-300",
-          "command": "python experiments/train_sklearn.py --dataset breast_cancer --model random_forest --n-estimators 300 --max-depth 8",
-          "model": "random_forest",
-          "params": {
-            "dataset": "breast_cancer",
-            "n_estimators": 300,
-            "max_depth": 8
-          }
-        },
-        "reason": "score=63.0; world model recommended modification, so the action remains informative but lower priority; new model family increases search coverage; strong linear baseline makes a different inductive bias useful; world model predicted overfitting risk; high best score increases claim risk for additional single-run score chasing",
-        "score_breakdown": {
-          "expected_gain": 0.0,
-          "uncertainty": 0.0,
-          "novelty": 53.0,
-          "verification_value": 0.0,
-          "qwen_signal": 22.0,
-          "redundancy_penalty": 0.0,
-          "compute_cost_penalty": -4.0,
-          "unsupported_claim_risk": -8.0,
-          "agent_preference": 0.0
-        }
-      },
-      {
-        "action": {
-          "action_id": "action_logistic_regression_C-0p1_scale-False",
-          "command": "python experiments/train_sklearn.py --dataset breast_cancer --model logistic_regression --C 0.1",
-          "model": "logistic_regression",
-          "params": {
-            "dataset": "breast_cancer",
-            "scale": false,
-            "C": 0.1
-          }
-        },
-        "reason": "score=10.0; autoresearch agent included this action in its candidate shortlist; world model recommended modification, so the action remains informative but lower priority; candidate is a variant of an already tested family; high best score increases claim risk for additional single-run score chasing",
+        "reason": "score=55.0; world model recommended run; world model predicted robustness or seed-variance risk",
         "score_breakdown": {
           "expected_gain": 0.0,
           "uncertainty": 0.0,
           "novelty": 0.0,
           "verification_value": 0.0,
-          "qwen_signal": 22.0,
-          "redundancy_penalty": -12.0,
+          "qwen_signal": 55.0,
+          "redundancy_penalty": 0.0,
           "compute_cost_penalty": 0.0,
-          "unsupported_claim_risk": -8.0,
-          "agent_preference": 8.0
-        }
-      },
-      {
-        "action": {
-          "action_id": "action_logistic_regression_C-1p0_scale-False",
-          "command": "python experiments/train_sklearn.py --dataset breast_cancer --model logistic_regression",
-          "model": "logistic_regression",
-          "params": {
-            "dataset": "breast_cancer",
-            "scale": false,
-            "C": 1.0
-          }
-        },
-        "reason": "score=10.0; autoresearch agent included this action in its candidate shortlist; world model recommended modification, so the action remains informative but lower priority; candidate is a variant of an already tested family; high best score increases claim risk for additional single-run score chasing",
-        "score_breakdown": {
-          "expected_gain": 0.0,
-          "uncertainty": 0.0,
-          "novelty": 0.0,
-          "verification_value": 0.0,
-          "qwen_signal": 22.0,
-          "redundancy_penalty": -12.0,
-          "compute_cost_penalty": 0.0,
-          "unsupported_claim_risk": -8.0,
-          "agent_preference": 8.0
-        }
-      },
-      {
-        "action": {
-          "action_id": "action_logistic_regression_C-10p0_scale-False",
-          "command": "python experiments/train_sklearn.py --dataset breast_cancer --model logistic_regression --C 10.0",
-          "model": "logistic_regression",
-          "params": {
-            "dataset": "breast_cancer",
-            "scale": false,
-            "C": 10.0
-          }
-        },
-        "reason": "score=10.0; autoresearch agent included this action in its candidate shortlist; world model recommended modification, so the action remains informative but lower priority; candidate is a variant of an already tested family; high best score increases claim risk for additional single-run score chasing",
-        "score_breakdown": {
-          "expected_gain": 0.0,
-          "uncertainty": 0.0,
-          "novelty": 0.0,
-          "verification_value": 0.0,
-          "qwen_signal": 22.0,
-          "redundancy_penalty": -12.0,
-          "compute_cost_penalty": 0.0,
-          "unsupported_claim_risk": -8.0,
-          "agent_preference": 8.0
+          "unsupported_claim_risk": 0.0,
+          "agent_preference": 0.0
         }
       },
       {
@@ -1384,16 +1259,188 @@
             "kernel": "rbf"
           }
         },
-        "reason": "score=-35.0; world model recommended skip; candidate is a variant of an already tested family; high best score increases claim risk for additional single-run score chasing",
+        "reason": "score=40.0; world model recommended modification, so the action remains informative but lower priority; candidate is a variant of an already tested family; tree prediction missed, so a scaled margin model tests a different hypothesis",
+        "score_breakdown": {
+          "expected_gain": 0.0,
+          "uncertainty": 30.0,
+          "novelty": 0.0,
+          "verification_value": 0.0,
+          "qwen_signal": 22.0,
+          "redundancy_penalty": -12.0,
+          "compute_cost_penalty": 0.0,
+          "unsupported_claim_risk": 0.0,
+          "agent_preference": 0.0
+        }
+      },
+      {
+        "action": {
+          "action_id": "action_svc_C-5p0_kernel-rbf_scale-True",
+          "command": "python experiments/train_sklearn.py --dataset breast_cancer --model svc --scale --C 5.0 --kernel rbf",
+          "model": "svc",
+          "params": {
+            "dataset": "breast_cancer",
+            "scale": true,
+            "C": 5.0,
+            "kernel": "rbf"
+          }
+        },
+        "reason": "score=40.0; world model recommended modification, so the action remains informative but lower priority; candidate is a variant of an already tested family; tree prediction missed, so a scaled margin model tests a different hypothesis",
+        "score_breakdown": {
+          "expected_gain": 0.0,
+          "uncertainty": 30.0,
+          "novelty": 0.0,
+          "verification_value": 0.0,
+          "qwen_signal": 22.0,
+          "redundancy_penalty": -12.0,
+          "compute_cost_penalty": 0.0,
+          "unsupported_claim_risk": 0.0,
+          "agent_preference": 0.0
+        }
+      },
+      {
+        "action": {
+          "action_id": "action_gradient_boosting_learning_rate-0p1_n_estimators-100",
+          "command": "python experiments/train_sklearn.py --dataset breast_cancer --model gradient_boosting --n-estimators 100 --learning-rate 0.1",
+          "model": "gradient_boosting",
+          "params": {
+            "dataset": "breast_cancer",
+            "n_estimators": 100,
+            "learning_rate": 0.1,
+            "max_depth": null
+          }
+        },
+        "reason": "score=19.0; world model recommended run; candidate is a variant of an already tested family; ensemble baseline is useful as a late comparison; world model predicted overfitting risk",
+        "score_breakdown": {
+          "expected_gain": 0.0,
+          "uncertainty": 0.0,
+          "novelty": 5.0,
+          "verification_value": 0.0,
+          "qwen_signal": 30.0,
+          "redundancy_penalty": -12.0,
+          "compute_cost_penalty": -4.0,
+          "unsupported_claim_risk": 0.0,
+          "agent_preference": 0.0
+        }
+      },
+      {
+        "action": {
+          "action_id": "action_logistic_regression_C-0p1_scale-False",
+          "command": "python experiments/train_sklearn.py --dataset breast_cancer --model logistic_regression --C 0.1",
+          "model": "logistic_regression",
+          "params": {
+            "dataset": "breast_cancer",
+            "scale": false,
+            "C": 0.1
+          }
+        },
+        "reason": "score=18.0; autoresearch agent included this action in its candidate shortlist; world model recommended modification, so the action remains informative but lower priority; candidate is a variant of an already tested family",
         "score_breakdown": {
           "expected_gain": 0.0,
           "uncertainty": 0.0,
           "novelty": 0.0,
           "verification_value": 0.0,
-          "qwen_signal": -15.0,
+          "qwen_signal": 22.0,
           "redundancy_penalty": -12.0,
           "compute_cost_penalty": 0.0,
-          "unsupported_claim_risk": -8.0,
+          "unsupported_claim_risk": 0.0,
+          "agent_preference": 8.0
+        }
+      },
+      {
+        "action": {
+          "action_id": "action_logistic_regression_C-1p0_scale-False",
+          "command": "python experiments/train_sklearn.py --dataset breast_cancer --model logistic_regression",
+          "model": "logistic_regression",
+          "params": {
+            "dataset": "breast_cancer",
+            "scale": false,
+            "C": 1.0
+          }
+        },
+        "reason": "score=18.0; autoresearch agent included this action in its candidate shortlist; world model recommended modification, so the action remains informative but lower priority; candidate is a variant of an already tested family",
+        "score_breakdown": {
+          "expected_gain": 0.0,
+          "uncertainty": 0.0,
+          "novelty": 0.0,
+          "verification_value": 0.0,
+          "qwen_signal": 22.0,
+          "redundancy_penalty": -12.0,
+          "compute_cost_penalty": 0.0,
+          "unsupported_claim_risk": 0.0,
+          "agent_preference": 8.0
+        }
+      },
+      {
+        "action": {
+          "action_id": "action_logistic_regression_C-10p0_scale-False",
+          "command": "python experiments/train_sklearn.py --dataset breast_cancer --model logistic_regression --C 10.0",
+          "model": "logistic_regression",
+          "params": {
+            "dataset": "breast_cancer",
+            "scale": false,
+            "C": 10.0
+          }
+        },
+        "reason": "score=18.0; autoresearch agent included this action in its candidate shortlist; world model recommended modification, so the action remains informative but lower priority; candidate is a variant of an already tested family",
+        "score_breakdown": {
+          "expected_gain": 0.0,
+          "uncertainty": 0.0,
+          "novelty": 0.0,
+          "verification_value": 0.0,
+          "qwen_signal": 22.0,
+          "redundancy_penalty": -12.0,
+          "compute_cost_penalty": 0.0,
+          "unsupported_claim_risk": 0.0,
+          "agent_preference": 8.0
+        }
+      },
+      {
+        "action": {
+          "action_id": "action_gradient_boosting_learning_rate-0p05_n_estimators-150",
+          "command": "python experiments/train_sklearn.py --dataset breast_cancer --model gradient_boosting --n-estimators 150 --learning-rate 0.05",
+          "model": "gradient_boosting",
+          "params": {
+            "dataset": "breast_cancer",
+            "n_estimators": 150,
+            "learning_rate": 0.05,
+            "max_depth": null
+          }
+        },
+        "reason": "score=11.0; world model recommended modification, so the action remains informative but lower priority; candidate is a variant of an already tested family; ensemble baseline is useful as a late comparison; world model predicted overfitting risk",
+        "score_breakdown": {
+          "expected_gain": 0.0,
+          "uncertainty": 0.0,
+          "novelty": 5.0,
+          "verification_value": 0.0,
+          "qwen_signal": 22.0,
+          "redundancy_penalty": -12.0,
+          "compute_cost_penalty": -4.0,
+          "unsupported_claim_risk": 0.0,
+          "agent_preference": 0.0
+        }
+      },
+      {
+        "action": {
+          "action_id": "action_gradient_boosting_learning_rate-0p1_n_estimators-150",
+          "command": "python experiments/train_sklearn.py --dataset breast_cancer --model gradient_boosting --n-estimators 150 --learning-rate 0.1",
+          "model": "gradient_boosting",
+          "params": {
+            "dataset": "breast_cancer",
+            "n_estimators": 150,
+            "learning_rate": 0.1,
+            "max_depth": null
+          }
+        },
+        "reason": "score=11.0; world model recommended modification, so the action remains informative but lower priority; candidate is a variant of an already tested family; ensemble baseline is useful as a late comparison; world model predicted overfitting risk",
+        "score_breakdown": {
+          "expected_gain": 0.0,
+          "uncertainty": 0.0,
+          "novelty": 5.0,
+          "verification_value": 0.0,
+          "qwen_signal": 22.0,
+          "redundancy_penalty": -12.0,
+          "compute_cost_penalty": -4.0,
+          "unsupported_claim_risk": 0.0,
           "agent_preference": 0.0
         }
       }
@@ -1402,17 +1449,17 @@
   "claim_ledger_updates": [
     {
       "claim_id": "run_006_claim_001",
-      "claim": "logistic_regression_scaled_C=1.0 is robustly better than logistic_regression_scaled_C=0.1.",
+      "claim": "logistic_regression_scaled_C=0.1 is robustly better than svc_scaled_C=0.5_kernel=rbf.",
       "status": "blocked",
       "evidence_run_ids": [
         "run_006"
       ],
       "blocked_reason": "Measured top-model effect is not larger than inter-seed noise. The report must not claim a robust best model.",
-      "allowed_rewrite": "logistic_regression_scaled_C=1.0 had the best multi-seed mean accuracy, but the effect was smaller than seed noise; no robust best-model claim is allowed.",
+      "allowed_rewrite": "logistic_regression_scaled_C=0.1 had the best multi-seed mean accuracy, but the effect was smaller than seed noise; no robust best-model claim is allowed.",
       "metrics": {
-        "effect_size": 0.006993,
-        "seed_noise": 0.027972,
-        "effect_to_noise_ratio": 0.25,
+        "effect_size": 0.0,
+        "seed_noise": 0.013986,
+        "effect_to_noise_ratio": 0.0,
         "min_seed_count": 5,
         "low_n_warning": false
       }
@@ -1420,20 +1467,9 @@
   ],
   "calibration_metrics": null,
   "top_model_summary": {
-    "best_observed_model": "logistic_regression_scaled_C=1.0",
-    "best_observed_metric": 0.986013986013986,
+    "best_observed_model": "logistic_regression_scaled_C=0.1",
+    "best_observed_metric": 0.9790209790209791,
     "top_models": [
-      {
-        "run_id": "run_005",
-        "model": "logistic_regression",
-        "model_key": "logistic_regression_scaled_C=1.0",
-        "metric": 0.986013986013986,
-        "params": {
-          "dataset": "breast_cancer",
-          "scale": true,
-          "C": 1.0
-        }
-      },
       {
         "run_id": "run_002",
         "model": "logistic_regression",
@@ -1456,12 +1492,23 @@
           "C": 0.5,
           "kernel": "rbf"
         }
+      },
+      {
+        "run_id": "run_004",
+        "model": "random_forest",
+        "model_key": "random_forest_n=100",
+        "metric": 0.958041958041958,
+        "params": {
+          "dataset": "breast_cancer",
+          "n_estimators": 100,
+          "max_depth": null
+        }
       }
     ],
     "top_gap": 0.006993,
     "needs_robustness_verification": true,
     "reason": "Top-model gap 0.0070 is within margin 0.0100; verify before claiming a winner.",
-    "verification_action_key": "logistic_regression_scaled_C=0.1:logistic_regression_scaled_C=1.0:svc_scaled_C=0.5_kernel=rbf"
+    "verification_action_key": "logistic_regression_scaled_C=0.1:random_forest_n=100:svc_scaled_C=0.5_kernel=rbf"
   },
   "artifacts": {
     "task_id": "breast_cancer_accuracy",

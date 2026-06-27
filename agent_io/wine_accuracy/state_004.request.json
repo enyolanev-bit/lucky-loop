@@ -1,0 +1,377 @@
+{
+  "candidate_catalog": [
+    {
+      "action_id": "action_logistic_regression_C-1p0_scale-True",
+      "command": "python experiments/train_sklearn.py --dataset wine --model logistic_regression --scale",
+      "model": "logistic_regression",
+      "params": {
+        "C": 1.0,
+        "dataset": "wine",
+        "scale": true
+      }
+    },
+    {
+      "action_id": "action_logistic_regression_C-10p0_scale-True",
+      "command": "python experiments/train_sklearn.py --dataset wine --model logistic_regression --scale --C 10.0",
+      "model": "logistic_regression",
+      "params": {
+        "C": 10.0,
+        "dataset": "wine",
+        "scale": true
+      }
+    },
+    {
+      "action_id": "action_logistic_regression_C-0p1_scale-False",
+      "command": "python experiments/train_sklearn.py --dataset wine --model logistic_regression --C 0.1",
+      "model": "logistic_regression",
+      "params": {
+        "C": 0.1,
+        "dataset": "wine",
+        "scale": false
+      }
+    },
+    {
+      "action_id": "action_logistic_regression_C-1p0_scale-False",
+      "command": "python experiments/train_sklearn.py --dataset wine --model logistic_regression",
+      "model": "logistic_regression",
+      "params": {
+        "C": 1.0,
+        "dataset": "wine",
+        "scale": false
+      }
+    },
+    {
+      "action_id": "action_logistic_regression_C-10p0_scale-False",
+      "command": "python experiments/train_sklearn.py --dataset wine --model logistic_regression --C 10.0",
+      "model": "logistic_regression",
+      "params": {
+        "C": 10.0,
+        "dataset": "wine",
+        "scale": false
+      }
+    },
+    {
+      "action_id": "action_random_forest_n_estimators-100",
+      "command": "python experiments/train_sklearn.py --dataset wine --model random_forest --n-estimators 100",
+      "model": "random_forest",
+      "params": {
+        "dataset": "wine",
+        "max_depth": null,
+        "n_estimators": 100
+      }
+    },
+    {
+      "action_id": "action_random_forest_max_depth-4_n_estimators-100",
+      "command": "python experiments/train_sklearn.py --dataset wine --model random_forest --n-estimators 100 --max-depth 4",
+      "model": "random_forest",
+      "params": {
+        "dataset": "wine",
+        "max_depth": 4,
+        "n_estimators": 100
+      }
+    },
+    {
+      "action_id": "action_random_forest_max_depth-8_n_estimators-100",
+      "command": "python experiments/train_sklearn.py --dataset wine --model random_forest --n-estimators 100 --max-depth 8",
+      "model": "random_forest",
+      "params": {
+        "dataset": "wine",
+        "max_depth": 8,
+        "n_estimators": 100
+      }
+    },
+    {
+      "action_id": "action_random_forest_n_estimators-300",
+      "command": "python experiments/train_sklearn.py --dataset wine --model random_forest --n-estimators 300",
+      "model": "random_forest",
+      "params": {
+        "dataset": "wine",
+        "max_depth": null,
+        "n_estimators": 300
+      }
+    },
+    {
+      "action_id": "action_random_forest_max_depth-4_n_estimators-300",
+      "command": "python experiments/train_sklearn.py --dataset wine --model random_forest --n-estimators 300 --max-depth 4",
+      "model": "random_forest",
+      "params": {
+        "dataset": "wine",
+        "max_depth": 4,
+        "n_estimators": 300
+      }
+    },
+    {
+      "action_id": "action_random_forest_max_depth-8_n_estimators-300",
+      "command": "python experiments/train_sklearn.py --dataset wine --model random_forest --n-estimators 300 --max-depth 8",
+      "model": "random_forest",
+      "params": {
+        "dataset": "wine",
+        "max_depth": 8,
+        "n_estimators": 300
+      }
+    },
+    {
+      "action_id": "action_gradient_boosting_learning_rate-0p05_n_estimators-100",
+      "command": "python experiments/train_sklearn.py --dataset wine --model gradient_boosting --n-estimators 100 --learning-rate 0.05",
+      "model": "gradient_boosting",
+      "params": {
+        "dataset": "wine",
+        "learning_rate": 0.05,
+        "max_depth": null,
+        "n_estimators": 100
+      }
+    }
+  ],
+  "planner_contract": {
+    "choose_action_id_only": true,
+    "no_freeform_commands": true,
+    "qwen_agentworld_is_world_model_not_planner": true,
+    "safe_catalog_only": true
+  },
+  "prior_traces_summary": [
+    {
+      "accuracy": 0.9777777777777777,
+      "f1": 0.9775949862906386,
+      "model": "logistic_regression",
+      "params": {
+        "dataset": "wine",
+        "scale": false
+      },
+      "prediction_match": false,
+      "run_id": "run_001",
+      "status": "success",
+      "unexpected_events": [
+        "accuracy 0.9778 outside predicted range 0.85-0.90"
+      ],
+      "verification_status": null
+    },
+    {
+      "accuracy": 1.0,
+      "f1": 1.0,
+      "model": "logistic_regression",
+      "params": {
+        "C": 0.1,
+        "dataset": "wine",
+        "scale": true
+      },
+      "prediction_match": false,
+      "run_id": "run_002",
+      "status": "success",
+      "unexpected_events": [
+        "accuracy 1.0000 outside predicted range 0.97-0.98"
+      ],
+      "verification_status": null
+    },
+    {
+      "accuracy": 0.9777777777777777,
+      "f1": 0.9775949862906386,
+      "model": "svc",
+      "params": {
+        "C": 0.5,
+        "dataset": "wine",
+        "kernel": "rbf",
+        "scale": true
+      },
+      "prediction_match": true,
+      "run_id": "run_003",
+      "status": "success",
+      "unexpected_events": [],
+      "verification_status": null
+    }
+  ],
+  "response_schema": {
+    "candidate_action_ids": [
+      "action_id"
+    ],
+    "claim_risk": "string",
+    "expected_evidence_needed": "string",
+    "preferred_action_id": "action_id from candidate_catalog",
+    "rationale": "string",
+    "research_question": "string",
+    "stop_or_continue": "continue | stop_and_report",
+    "working_hypothesis": "string"
+  },
+  "schema_version": "1.0",
+  "state": {
+    "budget_remaining": 4,
+    "goal": "Maximize validation accuracy on sklearn wine under a small compute budget, while avoiding unsupported claims.",
+    "known_results": [
+      {
+        "accuracy": 0.9777777777777777,
+        "f1": 0.9775949862906386,
+        "model": "logistic_regression",
+        "params": {
+          "dataset": "wine",
+          "scale": false
+        },
+        "run_id": "run_001"
+      },
+      {
+        "accuracy": 1.0,
+        "f1": 1.0,
+        "model": "logistic_regression",
+        "params": {
+          "C": 0.1,
+          "dataset": "wine",
+          "scale": true
+        },
+        "run_id": "run_002"
+      },
+      {
+        "accuracy": 0.9777777777777777,
+        "f1": 0.9775949862906386,
+        "model": "svc",
+        "params": {
+          "C": 0.5,
+          "dataset": "wine",
+          "kernel": "rbf",
+          "scale": true
+        },
+        "run_id": "run_003"
+      }
+    ],
+    "open_questions": [
+      "Which candidate should receive the next compute budget?",
+      "Is the best observed score robust across seeds or perturbations?",
+      "Do apparent improvements survive an effect-vs-noise verifier?",
+      "What did the world model miss, and should the next action test that failure mode?"
+    ],
+    "risks_to_check": [
+      "single-run best score may not justify a scientific claim",
+      "seed variance may exceed apparent model or hyperparameter effects",
+      "world-model predictions may miss quantitative details"
+    ],
+    "state_id": "state_004",
+    "summary": "Task=wine_accuracy; dataset=wine; primary_metric=accuracy. Goal: Maximize validation accuracy on sklearn wine under a small compute budget, while avoiding unsupported claims.\nNo experiments have been run yet. Dataset: sklearn wine. Primary metric: accuracy; secondary metrics: f1.\nrun_001: logistic_regression actual=0.9777777777777777 status=success; prediction=accuracy around 0.85-0.90; recommendation=modify; lesson=Run succeeded, but the prediction missed at least one quantitative detail.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_002: logistic_regression actual=1.0 status=success; prediction=accuracy around 0.97-0.98; recommendation=run; lesson=Run succeeded, but the prediction missed at least one quantitative detail.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_003: svc actual=0.9777777777777777 status=success; prediction=accuracy around 0.96-0.98; recommendation=run; lesson=Prediction was broadly consistent with the real run.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.",
+    "top_model_summary": {
+      "best_observed_metric": null,
+      "best_observed_model": null,
+      "needs_robustness_verification": false,
+      "reason": "Need at least 5 single-run model results before top-model verification.",
+      "top_gap": null,
+      "top_models": [
+        {
+          "metric": 1.0,
+          "model": "logistic_regression",
+          "model_key": "logistic_regression_scaled_C=0.1",
+          "params": {
+            "C": 0.1,
+            "dataset": "wine",
+            "scale": true
+          },
+          "run_id": "run_002"
+        },
+        {
+          "metric": 0.9777777777777777,
+          "model": "logistic_regression",
+          "model_key": "logistic_regression",
+          "params": {
+            "dataset": "wine",
+            "scale": false
+          },
+          "run_id": "run_001"
+        },
+        {
+          "metric": 0.9777777777777777,
+          "model": "svc",
+          "model_key": "svc_scaled_C=0.5_kernel=rbf",
+          "params": {
+            "C": 0.5,
+            "dataset": "wine",
+            "kernel": "rbf",
+            "scale": true
+          },
+          "run_id": "run_003"
+        }
+      ],
+      "verification_action_key": null
+    }
+  },
+  "task": {
+    "budget_runs": 7,
+    "candidate_space": {
+      "gradient_boosting": {
+        "learning_rate": [
+          0.05,
+          0.1
+        ],
+        "n_estimators": [
+          100,
+          150
+        ]
+      },
+      "logistic_regression": {
+        "C": [
+          0.1,
+          1.0,
+          10.0
+        ],
+        "scale": [
+          false,
+          true
+        ]
+      },
+      "random_forest": {
+        "max_depth": [
+          null,
+          4,
+          8
+        ],
+        "n_estimators": [
+          100,
+          300
+        ]
+      },
+      "svc": {
+        "C": [
+          0.5,
+          2.0,
+          5.0
+        ],
+        "kernel": [
+          "rbf"
+        ],
+        "scale": [
+          true
+        ]
+      }
+    },
+    "dataset": "wine",
+    "goal": "Maximize validation accuracy on sklearn wine under a small compute budget, while avoiding unsupported claims.",
+    "models": [
+      "logistic_regression",
+      "random_forest",
+      "svc",
+      "gradient_boosting"
+    ],
+    "notes": [
+      "Multiclass tabular classification.",
+      "Feature scaling can matter for linear and margin models."
+    ],
+    "primary_metric": "accuracy",
+    "problem_type": "classification",
+    "secondary_metrics": [
+      "f1"
+    ],
+    "sweeps": [
+      {
+        "label_noise": 0.05,
+        "model": "logistic_regression",
+        "param": "C",
+        "scale": true,
+        "seeds": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "values": [
+          0.1,
+          1.0,
+          10.0
+        ]
+      }
+    ],
+    "task_id": "wine_accuracy"
+  }
+}

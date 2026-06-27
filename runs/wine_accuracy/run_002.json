@@ -1,7 +1,7 @@
 {
   "run_id": "run_002",
   "goal": "Maximize validation accuracy on sklearn wine under a small compute budget, while avoiding unsupported claims.",
-  "hypothesis": "Selected logistic_regression because score=105.0; autoresearch agent preferred this catalog action; world model recommended run; candidate is a variant of an already tested family; after an unscaled logistic baseline, scaling is the direct world-model intervention to test. Agent hypothesis: Feature scaling should improve or stabilize scale-sensitive linear classification.. World model predicted accuracy around 0.97-0.98, runtime under 5, recommendation=run, risks=feature scaling is relevant for logistic regression, single-run best score may not justify a scientific claim, small-dataset variance could overstate a model win. Causal signal type: mixed.",
+  "hypothesis": "Selected logistic_regression because score=105.0; autoresearch agent preferred this catalog action; world model recommended run; candidate is a variant of an already tested family; after an unscaled logistic baseline, scaling is the direct world-model intervention to test. Agent hypothesis: Feature scaling should improve or stabilize a scale-sensitive linear model.. World model predicted accuracy around 0.97-0.98, runtime under 5, recommendation=run, risks=feature scaling matters for logistic regression, single-run best score may not justify a scientific claim, small-dataset variance could overstate a model win. Causal signal type: mixed.",
   "proposed_action": {
     "action_id": "action_logistic_regression_C-0p1_scale-True",
     "command": "python experiments/train_sklearn.py --dataset wine --model logistic_regression --scale --C 0.1",
@@ -16,21 +16,21 @@
     "expected_metric": "accuracy around 0.97-0.98",
     "expected_runtime_seconds": "under 5",
     "risks": [
-      "feature scaling is relevant for logistic regression",
+      "feature scaling matters for logistic regression",
       "single-run best score may not justify a scientific claim",
       "small-dataset variance could overstate a model win"
     ],
     "recommendation": "run",
-    "rationale": "The proposed action tests logistic regression with feature scaling and C=0.1 on the wine dataset. Previous un-scaled logistic regression achieved ~0.978 accuracy, and scaling is known to matter for linear models. Given the small dataset and single-run history, robustness sweeps across seeds and label-noise will be needed before strong claims.",
-    "action_specific_signal": "logistic regression with scaling typically improves or maintains high accuracy on wine; expect accuracy near 0.97-0.98 with C=0.1",
+    "rationale": "The proposed action tests logistic regression with feature scaling and C=0.1, which is a relevant configuration given the dataset and model. Previous run without scaling achieved 0.9778 accuracy, so scaling with C=0.1 should yield similar or slightly better performance. However, single-run results on small datasets like wine can have variance, and robustness verification across seeds would be needed before making strong claims.",
+    "action_specific_signal": "feature scaling is relevant for logistic regression and may improve or stabilize performance compared to unscaled version",
     "claim_risk": "single-run best score may not justify a scientific claim without robustness verification across seeds"
   },
   "actual_result": {
     "status": "success",
     "accuracy": 1.0,
     "f1": 1.0,
-    "runtime_seconds": 0.0194,
-    "stdout_tail": "{\n  \"accuracy\": 1.0,\n  \"dataset\": \"wine\",\n  \"f1\": 1.0,\n  \"model\": \"logistic_regression\",\n  \"n_label_noise_flips\": 0,\n  \"n_test\": 45,\n  \"n_train\": 133,\n  \"params\": {\n    \"C\": 0.1,\n    \"dataset\": \"wine\",\n    \"kernel\": \"rbf\",\n    \"label_noise\": 0.0,\n    \"learning_rate\": 0.1,\n    \"max_depth\": null,\n    \"max_iter\": 1000,\n    \"model\": \"logistic_regression\",\n    \"n_estimators\": 200,\n    \"scale\": true,\n    \"seed\": 42,\n    \"test_size\": 0.25\n  },\n  \"runtime_seconds\": 0.0194,\n  \"status\": \"success\"\n}\n",
+    "runtime_seconds": 0.0164,
+    "stdout_tail": "{\n  \"accuracy\": 1.0,\n  \"dataset\": \"wine\",\n  \"f1\": 1.0,\n  \"model\": \"logistic_regression\",\n  \"n_label_noise_flips\": 0,\n  \"n_test\": 45,\n  \"n_train\": 133,\n  \"params\": {\n    \"C\": 0.1,\n    \"dataset\": \"wine\",\n    \"kernel\": \"rbf\",\n    \"label_noise\": 0.0,\n    \"learning_rate\": 0.1,\n    \"max_depth\": null,\n    \"max_iter\": 1000,\n    \"model\": \"logistic_regression\",\n    \"n_estimators\": 200,\n    \"scale\": true,\n    \"seed\": 42,\n    \"test_size\": 0.25\n  },\n  \"runtime_seconds\": 0.0164,\n  \"status\": \"success\"\n}\n",
     "stderr_tail": "",
     "raw": {
       "accuracy": 1.0,
@@ -54,7 +54,7 @@
         "seed": 42,
         "test_size": 0.25
       },
-      "runtime_seconds": 0.0194,
+      "runtime_seconds": 0.0164,
       "status": "success"
     }
   },
@@ -69,13 +69,13 @@
   "next_decision": "Continue: regenerate candidates from the updated state and ask the world model to predict each option.",
   "verification": null,
   "schema_version": "3.0",
-  "planner_mode": "replay",
-  "agent_backend": "replay",
-  "agent_model": "replay-agent-v1",
-  "agent_prompt_hash": "7133264590c868ed",
+  "planner_mode": "agent_command",
+  "agent_backend": "generic_command",
+  "agent_model": "external-agent-command",
+  "agent_prompt_hash": "a11d9d39446edbde",
   "agent_decision": {
     "research_question": "Maximize validation accuracy on sklearn wine under a small compute budget, while avoiding unsupported claims.",
-    "working_hypothesis": "Feature scaling should improve or stabilize scale-sensitive linear classification.",
+    "working_hypothesis": "Feature scaling should improve or stabilize a scale-sensitive linear model.",
     "candidate_action_ids": [
       "action_logistic_regression_C-0p1_scale-True",
       "action_logistic_regression_C-1p0_scale-True",
@@ -85,9 +85,9 @@
       "action_logistic_regression_C-10p0_scale-False"
     ],
     "preferred_action_id": "action_logistic_regression_C-0p1_scale-True",
-    "rationale": "Given state state_002 with budget_remaining=6, the planner chooses action_logistic_regression_C-0p1_scale-True to collect the most decision-relevant evidence.",
+    "rationale": "Fake command backend selected action_logistic_regression_C-0p1_scale-True from the safe catalog for state state_002.",
     "expected_evidence_needed": "Compare scaled logistic regression against the unscaled baseline.",
-    "claim_risk": "A single improvement is observational until repeated-seed verification.",
+    "claim_risk": "A single scaled run remains observational until repeated-seed verification.",
     "stop_or_continue": "continue"
   },
   "safety_validation": {
@@ -99,7 +99,7 @@
       "agent preferred action_logistic_regression_C-0p1_scale-True"
     ]
   },
-  "research_hypothesis": "Feature scaling should improve or stabilize scale-sensitive linear classification.",
+  "research_hypothesis": "Feature scaling should improve or stabilize a scale-sensitive linear model.",
   "state_before": {
     "state_id": "state_002",
     "goal": "Maximize validation accuracy on sklearn wine under a small compute budget, while avoiding unsupported claims.",
@@ -288,13 +288,13 @@
         "expected_metric": "accuracy around 0.97-0.98",
         "expected_runtime_seconds": "under 5",
         "risks": [
-          "feature scaling is relevant for logistic regression",
+          "feature scaling matters for logistic regression",
           "single-run best score may not justify a scientific claim",
           "small-dataset variance could overstate a model win"
         ],
         "recommendation": "run",
-        "rationale": "The proposed action tests logistic regression with feature scaling and C=0.1 on the wine dataset. Previous un-scaled logistic regression achieved ~0.978 accuracy, and scaling is known to matter for linear models. Given the small dataset and single-run history, robustness sweeps across seeds and label-noise will be needed before strong claims.",
-        "action_specific_signal": "logistic regression with scaling typically improves or maintains high accuracy on wine; expect accuracy near 0.97-0.98 with C=0.1",
+        "rationale": "The proposed action tests logistic regression with feature scaling and C=0.1, which is a relevant configuration given the dataset and model. Previous run without scaling achieved 0.9778 accuracy, so scaling with C=0.1 should yield similar or slightly better performance. However, single-run results on small datasets like wine can have variance, and robustness verification across seeds would be needed before making strong claims.",
+        "action_specific_signal": "feature scaling is relevant for logistic regression and may improve or stabilize performance compared to unscaled version",
         "claim_risk": "single-run best score may not justify a scientific claim without robustness verification across seeds"
       },
       "source": "qwen_agentworld"
@@ -314,14 +314,13 @@
         "expected_metric": "accuracy around 0.97-0.98",
         "expected_runtime_seconds": "under 5",
         "risks": [
-          "feature scaling is relevant for logistic regression",
           "single-run best score may not justify a scientific claim",
-          "small-dataset variance could overstate a model win"
+          "feature scaling is relevant for logistic regression and should be verified across seeds"
         ],
         "recommendation": "run",
-        "rationale": "The proposed action tests logistic regression with feature scaling and C=1.0, which is a standard configuration likely to perform well on the wine dataset. The previous run without scaling achieved 0.9778, so scaling should maintain or slightly improve performance. However, with only one run so far, a single high score should not be overinterpreted without robustness verification across seeds or splits.",
-        "action_specific_signal": "feature scaling is relevant for logistic regression and may improve or stabilize performance compared to unscaled features",
-        "claim_risk": "single-run best score may not justify a scientific claim without robustness verification across seeds or splits"
+        "rationale": "The proposed action tests logistic regression with feature scaling and C=1.0, which is a standard configuration for the wine dataset. Given the previous run without scaling achieved 0.9778, scaling is expected to maintain or slightly improve accuracy. However, a single-run score should be verified across seeds to ensure robustness before making strong claims.",
+        "action_specific_signal": "feature scaling is relevant for logistic regression and should be verified across seeds",
+        "claim_risk": "single-run best score may not justify a scientific claim"
       },
       "source": "qwen_agentworld"
     },
@@ -345,8 +344,8 @@
           "small-dataset variance could overstate a model win"
         ],
         "recommendation": "run",
-        "rationale": "The proposed action tests logistic regression with feature scaling and C=10.0 on the wine dataset. Previous un-scaled logistic regression achieved ~0.978 accuracy, and scaling typically improves or maintains performance for linear models on tabular data. Given the small dataset and single-run history, robustness sweeps across seeds are advisable before claiming superiority.",
-        "action_specific_signal": "feature scaling is relevant for logistic regression and likely to maintain or slightly improve the ~0.978 accuracy observed without scaling",
+        "rationale": "The proposed action tests logistic regression with feature scaling and C=10.0 on the wine dataset. Previous run without scaling achieved 0.9778 accuracy, and scaling is known to matter for linear models. Given the small compute budget and the wine dataset's characteristics, this configuration is likely to maintain or slightly improve accuracy. However, single-run results on small datasets like wine can exhibit variance, so robustness verification across seeds will be important before making strong claims.",
+        "action_specific_signal": "feature scaling is relevant for logistic regression and likely to improve or maintain the high accuracy observed in run_001",
         "claim_risk": "single-run best score may not justify a scientific claim without robustness verification across seeds"
       },
       "source": "qwen_agentworld"
@@ -367,12 +366,12 @@
         "expected_runtime_seconds": "under 5",
         "risks": [
           "single-run best score may not justify a scientific claim",
-          "world-model predictions may miss quantitative details",
-          "feature scaling is relevant for logistic regression but not applied here"
+          "feature scaling matters for logistic regression; unscaled features may limit performance",
+          "small-dataset variance could overstate a model win with a single split"
         ],
         "recommendation": "modify",
-        "rationale": "The proposed action tests logistic regression with C=0.1 and no scaling. Previous run (run_001) with logistic regression and scale=false achieved 0.9778 accuracy, so this is a hyperparameter sweep within the same configuration family. However, feature scaling is relevant for logistic regression and the candidate space includes scale=true options. Without scaling, performance may be suboptimal compared to scaled variants.",
-        "action_specific_signal": "logistic regression without feature scaling may underperform relative to scaled variants; C=0.1 is more regularized than C=1.0 or C=10.0",
+        "rationale": "The proposed action tests logistic regression with C=0.1 and no scaling. Given run_001 achieved ~0.978 accuracy with scale=false, a lower C (0.1) typically increases regularization and may slightly reduce accuracy or keep it similar. Feature scaling is relevant for logistic regression and could improve robustness; the current sweep includes scale=true variants. With only one run so far, a single-run score cannot justify a scientific claim, and small-dataset variance on the wine dataset could overstate any win.",
+        "action_specific_signal": "logistic regression without scaling at C=0.1 is likely to yield accuracy around 0.96-0.97, potentially slightly lower than the best observed 0.978 with scale=false and unspecified C; robustness sweeps across seeds and scaling are needed before strong claims.",
         "claim_risk": "single-run best score may not justify a scientific claim"
       },
       "source": "qwen_agentworld"
@@ -393,12 +392,12 @@
         "expected_runtime_seconds": "under 5",
         "risks": [
           "single-run best score may not justify a scientific claim",
-          "small-dataset variance could overstate a model win on a single split"
+          "small-dataset variance for a single split could overstate a model win"
         ],
         "recommendation": "run",
-        "rationale": "The proposed action tests logistic regression with C=1.0 and scale=false on the wine dataset. Given the existing run_001 with scale=false achieved ~0.9778 accuracy, this C=1.0 variant is expected to be similarly high, but a single split may overstate the win due to small-dataset variance. A robustness sweep across seeds or label-noise would be needed before claiming superiority.",
-        "action_specific_signal": "Feature scaling is set to false; for logistic regression on wine, scaling typically matters for linear models, but the existing unscaled run already achieved ~0.9778, suggesting the model may be robust to lack of scaling on this dataset.",
-        "claim_risk": "single-run best score may not justify a scientific claim without robustness verification across seeds or splits"
+        "rationale": "The proposed action tests logistic regression with C=1.0 and scale=false on the wine dataset, which is a natural continuation of run_001 (scale=false) to explore the C hyperparameter space. Given the high baseline accuracy of 0.9778 without scaling, a similar or slightly improved score is expected, but small-dataset variance means a single split could overstate any win. A robustness sweep across seeds would be needed before strong claims.",
+        "action_specific_signal": "feature scaling is not applied; logistic regression on wine typically benefits from scaling, but the current configuration matches the successful run_001 baseline",
+        "claim_risk": "single-run best score may not justify a scientific claim without seed robustness verification"
       },
       "source": "qwen_agentworld"
     },
@@ -418,12 +417,13 @@
         "expected_runtime_seconds": "under 5",
         "risks": [
           "single-run best score may not justify a scientific claim",
-          "feature scaling not applied for logistic regression"
+          "feature scaling not applied for logistic regression may limit performance on unscaled features",
+          "small-dataset variance could overstate a model win with a single split"
         ],
         "recommendation": "modify",
-        "rationale": "The proposed action tests logistic regression with C=10.0 and scale=false. Given run_001 already achieved 0.9778 accuracy with scale=false, increasing C to 10.0 may not yield significant improvement and could risk overfitting or variance. Feature scaling is recommended for logistic regression to ensure robust performance.",
-        "action_specific_signal": "logistic regression without scaling may not improve over run_001's 0.9778 accuracy",
-        "claim_risk": "single-run best score may not justify a scientific claim"
+        "rationale": "The proposed action tests logistic regression with C=10.0 and scale=false. Given run_001 already achieved 0.9778 accuracy with scale=false, increasing C may not yield significant gains and could risk overfitting or variance due to the small wine dataset. Feature scaling is relevant for logistic regression and should be considered to ensure robust performance.",
+        "action_specific_signal": "logistic regression without scaling on wine dataset may not improve beyond 0.9778 accuracy and could exhibit small-dataset variance",
+        "claim_risk": "single-run best score may not justify a scientific claim without robustness verification across seeds or scaling sweeps"
       },
       "source": "qwen_agentworld"
     },
@@ -443,13 +443,12 @@
         "expected_metric": "accuracy around 0.96-0.98",
         "expected_runtime_seconds": "under 5",
         "risks": [
-          "feature scaling is required for SVC and is applied",
           "single-run best score may not justify a scientific claim",
           "small-dataset variance could overstate a model win on a single split"
         ],
         "recommendation": "run",
-        "rationale": "The SVC with RBF kernel and feature scaling is a strong candidate for the wine dataset, which is small and tabular. Scaling is correctly applied. However, a single-run score may not be robust; a robustness sweep across seeds would be needed before claiming superiority over logistic regression.",
-        "action_specific_signal": "SVC with RBF and scaling typically achieves high accuracy on wine, but small-dataset variance means a single run could overstate performance relative to logistic regression.",
+        "rationale": "The SVC with RBF kernel and feature scaling is a strong candidate for the wine dataset, which is small and tabular. The expected accuracy is competitive with the current logistic regression result (0.9778), but a single-run score may not be robust without variance checks across seeds or splits.",
+        "action_specific_signal": "SVC with RBF kernel and scaling is expected to perform well on the wine dataset; however, feature scaling is already enforced for SVC in the candidate space.",
         "claim_risk": "single-run best score may not justify a scientific claim"
       },
       "source": "qwen_agentworld"
@@ -471,11 +470,12 @@
         "expected_runtime_seconds": "under 5",
         "risks": [
           "single-run best score may not justify a scientific claim",
+          "feature scaling is required for SVC and is correctly applied",
           "small-dataset variance could overstate a model win on a single split"
         ],
         "recommendation": "run",
-        "rationale": "The SVC with RBF kernel and feature scaling is expected to perform competitively on the wine dataset, likely achieving accuracy in the 0.96-0.98 range. However, due to the small size of the wine dataset, a single-run score may not be robust and could overstate the model's true performance. A robustness sweep across seeds or splits would be needed before making strong claims.",
-        "action_specific_signal": "SVC with RBF kernel and scaling is well-suited for the wine dataset's feature space; expect high accuracy but verify robustness due to small-dataset variance.",
+        "rationale": "The SVC with RBF kernel and feature scaling is a strong candidate for the wine dataset and should achieve high accuracy. However, a single-run score may not be robust, and small-dataset variance could overstate any win over logistic regression. A robustness sweep or multiple seeds would be needed before making strong claims.",
+        "action_specific_signal": "SVC with RBF kernel and scaling is expected to perform competitively on the wine dataset, but single-run results should be verified for robustness.",
         "claim_risk": "single-run best score may not justify a scientific claim"
       },
       "source": "qwen_agentworld"
@@ -497,13 +497,12 @@
         "expected_runtime_seconds": "under 5",
         "risks": [
           "single-run best score may not justify a scientific claim",
-          "feature scaling is required for SVC and is correctly applied",
-          "small-dataset variance may cause a single split to overstate a model win"
+          "small-dataset variance could overstate a model win on a single split"
         ],
         "recommendation": "run",
-        "rationale": "The proposed SVC configuration with C=5.0, rbf kernel, and feature scaling is a strong candidate for the wine dataset, which is small and benefits from margin-based models with scaling. The expected accuracy is competitive with the current logistic regression result (0.9778), but a single-run score should be followed by robustness sweeps before claiming superiority.",
-        "action_specific_signal": "SVC with rbf kernel and scaling typically achieves high accuracy on the wine dataset; ensure robustness verification before strong claims.",
-        "claim_risk": "single-run best score may not justify a scientific claim without robustness verification across seeds or splits"
+        "rationale": "The SVC with RBF kernel and feature scaling is a strong candidate for the wine dataset, which is small and tabular. The expected accuracy is competitive with the current logistic regression result (0.9778), but a single-run score may not be robust. A robustness sweep or multiple seeds should follow any high single-run score to confirm the win is not due to small-dataset variance.",
+        "action_specific_signal": "SVC with RBF kernel and scaling is expected to perform well on the wine dataset, but feature scaling is already enforced in the candidate space for SVC.",
+        "claim_risk": "single-run best score may not justify a scientific claim without robustness verification across seeds"
       },
       "source": "qwen_agentworld"
     },
@@ -526,8 +525,8 @@
           "tree ensembles can overfit on small tabular datasets if not properly constrained"
         ],
         "recommendation": "run",
-        "rationale": "Random forest with 100 estimators and default max_depth is a strong baseline for the wine dataset and should achieve high accuracy. However, due to the small size of the wine dataset, a single split could overstate performance, and tree ensembles may exhibit overfitting or variance without depth constraints. A robustness sweep across seeds would be advisable before making strong claims.",
-        "action_specific_signal": "random_forest with n_estimators=100 and max_depth=null is likely to perform competitively but may show variance across seeds on the small wine dataset",
+        "rationale": "The random forest with default max_depth (null) and 100 estimators is a strong baseline for the wine dataset and should achieve high accuracy. However, due to the small size of the wine dataset, a single split may overstate performance, and tree ensembles can exhibit overfitting or variance without depth constraints. A robustness sweep across seeds would be advisable before making strong claims.",
+        "action_specific_signal": "random forest on wine typically yields high accuracy but may show variance across splits; feature scaling is not required for tree-based models",
         "claim_risk": "single-run best score may not justify a scientific claim without seed robustness verification"
       },
       "source": "qwen_agentworld"
@@ -544,16 +543,15 @@
         }
       },
       "prediction": {
-        "expected_metric": "accuracy around 0.96-0.98",
+        "expected_metric": "accuracy around 0.95-0.97",
         "expected_runtime_seconds": "under 5",
         "risks": [
-          "single-run best score may not justify a scientific claim",
-          "small-dataset variance could overstate a model win",
-          "tree ensembles may show overfitting or variance on small splits"
+          "small-dataset variance with a single split may overstate a model win",
+          "tree ensembles can overfit on small tabular datasets if depth is not constrained"
         ],
         "recommendation": "run",
-        "rationale": "The random forest with n_estimators=100 and max_depth=4 is a reasonable candidate to test against the current best logistic regression (accuracy ~0.978). Given the small dataset and single split, variance could overstate any win, so robustness sweeps should follow if this model performs well.",
-        "action_specific_signal": "random_forest with max_depth=4 and 100 estimators typically achieves high accuracy on wine but may show slight overfitting or variance compared to linear models with scaling.",
+        "rationale": "Random forest with n_estimators=100 and max_depth=4 is a reasonable next candidate to compare against the logistic regression result (0.9778). Given the small wine dataset, single-run scores may show variance, so the observed accuracy should be interpreted cautiously and verified across seeds if it appears competitive.",
+        "action_specific_signal": "random_forest with max_depth=4 and 100 estimators typically achieves strong but slightly lower or comparable accuracy to scaled logistic regression on the wine dataset; expect accuracy in the 0.95-0.97 range with potential for slight overfitting if depth were larger.",
         "claim_risk": "single-run best score may not justify a scientific claim without robustness verification across seeds"
       },
       "source": "qwen_agentworld"
@@ -570,16 +568,16 @@
         }
       },
       "prediction": {
-        "expected_metric": "accuracy around 0.95-0.97",
+        "expected_metric": "accuracy around 0.96-0.98",
         "expected_runtime_seconds": "under 5",
         "risks": [
-          "small-dataset variance: a single split could overstate a model win",
-          "overfitting or variance for tree ensembles when appropriate"
+          "small-dataset variance for a single split may overstate a model win",
+          "tree ensembles can overfit on small tabular datasets if depth is not constrained"
         ],
         "recommendation": "run",
-        "rationale": "The random forest with n_estimators=100 and max_depth=8 is a strong candidate for the wine dataset, likely achieving high accuracy. However, due to the small size of the wine dataset, single-run results may exhibit variance, and tree ensembles can sometimes overfit. A robustness sweep or multiple seeds would help confirm the result.",
-        "action_specific_signal": "random_forest with max_depth=8 may capture non-linear patterns well but could show slight overfitting on small splits; feature scaling is not required for tree-based models.",
-        "claim_risk": "single-run best score may not justify a scientific claim"
+        "rationale": "The random forest with n_estimators=100 and max_depth=8 is a reasonable candidate to test against the current best logistic regression (0.9778 without scaling). Given the wine dataset's small size and low noise, a well-tuned random forest should achieve comparable or slightly lower accuracy, but single-run variance could make it appear better. A robustness sweep across seeds would be needed before claiming superiority.",
+        "action_specific_signal": "random forest with max_depth=8 may capture non-linearities in the wine dataset but risks slight overfitting; accuracy likely in the 0.96-0.98 range",
+        "claim_risk": "single-run best score may not justify a scientific claim without seed robustness verification"
       },
       "source": "qwen_agentworld"
     }
@@ -626,11 +624,11 @@
     },
     "qwen_suggested_action": "action_logistic_regression_C-0p1_scale-True",
     "catalog_validation": "accepted",
-    "agent_rationale": "Given state state_002 with budget_remaining=6, the planner chooses action_logistic_regression_C-0p1_scale-True to collect the most decision-relevant evidence.",
+    "agent_rationale": "Fake command backend selected action_logistic_regression_C-0p1_scale-True from the safe catalog for state state_002.",
     "preferred_action_id": "action_logistic_regression_C-0p1_scale-True",
     "selection_overrode_agent": false,
     "override_reason": null,
-    "causal_reason": "Selected logistic_regression because score=105.0; autoresearch agent preferred this catalog action; world model recommended run; candidate is a variant of an already tested family; after an unscaled logistic baseline, scaling is the direct world-model intervention to test. Agent hypothesis: Feature scaling should improve or stabilize scale-sensitive linear classification.. World model predicted accuracy around 0.97-0.98, runtime under 5, recommendation=run, risks=feature scaling is relevant for logistic regression, single-run best score may not justify a scientific claim, small-dataset variance could overstate a model win. Causal signal type: mixed.",
+    "causal_reason": "Selected logistic_regression because score=105.0; autoresearch agent preferred this catalog action; world model recommended run; candidate is a variant of an already tested family; after an unscaled logistic baseline, scaling is the direct world-model intervention to test. Agent hypothesis: Feature scaling should improve or stabilize a scale-sensitive linear model.. World model predicted accuracy around 0.97-0.98, runtime under 5, recommendation=run, risks=feature scaling matters for logistic regression, single-run best score may not justify a scientific claim, small-dataset variance could overstate a model win. Causal signal type: mixed.",
     "rejected_candidates": [
       {
         "action": {
