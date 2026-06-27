@@ -1,13 +1,13 @@
 {
   "run_id": "run_002",
-  "goal": "Maximize validation accuracy on sklearn breast_cancer under a small compute budget, while avoiding unsupported claims.",
+  "goal": "Maximize validation accuracy on sklearn digits under a small compute budget, while avoiding unsupported claims.",
   "hypothesis": "Selected logistic_regression because score=63.0; world model recommended run; candidate is a variant of an already tested family; after an unscaled logistic baseline, scaling is the direct world-model intervention to test. World model predicted accuracy around 0.95-0.98, runtime under 5, recommendation=run, risks=minor convergence warning possible. Causal signal type: mixed.",
   "proposed_action": {
     "action_id": "action_logistic_regression_C-0p1_scale-True",
-    "command": "python experiments/train_sklearn.py --dataset breast_cancer --model logistic_regression --scale --C 0.1",
+    "command": "python experiments/train_sklearn.py --dataset digits --model logistic_regression --scale --C 0.1",
     "model": "logistic_regression",
     "params": {
-      "dataset": "breast_cancer",
+      "dataset": "digits",
       "scale": true,
       "C": 0.1
     }
@@ -25,22 +25,22 @@
   },
   "actual_result": {
     "status": "success",
-    "accuracy": 0.9790209790209791,
-    "f1": 0.9789790320177061,
-    "runtime_seconds": 0.0158,
-    "stdout_tail": "{\n  \"accuracy\": 0.9790209790209791,\n  \"dataset\": \"breast_cancer\",\n  \"f1\": 0.9789790320177061,\n  \"model\": \"logistic_regression\",\n  \"n_label_noise_flips\": 0,\n  \"n_test\": 143,\n  \"n_train\": 426,\n  \"params\": {\n    \"C\": 0.1,\n    \"dataset\": \"breast_cancer\",\n    \"kernel\": \"rbf\",\n    \"label_noise\": 0.0,\n    \"learning_rate\": 0.1,\n    \"max_depth\": null,\n    \"max_iter\": 1000,\n    \"model\": \"logistic_regression\",\n    \"n_estimators\": 200,\n    \"scale\": true,\n    \"seed\": 42,\n    \"test_size\": 0.25\n  },\n  \"runtime_seconds\": 0.0158,\n  \"status\": \"success\"\n}\n",
+    "accuracy": 0.9711111111111111,
+    "f1": 0.971272803460932,
+    "runtime_seconds": 1.0745,
+    "stdout_tail": "{\n  \"accuracy\": 0.9711111111111111,\n  \"dataset\": \"digits\",\n  \"f1\": 0.971272803460932,\n  \"model\": \"logistic_regression\",\n  \"n_label_noise_flips\": 0,\n  \"n_test\": 450,\n  \"n_train\": 1347,\n  \"params\": {\n    \"C\": 0.1,\n    \"dataset\": \"digits\",\n    \"kernel\": \"rbf\",\n    \"label_noise\": 0.0,\n    \"learning_rate\": 0.1,\n    \"max_depth\": null,\n    \"max_iter\": 1000,\n    \"model\": \"logistic_regression\",\n    \"n_estimators\": 200,\n    \"scale\": true,\n    \"seed\": 42,\n    \"test_size\": 0.25\n  },\n  \"runtime_seconds\": 1.0745,\n  \"status\": \"success\"\n}\n",
     "stderr_tail": "",
     "raw": {
-      "accuracy": 0.9790209790209791,
-      "dataset": "breast_cancer",
-      "f1": 0.9789790320177061,
+      "accuracy": 0.9711111111111111,
+      "dataset": "digits",
+      "f1": 0.971272803460932,
       "model": "logistic_regression",
       "n_label_noise_flips": 0,
-      "n_test": 143,
-      "n_train": 426,
+      "n_test": 450,
+      "n_train": 1347,
       "params": {
         "C": 0.1,
-        "dataset": "breast_cancer",
+        "dataset": "digits",
         "kernel": "rbf",
         "label_noise": 0.0,
         "learning_rate": 0.1,
@@ -52,7 +52,7 @@
         "seed": 42,
         "test_size": 0.25
       },
-      "runtime_seconds": 0.0158,
+      "runtime_seconds": 1.0745,
       "status": "success"
     }
   },
@@ -67,15 +67,15 @@
   "schema_version": "2.0",
   "state_before": {
     "state_id": "state_002",
-    "goal": "Maximize validation accuracy on sklearn breast_cancer under a small compute budget, while avoiding unsupported claims.",
+    "goal": "Maximize validation accuracy on sklearn digits under a small compute budget, while avoiding unsupported claims.",
     "known_results": [
       {
         "run_id": "run_001",
         "model": "logistic_regression",
-        "accuracy": 0.951048951048951,
-        "f1": 0.9504987920829505,
+        "accuracy": 0.9622222222222222,
+        "f1": 0.9622547774599621,
         "params": {
-          "dataset": "breast_cancer",
+          "dataset": "digits",
           "scale": false
         }
       }
@@ -96,9 +96,9 @@
           "run_id": "run_001",
           "model": "logistic_regression",
           "model_key": "logistic_regression",
-          "metric": 0.951048951048951,
+          "metric": 0.9622222222222222,
           "params": {
-            "dataset": "breast_cancer",
+            "dataset": "digits",
             "scale": false
           }
         }
@@ -108,75 +108,75 @@
       "reason": "Need at least 3 single-run model results before top-model verification.",
       "verification_action_key": null
     },
-    "summary": "Task=breast_cancer_accuracy; dataset=breast_cancer; primary_metric=accuracy. Goal: Maximize validation accuracy on sklearn breast_cancer under a small compute budget, while avoiding unsupported claims.\nNo experiments have been run yet. Dataset: sklearn breast_cancer. Primary metric: accuracy; secondary metrics: f1.\nrun_001: logistic_regression actual=0.951048951048951 status=success; prediction=accuracy around 0.90-0.97; recommendation=run; lesson=Prediction was broadly consistent with the real run.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option."
+    "summary": "Task=digits_accuracy; dataset=digits; primary_metric=accuracy. Goal: Maximize validation accuracy on sklearn digits under a small compute budget, while avoiding unsupported claims.\nNo experiments have been run yet. Dataset: sklearn digits. Primary metric: accuracy; secondary metrics: f1.\nrun_001: logistic_regression actual=0.9622222222222222 status=success; prediction=accuracy around 0.90-0.97; recommendation=run; lesson=Prediction was broadly consistent with the real run.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option."
   },
   "candidate_actions": [
     {
       "action_id": "action_logistic_regression_C-0p1_scale-True",
-      "command": "python experiments/train_sklearn.py --dataset breast_cancer --model logistic_regression --scale --C 0.1",
+      "command": "python experiments/train_sklearn.py --dataset digits --model logistic_regression --scale --C 0.1",
       "model": "logistic_regression",
       "params": {
-        "dataset": "breast_cancer",
+        "dataset": "digits",
         "scale": true,
         "C": 0.1
       }
     },
     {
       "action_id": "action_logistic_regression_C-1p0_scale-True",
-      "command": "python experiments/train_sklearn.py --dataset breast_cancer --model logistic_regression --scale",
+      "command": "python experiments/train_sklearn.py --dataset digits --model logistic_regression --scale",
       "model": "logistic_regression",
       "params": {
-        "dataset": "breast_cancer",
+        "dataset": "digits",
         "scale": true,
         "C": 1.0
       }
     },
     {
       "action_id": "action_logistic_regression_C-10p0_scale-True",
-      "command": "python experiments/train_sklearn.py --dataset breast_cancer --model logistic_regression --scale --C 10.0",
+      "command": "python experiments/train_sklearn.py --dataset digits --model logistic_regression --scale --C 10.0",
       "model": "logistic_regression",
       "params": {
-        "dataset": "breast_cancer",
+        "dataset": "digits",
         "scale": true,
         "C": 10.0
       }
     },
     {
       "action_id": "action_logistic_regression_C-0p1_scale-False",
-      "command": "python experiments/train_sklearn.py --dataset breast_cancer --model logistic_regression --C 0.1",
+      "command": "python experiments/train_sklearn.py --dataset digits --model logistic_regression --C 0.1",
       "model": "logistic_regression",
       "params": {
-        "dataset": "breast_cancer",
+        "dataset": "digits",
         "scale": false,
         "C": 0.1
       }
     },
     {
       "action_id": "action_logistic_regression_C-1p0_scale-False",
-      "command": "python experiments/train_sklearn.py --dataset breast_cancer --model logistic_regression",
+      "command": "python experiments/train_sklearn.py --dataset digits --model logistic_regression",
       "model": "logistic_regression",
       "params": {
-        "dataset": "breast_cancer",
+        "dataset": "digits",
         "scale": false,
         "C": 1.0
       }
     },
     {
       "action_id": "action_logistic_regression_C-10p0_scale-False",
-      "command": "python experiments/train_sklearn.py --dataset breast_cancer --model logistic_regression --C 10.0",
+      "command": "python experiments/train_sklearn.py --dataset digits --model logistic_regression --C 10.0",
       "model": "logistic_regression",
       "params": {
-        "dataset": "breast_cancer",
+        "dataset": "digits",
         "scale": false,
         "C": 10.0
       }
     },
     {
       "action_id": "action_svc_C-0p5_kernel-rbf_scale-True",
-      "command": "python experiments/train_sklearn.py --dataset breast_cancer --model svc --scale --C 0.5 --kernel rbf",
+      "command": "python experiments/train_sklearn.py --dataset digits --model svc --scale --C 0.5 --kernel rbf",
       "model": "svc",
       "params": {
-        "dataset": "breast_cancer",
+        "dataset": "digits",
         "scale": true,
         "C": 0.5,
         "kernel": "rbf"
@@ -184,10 +184,10 @@
     },
     {
       "action_id": "action_svc_C-2p0_kernel-rbf_scale-True",
-      "command": "python experiments/train_sklearn.py --dataset breast_cancer --model svc --scale --C 2.0 --kernel rbf",
+      "command": "python experiments/train_sklearn.py --dataset digits --model svc --scale --C 2.0 --kernel rbf",
       "model": "svc",
       "params": {
-        "dataset": "breast_cancer",
+        "dataset": "digits",
         "scale": true,
         "C": 2.0,
         "kernel": "rbf"
@@ -195,10 +195,10 @@
     },
     {
       "action_id": "action_svc_C-5p0_kernel-rbf_scale-True",
-      "command": "python experiments/train_sklearn.py --dataset breast_cancer --model svc --scale --C 5.0 --kernel rbf",
+      "command": "python experiments/train_sklearn.py --dataset digits --model svc --scale --C 5.0 --kernel rbf",
       "model": "svc",
       "params": {
-        "dataset": "breast_cancer",
+        "dataset": "digits",
         "scale": true,
         "C": 5.0,
         "kernel": "rbf"
@@ -206,30 +206,30 @@
     },
     {
       "action_id": "action_random_forest_n_estimators-100",
-      "command": "python experiments/train_sklearn.py --dataset breast_cancer --model random_forest --n-estimators 100",
+      "command": "python experiments/train_sklearn.py --dataset digits --model random_forest --n-estimators 100",
       "model": "random_forest",
       "params": {
-        "dataset": "breast_cancer",
+        "dataset": "digits",
         "n_estimators": 100,
         "max_depth": null
       }
     },
     {
       "action_id": "action_random_forest_max_depth-4_n_estimators-100",
-      "command": "python experiments/train_sklearn.py --dataset breast_cancer --model random_forest --n-estimators 100 --max-depth 4",
+      "command": "python experiments/train_sklearn.py --dataset digits --model random_forest --n-estimators 100 --max-depth 4",
       "model": "random_forest",
       "params": {
-        "dataset": "breast_cancer",
+        "dataset": "digits",
         "n_estimators": 100,
         "max_depth": 4
       }
     },
     {
       "action_id": "action_random_forest_max_depth-8_n_estimators-100",
-      "command": "python experiments/train_sklearn.py --dataset breast_cancer --model random_forest --n-estimators 100 --max-depth 8",
+      "command": "python experiments/train_sklearn.py --dataset digits --model random_forest --n-estimators 100 --max-depth 8",
       "model": "random_forest",
       "params": {
-        "dataset": "breast_cancer",
+        "dataset": "digits",
         "n_estimators": 100,
         "max_depth": 8
       }
@@ -239,10 +239,10 @@
     {
       "action": {
         "action_id": "action_logistic_regression_C-0p1_scale-True",
-        "command": "python experiments/train_sklearn.py --dataset breast_cancer --model logistic_regression --scale --C 0.1",
+        "command": "python experiments/train_sklearn.py --dataset digits --model logistic_regression --scale --C 0.1",
         "model": "logistic_regression",
         "params": {
-          "dataset": "breast_cancer",
+          "dataset": "digits",
           "scale": true,
           "C": 0.1
         }
@@ -263,10 +263,10 @@
     {
       "action": {
         "action_id": "action_logistic_regression_C-1p0_scale-True",
-        "command": "python experiments/train_sklearn.py --dataset breast_cancer --model logistic_regression --scale",
+        "command": "python experiments/train_sklearn.py --dataset digits --model logistic_regression --scale",
         "model": "logistic_regression",
         "params": {
-          "dataset": "breast_cancer",
+          "dataset": "digits",
           "scale": true,
           "C": 1.0
         }
@@ -287,10 +287,10 @@
     {
       "action": {
         "action_id": "action_logistic_regression_C-10p0_scale-True",
-        "command": "python experiments/train_sklearn.py --dataset breast_cancer --model logistic_regression --scale --C 10.0",
+        "command": "python experiments/train_sklearn.py --dataset digits --model logistic_regression --scale --C 10.0",
         "model": "logistic_regression",
         "params": {
-          "dataset": "breast_cancer",
+          "dataset": "digits",
           "scale": true,
           "C": 10.0
         }
@@ -311,10 +311,10 @@
     {
       "action": {
         "action_id": "action_logistic_regression_C-0p1_scale-False",
-        "command": "python experiments/train_sklearn.py --dataset breast_cancer --model logistic_regression --C 0.1",
+        "command": "python experiments/train_sklearn.py --dataset digits --model logistic_regression --C 0.1",
         "model": "logistic_regression",
         "params": {
-          "dataset": "breast_cancer",
+          "dataset": "digits",
           "scale": false,
           "C": 0.1
         }
@@ -335,10 +335,10 @@
     {
       "action": {
         "action_id": "action_logistic_regression_C-1p0_scale-False",
-        "command": "python experiments/train_sklearn.py --dataset breast_cancer --model logistic_regression",
+        "command": "python experiments/train_sklearn.py --dataset digits --model logistic_regression",
         "model": "logistic_regression",
         "params": {
-          "dataset": "breast_cancer",
+          "dataset": "digits",
           "scale": false,
           "C": 1.0
         }
@@ -359,10 +359,10 @@
     {
       "action": {
         "action_id": "action_logistic_regression_C-10p0_scale-False",
-        "command": "python experiments/train_sklearn.py --dataset breast_cancer --model logistic_regression --C 10.0",
+        "command": "python experiments/train_sklearn.py --dataset digits --model logistic_regression --C 10.0",
         "model": "logistic_regression",
         "params": {
-          "dataset": "breast_cancer",
+          "dataset": "digits",
           "scale": false,
           "C": 10.0
         }
@@ -383,10 +383,10 @@
     {
       "action": {
         "action_id": "action_svc_C-0p5_kernel-rbf_scale-True",
-        "command": "python experiments/train_sklearn.py --dataset breast_cancer --model svc --scale --C 0.5 --kernel rbf",
+        "command": "python experiments/train_sklearn.py --dataset digits --model svc --scale --C 0.5 --kernel rbf",
         "model": "svc",
         "params": {
-          "dataset": "breast_cancer",
+          "dataset": "digits",
           "scale": true,
           "C": 0.5,
           "kernel": "rbf"
@@ -408,10 +408,10 @@
     {
       "action": {
         "action_id": "action_svc_C-2p0_kernel-rbf_scale-True",
-        "command": "python experiments/train_sklearn.py --dataset breast_cancer --model svc --scale --C 2.0 --kernel rbf",
+        "command": "python experiments/train_sklearn.py --dataset digits --model svc --scale --C 2.0 --kernel rbf",
         "model": "svc",
         "params": {
-          "dataset": "breast_cancer",
+          "dataset": "digits",
           "scale": true,
           "C": 2.0,
           "kernel": "rbf"
@@ -433,10 +433,10 @@
     {
       "action": {
         "action_id": "action_svc_C-5p0_kernel-rbf_scale-True",
-        "command": "python experiments/train_sklearn.py --dataset breast_cancer --model svc --scale --C 5.0 --kernel rbf",
+        "command": "python experiments/train_sklearn.py --dataset digits --model svc --scale --C 5.0 --kernel rbf",
         "model": "svc",
         "params": {
-          "dataset": "breast_cancer",
+          "dataset": "digits",
           "scale": true,
           "C": 5.0,
           "kernel": "rbf"
@@ -458,10 +458,10 @@
     {
       "action": {
         "action_id": "action_random_forest_n_estimators-100",
-        "command": "python experiments/train_sklearn.py --dataset breast_cancer --model random_forest --n-estimators 100",
+        "command": "python experiments/train_sklearn.py --dataset digits --model random_forest --n-estimators 100",
         "model": "random_forest",
         "params": {
-          "dataset": "breast_cancer",
+          "dataset": "digits",
           "n_estimators": 100,
           "max_depth": null
         }
@@ -482,10 +482,10 @@
     {
       "action": {
         "action_id": "action_random_forest_max_depth-4_n_estimators-100",
-        "command": "python experiments/train_sklearn.py --dataset breast_cancer --model random_forest --n-estimators 100 --max-depth 4",
+        "command": "python experiments/train_sklearn.py --dataset digits --model random_forest --n-estimators 100 --max-depth 4",
         "model": "random_forest",
         "params": {
-          "dataset": "breast_cancer",
+          "dataset": "digits",
           "n_estimators": 100,
           "max_depth": 4
         }
@@ -506,10 +506,10 @@
     {
       "action": {
         "action_id": "action_random_forest_max_depth-8_n_estimators-100",
-        "command": "python experiments/train_sklearn.py --dataset breast_cancer --model random_forest --n-estimators 100 --max-depth 8",
+        "command": "python experiments/train_sklearn.py --dataset digits --model random_forest --n-estimators 100 --max-depth 8",
         "model": "random_forest",
         "params": {
-          "dataset": "breast_cancer",
+          "dataset": "digits",
           "n_estimators": 100,
           "max_depth": 8
         }
@@ -530,10 +530,10 @@
   ],
   "selected_action": {
     "action_id": "action_logistic_regression_C-0p1_scale-True",
-    "command": "python experiments/train_sklearn.py --dataset breast_cancer --model logistic_regression --scale --C 0.1",
+    "command": "python experiments/train_sklearn.py --dataset digits --model logistic_regression --scale --C 0.1",
     "model": "logistic_regression",
     "params": {
-      "dataset": "breast_cancer",
+      "dataset": "digits",
       "scale": true,
       "C": 0.1
     }
@@ -541,10 +541,10 @@
   "decision_trace": {
     "selected_action": {
       "action_id": "action_logistic_regression_C-0p1_scale-True",
-      "command": "python experiments/train_sklearn.py --dataset breast_cancer --model logistic_regression --scale --C 0.1",
+      "command": "python experiments/train_sklearn.py --dataset digits --model logistic_regression --scale --C 0.1",
       "model": "logistic_regression",
       "params": {
-        "dataset": "breast_cancer",
+        "dataset": "digits",
         "scale": true,
         "C": 0.1
       }
@@ -573,10 +573,10 @@
       {
         "action": {
           "action_id": "action_logistic_regression_C-1p0_scale-True",
-          "command": "python experiments/train_sklearn.py --dataset breast_cancer --model logistic_regression --scale",
+          "command": "python experiments/train_sklearn.py --dataset digits --model logistic_regression --scale",
           "model": "logistic_regression",
           "params": {
-            "dataset": "breast_cancer",
+            "dataset": "digits",
             "scale": true,
             "C": 1.0
           }
@@ -596,10 +596,10 @@
       {
         "action": {
           "action_id": "action_logistic_regression_C-10p0_scale-True",
-          "command": "python experiments/train_sklearn.py --dataset breast_cancer --model logistic_regression --scale --C 10.0",
+          "command": "python experiments/train_sklearn.py --dataset digits --model logistic_regression --scale --C 10.0",
           "model": "logistic_regression",
           "params": {
-            "dataset": "breast_cancer",
+            "dataset": "digits",
             "scale": true,
             "C": 10.0
           }
@@ -619,10 +619,10 @@
       {
         "action": {
           "action_id": "action_svc_C-0p5_kernel-rbf_scale-True",
-          "command": "python experiments/train_sklearn.py --dataset breast_cancer --model svc --scale --C 0.5 --kernel rbf",
+          "command": "python experiments/train_sklearn.py --dataset digits --model svc --scale --C 0.5 --kernel rbf",
           "model": "svc",
           "params": {
-            "dataset": "breast_cancer",
+            "dataset": "digits",
             "scale": true,
             "C": 0.5,
             "kernel": "rbf"
@@ -643,10 +643,10 @@
       {
         "action": {
           "action_id": "action_svc_C-2p0_kernel-rbf_scale-True",
-          "command": "python experiments/train_sklearn.py --dataset breast_cancer --model svc --scale --C 2.0 --kernel rbf",
+          "command": "python experiments/train_sklearn.py --dataset digits --model svc --scale --C 2.0 --kernel rbf",
           "model": "svc",
           "params": {
-            "dataset": "breast_cancer",
+            "dataset": "digits",
             "scale": true,
             "C": 2.0,
             "kernel": "rbf"
@@ -667,10 +667,10 @@
       {
         "action": {
           "action_id": "action_svc_C-5p0_kernel-rbf_scale-True",
-          "command": "python experiments/train_sklearn.py --dataset breast_cancer --model svc --scale --C 5.0 --kernel rbf",
+          "command": "python experiments/train_sklearn.py --dataset digits --model svc --scale --C 5.0 --kernel rbf",
           "model": "svc",
           "params": {
-            "dataset": "breast_cancer",
+            "dataset": "digits",
             "scale": true,
             "C": 5.0,
             "kernel": "rbf"
@@ -691,10 +691,10 @@
       {
         "action": {
           "action_id": "action_random_forest_n_estimators-100",
-          "command": "python experiments/train_sklearn.py --dataset breast_cancer --model random_forest --n-estimators 100",
+          "command": "python experiments/train_sklearn.py --dataset digits --model random_forest --n-estimators 100",
           "model": "random_forest",
           "params": {
-            "dataset": "breast_cancer",
+            "dataset": "digits",
             "n_estimators": 100,
             "max_depth": null
           }
@@ -714,10 +714,10 @@
       {
         "action": {
           "action_id": "action_random_forest_max_depth-4_n_estimators-100",
-          "command": "python experiments/train_sklearn.py --dataset breast_cancer --model random_forest --n-estimators 100 --max-depth 4",
+          "command": "python experiments/train_sklearn.py --dataset digits --model random_forest --n-estimators 100 --max-depth 4",
           "model": "random_forest",
           "params": {
-            "dataset": "breast_cancer",
+            "dataset": "digits",
             "n_estimators": 100,
             "max_depth": 4
           }
@@ -737,10 +737,10 @@
       {
         "action": {
           "action_id": "action_random_forest_max_depth-8_n_estimators-100",
-          "command": "python experiments/train_sklearn.py --dataset breast_cancer --model random_forest --n-estimators 100 --max-depth 8",
+          "command": "python experiments/train_sklearn.py --dataset digits --model random_forest --n-estimators 100 --max-depth 8",
           "model": "random_forest",
           "params": {
-            "dataset": "breast_cancer",
+            "dataset": "digits",
             "n_estimators": 100,
             "max_depth": 8
           }
@@ -760,10 +760,10 @@
       {
         "action": {
           "action_id": "action_logistic_regression_C-0p1_scale-False",
-          "command": "python experiments/train_sklearn.py --dataset breast_cancer --model logistic_regression --C 0.1",
+          "command": "python experiments/train_sklearn.py --dataset digits --model logistic_regression --C 0.1",
           "model": "logistic_regression",
           "params": {
-            "dataset": "breast_cancer",
+            "dataset": "digits",
             "scale": false,
             "C": 0.1
           }
@@ -783,10 +783,10 @@
       {
         "action": {
           "action_id": "action_logistic_regression_C-1p0_scale-False",
-          "command": "python experiments/train_sklearn.py --dataset breast_cancer --model logistic_regression",
+          "command": "python experiments/train_sklearn.py --dataset digits --model logistic_regression",
           "model": "logistic_regression",
           "params": {
-            "dataset": "breast_cancer",
+            "dataset": "digits",
             "scale": false,
             "C": 1.0
           }
@@ -806,10 +806,10 @@
       {
         "action": {
           "action_id": "action_logistic_regression_C-10p0_scale-False",
-          "command": "python experiments/train_sklearn.py --dataset breast_cancer --model logistic_regression --C 10.0",
+          "command": "python experiments/train_sklearn.py --dataset digits --model logistic_regression --C 10.0",
           "model": "logistic_regression",
           "params": {
-            "dataset": "breast_cancer",
+            "dataset": "digits",
             "scale": false,
             "C": 10.0
           }
@@ -838,9 +838,9 @@
         "run_id": "run_001",
         "model": "logistic_regression",
         "model_key": "logistic_regression",
-        "metric": 0.951048951048951,
+        "metric": 0.9622222222222222,
         "params": {
-          "dataset": "breast_cancer",
+          "dataset": "digits",
           "scale": false
         }
       }
@@ -851,9 +851,9 @@
     "verification_action_key": null
   },
   "artifacts": {
-    "task_id": "breast_cancer_accuracy",
-    "trace_path": "runs/run_002.json",
-    "report_path": "reports/final_report.md",
-    "claim_ledger_path": "reports/claim_ledger.json"
+    "task_id": "digits_accuracy",
+    "trace_path": "runs/digits_accuracy/run_002.json",
+    "report_path": "reports/digits_accuracy/final_report.md",
+    "claim_ledger_path": "reports/digits_accuracy/claim_ledger.json"
   }
 }

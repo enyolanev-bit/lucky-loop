@@ -1,104 +1,74 @@
 # Lucky Loop pitch outline
 
 ## One-liner
-
-Lucky Loop is a world-model-guided autonomous research loop: it predicts experiment outcomes before running real compute, compares prediction vs reality, and only lets evidence-backed claims survive.
+Lucky Loop is a world-model-guided autonomous research loop: it predicts experiment outcomes before running real compute, then compares prediction vs reality and writes an auditable report.
 
 ## Tagline
-
-**Predict before compute. Verify before claim.**
+Predict before you compute.
 
 ## Problem
-
-Autonomous research agents are often reactive. They run code, inspect the metric, patch, repeat, then write a confident report. That wastes compute and creates a second failure mode: weak or protocol-invalid results can be turned into strong scientific claims.
+Autonomous research agents are usually reactive. They launch code, observe failures or weak metrics, patch, and repeat. That wastes compute and produces reports that are hard to audit.
 
 ## Insight
-
-Qwen-AgentWorld can act as a language world model for agent environments. Lucky Loop applies that idea to research automation: before the agent spends compute, Qwen-AgentWorld predicts likely metrics, runtime, risks, and whether the action is worth running.
+Qwen-AgentWorld shows that language world models can simulate agent environments such as terminal, search, code editing, and tool/API calls. We apply that idea directly to research automation.
 
 ## Solution
+Lucky Loop inserts Qwen-AgentWorld between planning and execution:
 
-Lucky Loop inserts a world-model and a claim gate into the research loop:
-
-1. maintain explicit research state,
-2. propose candidate experiments,
-3. ask Qwen-AgentWorld to predict metric range, runtime, risks, recommendation,
-4. execute the selected experiment for real,
-5. compare predicted vs actual observations,
-6. update the next decision from that evidence,
-7. gate scientific claims with a deterministic verifier and claim ledger.
+1. propose a research experiment
+2. ask Qwen-AgentWorld to predict metric range, runtime, risks, and recommendation
+3. execute the experiment for real
+4. compare predicted vs actual metrics/logs
+5. let that comparison choose the next experiment
+6. produce JSON evidence traces and a final report
 
 ## Demo flow
+Goal: run world-model-guided autoresearch on real sklearn benchmark tasks, then block unsupported claims.
 
-Goal: maximize validation accuracy on sklearn breast cancer while keeping the research trace auditable.
+Observed loop:
 
-| Moment | What to show | Message |
-|---|---|---|
-| Predict | Qwen-AgentWorld predicts metric/runtime/risks for candidate actions | The agent has foresight before compute |
-| Execute | Real sklearn run produces measured metrics | This is not simulated evidence |
-| Compare | Prediction hit/miss is recorded | Misses stay visible |
-| Verify | Trust ladder blocks fragile claims | High score is not automatically a discovery |
-| Ledger | Claims are allowed, blocked, or rewritten | The report is auditable |
-
-## Evidence numbers
-
-| Evidence | Result |
-|---|---:|
-| Real traces | 10 runs |
-| Metric interval coverage | 80% |
-| Runtime interval coverage | 90% |
-| Useful world-model decisions | 10/10 |
-| Prediction misses | 3 |
-| Claim ledger entries | 5 |
-| Strongly supported claims | 1 |
-| Blocked overclaims | 4 |
-| Independent IC95 cross-check agreement | 2/5 |
-
-## Key demo examples
-
-| Run | Judge point |
+| Step | What happened |
 |---|---|
-| `run_004` | apparent `C=0.1` winner is blocked because effect size is smaller than seed noise |
-| `run_005` | large real effect becomes the one strongly supported claim |
-| `run_006` | weak positive metric is blocked by the conservative trust ladder |
-| `run_007` | data leakage trap is blocked even though the metric looks excellent |
-| `run_008` | metric misuse trap avoids an accuracy-only overclaim |
+| 1 | A TaskSpec declares dataset, metric, candidate models, search space, and compute budget. |
+| 2 | The planner generates candidate actions from the spec, not from a hardcoded breast_cancer script. |
+| 3 | Qwen-AgentWorld predicts each candidate's metric range, runtime, risks, and claim risk before compute. |
+| 4 | The selector records whether the decision came from a world-model signal, selector policy, or both. |
+| 5 | After real search, Lucky Loop detects the top observed models and asks Qwen whether a best-model claim needs verification. |
+| 6 | The executor runs matched multi-seed top-model verification. |
+| 7 | The comparator logs prediction hits and misses. The verifier allows or blocks the best-model claim. |
 
-## Why this is not AutoML
+Current benchmark suite:
 
+| Task | Runs | Best model | Best metric | Top-model verification |
+|---|---:|---|---:|---:|
+| breast_cancer_accuracy | 7 | logistic_regression | 0.9860 | 1 |
+| wine_accuracy | 7 | logistic_regression | 1.0000 | 1 |
+| digits_accuracy | 7 | svc | 0.9800 | 1 |
+
+## Why this is not just AutoML
 AutoML searches configurations. Lucky Loop records a scientific loop:
 
-- hypothesis,
-- predicted observation,
-- real observation,
-- prediction-vs-actual delta,
-- lesson,
-- next decision,
-- claim verdict.
+- hypothesis
+- prediction
+- real execution
+- prediction-vs-actual delta
+- lesson
+- next decision
 
-The final score matters less than the audit trail: the system measures its own predictive reliability and refuses unsupported claims.
+Every run is saved as JSON evidence under `runs/<task_id>/`, and each task gets a report, calibration file, demo summary, and claim ledger under `reports/<task_id>/`.
 
-## Cross-check framing
+## Why it matters
+Research agents need more than tool calls. They need a predictive model of the environment, so they can anticipate failures, choose better experiments, and produce auditable evidence.
 
-The additive IC95 cross-check reports `2/5 verdicts concordent`. Present it as a strength:
+## Architecture
+User goal -> Planner -> Qwen-AgentWorld simulator -> real executor -> comparator -> next experiment -> report.
 
-- It confirms the strong positive case.
-- It rejects the noisy C sweep.
-- It reveals where the trust ladder is stricter than pure metric significance.
-- It shows protocol warnings matter: a statistically positive result can still be scientifically invalid.
-
-## Closing line
-
-Most AI scientists hallucinate after the experiment. Lucky Loop makes a prediction before the experiment, runs real code, compares prediction with reality, and only claims what survives verification.
-
-## Artifacts
-
-| File | Purpose |
-|---|---|
-| `runs/run_*.json` | evidence traces |
-| `reports/final_report.md` | full generated report |
-| `reports/world_model_calibration.md` | prediction-vs-reality calibration |
-| `reports/claim_ledger.json` | allowed/blocked claims |
-| `reports/verifier_crosscheck.md` | independent IC95 cross-check |
-| `reports/selection_brief.md` | judge-ready one-pager |
-| `app/streamlit_app.py` | timeline demo UI |
+## Current working artifact
+- Qwen-AgentWorld-35B-A3B served through vLLM on Team Pegasus MI300X, endpoint `http://134.199.205.222:8000/v1`.
+- CLI benchmark suite verified on three real sklearn datasets.
+- Streamlit UI verified locally at `http://127.0.0.1:8501`.
+- Evidence files:
+  - `runs/<task_id>/run_001.json` ...
+  - `reports/<task_id>/final_report.md`
+  - `reports/benchmark_summary.md`
+  - `reports/pitch_outline.md`

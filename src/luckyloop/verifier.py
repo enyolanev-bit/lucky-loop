@@ -28,6 +28,7 @@ def verify_sweep(sweep: dict) -> Verification:
     runs = sweep.get("runs") or []
     metric = sweep.get("metric", "accuracy")
     protocol_warning = sweep.get("protocol_warning")
+    verification_type = sweep.get("type")
     if not runs:
         return Verification(
             status="missing_data",
@@ -91,7 +92,10 @@ def verify_sweep(sweep: dict) -> Verification:
         )
 
     best_key = max(means, key=means.get)
-    worst_key = min(means, key=means.get)
+    if verification_type == "top_model_verification" and sweep.get("runner_up", {}).get("value") in means:
+        worst_key = str(sweep["runner_up"]["value"])
+    else:
+        worst_key = min(means, key=means.get)
     effect_size = round(means[best_key] - means[worst_key], 6)
     best_values = by_config[best_key]
     seed_noise = round(max(best_values) - min(best_values), 6) if len(best_values) > 1 else None
@@ -104,7 +108,10 @@ def verify_sweep(sweep: dict) -> Verification:
     trustworthy = status in {"weakly_supported", "supported", "strongly_supported"}
     best_label = labels.get(best_key, best_key)
     worst_label = labels.get(worst_key, worst_key)
-    blocked_claim = f"{best_label} is robustly better than {worst_label}."
+    if verification_type == "top_model_verification":
+        blocked_claim = f"{best_label} is robustly better than {worst_label}."
+    else:
+        blocked_claim = f"{best_label} is robustly better than {worst_label}."
     allowed_claim = (
         f"{best_label} had the best mean {metric}, but the effect was smaller than seed noise."
     )
@@ -153,7 +160,14 @@ def verify_sweep(sweep: dict) -> Verification:
             inconclusive.append(
                 f"Best config '{best_label}' improves over '{worst_label}' by {effect_size:.4f} {metric}, but best-config seed noise is {seed_noise:.4f}."
             )
-            rationale = "Measured effect is not larger than inter-seed noise. The report must not oversell this as a robust discovery."
+            if verification_type == "top_model_verification":
+                allowed_claim = (
+                    f"{best_label} had the best multi-seed mean {metric}, but the effect was smaller than seed noise; "
+                    "no robust best-model claim is allowed."
+                )
+                rationale = "Measured top-model effect is not larger than inter-seed noise. The report must not claim a robust best model."
+            else:
+                rationale = "Measured effect is not larger than inter-seed noise. The report must not oversell this as a robust discovery."
 
     return Verification(
         status=status,

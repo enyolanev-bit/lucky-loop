@@ -1,249 +1,73 @@
 {
   "run_id": "run_004",
-  "goal": "Maximize validation accuracy on sklearn breast cancer dataset in five experiments.",
-  "hypothesis": "Selected verification_sweep because score=60; world model recommended run; high single-run score needs robustness verification before a strong claim; world model predicted robustness or seed-variance risk; defer verifier sweep until several single-model baselines exist. World model predicted accuracy around 0.94-0.98, runtime under 25, recommendation=run, risks=label noise can make small hyperparameter differences non-robust, seed variance may exceed apparent gains.",
+  "goal": "Maximize validation accuracy on sklearn breast_cancer under a small compute budget, while avoiding unsupported claims.",
+  "hypothesis": "Selected random_forest because score=71.0; world model recommended run; new model family increases search coverage; strong linear baseline makes a different inductive bias useful; world model predicted overfitting risk; high best score increases claim risk for additional single-run score chasing. World model predicted accuracy around 0.90-0.98, runtime under 10, recommendation=run, risks=overfitting or split variance if depth is unconstrained. Causal signal type: mixed.",
   "proposed_action": {
-    "action_id": "action_noisy_sweep",
-    "command": "python experiments/sweep_sklearn.py --dataset breast_cancer --model logistic_regression --scale --sweep-param C --values 0.1 1.0 10.0 --seeds 0 1 2 3 --label-noise 0.08",
-    "model": "verification_sweep",
+    "action_id": "action_random_forest_n_estimators-100",
+    "command": "python experiments/train_sklearn.py --dataset breast_cancer --model random_forest --n-estimators 100",
+    "model": "random_forest",
     "params": {
-      "base_model": "logistic_regression",
-      "scale": true,
-      "sweep_param": "C",
-      "values": [
-        0.1,
-        1.0,
-        10.0
-      ],
-      "seeds": [
-        0,
-        1,
-        2,
-        3
-      ],
-      "label_noise": 0.08
+      "dataset": "breast_cancer",
+      "n_estimators": 100,
+      "max_depth": null
     }
   },
   "world_model_prediction": {
-    "expected_metric": "accuracy around 0.94-0.98",
-    "expected_runtime_seconds": "under 25",
+    "expected_metric": "accuracy around 0.90-0.98",
+    "expected_runtime_seconds": "under 10",
     "risks": [
-      "label noise can make small hyperparameter differences non-robust",
-      "seed variance may exceed apparent gains"
+      "overfitting or split variance if depth is unconstrained"
     ],
     "recommendation": "run",
-    "rationale": "A multi-seed sweep is useful for the deterministic verifier: it tests whether an apparent gain survives effect-vs-noise scrutiny."
+    "rationale": "Tree ensembles test a different inductive bias, but may not beat a strong scaled linear model on small tabular datasets.",
+    "action_specific_signal": "Use random forest to test whether nonlinear interactions improve over the linear baseline.",
+    "claim_risk": "A single tree-ensemble score should be treated as observation until checked across seeds."
   },
   "actual_result": {
     "status": "success",
-    "accuracy": null,
-    "f1": null,
-    "runtime_seconds": 28.4049,
-    "stdout_tail": "19127026819333,\n      \"label\": \"C=1.0\",\n      \"runtime_seconds\": 0.0356,\n      \"seed\": 2,\n      \"sweep_param\": \"C\",\n      \"value\": \"1.0\"\n    },\n    {\n      \"accuracy\": 0.972027972027972,\n      \"config_key\": \"C=1.0\",\n      \"f1\": 0.9719127026819333,\n      \"label\": \"C=1.0\",\n      \"runtime_seconds\": 0.027,\n      \"seed\": 3,\n      \"sweep_param\": \"C\",\n      \"value\": \"1.0\"\n    },\n    {\n      \"accuracy\": 0.9300699300699301,\n      \"config_key\": \"C=10.0\",\n      \"f1\": 0.9294588616839257,\n      \"label\": \"C=10.0\",\n      \"runtime_seconds\": 0.1677,\n      \"seed\": 0,\n      \"sweep_param\": \"C\",\n      \"value\": \"10.0\"\n    },\n    {\n      \"accuracy\": 0.9370629370629371,\n      \"config_key\": \"C=10.0\",\n      \"f1\": 0.935641677909719,\n      \"label\": \"C=10.0\",\n      \"runtime_seconds\": 0.0332,\n      \"seed\": 1,\n      \"sweep_param\": \"C\",\n      \"value\": \"10.0\"\n    },\n    {\n      \"accuracy\": 0.9370629370629371,\n      \"config_key\": \"C=10.0\",\n      \"f1\": 0.9366622554590086,\n      \"label\": \"C=10.0\",\n      \"runtime_seconds\": 0.0623,\n      \"seed\": 2,\n      \"sweep_param\": \"C\",\n      \"value\": \"10.0\"\n    },\n    {\n      \"accuracy\": 0.958041958041958,\n      \"config_key\": \"C=10.0\",\n      \"f1\": 0.9578690540229003,\n      \"label\": \"C=10.0\",\n      \"runtime_seconds\": 0.0694,\n      \"seed\": 3,\n      \"sweep_param\": \"C\",\n      \"value\": \"10.0\"\n    }\n  ],\n  \"runtime_seconds\": 28.4049,\n  \"seeds\": [\n    0,\n    1,\n    2,\n    3\n  ],\n  \"status\": \"success\",\n  \"summary_by_value\": {\n    \"0.1\": {\n      \"max_accuracy\": 0.9790209790209791,\n      \"mean_accuracy\": 0.9615384615384616,\n      \"min_accuracy\": 0.951048951048951,\n      \"n\": 4\n    },\n    \"1.0\": {\n      \"max_accuracy\": 0.972027972027972,\n      \"mean_accuracy\": 0.9527972027972028,\n      \"min_accuracy\": 0.9300699300699301,\n      \"n\": 4\n    },\n    \"10.0\": {\n      \"max_accuracy\": 0.958041958041958,\n      \"mean_accuracy\": 0.9405594405594406,\n      \"min_accuracy\": 0.9300699300699301,\n      \"n\": 4\n    }\n  },\n  \"sweep_param\": \"C\",\n  \"values\": [\n    \"0.1\",\n    \"1.0\",\n    \"10.0\"\n  ]\n}\n",
+    "accuracy": 0.958041958041958,
+    "f1": 0.9578690540229003,
+    "runtime_seconds": 0.323,
+    "stdout_tail": "{\n  \"accuracy\": 0.958041958041958,\n  \"dataset\": \"breast_cancer\",\n  \"f1\": 0.9578690540229003,\n  \"model\": \"random_forest\",\n  \"n_label_noise_flips\": 0,\n  \"n_test\": 143,\n  \"n_train\": 426,\n  \"params\": {\n    \"C\": 1.0,\n    \"dataset\": \"breast_cancer\",\n    \"kernel\": \"rbf\",\n    \"label_noise\": 0.0,\n    \"learning_rate\": 0.1,\n    \"max_depth\": null,\n    \"max_iter\": 1000,\n    \"model\": \"random_forest\",\n    \"n_estimators\": 100,\n    \"scale\": false,\n    \"seed\": 42,\n    \"test_size\": 0.25\n  },\n  \"runtime_seconds\": 0.323,\n  \"status\": \"success\"\n}\n",
     "stderr_tail": "",
     "raw": {
-      "best": {
-        "max_accuracy": 0.9790209790209791,
-        "mean_accuracy": 0.9615384615384616,
-        "min_accuracy": 0.951048951048951,
-        "n": 4,
-        "value": "0.1"
-      },
+      "accuracy": 0.958041958041958,
       "dataset": "breast_cancer",
-      "failures": [],
-      "label_noise": 0.08,
-      "metric": "accuracy",
-      "model": "logistic_regression",
-      "runs": [
-        {
-          "accuracy": 0.951048951048951,
-          "config_key": "C=0.1",
-          "f1": 0.9502345545126294,
-          "label": "C=0.1",
-          "runtime_seconds": 0.0295,
-          "seed": 0,
-          "sweep_param": "C",
-          "value": "0.1"
-        },
-        {
-          "accuracy": 0.951048951048951,
-          "config_key": "C=0.1",
-          "f1": 0.9502345545126294,
-          "label": "C=0.1",
-          "runtime_seconds": 0.0241,
-          "seed": 1,
-          "sweep_param": "C",
-          "value": "0.1"
-        },
-        {
-          "accuracy": 0.9790209790209791,
-          "config_key": "C=0.1",
-          "f1": 0.9788874184863361,
-          "label": "C=0.1",
-          "runtime_seconds": 0.0194,
-          "seed": 2,
-          "sweep_param": "C",
-          "value": "0.1"
-        },
-        {
-          "accuracy": 0.965034965034965,
-          "config_key": "C=0.1",
-          "f1": 0.9648123641438936,
-          "label": "C=0.1",
-          "runtime_seconds": 0.0268,
-          "seed": 3,
-          "sweep_param": "C",
-          "value": "0.1"
-        },
-        {
-          "accuracy": 0.9300699300699301,
-          "config_key": "C=1.0",
-          "f1": 0.9290999323257388,
-          "label": "C=1.0",
-          "runtime_seconds": 0.025,
-          "seed": 0,
-          "sweep_param": "C",
-          "value": "1.0"
-        },
-        {
-          "accuracy": 0.9370629370629371,
-          "config_key": "C=1.0",
-          "f1": 0.935641677909719,
-          "label": "C=1.0",
-          "runtime_seconds": 0.0411,
-          "seed": 1,
-          "sweep_param": "C",
-          "value": "1.0"
-        },
-        {
-          "accuracy": 0.972027972027972,
-          "config_key": "C=1.0",
-          "f1": 0.9719127026819333,
-          "label": "C=1.0",
-          "runtime_seconds": 0.0356,
-          "seed": 2,
-          "sweep_param": "C",
-          "value": "1.0"
-        },
-        {
-          "accuracy": 0.972027972027972,
-          "config_key": "C=1.0",
-          "f1": 0.9719127026819333,
-          "label": "C=1.0",
-          "runtime_seconds": 0.027,
-          "seed": 3,
-          "sweep_param": "C",
-          "value": "1.0"
-        },
-        {
-          "accuracy": 0.9300699300699301,
-          "config_key": "C=10.0",
-          "f1": 0.9294588616839257,
-          "label": "C=10.0",
-          "runtime_seconds": 0.1677,
-          "seed": 0,
-          "sweep_param": "C",
-          "value": "10.0"
-        },
-        {
-          "accuracy": 0.9370629370629371,
-          "config_key": "C=10.0",
-          "f1": 0.935641677909719,
-          "label": "C=10.0",
-          "runtime_seconds": 0.0332,
-          "seed": 1,
-          "sweep_param": "C",
-          "value": "10.0"
-        },
-        {
-          "accuracy": 0.9370629370629371,
-          "config_key": "C=10.0",
-          "f1": 0.9366622554590086,
-          "label": "C=10.0",
-          "runtime_seconds": 0.0623,
-          "seed": 2,
-          "sweep_param": "C",
-          "value": "10.0"
-        },
-        {
-          "accuracy": 0.958041958041958,
-          "config_key": "C=10.0",
-          "f1": 0.9578690540229003,
-          "label": "C=10.0",
-          "runtime_seconds": 0.0694,
-          "seed": 3,
-          "sweep_param": "C",
-          "value": "10.0"
-        }
-      ],
-      "runtime_seconds": 28.4049,
-      "seeds": [
-        0,
-        1,
-        2,
-        3
-      ],
-      "status": "success",
-      "summary_by_value": {
-        "0.1": {
-          "max_accuracy": 0.9790209790209791,
-          "mean_accuracy": 0.9615384615384616,
-          "min_accuracy": 0.951048951048951,
-          "n": 4
-        },
-        "1.0": {
-          "max_accuracy": 0.972027972027972,
-          "mean_accuracy": 0.9527972027972028,
-          "min_accuracy": 0.9300699300699301,
-          "n": 4
-        },
-        "10.0": {
-          "max_accuracy": 0.958041958041958,
-          "mean_accuracy": 0.9405594405594406,
-          "min_accuracy": 0.9300699300699301,
-          "n": 4
-        }
+      "f1": 0.9578690540229003,
+      "model": "random_forest",
+      "n_label_noise_flips": 0,
+      "n_test": 143,
+      "n_train": 426,
+      "params": {
+        "C": 1.0,
+        "dataset": "breast_cancer",
+        "kernel": "rbf",
+        "label_noise": 0.0,
+        "learning_rate": 0.1,
+        "max_depth": null,
+        "max_iter": 1000,
+        "model": "random_forest",
+        "n_estimators": 100,
+        "scale": false,
+        "seed": 42,
+        "test_size": 0.25
       },
-      "sweep_param": "C",
-      "values": [
-        "0.1",
-        "1.0",
-        "10.0"
-      ]
+      "runtime_seconds": 0.323,
+      "status": "success"
     }
   },
   "comparison": {
     "metric_match": true,
-    "runtime_match": false,
-    "unexpected_events": [
-      "runtime 28.40s exceeded predicted 25s"
-    ],
-    "lesson": "Run succeeded, but the prediction missed at least one quantitative detail."
+    "runtime_match": true,
+    "unexpected_events": [],
+    "lesson": "Prediction was broadly consistent with the real run."
   },
   "next_decision": "Continue: regenerate candidates from the updated state and ask the world model to predict each option.",
-  "verification": {
-    "status": "inconclusive",
-    "metric": "accuracy",
-    "effect_size": 0.020979,
-    "seed_noise": 0.027972,
-    "effect_to_noise_ratio": 0.75,
-    "min_seed_count": 4,
-    "low_n_warning": false,
-    "trustworthy": false,
-    "best_config": "C=0.1",
-    "worst_config": "C=10.0",
-    "blocked_claim": "C=0.1 is robustly better than C=10.0.",
-    "allowed_claim": "C=0.1 had the best mean accuracy, but the effect was smaller than seed noise.",
-    "supported_claims": [],
-    "inconclusive_findings": [
-      "Best config 'C=0.1' improves over 'C=10.0' by 0.0210 accuracy, but best-config seed noise is 0.0280."
-    ],
-    "rationale": "Measured effect is not larger than inter-seed noise. The report must not oversell this as a robust discovery."
-  },
+  "verification": null,
   "schema_version": "2.0",
   "state_before": {
     "state_id": "state_004",
-    "goal": "Maximize validation accuracy on sklearn breast cancer dataset in five experiments.",
+    "goal": "Maximize validation accuracy on sklearn breast_cancer under a small compute budget, while avoiding unsupported claims.",
     "known_results": [
       {
         "run_id": "run_001",
@@ -251,420 +75,855 @@
         "accuracy": 0.951048951048951,
         "f1": 0.9504987920829505,
         "params": {
+          "dataset": "breast_cancer",
           "scale": false
         }
       },
       {
         "run_id": "run_002",
         "model": "logistic_regression",
-        "accuracy": 0.986013986013986,
-        "f1": 0.986013986013986,
+        "accuracy": 0.9790209790209791,
+        "f1": 0.9789790320177061,
         "params": {
-          "scale": true
+          "dataset": "breast_cancer",
+          "scale": true,
+          "C": 0.1
         }
       },
       {
         "run_id": "run_003",
-        "model": "random_forest",
-        "accuracy": 0.958041958041958,
-        "f1": 0.9578690540229003,
+        "model": "logistic_regression",
+        "accuracy": 0.986013986013986,
+        "f1": 0.986013986013986,
         "params": {
-          "n_estimators": 300
+          "dataset": "breast_cancer",
+          "scale": true,
+          "C": 1.0
         }
       }
     ],
-    "budget_remaining": 7,
+    "budget_remaining": 4,
     "open_questions": [
       "Which candidate should receive the next compute budget?",
       "Is the best observed score robust across seeds or perturbations?",
       "Do apparent improvements survive an effect-vs-noise verifier?",
-      "What did the world model miss, and should the next action test that failure mode?"
+      "What did the world model miss, and should the next action test that failure mode?",
+      "Can the observed top model survive matched multi-seed verification?"
     ],
     "risks_to_check": [
       "single-run best score may not justify a scientific claim",
       "seed variance may exceed apparent model or hyperparameter effects",
-      "world-model predictions may miss quantitative details"
+      "world-model predictions may miss quantitative details",
+      "Top-model gap 0.0070 is within margin 0.0100; verify before claiming a winner."
     ],
-    "summary": "Goal: Maximize validation accuracy on sklearn breast cancer dataset in five experiments.\nNo experiments have been run yet. Dataset: sklearn breast_cancer. Metric: validation accuracy and weighted F1.\nrun_001: logistic_regression actual=0.951048951048951 status=success; prediction=accuracy around 0.92-0.96; recommendation=run; lesson=Prediction was broadly consistent with the real run.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_002: logistic_regression actual=0.986013986013986 status=success; prediction=accuracy around 0.95-0.98; recommendation=run; lesson=Run succeeded, but the prediction missed at least one quantitative detail.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_003: random_forest actual=0.958041958041958 status=success; prediction=accuracy around 0.94-0.98; recommendation=run; lesson=Prediction was broadly consistent with the real run.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option."
+    "top_model_summary": {
+      "best_observed_model": "logistic_regression_scaled_C=1.0",
+      "best_observed_metric": 0.986013986013986,
+      "top_models": [
+        {
+          "run_id": "run_003",
+          "model": "logistic_regression",
+          "model_key": "logistic_regression_scaled_C=1.0",
+          "metric": 0.986013986013986,
+          "params": {
+            "dataset": "breast_cancer",
+            "scale": true,
+            "C": 1.0
+          }
+        },
+        {
+          "run_id": "run_002",
+          "model": "logistic_regression",
+          "model_key": "logistic_regression_scaled_C=0.1",
+          "metric": 0.9790209790209791,
+          "params": {
+            "dataset": "breast_cancer",
+            "scale": true,
+            "C": 0.1
+          }
+        },
+        {
+          "run_id": "run_001",
+          "model": "logistic_regression",
+          "model_key": "logistic_regression",
+          "metric": 0.951048951048951,
+          "params": {
+            "dataset": "breast_cancer",
+            "scale": false
+          }
+        }
+      ],
+      "top_gap": 0.006993,
+      "needs_robustness_verification": true,
+      "reason": "Top-model gap 0.0070 is within margin 0.0100; verify before claiming a winner.",
+      "verification_action_key": "logistic_regression:logistic_regression_scaled_C=0.1:logistic_regression_scaled_C=1.0"
+    },
+    "summary": "Task=breast_cancer_accuracy; dataset=breast_cancer; primary_metric=accuracy. Goal: Maximize validation accuracy on sklearn breast_cancer under a small compute budget, while avoiding unsupported claims.\nNo experiments have been run yet. Dataset: sklearn breast_cancer. Primary metric: accuracy; secondary metrics: f1.\nrun_001: logistic_regression actual=0.951048951048951 status=success; prediction=accuracy around 0.90-0.97; recommendation=run; lesson=Prediction was broadly consistent with the real run.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_002: logistic_regression actual=0.9790209790209791 status=success; prediction=accuracy around 0.95-0.98; recommendation=run; lesson=Prediction was broadly consistent with the real run.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_003: logistic_regression actual=0.986013986013986 status=success; prediction=accuracy around 0.95-0.98; recommendation=run; lesson=Run succeeded, but the prediction missed at least one quantitative detail.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option."
   },
   "candidate_actions": [
     {
-      "action_id": "action_svc_scaled",
-      "command": "python experiments/train_sklearn.py --dataset breast_cancer --model svc --scale --C 2.0",
+      "action_id": "action_logistic_regression_C-10p0_scale-True",
+      "command": "python experiments/train_sklearn.py --dataset breast_cancer --model logistic_regression --scale --C 10.0",
+      "model": "logistic_regression",
+      "params": {
+        "dataset": "breast_cancer",
+        "scale": true,
+        "C": 10.0
+      }
+    },
+    {
+      "action_id": "action_logistic_regression_C-0p1_scale-False",
+      "command": "python experiments/train_sklearn.py --dataset breast_cancer --model logistic_regression --C 0.1",
+      "model": "logistic_regression",
+      "params": {
+        "dataset": "breast_cancer",
+        "scale": false,
+        "C": 0.1
+      }
+    },
+    {
+      "action_id": "action_logistic_regression_C-1p0_scale-False",
+      "command": "python experiments/train_sklearn.py --dataset breast_cancer --model logistic_regression",
+      "model": "logistic_regression",
+      "params": {
+        "dataset": "breast_cancer",
+        "scale": false,
+        "C": 1.0
+      }
+    },
+    {
+      "action_id": "action_logistic_regression_C-10p0_scale-False",
+      "command": "python experiments/train_sklearn.py --dataset breast_cancer --model logistic_regression --C 10.0",
+      "model": "logistic_regression",
+      "params": {
+        "dataset": "breast_cancer",
+        "scale": false,
+        "C": 10.0
+      }
+    },
+    {
+      "action_id": "action_svc_C-0p5_kernel-rbf_scale-True",
+      "command": "python experiments/train_sklearn.py --dataset breast_cancer --model svc --scale --C 0.5 --kernel rbf",
       "model": "svc",
       "params": {
+        "dataset": "breast_cancer",
+        "scale": true,
+        "C": 0.5,
+        "kernel": "rbf"
+      }
+    },
+    {
+      "action_id": "action_svc_C-2p0_kernel-rbf_scale-True",
+      "command": "python experiments/train_sklearn.py --dataset breast_cancer --model svc --scale --C 2.0 --kernel rbf",
+      "model": "svc",
+      "params": {
+        "dataset": "breast_cancer",
         "scale": true,
         "C": 2.0,
         "kernel": "rbf"
       }
     },
     {
-      "action_id": "action_noisy_sweep",
-      "command": "python experiments/sweep_sklearn.py --dataset breast_cancer --model logistic_regression --scale --sweep-param C --values 0.1 1.0 10.0 --seeds 0 1 2 3 --label-noise 0.08",
-      "model": "verification_sweep",
+      "action_id": "action_svc_C-5p0_kernel-rbf_scale-True",
+      "command": "python experiments/train_sklearn.py --dataset breast_cancer --model svc --scale --C 5.0 --kernel rbf",
+      "model": "svc",
       "params": {
-        "base_model": "logistic_regression",
+        "dataset": "breast_cancer",
         "scale": true,
-        "sweep_param": "C",
-        "values": [
-          0.1,
-          1.0,
-          10.0
-        ],
-        "seeds": [
-          0,
-          1,
-          2,
-          3
-        ],
-        "label_noise": 0.08
+        "C": 5.0,
+        "kernel": "rbf"
       }
     },
     {
-      "action_id": "action_gradient_boosting",
-      "command": "python experiments/train_sklearn.py --dataset breast_cancer --model gradient_boosting --n-estimators 150 --learning-rate 0.05",
-      "model": "gradient_boosting",
+      "action_id": "action_random_forest_n_estimators-100",
+      "command": "python experiments/train_sklearn.py --dataset breast_cancer --model random_forest --n-estimators 100",
+      "model": "random_forest",
       "params": {
-        "n_estimators": 150,
-        "learning_rate": 0.05
+        "dataset": "breast_cancer",
+        "n_estimators": 100,
+        "max_depth": null
       }
     },
     {
-      "action_id": "action_weak_effect",
-      "command": "python experiments/scenario_sklearn.py --scenario weak_effect",
-      "model": "weak_effect",
+      "action_id": "action_random_forest_max_depth-4_n_estimators-100",
+      "command": "python experiments/train_sklearn.py --dataset breast_cancer --model random_forest --n-estimators 100 --max-depth 4",
+      "model": "random_forest",
       "params": {
-        "scenario": "weak_effect"
+        "dataset": "breast_cancer",
+        "n_estimators": 100,
+        "max_depth": 4
       }
     },
     {
-      "action_id": "action_real_effect",
-      "command": "python experiments/scenario_sklearn.py --scenario real_effect",
-      "model": "real_effect",
+      "action_id": "action_random_forest_max_depth-8_n_estimators-100",
+      "command": "python experiments/train_sklearn.py --dataset breast_cancer --model random_forest --n-estimators 100 --max-depth 8",
+      "model": "random_forest",
       "params": {
-        "scenario": "real_effect"
+        "dataset": "breast_cancer",
+        "n_estimators": 100,
+        "max_depth": 8
       }
     },
     {
-      "action_id": "action_leakage_trap",
-      "command": "python experiments/scenario_sklearn.py --scenario data_leakage_trap",
-      "model": "data_leakage_trap",
+      "action_id": "action_random_forest_n_estimators-300",
+      "command": "python experiments/train_sklearn.py --dataset breast_cancer --model random_forest --n-estimators 300",
+      "model": "random_forest",
       "params": {
-        "scenario": "data_leakage_trap"
+        "dataset": "breast_cancer",
+        "n_estimators": 300,
+        "max_depth": null
       }
     },
     {
-      "action_id": "action_metric_misuse",
-      "command": "python experiments/scenario_sklearn.py --scenario metric_misuse",
-      "model": "metric_misuse",
+      "action_id": "action_random_forest_max_depth-4_n_estimators-300",
+      "command": "python experiments/train_sklearn.py --dataset breast_cancer --model random_forest --n-estimators 300 --max-depth 4",
+      "model": "random_forest",
       "params": {
-        "scenario": "metric_misuse"
+        "dataset": "breast_cancer",
+        "n_estimators": 300,
+        "max_depth": 4
       }
     }
   ],
   "candidate_predictions": [
     {
       "action": {
-        "action_id": "action_svc_scaled",
-        "command": "python experiments/train_sklearn.py --dataset breast_cancer --model svc --scale --C 2.0",
+        "action_id": "action_logistic_regression_C-10p0_scale-True",
+        "command": "python experiments/train_sklearn.py --dataset breast_cancer --model logistic_regression --scale --C 10.0",
+        "model": "logistic_regression",
+        "params": {
+          "dataset": "breast_cancer",
+          "scale": true,
+          "C": 10.0
+        }
+      },
+      "prediction": {
+        "expected_metric": "accuracy around 0.95-0.98",
+        "expected_runtime_seconds": "under 5",
+        "risks": [
+          "minor convergence warning possible"
+        ],
+        "recommendation": "run",
+        "rationale": "Scaling usually helps logistic regression on tabular numeric features.",
+        "action_specific_signal": "Feature scaling is the direct intervention for a linear model after an unscaled baseline.",
+        "claim_risk": "Single-run best score should not be claimed as robust without repeated seeds."
+      },
+      "source": "heuristic_fallback"
+    },
+    {
+      "action": {
+        "action_id": "action_logistic_regression_C-0p1_scale-False",
+        "command": "python experiments/train_sklearn.py --dataset breast_cancer --model logistic_regression --C 0.1",
+        "model": "logistic_regression",
+        "params": {
+          "dataset": "breast_cancer",
+          "scale": false,
+          "C": 0.1
+        }
+      },
+      "prediction": {
+        "expected_metric": "accuracy around 0.90-0.97",
+        "expected_runtime_seconds": "under 5",
+        "risks": [
+          "unscaled features can slow convergence or underperform when feature scales differ"
+        ],
+        "recommendation": "run",
+        "rationale": "A simple linear baseline is cheap and informative for sklearn tabular classification.",
+        "action_specific_signal": "Establish a baseline before testing scaling, nonlinear models, or sweeps.",
+        "claim_risk": "Baseline-only evidence cannot support a best-model claim."
+      },
+      "source": "heuristic_fallback"
+    },
+    {
+      "action": {
+        "action_id": "action_logistic_regression_C-1p0_scale-False",
+        "command": "python experiments/train_sklearn.py --dataset breast_cancer --model logistic_regression",
+        "model": "logistic_regression",
+        "params": {
+          "dataset": "breast_cancer",
+          "scale": false,
+          "C": 1.0
+        }
+      },
+      "prediction": {
+        "expected_metric": "accuracy around 0.90-0.97",
+        "expected_runtime_seconds": "under 5",
+        "risks": [
+          "unscaled features can slow convergence or underperform when feature scales differ"
+        ],
+        "recommendation": "run",
+        "rationale": "A simple linear baseline is cheap and informative for sklearn tabular classification.",
+        "action_specific_signal": "Establish a baseline before testing scaling, nonlinear models, or sweeps.",
+        "claim_risk": "Baseline-only evidence cannot support a best-model claim."
+      },
+      "source": "heuristic_fallback"
+    },
+    {
+      "action": {
+        "action_id": "action_logistic_regression_C-10p0_scale-False",
+        "command": "python experiments/train_sklearn.py --dataset breast_cancer --model logistic_regression --C 10.0",
+        "model": "logistic_regression",
+        "params": {
+          "dataset": "breast_cancer",
+          "scale": false,
+          "C": 10.0
+        }
+      },
+      "prediction": {
+        "expected_metric": "accuracy around 0.90-0.97",
+        "expected_runtime_seconds": "under 5",
+        "risks": [
+          "unscaled features can slow convergence or underperform when feature scales differ"
+        ],
+        "recommendation": "run",
+        "rationale": "A simple linear baseline is cheap and informative for sklearn tabular classification.",
+        "action_specific_signal": "Establish a baseline before testing scaling, nonlinear models, or sweeps.",
+        "claim_risk": "Baseline-only evidence cannot support a best-model claim."
+      },
+      "source": "heuristic_fallback"
+    },
+    {
+      "action": {
+        "action_id": "action_svc_C-0p5_kernel-rbf_scale-True",
+        "command": "python experiments/train_sklearn.py --dataset breast_cancer --model svc --scale --C 0.5 --kernel rbf",
         "model": "svc",
         "params": {
+          "dataset": "breast_cancer",
+          "scale": true,
+          "C": 0.5,
+          "kernel": "rbf"
+        }
+      },
+      "prediction": {
+        "expected_metric": "accuracy around 0.90-0.99",
+        "expected_runtime_seconds": "under 10",
+        "risks": [
+          "sensitive to scaling and C"
+        ],
+        "recommendation": "run",
+        "rationale": "Scaled SVC can be strong on small numeric classification tasks but needs careful comparison.",
+        "action_specific_signal": "SVC tests a margin-based nonlinear hypothesis after linear/tree baselines.",
+        "claim_risk": "SVC should not be declared best without repeated-seed evidence."
+      },
+      "source": "heuristic_fallback"
+    },
+    {
+      "action": {
+        "action_id": "action_svc_C-2p0_kernel-rbf_scale-True",
+        "command": "python experiments/train_sklearn.py --dataset breast_cancer --model svc --scale --C 2.0 --kernel rbf",
+        "model": "svc",
+        "params": {
+          "dataset": "breast_cancer",
           "scale": true,
           "C": 2.0,
           "kernel": "rbf"
         }
       },
       "prediction": {
-        "expected_metric": "accuracy around 0.94-0.98",
+        "expected_metric": "accuracy around 0.90-0.99",
         "expected_runtime_seconds": "under 10",
         "risks": [
           "sensitive to scaling and C"
         ],
         "recommendation": "run",
-        "rationale": "Scaled RBF SVC is strong on small tabular datasets."
+        "rationale": "Scaled SVC can be strong on small numeric classification tasks but needs careful comparison.",
+        "action_specific_signal": "SVC tests a margin-based nonlinear hypothesis after linear/tree baselines.",
+        "claim_risk": "SVC should not be declared best without repeated-seed evidence."
       },
       "source": "heuristic_fallback"
     },
     {
       "action": {
-        "action_id": "action_noisy_sweep",
-        "command": "python experiments/sweep_sklearn.py --dataset breast_cancer --model logistic_regression --scale --sweep-param C --values 0.1 1.0 10.0 --seeds 0 1 2 3 --label-noise 0.08",
-        "model": "verification_sweep",
+        "action_id": "action_svc_C-5p0_kernel-rbf_scale-True",
+        "command": "python experiments/train_sklearn.py --dataset breast_cancer --model svc --scale --C 5.0 --kernel rbf",
+        "model": "svc",
         "params": {
-          "base_model": "logistic_regression",
+          "dataset": "breast_cancer",
           "scale": true,
-          "sweep_param": "C",
-          "values": [
-            0.1,
-            1.0,
-            10.0
-          ],
-          "seeds": [
-            0,
-            1,
-            2,
-            3
-          ],
-          "label_noise": 0.08
+          "C": 5.0,
+          "kernel": "rbf"
         }
       },
       "prediction": {
-        "expected_metric": "accuracy around 0.94-0.98",
-        "expected_runtime_seconds": "under 25",
+        "expected_metric": "accuracy around 0.90-0.99",
+        "expected_runtime_seconds": "under 10",
         "risks": [
-          "label noise can make small hyperparameter differences non-robust",
-          "seed variance may exceed apparent gains"
+          "sensitive to scaling and C"
         ],
         "recommendation": "run",
-        "rationale": "A multi-seed sweep is useful for the deterministic verifier: it tests whether an apparent gain survives effect-vs-noise scrutiny."
+        "rationale": "Scaled SVC can be strong on small numeric classification tasks but needs careful comparison.",
+        "action_specific_signal": "SVC tests a margin-based nonlinear hypothesis after linear/tree baselines.",
+        "claim_risk": "SVC should not be declared best without repeated-seed evidence."
       },
       "source": "heuristic_fallback"
     },
     {
       "action": {
-        "action_id": "action_gradient_boosting",
-        "command": "python experiments/train_sklearn.py --dataset breast_cancer --model gradient_boosting --n-estimators 150 --learning-rate 0.05",
-        "model": "gradient_boosting",
+        "action_id": "action_random_forest_n_estimators-100",
+        "command": "python experiments/train_sklearn.py --dataset breast_cancer --model random_forest --n-estimators 100",
+        "model": "random_forest",
         "params": {
-          "n_estimators": 150,
-          "learning_rate": 0.05
+          "dataset": "breast_cancer",
+          "n_estimators": 100,
+          "max_depth": null
         }
       },
       "prediction": {
-        "expected_metric": "accuracy around 0.94-0.98",
-        "expected_runtime_seconds": "under 15",
+        "expected_metric": "accuracy around 0.90-0.98",
+        "expected_runtime_seconds": "under 10",
         "risks": [
-          "can overfit with too many estimators"
+          "overfitting or split variance if depth is unconstrained"
         ],
         "recommendation": "run",
-        "rationale": "Boosting often performs well but needs tuning."
+        "rationale": "Tree ensembles test a different inductive bias, but may not beat a strong scaled linear model on small tabular datasets.",
+        "action_specific_signal": "Use random forest to test whether nonlinear interactions improve over the linear baseline.",
+        "claim_risk": "A single tree-ensemble score should be treated as observation until checked across seeds."
       },
       "source": "heuristic_fallback"
     },
     {
       "action": {
-        "action_id": "action_weak_effect",
-        "command": "python experiments/scenario_sklearn.py --scenario weak_effect",
-        "model": "weak_effect",
+        "action_id": "action_random_forest_max_depth-4_n_estimators-100",
+        "command": "python experiments/train_sklearn.py --dataset breast_cancer --model random_forest --n-estimators 100 --max-depth 4",
+        "model": "random_forest",
         "params": {
-          "scenario": "weak_effect"
+          "dataset": "breast_cancer",
+          "n_estimators": 100,
+          "max_depth": 4
         }
       },
       "prediction": {
-        "expected_metric": "accuracy around 0.94-0.99",
-        "expected_runtime_seconds": "under 5",
+        "expected_metric": "accuracy around 0.90-0.98",
+        "expected_runtime_seconds": "under 10",
         "risks": [
-          "effect may be smaller than seed noise",
-          "claim should likely be weak or blocked"
+          "overfitting or split variance if depth is unconstrained"
         ],
         "recommendation": "run",
-        "rationale": "A weak-effect scenario tests whether the verifier refuses to overclaim a small apparent improvement."
+        "rationale": "Tree ensembles test a different inductive bias, but may not beat a strong scaled linear model on small tabular datasets.",
+        "action_specific_signal": "Use random forest to test whether nonlinear interactions improve over the linear baseline.",
+        "claim_risk": "A single tree-ensemble score should be treated as observation until checked across seeds."
       },
       "source": "heuristic_fallback"
     },
     {
       "action": {
-        "action_id": "action_real_effect",
-        "command": "python experiments/scenario_sklearn.py --scenario real_effect",
-        "model": "real_effect",
+        "action_id": "action_random_forest_max_depth-8_n_estimators-100",
+        "command": "python experiments/train_sklearn.py --dataset breast_cancer --model random_forest --n-estimators 100 --max-depth 8",
+        "model": "random_forest",
         "params": {
-          "scenario": "real_effect"
+          "dataset": "breast_cancer",
+          "n_estimators": 100,
+          "max_depth": 8
         }
       },
       "prediction": {
-        "expected_metric": "accuracy around 0.76-0.88",
-        "expected_runtime_seconds": "under 5",
+        "expected_metric": "accuracy around 0.90-0.98",
+        "expected_runtime_seconds": "under 10",
         "risks": [
-          "large effect should be checked against seed noise"
+          "overfitting or split variance if depth is unconstrained"
         ],
         "recommendation": "run",
-        "rationale": "A real-effect scenario should produce a supported claim when the effect/noise ratio is high."
+        "rationale": "Tree ensembles test a different inductive bias, but may not beat a strong scaled linear model on small tabular datasets.",
+        "action_specific_signal": "Use random forest to test whether nonlinear interactions improve over the linear baseline.",
+        "claim_risk": "A single tree-ensemble score should be treated as observation until checked across seeds."
       },
       "source": "heuristic_fallback"
     },
     {
       "action": {
-        "action_id": "action_leakage_trap",
-        "command": "python experiments/scenario_sklearn.py --scenario data_leakage_trap",
-        "model": "data_leakage_trap",
+        "action_id": "action_random_forest_n_estimators-300",
+        "command": "python experiments/train_sklearn.py --dataset breast_cancer --model random_forest --n-estimators 300",
+        "model": "random_forest",
         "params": {
-          "scenario": "data_leakage_trap"
+          "dataset": "breast_cancer",
+          "n_estimators": 300,
+          "max_depth": null
         }
       },
       "prediction": {
-        "expected_metric": "accuracy around 0.95-1.00",
-        "expected_runtime_seconds": "under 5",
+        "expected_metric": "accuracy around 0.90-0.98",
+        "expected_runtime_seconds": "under 10",
         "risks": [
-          "suspiciously high accuracy may indicate data leakage",
-          "protocol warning should block a strong claim"
+          "overfitting or split variance if depth is unconstrained"
         ],
         "recommendation": "run",
-        "rationale": "A leakage trap tests whether the system blocks claims from invalid protocols even when metrics look excellent."
+        "rationale": "Tree ensembles test a different inductive bias, but may not beat a strong scaled linear model on small tabular datasets.",
+        "action_specific_signal": "Use random forest to test whether nonlinear interactions improve over the linear baseline.",
+        "claim_risk": "A single tree-ensemble score should be treated as observation until checked across seeds."
       },
       "source": "heuristic_fallback"
     },
     {
       "action": {
-        "action_id": "action_metric_misuse",
-        "command": "python experiments/scenario_sklearn.py --scenario metric_misuse",
-        "model": "metric_misuse",
+        "action_id": "action_random_forest_max_depth-4_n_estimators-300",
+        "command": "python experiments/train_sklearn.py --dataset breast_cancer --model random_forest --n-estimators 300 --max-depth 4",
+        "model": "random_forest",
         "params": {
-          "scenario": "metric_misuse"
+          "dataset": "breast_cancer",
+          "n_estimators": 300,
+          "max_depth": 4
         }
       },
       "prediction": {
-        "expected_metric": "balanced_accuracy around 0.50-0.73",
-        "expected_runtime_seconds": "under 5",
+        "expected_metric": "accuracy around 0.90-0.98",
+        "expected_runtime_seconds": "under 10",
         "risks": [
-          "accuracy may be misleading under class imbalance",
-          "balanced accuracy or F1 should be preferred"
+          "overfitting or split variance if depth is unconstrained"
         ],
         "recommendation": "run",
-        "rationale": "Metric misuse tests whether the report avoids accuracy-only claims on an imbalanced setting."
+        "rationale": "Tree ensembles test a different inductive bias, but may not beat a strong scaled linear model on small tabular datasets.",
+        "action_specific_signal": "Use random forest to test whether nonlinear interactions improve over the linear baseline.",
+        "claim_risk": "A single tree-ensemble score should be treated as observation until checked across seeds."
       },
       "source": "heuristic_fallback"
     }
   ],
   "selected_action": {
-    "action_id": "action_noisy_sweep",
-    "command": "python experiments/sweep_sklearn.py --dataset breast_cancer --model logistic_regression --scale --sweep-param C --values 0.1 1.0 10.0 --seeds 0 1 2 3 --label-noise 0.08",
-    "model": "verification_sweep",
+    "action_id": "action_random_forest_n_estimators-100",
+    "command": "python experiments/train_sklearn.py --dataset breast_cancer --model random_forest --n-estimators 100",
+    "model": "random_forest",
     "params": {
-      "base_model": "logistic_regression",
-      "scale": true,
-      "sweep_param": "C",
-      "values": [
-        0.1,
-        1.0,
-        10.0
-      ],
-      "seeds": [
-        0,
-        1,
-        2,
-        3
-      ],
-      "label_noise": 0.08
+      "dataset": "breast_cancer",
+      "n_estimators": 100,
+      "max_depth": null
     }
   },
   "decision_trace": {
     "selected_action": {
-      "action_id": "action_noisy_sweep",
-      "command": "python experiments/sweep_sklearn.py --dataset breast_cancer --model logistic_regression --scale --sweep-param C --values 0.1 1.0 10.0 --seeds 0 1 2 3 --label-noise 0.08",
-      "model": "verification_sweep",
+      "action_id": "action_random_forest_n_estimators-100",
+      "command": "python experiments/train_sklearn.py --dataset breast_cancer --model random_forest --n-estimators 100",
+      "model": "random_forest",
       "params": {
-        "base_model": "logistic_regression",
-        "scale": true,
-        "sweep_param": "C",
-        "values": [
-          0.1,
-          1.0,
-          10.0
-        ],
-        "seeds": [
-          0,
-          1,
-          2,
-          3
-        ],
-        "label_noise": 0.08
+        "dataset": "breast_cancer",
+        "n_estimators": 100,
+        "max_depth": null
       }
     },
     "world_model_signal_used": true,
-    "causal_reason": "Selected verification_sweep because score=60; world model recommended run; high single-run score needs robustness verification before a strong claim; world model predicted robustness or seed-variance risk; defer verifier sweep until several single-model baselines exist. World model predicted accuracy around 0.94-0.98, runtime under 25, recommendation=run, risks=label noise can make small hyperparameter differences non-robust, seed variance may exceed apparent gains.",
+    "selector_policy_signal_used": true,
+    "causal_signal_type": "mixed",
+    "observed_state_signal": "Top-model gap 0.0070 is within margin 0.0100; verify before claiming a winner.",
+    "world_model_signal": "prediction contained an action-specific research signal; world model predicted overfitting risk",
+    "selector_policy_signal": "new model family increases search coverage; strong linear baseline makes a different inductive bias useful",
+    "selected_score": 71.0,
+    "score_breakdown": {
+      "expected_gain": 0.0,
+      "uncertainty": 0.0,
+      "novelty": 53.0,
+      "verification_value": 0.0,
+      "qwen_signal": 30.0,
+      "redundancy_penalty": 0.0,
+      "compute_cost_penalty": -4.0,
+      "unsupported_claim_risk": -8.0
+    },
+    "qwen_suggested_action": "action_random_forest_n_estimators-100",
+    "catalog_validation": "accepted",
+    "causal_reason": "Selected random_forest because score=71.0; world model recommended run; new model family increases search coverage; strong linear baseline makes a different inductive bias useful; world model predicted overfitting risk; high best score increases claim risk for additional single-run score chasing. World model predicted accuracy around 0.90-0.98, runtime under 10, recommendation=run, risks=overfitting or split variance if depth is unconstrained. Causal signal type: mixed.",
     "rejected_candidates": [
       {
         "action": {
-          "action_id": "action_gradient_boosting",
-          "command": "python experiments/train_sklearn.py --dataset breast_cancer --model gradient_boosting --n-estimators 150 --learning-rate 0.05",
-          "model": "gradient_boosting",
+          "action_id": "action_random_forest_max_depth-4_n_estimators-100",
+          "command": "python experiments/train_sklearn.py --dataset breast_cancer --model random_forest --n-estimators 100 --max-depth 4",
+          "model": "random_forest",
           "params": {
-            "n_estimators": 150,
-            "learning_rate": 0.05
+            "dataset": "breast_cancer",
+            "n_estimators": 100,
+            "max_depth": 4
           }
         },
-        "reason": "score=31; world model recommended run; ensemble baseline is useful as a late comparison; world model predicted overfitting risk"
+        "reason": "score=71.0; world model recommended run; new model family increases search coverage; strong linear baseline makes a different inductive bias useful; world model predicted overfitting risk; high best score increases claim risk for additional single-run score chasing",
+        "score_breakdown": {
+          "expected_gain": 0.0,
+          "uncertainty": 0.0,
+          "novelty": 53.0,
+          "verification_value": 0.0,
+          "qwen_signal": 30.0,
+          "redundancy_penalty": 0.0,
+          "compute_cost_penalty": -4.0,
+          "unsupported_claim_risk": -8.0
+        }
       },
       {
         "action": {
-          "action_id": "action_svc_scaled",
-          "command": "python experiments/train_sklearn.py --dataset breast_cancer --model svc --scale --C 2.0",
+          "action_id": "action_random_forest_max_depth-8_n_estimators-100",
+          "command": "python experiments/train_sklearn.py --dataset breast_cancer --model random_forest --n-estimators 100 --max-depth 8",
+          "model": "random_forest",
+          "params": {
+            "dataset": "breast_cancer",
+            "n_estimators": 100,
+            "max_depth": 8
+          }
+        },
+        "reason": "score=71.0; world model recommended run; new model family increases search coverage; strong linear baseline makes a different inductive bias useful; world model predicted overfitting risk; high best score increases claim risk for additional single-run score chasing",
+        "score_breakdown": {
+          "expected_gain": 0.0,
+          "uncertainty": 0.0,
+          "novelty": 53.0,
+          "verification_value": 0.0,
+          "qwen_signal": 30.0,
+          "redundancy_penalty": 0.0,
+          "compute_cost_penalty": -4.0,
+          "unsupported_claim_risk": -8.0
+        }
+      },
+      {
+        "action": {
+          "action_id": "action_random_forest_n_estimators-300",
+          "command": "python experiments/train_sklearn.py --dataset breast_cancer --model random_forest --n-estimators 300",
+          "model": "random_forest",
+          "params": {
+            "dataset": "breast_cancer",
+            "n_estimators": 300,
+            "max_depth": null
+          }
+        },
+        "reason": "score=71.0; world model recommended run; new model family increases search coverage; strong linear baseline makes a different inductive bias useful; world model predicted overfitting risk; high best score increases claim risk for additional single-run score chasing",
+        "score_breakdown": {
+          "expected_gain": 0.0,
+          "uncertainty": 0.0,
+          "novelty": 53.0,
+          "verification_value": 0.0,
+          "qwen_signal": 30.0,
+          "redundancy_penalty": 0.0,
+          "compute_cost_penalty": -4.0,
+          "unsupported_claim_risk": -8.0
+        }
+      },
+      {
+        "action": {
+          "action_id": "action_random_forest_max_depth-4_n_estimators-300",
+          "command": "python experiments/train_sklearn.py --dataset breast_cancer --model random_forest --n-estimators 300 --max-depth 4",
+          "model": "random_forest",
+          "params": {
+            "dataset": "breast_cancer",
+            "n_estimators": 300,
+            "max_depth": 4
+          }
+        },
+        "reason": "score=71.0; world model recommended run; new model family increases search coverage; strong linear baseline makes a different inductive bias useful; world model predicted overfitting risk; high best score increases claim risk for additional single-run score chasing",
+        "score_breakdown": {
+          "expected_gain": 0.0,
+          "uncertainty": 0.0,
+          "novelty": 53.0,
+          "verification_value": 0.0,
+          "qwen_signal": 30.0,
+          "redundancy_penalty": 0.0,
+          "compute_cost_penalty": -4.0,
+          "unsupported_claim_risk": -8.0
+        }
+      },
+      {
+        "action": {
+          "action_id": "action_logistic_regression_C-10p0_scale-True",
+          "command": "python experiments/train_sklearn.py --dataset breast_cancer --model logistic_regression --scale --C 10.0",
+          "model": "logistic_regression",
+          "params": {
+            "dataset": "breast_cancer",
+            "scale": true,
+            "C": 10.0
+          }
+        },
+        "reason": "score=55.0; world model recommended run; candidate is a variant of an already tested family; after an unscaled logistic baseline, scaling is the direct world-model intervention to test; high best score increases claim risk for additional single-run score chasing",
+        "score_breakdown": {
+          "expected_gain": 45.0,
+          "uncertainty": 0.0,
+          "novelty": 0.0,
+          "verification_value": 0.0,
+          "qwen_signal": 30.0,
+          "redundancy_penalty": -12.0,
+          "compute_cost_penalty": 0.0,
+          "unsupported_claim_risk": -8.0
+        }
+      },
+      {
+        "action": {
+          "action_id": "action_svc_C-0p5_kernel-rbf_scale-True",
+          "command": "python experiments/train_sklearn.py --dataset breast_cancer --model svc --scale --C 0.5 --kernel rbf",
           "model": "svc",
           "params": {
+            "dataset": "breast_cancer",
+            "scale": true,
+            "C": 0.5,
+            "kernel": "rbf"
+          }
+        },
+        "reason": "score=40.0; world model recommended run; new model family increases search coverage; high best score increases claim risk for additional single-run score chasing",
+        "score_breakdown": {
+          "expected_gain": 0.0,
+          "uncertainty": 0.0,
+          "novelty": 18.0,
+          "verification_value": 0.0,
+          "qwen_signal": 30.0,
+          "redundancy_penalty": 0.0,
+          "compute_cost_penalty": 0.0,
+          "unsupported_claim_risk": -8.0
+        }
+      },
+      {
+        "action": {
+          "action_id": "action_svc_C-2p0_kernel-rbf_scale-True",
+          "command": "python experiments/train_sklearn.py --dataset breast_cancer --model svc --scale --C 2.0 --kernel rbf",
+          "model": "svc",
+          "params": {
+            "dataset": "breast_cancer",
             "scale": true,
             "C": 2.0,
             "kernel": "rbf"
           }
         },
-        "reason": "score=30; world model recommended run"
+        "reason": "score=40.0; world model recommended run; new model family increases search coverage; high best score increases claim risk for additional single-run score chasing",
+        "score_breakdown": {
+          "expected_gain": 0.0,
+          "uncertainty": 0.0,
+          "novelty": 18.0,
+          "verification_value": 0.0,
+          "qwen_signal": 30.0,
+          "redundancy_penalty": 0.0,
+          "compute_cost_penalty": 0.0,
+          "unsupported_claim_risk": -8.0
+        }
       },
       {
         "action": {
-          "action_id": "action_weak_effect",
-          "command": "python experiments/scenario_sklearn.py --scenario weak_effect",
-          "model": "weak_effect",
+          "action_id": "action_svc_C-5p0_kernel-rbf_scale-True",
+          "command": "python experiments/train_sklearn.py --dataset breast_cancer --model svc --scale --C 5.0 --kernel rbf",
+          "model": "svc",
           "params": {
-            "scenario": "weak_effect"
+            "dataset": "breast_cancer",
+            "scale": true,
+            "C": 5.0,
+            "kernel": "rbf"
           }
         },
-        "reason": "score=30; world model recommended run"
+        "reason": "score=40.0; world model recommended run; new model family increases search coverage; high best score increases claim risk for additional single-run score chasing",
+        "score_breakdown": {
+          "expected_gain": 0.0,
+          "uncertainty": 0.0,
+          "novelty": 18.0,
+          "verification_value": 0.0,
+          "qwen_signal": 30.0,
+          "redundancy_penalty": 0.0,
+          "compute_cost_penalty": 0.0,
+          "unsupported_claim_risk": -8.0
+        }
       },
       {
         "action": {
-          "action_id": "action_real_effect",
-          "command": "python experiments/scenario_sklearn.py --scenario real_effect",
-          "model": "real_effect",
+          "action_id": "action_logistic_regression_C-0p1_scale-False",
+          "command": "python experiments/train_sklearn.py --dataset breast_cancer --model logistic_regression --C 0.1",
+          "model": "logistic_regression",
           "params": {
-            "scenario": "real_effect"
+            "dataset": "breast_cancer",
+            "scale": false,
+            "C": 0.1
           }
         },
-        "reason": "score=30; world model recommended run"
+        "reason": "score=10.0; world model recommended run; candidate is a variant of an already tested family; high best score increases claim risk for additional single-run score chasing",
+        "score_breakdown": {
+          "expected_gain": 0.0,
+          "uncertainty": 0.0,
+          "novelty": 0.0,
+          "verification_value": 0.0,
+          "qwen_signal": 30.0,
+          "redundancy_penalty": -12.0,
+          "compute_cost_penalty": 0.0,
+          "unsupported_claim_risk": -8.0
+        }
       },
       {
         "action": {
-          "action_id": "action_leakage_trap",
-          "command": "python experiments/scenario_sklearn.py --scenario data_leakage_trap",
-          "model": "data_leakage_trap",
+          "action_id": "action_logistic_regression_C-1p0_scale-False",
+          "command": "python experiments/train_sklearn.py --dataset breast_cancer --model logistic_regression",
+          "model": "logistic_regression",
           "params": {
-            "scenario": "data_leakage_trap"
+            "dataset": "breast_cancer",
+            "scale": false,
+            "C": 1.0
           }
         },
-        "reason": "score=30; world model recommended run"
+        "reason": "score=10.0; world model recommended run; candidate is a variant of an already tested family; high best score increases claim risk for additional single-run score chasing",
+        "score_breakdown": {
+          "expected_gain": 0.0,
+          "uncertainty": 0.0,
+          "novelty": 0.0,
+          "verification_value": 0.0,
+          "qwen_signal": 30.0,
+          "redundancy_penalty": -12.0,
+          "compute_cost_penalty": 0.0,
+          "unsupported_claim_risk": -8.0
+        }
       },
       {
         "action": {
-          "action_id": "action_metric_misuse",
-          "command": "python experiments/scenario_sklearn.py --scenario metric_misuse",
-          "model": "metric_misuse",
+          "action_id": "action_logistic_regression_C-10p0_scale-False",
+          "command": "python experiments/train_sklearn.py --dataset breast_cancer --model logistic_regression --C 10.0",
+          "model": "logistic_regression",
           "params": {
-            "scenario": "metric_misuse"
+            "dataset": "breast_cancer",
+            "scale": false,
+            "C": 10.0
           }
         },
-        "reason": "score=30; world model recommended run"
+        "reason": "score=10.0; world model recommended run; candidate is a variant of an already tested family; high best score increases claim risk for additional single-run score chasing",
+        "score_breakdown": {
+          "expected_gain": 0.0,
+          "uncertainty": 0.0,
+          "novelty": 0.0,
+          "verification_value": 0.0,
+          "qwen_signal": 30.0,
+          "redundancy_penalty": -12.0,
+          "compute_cost_penalty": 0.0,
+          "unsupported_claim_risk": -8.0
+        }
       }
     ]
   },
-  "claim_ledger_updates": [
-    {
-      "claim_id": "run_004_claim_001",
-      "claim": "C=0.1 is robustly better than C=10.0.",
-      "status": "blocked",
-      "evidence_run_ids": [
-        "run_004"
-      ],
-      "blocked_reason": "Measured effect is not larger than inter-seed noise. The report must not oversell this as a robust discovery.",
-      "allowed_rewrite": "C=0.1 had the best mean accuracy, but the effect was smaller than seed noise.",
-      "metrics": {
-        "effect_size": 0.020979,
-        "seed_noise": 0.027972,
-        "effect_to_noise_ratio": 0.75,
-        "min_seed_count": 4,
-        "low_n_warning": false
-      }
-    }
-  ],
+  "claim_ledger_updates": [],
   "calibration_metrics": null,
+  "top_model_summary": {
+    "best_observed_model": "logistic_regression_scaled_C=1.0",
+    "best_observed_metric": 0.986013986013986,
+    "top_models": [
+      {
+        "run_id": "run_003",
+        "model": "logistic_regression",
+        "model_key": "logistic_regression_scaled_C=1.0",
+        "metric": 0.986013986013986,
+        "params": {
+          "dataset": "breast_cancer",
+          "scale": true,
+          "C": 1.0
+        }
+      },
+      {
+        "run_id": "run_002",
+        "model": "logistic_regression",
+        "model_key": "logistic_regression_scaled_C=0.1",
+        "metric": 0.9790209790209791,
+        "params": {
+          "dataset": "breast_cancer",
+          "scale": true,
+          "C": 0.1
+        }
+      },
+      {
+        "run_id": "run_001",
+        "model": "logistic_regression",
+        "model_key": "logistic_regression",
+        "metric": 0.951048951048951,
+        "params": {
+          "dataset": "breast_cancer",
+          "scale": false
+        }
+      }
+    ],
+    "top_gap": 0.006993,
+    "needs_robustness_verification": true,
+    "reason": "Top-model gap 0.0070 is within margin 0.0100; verify before claiming a winner.",
+    "verification_action_key": "logistic_regression:logistic_regression_scaled_C=0.1:logistic_regression_scaled_C=1.0"
+  },
   "artifacts": {
+    "task_id": "breast_cancer_accuracy",
     "trace_path": "runs/run_004.json",
     "report_path": "reports/final_report.md",
     "claim_ledger_path": "reports/claim_ledger.json"

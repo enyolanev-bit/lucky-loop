@@ -1,13 +1,13 @@
 {
   "run_id": "run_001",
-  "goal": "Maximize validation accuracy on sklearn breast_cancer under a small compute budget, while avoiding unsupported claims.",
+  "goal": "Maximize validation accuracy on sklearn wine under a small compute budget, while avoiding unsupported claims.",
   "hypothesis": "Establish a simple linear baseline before spending search budget.",
   "proposed_action": {
     "action_id": "action_001",
-    "command": "python experiments/train_sklearn.py --dataset breast_cancer --model logistic_regression",
+    "command": "python experiments/train_sklearn.py --dataset wine --model logistic_regression",
     "model": "logistic_regression",
     "params": {
-      "dataset": "breast_cancer",
+      "dataset": "wine",
       "scale": false
     }
   },
@@ -24,22 +24,22 @@
   },
   "actual_result": {
     "status": "success",
-    "accuracy": 0.951048951048951,
-    "f1": 0.9504987920829505,
-    "runtime_seconds": 0.5701,
-    "stdout_tail": "{\n  \"accuracy\": 0.951048951048951,\n  \"dataset\": \"breast_cancer\",\n  \"f1\": 0.9504987920829505,\n  \"model\": \"logistic_regression\",\n  \"n_label_noise_flips\": 0,\n  \"n_test\": 143,\n  \"n_train\": 426,\n  \"params\": {\n    \"C\": 1.0,\n    \"dataset\": \"breast_cancer\",\n    \"kernel\": \"rbf\",\n    \"label_noise\": 0.0,\n    \"learning_rate\": 0.1,\n    \"max_depth\": null,\n    \"max_iter\": 1000,\n    \"model\": \"logistic_regression\",\n    \"n_estimators\": 200,\n    \"scale\": false,\n    \"seed\": 42,\n    \"test_size\": 0.25\n  },\n  \"runtime_seconds\": 0.5701,\n  \"status\": \"success\"\n}\n",
+    "accuracy": 0.9777777777777777,
+    "f1": 0.9775949862906386,
+    "runtime_seconds": 0.4995,
+    "stdout_tail": "{\n  \"accuracy\": 0.9777777777777777,\n  \"dataset\": \"wine\",\n  \"f1\": 0.9775949862906386,\n  \"model\": \"logistic_regression\",\n  \"n_label_noise_flips\": 0,\n  \"n_test\": 45,\n  \"n_train\": 133,\n  \"params\": {\n    \"C\": 1.0,\n    \"dataset\": \"wine\",\n    \"kernel\": \"rbf\",\n    \"label_noise\": 0.0,\n    \"learning_rate\": 0.1,\n    \"max_depth\": null,\n    \"max_iter\": 1000,\n    \"model\": \"logistic_regression\",\n    \"n_estimators\": 200,\n    \"scale\": false,\n    \"seed\": 42,\n    \"test_size\": 0.25\n  },\n  \"runtime_seconds\": 0.4995,\n  \"status\": \"success\"\n}\n",
     "stderr_tail": "",
     "raw": {
-      "accuracy": 0.951048951048951,
-      "dataset": "breast_cancer",
-      "f1": 0.9504987920829505,
+      "accuracy": 0.9777777777777777,
+      "dataset": "wine",
+      "f1": 0.9775949862906386,
       "model": "logistic_regression",
       "n_label_noise_flips": 0,
-      "n_test": 143,
-      "n_train": 426,
+      "n_test": 45,
+      "n_train": 133,
       "params": {
         "C": 1.0,
-        "dataset": "breast_cancer",
+        "dataset": "wine",
         "kernel": "rbf",
         "label_noise": 0.0,
         "learning_rate": 0.1,
@@ -51,22 +51,24 @@
         "seed": 42,
         "test_size": 0.25
       },
-      "runtime_seconds": 0.5701,
+      "runtime_seconds": 0.4995,
       "status": "success"
     }
   },
   "comparison": {
-    "metric_match": true,
+    "metric_match": false,
     "runtime_match": true,
-    "unexpected_events": [],
-    "lesson": "Prediction was broadly consistent with the real run."
+    "unexpected_events": [
+      "accuracy 0.9778 outside predicted range 0.90-0.97"
+    ],
+    "lesson": "Run succeeded, but the prediction missed at least one quantitative detail."
   },
   "next_decision": "Continue: regenerate candidates from the updated state and ask the world model to predict each option.",
   "verification": null,
   "schema_version": "2.0",
   "state_before": {
     "state_id": "state_001",
-    "goal": "Maximize validation accuracy on sklearn breast_cancer under a small compute budget, while avoiding unsupported claims.",
+    "goal": "Maximize validation accuracy on sklearn wine under a small compute budget, while avoiding unsupported claims.",
     "known_results": [],
     "budget_remaining": 7,
     "open_questions": [
@@ -85,84 +87,84 @@
       "reason": "Need at least 3 single-run model results before top-model verification.",
       "verification_action_key": null
     },
-    "summary": "Task=breast_cancer_accuracy; dataset=breast_cancer; primary_metric=accuracy. Goal: Maximize validation accuracy on sklearn breast_cancer under a small compute budget, while avoiding unsupported claims.\nNo experiments have been run yet. Dataset: sklearn breast_cancer. Primary metric: accuracy; secondary metrics: f1."
+    "summary": "Task=wine_accuracy; dataset=wine; primary_metric=accuracy. Goal: Maximize validation accuracy on sklearn wine under a small compute budget, while avoiding unsupported claims.\nNo experiments have been run yet. Dataset: sklearn wine. Primary metric: accuracy; secondary metrics: f1."
   },
   "candidate_actions": [
     {
       "action_id": "action_001",
-      "command": "python experiments/train_sklearn.py --dataset breast_cancer --model logistic_regression",
+      "command": "python experiments/train_sklearn.py --dataset wine --model logistic_regression",
       "model": "logistic_regression",
       "params": {
-        "dataset": "breast_cancer",
+        "dataset": "wine",
         "scale": false
       }
     },
     {
       "action_id": "action_logistic_regression_C-0p1_scale-False",
-      "command": "python experiments/train_sklearn.py --dataset breast_cancer --model logistic_regression --C 0.1",
+      "command": "python experiments/train_sklearn.py --dataset wine --model logistic_regression --C 0.1",
       "model": "logistic_regression",
       "params": {
-        "dataset": "breast_cancer",
+        "dataset": "wine",
         "scale": false,
         "C": 0.1
       }
     },
     {
       "action_id": "action_logistic_regression_C-1p0_scale-False",
-      "command": "python experiments/train_sklearn.py --dataset breast_cancer --model logistic_regression",
+      "command": "python experiments/train_sklearn.py --dataset wine --model logistic_regression",
       "model": "logistic_regression",
       "params": {
-        "dataset": "breast_cancer",
+        "dataset": "wine",
         "scale": false,
         "C": 1.0
       }
     },
     {
       "action_id": "action_logistic_regression_C-10p0_scale-False",
-      "command": "python experiments/train_sklearn.py --dataset breast_cancer --model logistic_regression --C 10.0",
+      "command": "python experiments/train_sklearn.py --dataset wine --model logistic_regression --C 10.0",
       "model": "logistic_regression",
       "params": {
-        "dataset": "breast_cancer",
+        "dataset": "wine",
         "scale": false,
         "C": 10.0
       }
     },
     {
       "action_id": "action_logistic_regression_C-0p1_scale-True",
-      "command": "python experiments/train_sklearn.py --dataset breast_cancer --model logistic_regression --scale --C 0.1",
+      "command": "python experiments/train_sklearn.py --dataset wine --model logistic_regression --scale --C 0.1",
       "model": "logistic_regression",
       "params": {
-        "dataset": "breast_cancer",
+        "dataset": "wine",
         "scale": true,
         "C": 0.1
       }
     },
     {
       "action_id": "action_logistic_regression_C-1p0_scale-True",
-      "command": "python experiments/train_sklearn.py --dataset breast_cancer --model logistic_regression --scale",
+      "command": "python experiments/train_sklearn.py --dataset wine --model logistic_regression --scale",
       "model": "logistic_regression",
       "params": {
-        "dataset": "breast_cancer",
+        "dataset": "wine",
         "scale": true,
         "C": 1.0
       }
     },
     {
       "action_id": "action_logistic_regression_C-10p0_scale-True",
-      "command": "python experiments/train_sklearn.py --dataset breast_cancer --model logistic_regression --scale --C 10.0",
+      "command": "python experiments/train_sklearn.py --dataset wine --model logistic_regression --scale --C 10.0",
       "model": "logistic_regression",
       "params": {
-        "dataset": "breast_cancer",
+        "dataset": "wine",
         "scale": true,
         "C": 10.0
       }
     },
     {
       "action_id": "action_svc_C-0p5_kernel-rbf_scale-True",
-      "command": "python experiments/train_sklearn.py --dataset breast_cancer --model svc --scale --C 0.5 --kernel rbf",
+      "command": "python experiments/train_sklearn.py --dataset wine --model svc --scale --C 0.5 --kernel rbf",
       "model": "svc",
       "params": {
-        "dataset": "breast_cancer",
+        "dataset": "wine",
         "scale": true,
         "C": 0.5,
         "kernel": "rbf"
@@ -170,10 +172,10 @@
     },
     {
       "action_id": "action_svc_C-2p0_kernel-rbf_scale-True",
-      "command": "python experiments/train_sklearn.py --dataset breast_cancer --model svc --scale --C 2.0 --kernel rbf",
+      "command": "python experiments/train_sklearn.py --dataset wine --model svc --scale --C 2.0 --kernel rbf",
       "model": "svc",
       "params": {
-        "dataset": "breast_cancer",
+        "dataset": "wine",
         "scale": true,
         "C": 2.0,
         "kernel": "rbf"
@@ -181,10 +183,10 @@
     },
     {
       "action_id": "action_svc_C-5p0_kernel-rbf_scale-True",
-      "command": "python experiments/train_sklearn.py --dataset breast_cancer --model svc --scale --C 5.0 --kernel rbf",
+      "command": "python experiments/train_sklearn.py --dataset wine --model svc --scale --C 5.0 --kernel rbf",
       "model": "svc",
       "params": {
-        "dataset": "breast_cancer",
+        "dataset": "wine",
         "scale": true,
         "C": 5.0,
         "kernel": "rbf"
@@ -192,20 +194,20 @@
     },
     {
       "action_id": "action_random_forest_n_estimators-100",
-      "command": "python experiments/train_sklearn.py --dataset breast_cancer --model random_forest --n-estimators 100",
+      "command": "python experiments/train_sklearn.py --dataset wine --model random_forest --n-estimators 100",
       "model": "random_forest",
       "params": {
-        "dataset": "breast_cancer",
+        "dataset": "wine",
         "n_estimators": 100,
         "max_depth": null
       }
     },
     {
       "action_id": "action_random_forest_max_depth-4_n_estimators-100",
-      "command": "python experiments/train_sklearn.py --dataset breast_cancer --model random_forest --n-estimators 100 --max-depth 4",
+      "command": "python experiments/train_sklearn.py --dataset wine --model random_forest --n-estimators 100 --max-depth 4",
       "model": "random_forest",
       "params": {
-        "dataset": "breast_cancer",
+        "dataset": "wine",
         "n_estimators": 100,
         "max_depth": 4
       }
@@ -215,10 +217,10 @@
     {
       "action": {
         "action_id": "action_001",
-        "command": "python experiments/train_sklearn.py --dataset breast_cancer --model logistic_regression",
+        "command": "python experiments/train_sklearn.py --dataset wine --model logistic_regression",
         "model": "logistic_regression",
         "params": {
-          "dataset": "breast_cancer",
+          "dataset": "wine",
           "scale": false
         }
       },
@@ -238,10 +240,10 @@
     {
       "action": {
         "action_id": "action_logistic_regression_C-0p1_scale-False",
-        "command": "python experiments/train_sklearn.py --dataset breast_cancer --model logistic_regression --C 0.1",
+        "command": "python experiments/train_sklearn.py --dataset wine --model logistic_regression --C 0.1",
         "model": "logistic_regression",
         "params": {
-          "dataset": "breast_cancer",
+          "dataset": "wine",
           "scale": false,
           "C": 0.1
         }
@@ -262,10 +264,10 @@
     {
       "action": {
         "action_id": "action_logistic_regression_C-1p0_scale-False",
-        "command": "python experiments/train_sklearn.py --dataset breast_cancer --model logistic_regression",
+        "command": "python experiments/train_sklearn.py --dataset wine --model logistic_regression",
         "model": "logistic_regression",
         "params": {
-          "dataset": "breast_cancer",
+          "dataset": "wine",
           "scale": false,
           "C": 1.0
         }
@@ -286,10 +288,10 @@
     {
       "action": {
         "action_id": "action_logistic_regression_C-10p0_scale-False",
-        "command": "python experiments/train_sklearn.py --dataset breast_cancer --model logistic_regression --C 10.0",
+        "command": "python experiments/train_sklearn.py --dataset wine --model logistic_regression --C 10.0",
         "model": "logistic_regression",
         "params": {
-          "dataset": "breast_cancer",
+          "dataset": "wine",
           "scale": false,
           "C": 10.0
         }
@@ -310,10 +312,10 @@
     {
       "action": {
         "action_id": "action_logistic_regression_C-0p1_scale-True",
-        "command": "python experiments/train_sklearn.py --dataset breast_cancer --model logistic_regression --scale --C 0.1",
+        "command": "python experiments/train_sklearn.py --dataset wine --model logistic_regression --scale --C 0.1",
         "model": "logistic_regression",
         "params": {
-          "dataset": "breast_cancer",
+          "dataset": "wine",
           "scale": true,
           "C": 0.1
         }
@@ -334,10 +336,10 @@
     {
       "action": {
         "action_id": "action_logistic_regression_C-1p0_scale-True",
-        "command": "python experiments/train_sklearn.py --dataset breast_cancer --model logistic_regression --scale",
+        "command": "python experiments/train_sklearn.py --dataset wine --model logistic_regression --scale",
         "model": "logistic_regression",
         "params": {
-          "dataset": "breast_cancer",
+          "dataset": "wine",
           "scale": true,
           "C": 1.0
         }
@@ -358,10 +360,10 @@
     {
       "action": {
         "action_id": "action_logistic_regression_C-10p0_scale-True",
-        "command": "python experiments/train_sklearn.py --dataset breast_cancer --model logistic_regression --scale --C 10.0",
+        "command": "python experiments/train_sklearn.py --dataset wine --model logistic_regression --scale --C 10.0",
         "model": "logistic_regression",
         "params": {
-          "dataset": "breast_cancer",
+          "dataset": "wine",
           "scale": true,
           "C": 10.0
         }
@@ -382,10 +384,10 @@
     {
       "action": {
         "action_id": "action_svc_C-0p5_kernel-rbf_scale-True",
-        "command": "python experiments/train_sklearn.py --dataset breast_cancer --model svc --scale --C 0.5 --kernel rbf",
+        "command": "python experiments/train_sklearn.py --dataset wine --model svc --scale --C 0.5 --kernel rbf",
         "model": "svc",
         "params": {
-          "dataset": "breast_cancer",
+          "dataset": "wine",
           "scale": true,
           "C": 0.5,
           "kernel": "rbf"
@@ -407,10 +409,10 @@
     {
       "action": {
         "action_id": "action_svc_C-2p0_kernel-rbf_scale-True",
-        "command": "python experiments/train_sklearn.py --dataset breast_cancer --model svc --scale --C 2.0 --kernel rbf",
+        "command": "python experiments/train_sklearn.py --dataset wine --model svc --scale --C 2.0 --kernel rbf",
         "model": "svc",
         "params": {
-          "dataset": "breast_cancer",
+          "dataset": "wine",
           "scale": true,
           "C": 2.0,
           "kernel": "rbf"
@@ -432,10 +434,10 @@
     {
       "action": {
         "action_id": "action_svc_C-5p0_kernel-rbf_scale-True",
-        "command": "python experiments/train_sklearn.py --dataset breast_cancer --model svc --scale --C 5.0 --kernel rbf",
+        "command": "python experiments/train_sklearn.py --dataset wine --model svc --scale --C 5.0 --kernel rbf",
         "model": "svc",
         "params": {
-          "dataset": "breast_cancer",
+          "dataset": "wine",
           "scale": true,
           "C": 5.0,
           "kernel": "rbf"
@@ -457,10 +459,10 @@
     {
       "action": {
         "action_id": "action_random_forest_n_estimators-100",
-        "command": "python experiments/train_sklearn.py --dataset breast_cancer --model random_forest --n-estimators 100",
+        "command": "python experiments/train_sklearn.py --dataset wine --model random_forest --n-estimators 100",
         "model": "random_forest",
         "params": {
-          "dataset": "breast_cancer",
+          "dataset": "wine",
           "n_estimators": 100,
           "max_depth": null
         }
@@ -481,10 +483,10 @@
     {
       "action": {
         "action_id": "action_random_forest_max_depth-4_n_estimators-100",
-        "command": "python experiments/train_sklearn.py --dataset breast_cancer --model random_forest --n-estimators 100 --max-depth 4",
+        "command": "python experiments/train_sklearn.py --dataset wine --model random_forest --n-estimators 100 --max-depth 4",
         "model": "random_forest",
         "params": {
-          "dataset": "breast_cancer",
+          "dataset": "wine",
           "n_estimators": 100,
           "max_depth": 4
         }
@@ -505,20 +507,20 @@
   ],
   "selected_action": {
     "action_id": "action_001",
-    "command": "python experiments/train_sklearn.py --dataset breast_cancer --model logistic_regression",
+    "command": "python experiments/train_sklearn.py --dataset wine --model logistic_regression",
     "model": "logistic_regression",
     "params": {
-      "dataset": "breast_cancer",
+      "dataset": "wine",
       "scale": false
     }
   },
   "decision_trace": {
     "selected_action": {
       "action_id": "action_001",
-      "command": "python experiments/train_sklearn.py --dataset breast_cancer --model logistic_regression",
+      "command": "python experiments/train_sklearn.py --dataset wine --model logistic_regression",
       "model": "logistic_regression",
       "params": {
-        "dataset": "breast_cancer",
+        "dataset": "wine",
         "scale": false
       }
     },
@@ -546,10 +548,10 @@
       {
         "action": {
           "action_id": "action_logistic_regression_C-0p1_scale-False",
-          "command": "python experiments/train_sklearn.py --dataset breast_cancer --model logistic_regression --C 0.1",
+          "command": "python experiments/train_sklearn.py --dataset wine --model logistic_regression --C 0.1",
           "model": "logistic_regression",
           "params": {
-            "dataset": "breast_cancer",
+            "dataset": "wine",
             "scale": false,
             "C": 0.1
           }
@@ -569,10 +571,10 @@
       {
         "action": {
           "action_id": "action_logistic_regression_C-1p0_scale-False",
-          "command": "python experiments/train_sklearn.py --dataset breast_cancer --model logistic_regression",
+          "command": "python experiments/train_sklearn.py --dataset wine --model logistic_regression",
           "model": "logistic_regression",
           "params": {
-            "dataset": "breast_cancer",
+            "dataset": "wine",
             "scale": false,
             "C": 1.0
           }
@@ -592,10 +594,10 @@
       {
         "action": {
           "action_id": "action_logistic_regression_C-10p0_scale-False",
-          "command": "python experiments/train_sklearn.py --dataset breast_cancer --model logistic_regression --C 10.0",
+          "command": "python experiments/train_sklearn.py --dataset wine --model logistic_regression --C 10.0",
           "model": "logistic_regression",
           "params": {
-            "dataset": "breast_cancer",
+            "dataset": "wine",
             "scale": false,
             "C": 10.0
           }
@@ -615,10 +617,10 @@
       {
         "action": {
           "action_id": "action_svc_C-0p5_kernel-rbf_scale-True",
-          "command": "python experiments/train_sklearn.py --dataset breast_cancer --model svc --scale --C 0.5 --kernel rbf",
+          "command": "python experiments/train_sklearn.py --dataset wine --model svc --scale --C 0.5 --kernel rbf",
           "model": "svc",
           "params": {
-            "dataset": "breast_cancer",
+            "dataset": "wine",
             "scale": true,
             "C": 0.5,
             "kernel": "rbf"
@@ -639,10 +641,10 @@
       {
         "action": {
           "action_id": "action_svc_C-2p0_kernel-rbf_scale-True",
-          "command": "python experiments/train_sklearn.py --dataset breast_cancer --model svc --scale --C 2.0 --kernel rbf",
+          "command": "python experiments/train_sklearn.py --dataset wine --model svc --scale --C 2.0 --kernel rbf",
           "model": "svc",
           "params": {
-            "dataset": "breast_cancer",
+            "dataset": "wine",
             "scale": true,
             "C": 2.0,
             "kernel": "rbf"
@@ -663,10 +665,10 @@
       {
         "action": {
           "action_id": "action_svc_C-5p0_kernel-rbf_scale-True",
-          "command": "python experiments/train_sklearn.py --dataset breast_cancer --model svc --scale --C 5.0 --kernel rbf",
+          "command": "python experiments/train_sklearn.py --dataset wine --model svc --scale --C 5.0 --kernel rbf",
           "model": "svc",
           "params": {
-            "dataset": "breast_cancer",
+            "dataset": "wine",
             "scale": true,
             "C": 5.0,
             "kernel": "rbf"
@@ -687,10 +689,10 @@
       {
         "action": {
           "action_id": "action_random_forest_n_estimators-100",
-          "command": "python experiments/train_sklearn.py --dataset breast_cancer --model random_forest --n-estimators 100",
+          "command": "python experiments/train_sklearn.py --dataset wine --model random_forest --n-estimators 100",
           "model": "random_forest",
           "params": {
-            "dataset": "breast_cancer",
+            "dataset": "wine",
             "n_estimators": 100,
             "max_depth": null
           }
@@ -710,10 +712,10 @@
       {
         "action": {
           "action_id": "action_random_forest_max_depth-4_n_estimators-100",
-          "command": "python experiments/train_sklearn.py --dataset breast_cancer --model random_forest --n-estimators 100 --max-depth 4",
+          "command": "python experiments/train_sklearn.py --dataset wine --model random_forest --n-estimators 100 --max-depth 4",
           "model": "random_forest",
           "params": {
-            "dataset": "breast_cancer",
+            "dataset": "wine",
             "n_estimators": 100,
             "max_depth": 4
           }
@@ -733,10 +735,10 @@
       {
         "action": {
           "action_id": "action_logistic_regression_C-0p1_scale-True",
-          "command": "python experiments/train_sklearn.py --dataset breast_cancer --model logistic_regression --scale --C 0.1",
+          "command": "python experiments/train_sklearn.py --dataset wine --model logistic_regression --scale --C 0.1",
           "model": "logistic_regression",
           "params": {
-            "dataset": "breast_cancer",
+            "dataset": "wine",
             "scale": true,
             "C": 0.1
           }
@@ -756,10 +758,10 @@
       {
         "action": {
           "action_id": "action_logistic_regression_C-1p0_scale-True",
-          "command": "python experiments/train_sklearn.py --dataset breast_cancer --model logistic_regression --scale",
+          "command": "python experiments/train_sklearn.py --dataset wine --model logistic_regression --scale",
           "model": "logistic_regression",
           "params": {
-            "dataset": "breast_cancer",
+            "dataset": "wine",
             "scale": true,
             "C": 1.0
           }
@@ -779,10 +781,10 @@
       {
         "action": {
           "action_id": "action_logistic_regression_C-10p0_scale-True",
-          "command": "python experiments/train_sklearn.py --dataset breast_cancer --model logistic_regression --scale --C 10.0",
+          "command": "python experiments/train_sklearn.py --dataset wine --model logistic_regression --scale --C 10.0",
           "model": "logistic_regression",
           "params": {
-            "dataset": "breast_cancer",
+            "dataset": "wine",
             "scale": true,
             "C": 10.0
           }
@@ -813,9 +815,9 @@
     "verification_action_key": null
   },
   "artifacts": {
-    "task_id": "breast_cancer_accuracy",
-    "trace_path": "runs/run_001.json",
-    "report_path": "reports/final_report.md",
-    "claim_ledger_path": "reports/claim_ledger.json"
+    "task_id": "wine_accuracy",
+    "trace_path": "runs/wine_accuracy/run_001.json",
+    "report_path": "reports/wine_accuracy/final_report.md",
+    "claim_ledger_path": "reports/wine_accuracy/claim_ledger.json"
   }
 }

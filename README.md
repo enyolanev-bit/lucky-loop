@@ -51,34 +51,22 @@ Qwen-AgentWorld is never treated as the research agent or verifier. It is the wo
 
 - Qwen-AgentWorld-35B-A3B is served through vLLM on Team Pegasus MI300X.
 - OpenAI-compatible endpoint: `http://134.199.205.222:8000/v1`.
-- `src/luckyloop/` contains the runnable research loop:
+- `src/luckyloop/` contains the runnable task-agnostic ML research loop:
+  - task specs for sklearn benchmarks
+  - adaptive candidate generation from dataset/model/search-space config
   - world-model prediction
   - real experiment execution
   - prediction-vs-actual comparison
+  - automatic top-model detection
+  - matched multi-seed top-model verification
+  - policy ablation against fixed-order and score-chaser baselines
   - JSON evidence traces
   - Markdown report
-- Ten real runs exist under `runs/`.
-- The current verifier blocks overclaims and records them in `reports/claim_ledger.json`:
-  - `effect_size = 0.020979`
-  - `seed_noise = 0.027972`
-  - verdict: `inconclusive`
-- An additive IC95 cross-check exists at `experiments/verifier_crosscheck.py` and writes `reports/verifier_crosscheck.md` without replacing the trust-ladder verifier.
-- The post-training feedback is answered with an additive LoRA probe at `experiments/post_training_lora_probe.py`, targeting `Qwen/Qwen3-0.6B` on `SetFit/sst2` with explicit train/test splits.
-
-## Judge Evidence
-
-| Artifact | Current result |
-|---|---:|
-| Real experiment traces | 10 runs |
-| Metric interval coverage | 80% |
-| Runtime interval coverage | 90% |
-| Useful world-model decisions | 10/10 |
-| Claim ledger entries | 5 |
-| Strongly supported claims | 1 |
-| Blocked overclaims | 4 |
-| IC95 cross-check agreement | 2/5 |
-
-The key point is not that Qwen-AgentWorld is always right. The key point is that Lucky Loop measures its predictions, keeps misses visible, and prevents fragile or protocol-invalid findings from becoming final claims.
+- Benchmark tasks exist for real sklearn datasets:
+  - `breast_cancer_accuracy`
+  - `wine_accuracy`
+  - `digits_accuracy`
+- Each benchmark uses real sklearn training commands, detects the top observed models, asks the world model whether a best-model claim needs verification, and runs matched multi-seed top-model checks before claims are allowed. The legacy controlled probes are not the primary demo path.
 
 ## Demo Message
 
@@ -101,30 +89,28 @@ export LUCKYWORLD_SIMULATOR_BASE_URL=http://134.199.205.222:8000/v1
 export LUCKYWORLD_SIMULATOR_MODEL=Qwen/Qwen-AgentWorld-35B-A3B
 export LUCKYWORLD_SIMULATOR_API_KEY=dummy
 
-python3 -m luckyloop.loop --max-experiments 6
+python3 -m luckyloop.loop --task configs/tasks/breast_cancer_accuracy.json
 ```
 
 If the simulator endpoint is unavailable, Lucky Loop keeps a deterministic heuristic fallback for local smoke tests. The live presentation path uses Qwen-AgentWorld.
 
+Run all real benchmark tasks:
+
+```bash
+PYTHONPATH=src python3 scripts/run_benchmark_suite.py
+```
+
 ## Artifacts
 
 ```text
-runs/run_001.json ... run_010.json
-reports/final_report.md
-reports/world_model_calibration.md
-reports/claim_ledger.json
-reports/verifier_crosscheck.md
-reports/post_training_feedback_response.md
-reports/selection_brief.md
-experiments/post_training_lora_probe.py
+runs/<task_id>/run_001.json ...
+reports/<task_id>/final_report.md
+reports/<task_id>/demo_summary.md
+reports/<task_id>/world_model_calibration.md
+reports/<task_id>/claim_ledger.json
+reports/benchmark_summary.md
+reports/policy_ablation.md
 app/streamlit_app.py
 ```
 
-Next build targets:
-
-- trace schema v2 with explicit state, candidates, predictions, decision trace, and claim ledger updates
-- multi-candidate world-model prediction before selection
-- world-model calibration report
-- trust ladder verifier
-- claim ledger
-- judge-ready Streamlit timeline
+The root `runs/` and `reports/` directories may also contain the latest single-task local run.

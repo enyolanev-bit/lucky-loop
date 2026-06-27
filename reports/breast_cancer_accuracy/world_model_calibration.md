@@ -16,13 +16,13 @@ Lucky Loop records whether Qwen-AgentWorld predictions matched real experiment o
 
 | Run | Model | Predicted metric | Actual metric | Metric hit | Predicted runtime | Actual runtime | Runtime hit | Observed miss |
 |---|---|---|---:|---|---|---:|---|---|
-| run_001 | logistic_regression | accuracy around 0.90-0.97 | 0.9510 | yes | under 5 | 0.57s | yes |  |
-| run_002 | logistic_regression | accuracy around 0.95-0.98 | 0.9790 | yes | under 5 | 0.02s | yes |  |
-| run_003 | logistic_regression | accuracy around 0.95-0.98 | 0.9860 | no | under 5 | 0.03s | yes | accuracy 0.9860 outside predicted range 0.95-0.98 |
-| run_004 | random_forest | accuracy around 0.90-0.98 | 0.9580 | yes | under 10 | 0.32s | yes |  |
-| run_005 | top_model_verification | accuracy around 0.90-0.99 | 0.9706 | yes | under 45 | 40.45s | yes |  |
-| run_006 | verification_sweep | accuracy around 0.85-0.98 | 0.9615 | yes | under 35 | 31.22s | yes |  |
-| run_007 | logistic_regression | accuracy around 0.95-0.98 | 0.9720 | yes | under 5 | 0.04s | yes |  |
+| run_001 | logistic_regression | accuracy around 0.90-0.97 | 0.9510 | yes | under 5 | 0.48s | yes |  |
+| run_002 | logistic_regression | accuracy around 0.95-0.98 | 0.9790 | yes | under 5 | 0.07s | yes |  |
+| run_003 | logistic_regression | accuracy around 0.95-0.98 | 0.9860 | no | under 5 | 0.02s | yes | accuracy 0.9860 outside predicted range 0.95-0.98 |
+| run_004 | random_forest | accuracy around 0.90-0.98 | 0.9580 | yes | under 10 | 0.36s | yes |  |
+| run_005 | top_model_verification | accuracy around 0.90-0.99 | 0.9706 | yes | under 45 | 39.95s | yes |  |
+| run_006 | verification_sweep | accuracy around 0.85-0.98 | 0.9615 | yes | under 35 | 31.36s | yes |  |
+| run_007 | logistic_regression | accuracy around 0.95-0.98 | 0.9720 | yes | under 5 | 0.03s | yes |  |
 
 ## Risk Signals
 

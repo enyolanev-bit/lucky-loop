@@ -1,9 +1,11 @@
 from __future__ import annotations
 
 import json
+from itertools import product
 
-from .schemas import CandidatePrediction, DecisionTrace, ExperimentTrace, ProposedAction, RejectedCandidate, ResearchState
+from .schemas import CandidatePrediction, DecisionTrace, ExperimentTrace, ProposedAction, RejectedCandidate, ResearchState, TaskSpec
 from .simulator import predict
+from .top_models import build_top_model_verification_action
 
 
 def action_key(action: ProposedAction) -> str:
@@ -14,12 +16,12 @@ def with_action_id(action: ProposedAction, action_id: str) -> ProposedAction:
     return ProposedAction(action_id=action_id, command=action.command, model=action.model, params=action.params)
 
 
-def initial_action() -> ProposedAction:
+def initial_action(task: TaskSpec) -> ProposedAction:
     return ProposedAction(
         action_id="action_001",
-        command="python experiments/train_sklearn.py --dataset breast_cancer --model logistic_regression",
+        command=f"python experiments/train_sklearn.py --dataset {task.dataset} --model logistic_regression",
         model="logistic_regression",
-        params={"scale": False},
+        params={"dataset": task.dataset, "scale": False},
     )
 
 
@@ -31,76 +33,150 @@ def _candidate(action_id: str, command: str, model: str, params: dict) -> Propos
     return ProposedAction(action_id=action_id, command=command, model=model, params=params)
 
 
-def generate_candidates(state: ResearchState, traces: list[ExperimentTrace], seen: set[str]) -> list[ProposedAction]:
-    candidates = [
-        _candidate(
-            "action_scaled_logreg",
-            "python experiments/train_sklearn.py --dataset breast_cancer --model logistic_regression --scale",
-            "logistic_regression",
-            {"scale": True},
-        ),
-        _candidate(
-            "action_random_forest",
-            "python experiments/train_sklearn.py --dataset breast_cancer --model random_forest --n-estimators 300",
-            "random_forest",
-            {"n_estimators": 300},
-        ),
-        _candidate(
-            "action_svc_scaled",
-            "python experiments/train_sklearn.py --dataset breast_cancer --model svc --scale --C 2.0",
-            "svc",
-            {"scale": True, "C": 2.0, "kernel": "rbf"},
-        ),
-        _candidate(
-            "action_noisy_sweep",
-            "python experiments/sweep_sklearn.py --dataset breast_cancer --model logistic_regression --scale --sweep-param C --values 0.1 1.0 10.0 --seeds 0 1 2 3 --label-noise 0.08",
-            "verification_sweep",
-            {
-                "base_model": "logistic_regression",
-                "scale": True,
-                "sweep_param": "C",
-                "values": [0.1, 1.0, 10.0],
-                "seeds": [0, 1, 2, 3],
-                "label_noise": 0.08,
-            },
-        ),
-        _candidate(
-            "action_gradient_boosting",
-            "python experiments/train_sklearn.py --dataset breast_cancer --model gradient_boosting --n-estimators 150 --learning-rate 0.05",
-            "gradient_boosting",
-            {"n_estimators": 150, "learning_rate": 0.05},
-        ),
-        _candidate(
-            "action_weak_effect",
-            "python experiments/scenario_sklearn.py --scenario weak_effect",
-            "weak_effect",
-            {"scenario": "weak_effect"},
-        ),
-        _candidate(
-            "action_real_effect",
-            "python experiments/scenario_sklearn.py --scenario real_effect",
-            "real_effect",
-            {"scenario": "real_effect"},
-        ),
-        _candidate(
-            "action_leakage_trap",
-            "python experiments/scenario_sklearn.py --scenario data_leakage_trap",
-            "data_leakage_trap",
-            {"scenario": "data_leakage_trap"},
-        ),
-        _candidate(
-            "action_metric_misuse",
-            "python experiments/scenario_sklearn.py --scenario metric_misuse",
-            "metric_misuse",
-            {"scenario": "metric_misuse"},
-        ),
-    ]
+def _model_command(task: TaskSpec, model: str, overrides: dict | None = None) -> tuple[str, dict]:
+    params = {"dataset": task.dataset}
+    overrides = overrides or {}
+    cmd = f"python experiments/train_sklearn.py --dataset {task.dataset} --model {model}"
+    if model == "logistic_regression":
+        params.update({"scale": bool(overrides.get("scale", True)), "C": overrides.get("C", 1.0)})
+        if params["scale"]:
+            cmd += " --scale"
+        if params["C"] != 1.0:
+            cmd += f" --C {params['C']}"
+    elif model == "svc":
+        params.update({"scale": bool(overrides.get("scale", True)), "C": overrides.get("C", 2.0), "kernel": overrides.get("kernel", "rbf")})
+        if params["scale"]:
+            cmd += " --scale"
+        cmd += f" --C {params['C']} --kernel {params['kernel']}"
+    elif model == "random_forest":
+        params.update({"n_estimators": overrides.get("n_estimators", 300), "max_depth": overrides.get("max_depth")})
+        cmd += f" --n-estimators {params['n_estimators']}"
+        if params["max_depth"] is not None:
+            cmd += f" --max-depth {params['max_depth']}"
+    elif model == "gradient_boosting":
+        params.update({"n_estimators": overrides.get("n_estimators", 150), "learning_rate": overrides.get("learning_rate", 0.05), "max_depth": overrides.get("max_depth")})
+        cmd += f" --n-estimators {params['n_estimators']} --learning-rate {params['learning_rate']}"
+        if params["max_depth"] is not None:
+            cmd += f" --max-depth {params['max_depth']}"
+    elif model == "hist_gradient_boosting":
+        params.update({"n_estimators": overrides.get("n_estimators", 150), "learning_rate": overrides.get("learning_rate", 0.08), "max_depth": overrides.get("max_depth")})
+        cmd += f" --n-estimators {params['n_estimators']} --learning-rate {params['learning_rate']}"
+        if params["max_depth"] is not None:
+            cmd += f" --max-depth {params['max_depth']}"
+    return cmd, params
+
+
+def _catalog_candidates(task: TaskSpec) -> list[ProposedAction]:
+    if not task.candidate_space:
+        candidates = []
+        for model in task.models:
+            cmd, params = _model_command(task, model)
+            candidates.append(_candidate(f"action_{model}", cmd, model, params))
+        return candidates
+
+    candidates: list[ProposedAction] = []
+    for model, grid in task.candidate_space.items():
+        keys = list(grid)
+        values = [grid[key] for key in keys]
+        for combo in product(*values):
+            overrides = dict(zip(keys, combo))
+            cmd, params = _model_command(task, model, overrides)
+            suffix = "_".join(f"{k}={v}" for k, v in sorted(overrides.items()) if v is not None)
+            action_id = f"action_{model}_{suffix}".replace(".", "p").replace("=", "-")
+            candidates.append(_candidate(action_id, cmd, model, params))
+    return candidates
+
+
+def _sweep_candidate(task: TaskSpec, index: int) -> ProposedAction:
+    sweep = task.sweeps[index]
+    values = " ".join(str(v) for v in sweep.values)
+    seeds = " ".join(str(s) for s in sweep.seeds)
+    cmd = (
+        f"python experiments/sweep_sklearn.py --dataset {task.dataset} --model {sweep.model} "
+        f"--sweep-param {sweep.param} --values {values} --seeds {seeds}"
+    )
+    if sweep.scale:
+        cmd += " --scale"
+    if sweep.label_noise:
+        cmd += f" --label-noise {sweep.label_noise}"
+    return _candidate(
+        f"action_sweep_{index + 1}_{sweep.model}_{sweep.param}",
+        cmd,
+        "verification_sweep",
+        {
+            "dataset": task.dataset,
+            "base_model": sweep.model,
+            "scale": sweep.scale,
+            "sweep_param": sweep.param,
+            "values": sweep.values,
+            "seeds": sweep.seeds,
+            "label_noise": sweep.label_noise,
+        },
+    )
+
+
+def _single_model_search_complete(task: TaskSpec, seen: set[str]) -> bool:
+    for model in task.models:
+        if not any(key.startswith(f"{model}:") for key in seen):
+            return False
+    return True
+
+
+def generate_candidates(task: TaskSpec, state: ResearchState, traces: list[ExperimentTrace], seen: set[str]) -> list[ProposedAction]:
+    catalog = _catalog_candidates(task)
+    candidates = []
+    tested_models = {trace.proposed_action.model for trace in traces if trace.actual_result.accuracy is not None}
+
+    best_model = None
+    successful = [trace for trace in traces if trace.actual_result.accuracy is not None]
+    if successful:
+        best_model = max(successful, key=lambda t: t.actual_result.accuracy or -1).proposed_action.model
+    if traces and traces[0].proposed_action.model == "logistic_regression" and not traces[0].proposed_action.params.get("scale"):
+        candidates.extend(
+            [
+                candidate
+                for candidate in catalog
+                if candidate.model == "logistic_regression" and candidate.params.get("scale")
+            ]
+        )
+    if best_model:
+        candidates.extend([candidate for candidate in catalog if candidate.model == best_model])
+
+    for candidate in catalog:
+        if candidate.model not in tested_models:
+            candidates.append(candidate)
+
+    if any(trace.comparison.unexpected_events for trace in traces):
+        candidates.extend(
+            [
+                candidate
+                for candidate in catalog
+                if candidate.model == "svc" or "boost" in candidate.model
+            ]
+        )
+
+    model_search_complete = _single_model_search_complete(task, seen)
+    if state.top_model_summary and state.top_model_summary.needs_robustness_verification:
+        top_model_action = build_top_model_verification_action(task, state.top_model_summary)
+        if top_model_action is not None:
+            candidates.append(top_model_action)
+
+    if model_search_complete or (state.budget_remaining is not None and state.budget_remaining <= 2):
+        for index, _sweep in enumerate(task.sweeps):
+            candidates.append(_sweep_candidate(task, index))
 
     if not traces:
-        candidates.insert(0, initial_action())
+        candidates.insert(0, initial_action(task))
 
-    unseen = [c for c in candidates if action_key(c) not in seen]
-    return unseen[:8]
+    deduped = []
+    added = set()
+    for candidate in candidates:
+        key = action_key(candidate)
+        if key in seen or key in added:
+            continue
+        deduped.append(candidate)
+        added.add(key)
+    return deduped[:12]
 
 
 def prediction_source(prediction, simulator_configured: bool) -> str:
@@ -110,8 +186,8 @@ def prediction_source(prediction, simulator_configured: bool) -> str:
     return "heuristic_fallback" if "fallback" in text or "heuristic" in text else "qwen_agentworld"
 
 
-def predict_candidates(state: ResearchState, candidates: list[ProposedAction], simulator_configured: bool) -> list[CandidatePrediction]:
-    state_text = state.model_dump_json(indent=2)
+def predict_candidates(task: TaskSpec, state: ResearchState, candidates: list[ProposedAction], simulator_configured: bool) -> list[CandidatePrediction]:
+    state_text = json.dumps({"task": task.model_dump(), "state": state.model_dump()}, indent=2)
     predictions = []
     for candidate in candidates:
         prediction = predict(candidate, state_text)
@@ -130,81 +206,135 @@ def _best_accuracy(traces: list[ExperimentTrace]) -> float:
     return max(values, default=0.0)
 
 
-def _score_candidate(candidate_prediction: CandidatePrediction, traces: list[ExperimentTrace]) -> tuple[int, list[str]]:
+def _score_candidate(candidate_prediction: CandidatePrediction, traces: list[ExperimentTrace]) -> tuple[float, list[str], list[str], list[str], dict[str, float]]:
     action = candidate_prediction.action
     prediction = candidate_prediction.prediction
     risks = " ".join(prediction.risks).lower()
     rationale = prediction.rationale.lower()
-    score = 0
+    score = 0.0
     reasons = []
+    world_reasons = []
+    selector_reasons = []
+    breakdown = {
+        "expected_gain": 0.0,
+        "uncertainty": 0.0,
+        "novelty": 0.0,
+        "verification_value": 0.0,
+        "qwen_signal": 0.0,
+        "redundancy_penalty": 0.0,
+        "compute_cost_penalty": 0.0,
+        "unsupported_claim_risk": 0.0,
+    }
+    tested_models = {t.proposed_action.model for t in traces if t.actual_result.accuracy is not None}
 
     if prediction.recommendation == "run":
-        score += 30
+        score += 20
+        breakdown["qwen_signal"] += 20
         reasons.append("world model recommended run")
     elif prediction.recommendation == "modify":
         score += 12
+        breakdown["qwen_signal"] += 12
         reasons.append("world model recommended modification, so the action remains informative but lower priority")
+        world_reasons.append("world model recommended modification")
     else:
-        score -= 20
+        score -= 25
+        breakdown["qwen_signal"] -= 25
         reasons.append("world model recommended skip")
+        world_reasons.append("world model recommended skip")
+
+    signal = f"{prediction.action_specific_signal} {prediction.claim_risk} {risks} {rationale}".lower()
+    if any(word in signal for word in ["scal", "seed", "variance", "noise", "robust", "leak", "protocol", "metric", "overfit"]):
+        score += 10
+        breakdown["qwen_signal"] += 10
+        world_reasons.append("prediction contained an action-specific research signal")
+
+    if action.model not in tested_models and action.model not in {"verification_sweep", "top_model_verification"}:
+        score += 18
+        breakdown["novelty"] += 18
+        reasons.append("new model family increases search coverage")
+        selector_reasons.append("new model family increases search coverage")
+    elif action.model in tested_models and action.model not in {"verification_sweep", "top_model_verification"}:
+        score -= 12
+        breakdown["redundancy_penalty"] -= 12
+        reasons.append("candidate is a variant of an already tested family")
 
     if action.model == "logistic_regression" and not action.params.get("scale") and not traces:
         score += 80
+        breakdown["novelty"] += 80
         reasons.append("first run should establish the unscaled baseline before interventions")
+        selector_reasons.append("first run should establish the unscaled baseline before interventions")
 
     if action.model == "logistic_regression" and action.params.get("scale") and not traces:
         score -= 40
+        breakdown["redundancy_penalty"] -= 40
         reasons.append("scaled baseline is deferred until after an unscaled control")
+        selector_reasons.append("scaled baseline is deferred until after an unscaled control")
 
     if action.model == "logistic_regression" and action.params.get("scale") and traces:
         first = traces[0]
         if first.proposed_action.model == "logistic_regression" and not first.proposed_action.params.get("scale"):
             score += 45
+            breakdown["expected_gain"] += 45
             reasons.append("after an unscaled logistic baseline, scaling is the direct world-model intervention to test")
+            selector_reasons.append("after an unscaled logistic baseline, scaling is the direct intervention to test")
 
     if action.model == "verification_sweep" and _best_accuracy(traces) >= 0.98:
         score += 35
+        breakdown["verification_value"] += 35
         reasons.append("high single-run score needs robustness verification before a strong claim")
+        selector_reasons.append("high single-run score needs robustness verification before a strong claim")
     if action.model == "verification_sweep" and ("seed variance" in risks or "non-robust" in risks or "noise" in risks):
         score += 25
+        breakdown["qwen_signal"] += 25
         reasons.append("world model predicted robustness or seed-variance risk")
+        world_reasons.append("world model predicted robustness or seed-variance risk")
     if action.model == "verification_sweep" and len(traces) < 4:
         score -= 30
+        breakdown["compute_cost_penalty"] -= 30
         reasons.append("defer verifier sweep until several single-model baselines exist")
+        selector_reasons.append("defer verifier sweep until several single-model baselines exist")
+
+    if action.model == "top_model_verification":
+        score += 45
+        breakdown["verification_value"] += 45
+        reasons.append("top observed models need multi-seed verification before a robust best-model claim")
+        selector_reasons.append("top observed models need multi-seed verification before a robust best-model claim")
+        if any(word in signal for word in ["seed", "variance", "robust", "claim", "single split", "tied", "top"]):
+            score += 35
+            breakdown["qwen_signal"] += 35
+            reasons.append("world model predicted top-model robustness or claim risk")
+            world_reasons.append("world model predicted top-model robustness or claim risk")
 
     if action.model == "svc" and any(t.proposed_action.model == "random_forest" and not t.comparison.metric_match for t in traces):
         score += 30
+        breakdown["uncertainty"] += 30
         reasons.append("tree prediction missed, so a scaled margin model tests a different hypothesis")
+        selector_reasons.append("tree prediction missed, so a scaled margin model tests a different hypothesis")
 
     if action.model == "random_forest" and _best_accuracy(traces) >= 0.98:
         score += 35
+        breakdown["novelty"] += 35
         reasons.append("strong linear baseline makes a different inductive bias useful")
+        selector_reasons.append("strong linear baseline makes a different inductive bias useful")
 
     if action.model == "gradient_boosting":
         score += 5
+        breakdown["novelty"] += 5
         reasons.append("ensemble baseline is useful as a late comparison")
-
-    if action.model == "weak_effect" and any(t.verification and t.verification.status == "inconclusive" for t in traces):
-        score += 18
-        reasons.append("weak-effect scenario demonstrates the lower rung of the trust ladder")
-
-    if action.model == "real_effect" and any(t.verification for t in traces):
-        score += 24
-        reasons.append("real-effect scenario should produce a supported trust-ladder case")
-
-    if action.model == "data_leakage_trap" and len(traces) >= 6:
-        score += 22
-        reasons.append("data leakage trap tests whether protocol warnings block suspicious wins")
-
-    if action.model == "metric_misuse" and len(traces) >= 6:
-        score += 20
-        reasons.append("metric misuse scenario tests whether the system avoids accuracy-only claims")
+        selector_reasons.append("ensemble baseline is useful as a late comparison")
 
     if "overfit" in risks or "overfit" in rationale:
         score -= 4
+        breakdown["compute_cost_penalty"] -= 4
         reasons.append("world model predicted overfitting risk")
+        world_reasons.append("world model predicted overfitting risk")
 
-    return score, reasons
+    if _best_accuracy(traces) >= 0.98 and action.model not in {"verification_sweep", "top_model_verification"}:
+        score -= 8
+        breakdown["unsupported_claim_risk"] -= 8
+        reasons.append("high best score increases claim risk for additional single-run score chasing")
+
+    return score, reasons, world_reasons, selector_reasons, breakdown
 
 
 def select_candidate(state: ResearchState, predictions: list[CandidatePrediction], traces: list[ExperimentTrace]) -> tuple[CandidatePrediction, DecisionTrace]:
@@ -213,31 +343,52 @@ def select_candidate(state: ResearchState, predictions: list[CandidatePrediction
 
     scored = []
     for cp in predictions:
-        score, reasons = _score_candidate(cp, traces)
-        scored.append((score, cp, reasons))
+        score, reasons, world_reasons, selector_reasons, breakdown = _score_candidate(cp, traces)
+        scored.append((score, cp, reasons, world_reasons, selector_reasons, breakdown))
     scored.sort(key=lambda row: row[0], reverse=True)
-    selected_score, selected, selected_reasons = scored[0]
+    selected_score, selected, selected_reasons, selected_world_reasons, selected_selector_reasons, selected_breakdown = scored[0]
 
     rejected = []
-    for score, candidate_prediction, reasons in scored[1:]:
+    for score, candidate_prediction, reasons, _world_reasons, _selector_reasons, breakdown in scored[1:]:
         rejected.append(
             RejectedCandidate(
                 action=candidate_prediction.action,
                 reason=f"score={score}; " + "; ".join(reasons),
+                score_breakdown=breakdown,
             )
         )
 
     risk_text = ", ".join(selected.prediction.risks) or "no specific risk"
+    world_used = bool(selected_world_reasons)
+    selector_used = bool(selected_selector_reasons)
+    if world_used and selector_used:
+        causal_signal_type = "mixed"
+    elif world_used:
+        causal_signal_type = "world_model_prediction"
+    elif selector_used:
+        causal_signal_type = "selector_policy"
+    else:
+        causal_signal_type = "unknown"
     causal_reason = (
         f"Selected {selected.action.model} because score={selected_score}; "
         f"{'; '.join(selected_reasons)}. "
         f"World model predicted {selected.prediction.expected_metric}, runtime {selected.prediction.expected_runtime_seconds}, "
-        f"recommendation={selected.prediction.recommendation}, risks={risk_text}."
+        f"recommendation={selected.prediction.recommendation}, risks={risk_text}. "
+        f"Causal signal type: {causal_signal_type}."
     )
 
     return selected, DecisionTrace(
         selected_action=selected.action,
-        world_model_signal_used=True,
+        world_model_signal_used=world_used,
+        selector_policy_signal_used=selector_used,
+        causal_signal_type=causal_signal_type,
+        observed_state_signal=state.top_model_summary.reason if state.top_model_summary else "",
+        world_model_signal="; ".join(selected_world_reasons),
+        selector_policy_signal="; ".join(selected_selector_reasons),
+        selected_score=selected_score,
+        score_breakdown=selected_breakdown,
+        qwen_suggested_action=selected.action.action_id,
+        catalog_validation="accepted",
         causal_reason=causal_reason,
         rejected_candidates=rejected,
     )
