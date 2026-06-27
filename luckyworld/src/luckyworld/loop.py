@@ -189,7 +189,16 @@ def run(goal: str, max_experiments: int = 5) -> list[ExperimentTrace]:
             break
         hypothesis, action = next_choice
 
-    generate_report(goal, traces, reports_dir / "final_report.md")
+    # Couche de confiance #2 : vérifier le 'best' avant de l'affirmer (effet vs bruit inter-seed).
+    try:
+        from .verify_loop import verify_from_traces
+        verdict = verify_from_traces(traces)
+    except Exception as e:
+        print(f"[verifier] skipped: {e}")
+        verdict = None
+    if verdict is not None:
+        print(f"[verifier] {verdict.statement}")
+    generate_report(goal, traces, reports_dir / "final_report.md", verdict)
     return traces
 
 
