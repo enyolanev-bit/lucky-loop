@@ -1,0 +1,288 @@
+{
+  "model": "Qwen/Qwen-AgentWorld-35B-A3B",
+  "n_predictions": 24,
+  "by_group": {
+    "canonical_named": {
+      "n": 8,
+      "MAE": 0.0227,
+      "interval_coverage": 0.5
+    },
+    "canonical_anon": {
+      "n": 8,
+      "MAE": 0.0277,
+      "interval_coverage": 0.5
+    },
+    "synthetic_anon": {
+      "n": 8,
+      "MAE": 0.0994,
+      "interval_coverage": 0.25
+    }
+  },
+  "recall_gap_anon_minus_named": 0.005,
+  "rows": [
+    {
+      "group": "canonical_named",
+      "name": "breast_cancer",
+      "model": "logistic_regression",
+      "pred": 0.95,
+      "lo": 0.92,
+      "hi": 0.97,
+      "actual": 0.958,
+      "abs_err": 0.008,
+      "covered": true
+    },
+    {
+      "group": "canonical_anon",
+      "name": "breast_cancer",
+      "model": "logistic_regression",
+      "pred": 0.94,
+      "lo": 0.91,
+      "hi": 0.96,
+      "actual": 0.958,
+      "abs_err": 0.018,
+      "covered": true
+    },
+    {
+      "group": "canonical_named",
+      "name": "breast_cancer",
+      "model": "random_forest",
+      "pred": 0.94,
+      "lo": 0.91,
+      "hi": 0.96,
+      "actual": 0.9441,
+      "abs_err": 0.0041,
+      "covered": true
+    },
+    {
+      "group": "canonical_anon",
+      "name": "breast_cancer",
+      "model": "random_forest",
+      "pred": 0.93,
+      "lo": 0.9,
+      "hi": 0.96,
+      "actual": 0.9441,
+      "abs_err": 0.0141,
+      "covered": true
+    },
+    {
+      "group": "canonical_named",
+      "name": "wine",
+      "model": "logistic_regression",
+      "pred": 0.97,
+      "lo": 0.93,
+      "hi": 0.99,
+      "actual": 1.0,
+      "abs_err": 0.03,
+      "covered": false
+    },
+    {
+      "group": "canonical_anon",
+      "name": "wine",
+      "model": "logistic_regression",
+      "pred": 0.97,
+      "lo": 0.94,
+      "hi": 0.99,
+      "actual": 1.0,
+      "abs_err": 0.03,
+      "covered": false
+    },
+    {
+      "group": "canonical_named",
+      "name": "wine",
+      "model": "random_forest",
+      "pred": 0.97,
+      "lo": 0.93,
+      "hi": 0.99,
+      "actual": 1.0,
+      "abs_err": 0.03,
+      "covered": false
+    },
+    {
+      "group": "canonical_anon",
+      "name": "wine",
+      "model": "random_forest",
+      "pred": 0.95,
+      "lo": 0.92,
+      "hi": 0.97,
+      "actual": 1.0,
+      "abs_err": 0.05,
+      "covered": false
+    },
+    {
+      "group": "canonical_named",
+      "name": "digits",
+      "model": "logistic_regression",
+      "pred": 0.92,
+      "lo": 0.89,
+      "hi": 0.95,
+      "actual": 0.9689,
+      "abs_err": 0.0489,
+      "covered": false
+    },
+    {
+      "group": "canonical_anon",
+      "name": "digits",
+      "model": "logistic_regression",
+      "pred": 0.92,
+      "lo": 0.89,
+      "hi": 0.95,
+      "actual": 0.9689,
+      "abs_err": 0.0489,
+      "covered": false
+    },
+    {
+      "group": "canonical_named",
+      "name": "digits",
+      "model": "random_forest",
+      "pred": 0.95,
+      "lo": 0.92,
+      "hi": 0.97,
+      "actual": 0.9844,
+      "abs_err": 0.0344,
+      "covered": false
+    },
+    {
+      "group": "canonical_anon",
+      "name": "digits",
+      "model": "random_forest",
+      "pred": 0.95,
+      "lo": 0.92,
+      "hi": 0.97,
+      "actual": 0.9844,
+      "abs_err": 0.0344,
+      "covered": false
+    },
+    {
+      "group": "canonical_named",
+      "name": "iris",
+      "model": "logistic_regression",
+      "pred": 0.96,
+      "lo": 0.93,
+      "hi": 0.98,
+      "actual": 0.9737,
+      "abs_err": 0.0137,
+      "covered": true
+    },
+    {
+      "group": "canonical_anon",
+      "name": "iris",
+      "model": "logistic_regression",
+      "pred": 0.96,
+      "lo": 0.92,
+      "hi": 0.98,
+      "actual": 0.9737,
+      "abs_err": 0.0137,
+      "covered": true
+    },
+    {
+      "group": "canonical_named",
+      "name": "iris",
+      "model": "random_forest",
+      "pred": 0.96,
+      "lo": 0.93,
+      "hi": 0.98,
+      "actual": 0.9474,
+      "abs_err": 0.0126,
+      "covered": true
+    },
+    {
+      "group": "canonical_anon",
+      "name": "iris",
+      "model": "random_forest",
+      "pred": 0.96,
+      "lo": 0.92,
+      "hi": 0.98,
+      "actual": 0.9474,
+      "abs_err": 0.0126,
+      "covered": true
+    },
+    {
+      "group": "synthetic_anon",
+      "name": "synth_0",
+      "model": "logistic_regression",
+      "pred": 0.75,
+      "lo": 0.68,
+      "hi": 0.82,
+      "actual": 0.745,
+      "abs_err": 0.005,
+      "covered": true
+    },
+    {
+      "group": "synthetic_anon",
+      "name": "synth_0",
+      "model": "random_forest",
+      "pred": 0.78,
+      "lo": 0.72,
+      "hi": 0.84,
+      "actual": 0.91,
+      "abs_err": 0.13,
+      "covered": false
+    },
+    {
+      "group": "synthetic_anon",
+      "name": "synth_1",
+      "model": "logistic_regression",
+      "pred": 0.75,
+      "lo": 0.65,
+      "hi": 0.85,
+      "actual": 0.87,
+      "abs_err": 0.12,
+      "covered": false
+    },
+    {
+      "group": "synthetic_anon",
+      "name": "synth_1",
+      "model": "random_forest",
+      "pred": 0.75,
+      "lo": 0.65,
+      "hi": 0.85,
+      "actual": 0.89,
+      "abs_err": 0.14,
+      "covered": false
+    },
+    {
+      "group": "synthetic_anon",
+      "name": "synth_2",
+      "model": "logistic_regression",
+      "pred": 0.75,
+      "lo": 0.68,
+      "hi": 0.82,
+      "actual": 0.84,
+      "abs_err": 0.09,
+      "covered": false
+    },
+    {
+      "group": "synthetic_anon",
+      "name": "synth_2",
+      "model": "random_forest",
+      "pred": 0.78,
+      "lo": 0.72,
+      "hi": 0.84,
+      "actual": 0.91,
+      "abs_err": 0.13,
+      "covered": false
+    },
+    {
+      "group": "synthetic_anon",
+      "name": "synth_3",
+      "model": "logistic_regression",
+      "pred": 0.75,
+      "lo": 0.65,
+      "hi": 0.85,
+      "actual": 0.81,
+      "abs_err": 0.06,
+      "covered": true
+    },
+    {
+      "group": "synthetic_anon",
+      "name": "synth_3",
+      "model": "random_forest",
+      "pred": 0.78,
+      "lo": 0.72,
+      "hi": 0.84,
+      "actual": 0.9,
+      "abs_err": 0.12,
+      "covered": false
+    }
+  ]
+}
