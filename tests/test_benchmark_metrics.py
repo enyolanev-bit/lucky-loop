@@ -4,9 +4,13 @@ from luckyloop.benchmark_metrics import (
     best_claimable_score,
     best_verified_mean_score,
     compute_per_claimable_claim,
+    non_claimable_runs,
     qwen_triggered_verification,
+    runs_after_verification_needed,
     runs_to_first_verification,
+    stop_after_verification_opportunity,
     wasted_score_chasing_runs,
+    wasted_score_chasing_runtime_seconds,
 )
 from luckyloop.schemas import (
     ActualResult,
@@ -86,8 +90,24 @@ def test_runs_to_first_verification_and_wasted_score_chasing():
     ]
     assert runs_to_first_verification(traces) == 3
     assert wasted_score_chasing_runs(traces) == 1
+    assert wasted_score_chasing_runtime_seconds(traces) == 1.0
+    assert runs_after_verification_needed(traces) == 1
+    assert non_claimable_runs(traces) == 3
 
 
 def test_qwen_triggered_verification_detects_world_model_signal():
     traces = [_trace("run_001", "top_model_verification", mean_metric=0.95, verification=Verification(status="inconclusive"), world_signal=True)]
     assert qwen_triggered_verification(traces) is True
+
+
+def test_stop_after_verification_opportunity_recommends_stop_for_inconclusive_verifier():
+    traces = [
+        _trace("run_001", "svc", metric=0.97),
+        _trace("run_002", "top_model_verification", mean_metric=0.95, verification=Verification(status="inconclusive")),
+        _trace("run_003", "random_forest", metric=0.96),
+    ]
+    opportunity = stop_after_verification_opportunity(traces)
+    assert opportunity["qwen_skip_or_stop_recommended"] is True
+    assert opportunity["recommended_action"] == "stop_and_report"
+    assert opportunity["stop_after_run"] == "run_002"
+    assert opportunity["saved_remaining_runs"] == 1

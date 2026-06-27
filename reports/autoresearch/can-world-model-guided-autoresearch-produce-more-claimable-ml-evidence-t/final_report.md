@@ -21,6 +21,7 @@ A coding agent operates inside the repository. Lucky Loop supplies the research 
 - Evidence manifest: `evidence_manifest.json`
 - Backend ablation: `reports/ablations/world_model_ablation.md`
 - Counterfactual evaluation: `reports/counterfactuals/counterfactual_evaluation.md`
+- Budgeted compute evaluation: `reports/budgeted_compute/budgeted_compute_evaluation.md`
 
 ## Ablation Snapshot
 
@@ -42,11 +43,17 @@ A coding agent operates inside the repository. Lucky Loop supplies the research 
 - Lucky wins: 3
 - Qwen choice usefulness: 100.00%
 
+## Budgeted Compute Result
+
+- Tasks with saved score-chasing runs: 3
+- Total saved score-chasing runs: 6
+- Total saved score-chasing runtime: 5.4781s
+- Tasks where Qwen would skip/stop after verifier: 3
+- Strict stop policy saved runs after verification: 3
+
 ## Claim Discipline
 
 Classic autoresearch can find good single-run scores, but those are not robust claims. Lucky Loop full adds auditable pre-compute predictions and keeps unsupported best-model claims at zero in the generated ablation artifacts.
-
-Strict result: on these tasks, the verifier did not allow a robust best-model claim. That is the point of the evidence gate: Lucky Loop surfaces verified means and blocked overclaims instead of converting close single-run wins into publication claims.
 
 ## Source Mapping
 

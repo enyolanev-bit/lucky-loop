@@ -347,8 +347,18 @@ def summarize_traces(policy: str, task_id: str, traces: list[ExperimentTrace]) -
         "runs_to_first_verification": claimable["runs_to_first_verification"],
         "total_runtime_seconds": claimable["total_runtime_seconds"],
         "compute_per_claimable_claim": claimable["compute_per_claimable_claim"],
+        "non_claimable_runs": claimable["non_claimable_runs"],
+        "non_claimable_runtime_seconds": claimable["non_claimable_runtime_seconds"],
         "wasted_score_chasing_runs": claimable["wasted_score_chasing_runs"],
+        "wasted_score_chasing_runtime_seconds": claimable["wasted_score_chasing_runtime_seconds"],
+        "runs_after_verification_needed": claimable["runs_after_verification_needed"],
+        "runtime_after_verification_needed_seconds": claimable["runtime_after_verification_needed_seconds"],
         "qwen_triggered_verification": claimable["qwen_triggered_verification"],
+        "qwen_skip_or_stop_recommended": claimable["qwen_skip_or_stop_recommended"],
+        "qwen_recommended_action": claimable["recommended_action"],
+        "qwen_stop_after_run": claimable["stop_after_run"],
+        "qwen_stop_saved_remaining_runs": claimable["saved_remaining_runs"],
+        "qwen_stop_saved_remaining_runtime_seconds": claimable["saved_remaining_runtime_seconds"],
         "qwen_choice_usefulness": None,
         "action_sequence": [trace.proposed_action.model for trace in traces],
     }
@@ -494,7 +504,10 @@ def write_ablation_reports(rows: list[dict]) -> None:
         "- `reports/ablations/world_model_ablation.md`",
         "- `reports/ablations/classic_vs_lucky_loop.md`",
         "- `reports/ablations/world_model_ablation.json`",
+        "- `reports/counterfactuals/counterfactual_evaluation.md`",
+        "- `reports/budgeted_compute/budgeted_compute_evaluation.md`",
         "- `runs/ablations/*/*/run_*.json`",
+        "- `runs/counterfactuals/*/*/*.json`",
     ]
     (ROOT / "reports" / "pitch_backend_summary.md").write_text("\n".join(pitch) + "\n", encoding="utf-8")
 

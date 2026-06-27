@@ -20,6 +20,7 @@ python -m luckyloop.autoresearch \
 
 ```bash
 PYTHONPATH=src python scripts/run_ablation_suite.py --world-model auto --operator-agent codex_operator
+PYTHONPATH=src python scripts/run_budgeted_compute_evaluation.py
 ```
 
 ## Validate

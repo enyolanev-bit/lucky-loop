@@ -69,6 +69,8 @@ def main() -> None:
                 ROOT / "reports" / "ablations" / "world_model_ablation.json",
                 ROOT / "reports" / "counterfactuals" / "counterfactual_evaluation.md",
                 ROOT / "reports" / "counterfactuals" / "counterfactual_evaluation.json",
+                ROOT / "reports" / "budgeted_compute" / "budgeted_compute_evaluation.md",
+                ROOT / "reports" / "budgeted_compute" / "budgeted_compute_evaluation.json",
             ]
         )
         for policy in ["classic_autoresearch", "classic_verified", "lucky_loop_full"]:
@@ -105,6 +107,21 @@ def main() -> None:
         summary = payload.get("summary") or {}
         if summary.get("qwen_choice_usefulness") is None:
             failures.append("counterfactual json missing qwen_choice_usefulness")
+
+    budgeted_json = ROOT / "reports" / "budgeted_compute" / "budgeted_compute_evaluation.json"
+    if args.check_ablations and budgeted_json.exists():
+        payload = json.loads(budgeted_json.read_text(encoding="utf-8"))
+        paired_rows = payload.get("paired_rows") or []
+        if not paired_rows:
+            failures.append("budgeted compute json has no paired rows")
+        summary = payload.get("summary") or {}
+        for key in [
+            "total_saved_score_chasing_runs",
+            "total_saved_score_chasing_runtime_seconds",
+            "tasks_with_qwen_stop_or_skip",
+        ]:
+            if key not in summary:
+                failures.append(f"budgeted compute summary missing {key}")
 
     if failures:
         print("Artifact validation failed:")

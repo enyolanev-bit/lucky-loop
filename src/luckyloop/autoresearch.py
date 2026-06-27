@@ -165,6 +165,7 @@ def write_run_commands(path: Path, question: str, agent: str, task_paths: list[s
         "",
         "```bash",
         f"PYTHONPATH=src python scripts/run_ablation_suite.py --world-model auto --operator-agent {agent}",
+        "PYTHONPATH=src python scripts/run_budgeted_compute_evaluation.py",
         "```",
         "",
         "## Validate",
@@ -193,6 +194,7 @@ def collect_evidence_manifest(out_dir: Path, task_paths: list[str], executed: bo
             "ablation": "reports/ablations/world_model_ablation.md",
             "classic_vs_lucky_loop": "reports/ablations/classic_vs_lucky_loop.md",
             "counterfactuals": "reports/counterfactuals/counterfactual_evaluation.md",
+            "budgeted_compute": "reports/budgeted_compute/budgeted_compute_evaluation.md",
             "backend_pitch": "reports/pitch_backend_summary.md",
         },
         "task_artifacts": [],
@@ -222,18 +224,23 @@ def execute_backend(task_paths: list[str], agent: str, rerun_experiments: bool) 
     env["PYTHONPATH"] = "src"
     if rerun_experiments:
         _run([sys.executable, "scripts/run_ablation_suite.py", "--world-model", "auto", "--operator-agent", agent, "--tasks", *task_paths], env)
+    _run([sys.executable, "scripts/run_budgeted_compute_evaluation.py"], env)
     _run([sys.executable, "scripts/validate_artifacts.py", "--check-ablations", "--require-qwen"], env)
 
 
 def write_final_report(out_dir: Path, question: str, context, evidence: dict) -> None:
     ablation_path = ROOT / "reports" / "ablations" / "world_model_ablation.json"
     counterfactual_path = ROOT / "reports" / "counterfactuals" / "counterfactual_evaluation.json"
+    budgeted_path = ROOT / "reports" / "budgeted_compute" / "budgeted_compute_evaluation.json"
     rows = []
     if ablation_path.exists():
         rows = json.loads(ablation_path.read_text(encoding="utf-8")).get("rows", [])
     counterfactual_summary = {}
     if counterfactual_path.exists():
         counterfactual_summary = json.loads(counterfactual_path.read_text(encoding="utf-8")).get("summary", {})
+    budgeted_summary = {}
+    if budgeted_path.exists():
+        budgeted_summary = json.loads(budgeted_path.read_text(encoding="utf-8")).get("summary", {})
     lines = [
         "# Agent-Operated Autoresearch Report",
         "",
@@ -262,6 +269,7 @@ def write_final_report(out_dir: Path, question: str, context, evidence: dict) ->
         "- Evidence manifest: `evidence_manifest.json`",
         "- Backend ablation: `reports/ablations/world_model_ablation.md`",
         "- Counterfactual evaluation: `reports/counterfactuals/counterfactual_evaluation.md`",
+        "- Budgeted compute evaluation: `reports/budgeted_compute/budgeted_compute_evaluation.md`",
         "",
         "## Ablation Snapshot",
         "",
@@ -290,6 +298,17 @@ def write_final_report(out_dir: Path, question: str, context, evidence: dict) ->
             f"- Cases: {counterfactual_summary.get('cases')}",
             f"- Lucky wins: {counterfactual_summary.get('lucky_wins')}",
             f"- Qwen choice usefulness: {usefulness_text}",
+        ]
+    if budgeted_summary:
+        lines += [
+            "",
+            "## Budgeted Compute Result",
+            "",
+            f"- Tasks with saved score-chasing runs: {budgeted_summary.get('tasks_with_saved_score_chasing_runs')}",
+            f"- Total saved score-chasing runs: {budgeted_summary.get('total_saved_score_chasing_runs')}",
+            f"- Total saved score-chasing runtime: {budgeted_summary.get('total_saved_score_chasing_runtime_seconds')}s",
+            f"- Tasks where Qwen would skip/stop after verifier: {budgeted_summary.get('tasks_with_qwen_stop_or_skip')}",
+            f"- Strict stop policy saved runs after verification: {budgeted_summary.get('total_strict_stop_saved_runs')}",
         ]
     lines += [
         "",

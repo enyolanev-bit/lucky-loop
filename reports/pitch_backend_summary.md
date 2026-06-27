@@ -15,5 +15,6 @@ Lucky Loop is a world-model-guided autoresearch backend. The agent proposes cata
 - `reports/ablations/classic_vs_lucky_loop.md`
 - `reports/ablations/world_model_ablation.json`
 - `reports/counterfactuals/counterfactual_evaluation.md`
+- `reports/budgeted_compute/budgeted_compute_evaluation.md`
 - `runs/ablations/*/*/run_*.json`
 - `runs/counterfactuals/*/*/*.json`
