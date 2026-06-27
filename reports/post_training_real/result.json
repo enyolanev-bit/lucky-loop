@@ -1,0 +1,24 @@
+{
+  "baseline_accuracy": 0.4825,
+  "claim_guardrail": "Only claim post-training helped if delta > 0 on held-out test split.",
+  "config": {
+    "dataset": "SetFit/sst2",
+    "epochs": 2.0,
+    "label_field": "label",
+    "learning_rate": 0.0002,
+    "lora_alpha": 16,
+    "lora_r": 8,
+    "max_test": 800,
+    "max_train": 1000,
+    "model": "Qwen/Qwen3-0.6B",
+    "output_dir": "reports/post_training_real",
+    "text_field": "text"
+  },
+  "delta": 0.44375000000000003,
+  "post_training_accuracy": 0.92625,
+  "runtime_seconds": 705.2427120390057,
+  "status": "completed",
+  "total_params": 601096192,
+  "trainable_param_pct": 0.8395115569123419,
+  "trainable_params": 5046272
+}

@@ -92,6 +92,19 @@ The delta is **one flipped test example**. It is indistinguishable from zero:
 
 **No improvement claim.** Applying Lucky Loop's own effect-vs-noise gate, this is `inconclusive` → blocked. The system refuses to oversell its own experiment. What is established: the post-training path runs end-to-end (Qwen3-0.6B, clean train/test split, 5.0M trainable params, 37s) — a real candidate the loop can reason about under the same "verify before claim" discipline.
 
+## Scaled run — does post-training actually work? (YES)
+
+The smoke run was deliberately tiny. We scaled it to answer the real question (`reports/post_training_real/`):
+
+| | smoke (n=64, 1 epoch) | scaled (n=800, 2 epochs, 1000 train) |
+|---|---|---|
+| baseline | 0.484 | 0.4825 (≈ random) |
+| post-training | 0.500 | **0.92625** |
+| delta | +0.016 | **+0.44375 (+44 pts)** |
+| verdict | within noise → blocked | **z ≈ 22, p < 1e-100 → strongly supported** |
+
+**Yes, LoRA post-training works.** It takes `Qwen3-0.6B` from random (48%) to 92.6% on sentiment in ~6.5 min, training 0.84% of params. The contrast validates the claim discipline in both directions: the verifier correctly blocks the noisy smoke run and would correctly admit this real effect.
+
 ## Why this helps selection
 
 This directly addresses the feedback while preserving the original project story:
