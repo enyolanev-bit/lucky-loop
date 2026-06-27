@@ -1,19 +1,43 @@
 # LuckyWorld
 
-World-model-guided autonomous research loops for the Paris Research Hackathon.
+LuckyWorld is the working implementation of **Lucky Loop: World-Model-Guided Autonomous Research with Claim-Calibrated Reporting**.
 
-Tagline: **Predict before you compute. Verify before you claim.**
+Tagline: **Predict before compute. Verify before claim.**
 
-LuckyWorld asks a language world model to predict an ML experiment before spending real compute, then runs the experiment for real, compares prediction vs reality, and writes auditable traces. A deterministic verifier gates sweep-level claims with `effect_size > seed_noise`, so weak findings are reported as inconclusive instead of being oversold.
+LuckyWorld wraps an autoresearch loop with a language world model. The agent proposes candidate experiments, Qwen-AgentWorld predicts likely metrics, runtime, risks, and recommendations before compute, real sklearn code tests the selected action, and a deterministic verifier gates which claims can appear in the final report.
 
-## What works now
+## Roles
+
+```text
+Autoresearch agent / planner
+-> proposes candidate experiments and decides the next action
+
+Qwen-AgentWorld
+-> predicts what should happen for each candidate action
+
+Executor
+-> runs real sklearn experiments
+
+Comparator
+-> measures prediction-vs-reality
+
+Verifier
+-> blocks unsupported scientific claims
+
+Claim ledger / reporter / UI
+-> expose evidence and write only allowed claims
+```
+
+For the hackathon build, Codex can operate as the autoresearch agent while LuckyWorld records the same trace shape expected from an autonomous planner.
+
+## What Works Now
 
 - Qwen-AgentWorld-35B-A3B served through vLLM on Team Pegasus MI300X.
 - OpenAI-compatible endpoint: `http://134.199.205.222:8000/v1`.
 - End-to-end loop verified on `sklearn` breast cancer.
 - Six real experiments generated JSON traces and a Markdown report.
-- Controlled noisy-label multi-seed sweep now produces an honest verifier verdict.
-- A Streamlit timeline UI reads prediction, actual metric, and verifier fields.
+- Controlled noisy-label multi-seed sweep produces an honest verifier verdict.
+- Streamlit reads prediction, actual metric, and verifier fields.
 
 Observed best result:
 
@@ -21,7 +45,20 @@ Observed best result:
 scaled logistic regression accuracy = 0.9860
 ```
 
+Honest verifier moment:
+
+```text
+run_005 noisy-label C sweep
+effect_size = 0.020979
+seed_noise = 0.027972
+verdict = inconclusive
+blocked claim = C=0.1 is robustly better
+allowed claim = C=0.1 had the best mean, but the effect was smaller than seed noise
+```
+
 ## Architecture
+
+Current implementation:
 
 ```text
 Goal
@@ -29,18 +66,32 @@ Goal
 -> real sklearn execution
 -> prediction-vs-actual comparison
 -> deterministic effect-vs-noise verifier for sweep claims
--> next experiment decision
 -> JSON evidence trace
 -> final report
 ```
 
-The important bit is that the model is not allowed to claim a result directly. It predicts. The executor measures. The comparator records the gap. The verifier decides whether a measured sweep effect is larger than seed noise.
+Target implementation:
 
-## Run locally
+```text
+Goal
+-> explicit research state
+-> candidate actions
+-> Qwen-AgentWorld prediction for each candidate
+-> selector decision trace
+-> real sklearn execution
+-> prediction-vs-actual comparison
+-> verifier + claim ledger
+-> calibration report
+-> final report + judge UI
+```
+
+The key point is that Qwen-AgentWorld is not the research agent and not the verifier. It is the world model: it predicts experimental consequences before compute.
+
+## Run Locally
 
 ```bash
 cd luckyworld
-python -m venv .venv
+python3 -m venv .venv
 . .venv/bin/activate
 pip install -r requirements.txt
 
@@ -49,10 +100,10 @@ export LUCKYWORLD_SIMULATOR_BASE_URL=http://134.199.205.222:8000/v1
 export LUCKYWORLD_SIMULATOR_MODEL=Qwen/Qwen-AgentWorld-35B-A3B
 export LUCKYWORLD_SIMULATOR_API_KEY=dummy
 
-python -m luckyworld.loop --max-experiments 6
+python3 -m luckyworld.loop --max-experiments 6
 ```
 
-If no simulator endpoint is configured, LuckyWorld falls back to a deterministic heuristic predictor so the loop still runs.
+If no simulator endpoint is configured, LuckyWorld falls back to a deterministic heuristic predictor so local smoke tests still run. The presentation path uses live Qwen-AgentWorld.
 
 ## Evidence
 
@@ -87,6 +138,11 @@ cd luckyworld
 streamlit run app/streamlit_app.py --server.headless true
 ```
 
-## Next step
+## Next Build Targets
 
-Add a controlled perturbation scenario, for example noisy labels, bad split, data leakage trap, or timeout. This will make the demo closer to the Qwen-AgentWorld framing: a world model should anticipate environment traps before execution.
+- Trace schema v2: state, candidates, predictions, decision trace, comparison, verifier, claim ledger updates.
+- Candidate planner: predict multiple possible futures before selecting an experiment.
+- World-model calibration report: interval coverage, misses, runtime error, useful decisions.
+- Trust ladder verifier: inconclusive, weakly supported, supported, strongly supported.
+- Claim ledger: supported, weak, and blocked claims with evidence run IDs.
+- Judge-ready Streamlit UI: World model said / Planner did / Reality showed / Verifier allowed or blocked.

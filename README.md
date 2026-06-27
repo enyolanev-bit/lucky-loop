@@ -1,54 +1,103 @@
-# Lucky Loop — Autoresearch you can trust 🔬
+# Lucky Loop: World-Model-Guided Autonomous Research with Claim-Calibrated Reporting
 
-> Track 3, Paris Research Hackathon (TUM.ai × Iterate). Équipe **Pegasus**. Juge : Noah (Tzafon).
-> Soumission : dim 28/06 **12:30** via ehl.gg + Entire.
+> Paris Research Hackathon (TUM.ai x Iterate), Track 3 "Lucky Loop". Team Pegasus.
 
-## Le pitch en 1 phrase
-Un agent de recherche autonome qui automatise la **ruée vers l'hyperparamètre** — il lit la littérature, conçoit et **lance de vraies expériences**, les analyse, et écrit un rapport. **Différenciateur : un agent Vérifieur qui ne fabrique rien** — il distingue l'effet réel du bruit et flag ce qui n'est pas prouvé.
+## Tagline
 
-## Pourquoi on gagne
-La plupart des agents autoresearch **hallucinent des résultats**. Le nôtre **vérifie avant d'affirmer** (effet vs bruit inter-seed). Démontré : sur un sweep weight_decay, effet=0.0064 vs bruit=0.0055 → l'agent dit "à peine significatif" au lieu de survendre. C'est la vertu n°1 d'un chercheur : l'honnêteté reproductible.
+**Predict before compute. Verify before claim.**
 
-## Architecture (5 agents + sandbox réel)
+## One-Liner
+
+Lucky Loop is a world-model-guided autonomous research loop: an autoresearch agent proposes experiments, Qwen-AgentWorld predicts what should happen before compute is spent, real code tests reality, and a deterministic verifier decides which claims survive the evidence.
+
+## Why This Matters
+
+Most autoresearch agents act by trial and error: they choose an experiment, run code, inspect the metric, and write a report. That is useful, but it misses two research-grade behaviors:
+
+1. **Foresight before action.** A research agent should estimate likely outcomes, risks, and runtime before spending compute.
+2. **Discipline after action.** A research agent should not turn fragile or noisy results into confident scientific claims.
+
+Lucky Loop adds both layers. The world model is the signature: Qwen-AgentWorld acts as an experimental simulator. The verifier is the trust gate: it prevents unsupported findings from appearing as claims.
+
+## Core Loop
+
+```text
+research state
+-> autoresearch agent proposes candidate experiments
+-> Qwen-AgentWorld predicts outcome / runtime / risks for each candidate
+-> planner selects an action using the world-model signal
+-> executor runs the real sklearn experiment
+-> comparator measures prediction vs reality
+-> verifier gates claims with evidence
+-> claim ledger + honest report + demo UI
 ```
-question → Literature → Planner → Experimenter(RUNS CODE) → Verifier(skeptic) → Writer → rapport.md
-```
-- `llm.py` — client LLM unique (OpenAI $50 crédits, ou vLLM self-hosted MI300X via LLM_BASE_URL)
-- `sandbox.py` — vraie expé : MLP sur digits, sweep d'1 hyperparamètre. Rapide, reproductible. ✅ prouvé
-- `orchestrator.py` — le loop + les 5 agents. Verifier = déterministe (la vérité = les chiffres). ✅ verifier prouvé
 
-## Lancer
+The important distinction:
+
+- **Autoresearch agent:** proposes actions and decides what to run.
+- **Qwen-AgentWorld:** predicts future observations for candidate actions.
+- **Executor:** runs real code and logs measured metrics.
+- **Comparator:** records whether the prediction matched reality.
+- **Verifier:** deterministic claim gate, not an LLM judge.
+
+For the hackathon build, Codex can operate as the autoresearch agent while the repo records the same trace shape that an autonomous planner will later produce.
+
+## What Works Now
+
+- Qwen-AgentWorld-35B-A3B is served through vLLM on Team Pegasus MI300X.
+- OpenAI-compatible endpoint: `http://134.199.205.222:8000/v1`.
+- `luckyworld/` runs a real sklearn loop:
+  - world-model prediction
+  - real experiment execution
+  - prediction-vs-actual comparison
+  - JSON evidence traces
+  - Markdown report
+- Six real runs exist under `luckyworld/runs/`.
+- The current verifier already blocks an overclaim in `run_005`:
+  - `effect_size = 0.020979`
+  - `seed_noise = 0.027972`
+  - verdict: `inconclusive`
+
+## Demo Message
+
+```text
+Most AI scientists hallucinate after the experiment.
+Lucky Loop makes a prediction before the experiment,
+runs the real code, compares prediction with reality,
+and only claims what survives verification.
+```
+
+## Run
+
 ```bash
-# 1. clé LLM
-export OPENAI_API_KEY=sk-...            # $50 crédits hacka (mail)
-#   OU self-hosted MI300X :  export LLM_BASE_URL=http://<MI300X-IP>:8000/v1 ; export LLM_MODEL=<id>
+cd luckyworld
+python3 -m venv .venv
+. .venv/bin/activate
+pip install -r requirements.txt
 
-# 2. env
-uv venv .venv && uv pip install --python .venv/bin/python torch scikit-learn
+export PYTHONPATH=src
+export LUCKYWORLD_SIMULATOR_BASE_URL=http://134.199.205.222:8000/v1
+export LUCKYWORLD_SIMULATOR_MODEL=Qwen/Qwen-AgentWorld-35B-A3B
+export LUCKYWORLD_SIMULATOR_API_KEY=dummy
 
-# 3. le loop complet
-.venv/bin/python orchestrator.py --question "La régularisation améliore-t-elle la généralisation d'un petit MLP ?"
-# -> reports/report-*.md + data-*.json
-
-# test sandbox seul (sans LLM) :
-.venv/bin/python sandbox.py --hp weight_decay --values 0 1e-4 1e-3 1e-2 --seeds 0 1 2
+python3 -m luckyworld.loop --max-experiments 6
 ```
 
-## Division de labo (équipe Pegasus, 4)
-- **Nevil** : orchestrateur + **Verifier** (la signature) + démo/pitch
-- **P2** : Experimenter + sandbox (élargir : plus d'hyperparamètres, figure matplotlib, run sur MI300X)
-- **P3** : Literature (vrai crawl arXiv) + Writer (rapport + figure)
-- **P4** : infra GPU (vLLM sur MI300X) + Entire + interface "fun" (voice/Telegram)
-- **CC HQ** : scaffold (fait) + box GPU + debug on-call
+If the simulator endpoint is unavailable, Lucky Loop keeps a deterministic heuristic fallback for local smoke tests. The live presentation path uses Qwen-AgentWorld.
 
-## État (Day 1)
-- ✅ Sandbox prouvé (vraies expés, 3.5s CPU)
-- ✅ Verifier prouvé (effet vs bruit)
-- ✅ GPU MI300X provisionné et Qwen-AgentWorld-35B-A3B servi via vLLM sur `http://134.199.205.222:8000/v1`
-- ✅ Prototype LuckyWorld ajouté dans [`luckyworld/`](./luckyworld) : prédiction Qwen-AgentWorld → vraie expé sklearn → comparaison → trace JSON → rapport
-- ✅ 5 expériences réelles sur `sklearn breast_cancer`; meilleur résultat observé : scaled logistic regression, accuracy **0.9860**
-- ⏳ Prochaine étape : perturbation contrôlée (`noisy_labels`, data leakage trap, bad split) + figure + arXiv crawl + interface fun
+## Artifacts
 
-## Scope (set up the exams)
-**MVP (ce soir)** : le loop tourne end-to-end UNE fois → un rapport réel + le verdict du Verifier.
-**Démo (dimanche)** : l'agent répond à une vraie question, montre une figure, et le Verifier flag honnêtement. Bonus : self-hosted MI300X + voice.
+```text
+luckyworld/runs/run_001.json ... run_006.json
+luckyworld/reports/final_report.md
+luckyworld/app/streamlit_app.py
+```
+
+Next build targets:
+
+- trace schema v2 with explicit state, candidates, predictions, decision trace, and claim ledger updates
+- multi-candidate world-model prediction before selection
+- world-model calibration report
+- trust ladder verifier
+- claim ledger
+- judge-ready Streamlit timeline

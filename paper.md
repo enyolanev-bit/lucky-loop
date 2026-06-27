@@ -1,62 +1,154 @@
-# Calibrated Autoresearch: An Autonomous Research Agent That Refuses to Fabricate Findings
+# Lucky Loop: World-Model-Guided Autonomous Research with Claim-Calibrated Reporting
 
-**Team Pegasus** — Paris Research Hackathon (TUM.ai × Iterate), Track 3 "Lucky Loop", June 2026.
+**Team Pegasus** — Paris Research Hackathon (TUM.ai x Iterate), Track 3 "Lucky Loop", June 2026.
 
-> 📝 Squelette de paper. Pré-rempli avec ce qui est déjà prouvé ; `[TODO]` = à compléter par l'équipe. Garder court (4-6 pages style workshop). Anglais.
-
----
+> Short workshop-style draft. Keep the claim narrow: this is an auditable research loop, not proof of general scientific discovery.
 
 ## Abstract
-*[TODO P3 — 120 mots. Draft :]* Autonomous research agents promise to automate the full loop from literature review to experimentation and reporting. A critical failure mode, however, is **fabrication**: agents report findings that are not supported by their own data. We present **Calibrated Autoresearch**, a multi-agent system that runs an end-to-end research loop (literature → plan → real code execution → verification → report) with an explicit **Verifier** that gates every claimed finding on a simple, deterministic criterion: the measured effect must exceed inter-seed noise. On a hyperparameter-search benchmark, our system [TODO: headline result — e.g. "abstains from N% of unsupported claims while preserving M% of true findings"]. Our contribution is not a stronger model but a **trust layer** that makes autonomous research reproducible and honest.
+
+Autonomous research agents can generate plausible experiments and convincing reports, but they often lack two safeguards: prospective prediction before compute and conservative claim calibration after execution. We present **Lucky Loop**, a world-model-guided autoresearch loop in which an agent proposes candidate ML experiments, Qwen-AgentWorld predicts likely metrics, runtime, and failure modes before execution, and real sklearn experiments test those predictions. A comparator records prediction-vs-reality, while a deterministic verifier and claim ledger prevent fragile results from becoming unsupported scientific claims. On small tabular benchmarks, Lucky Loop produces auditable traces containing state, action, predicted observation, real observation, comparison, and claim verdicts. The contribution is a research loop that measures both experimental outcomes and the agent's own predictive reliability.
 
 ## 1. Introduction
-- Research is slow and painful: literature triage, hyperparameter search, compute scheduling. *(cf. challenge framing.)*
-- Autonomous "AI scientist" agents aim to automate this. **But the #1 risk is hallucinated findings** — agents that claim results their data doesn't support.
-- **Our claim**: the bottleneck isn't generating experiments, it's *trusting* them. We add a deterministic verification layer.
-- **Contributions**:
-  1. An end-to-end multi-agent research loop that executes **real** experiments (not simulated).
-  2. A **Verifier** that gates findings on *effect > inter-seed noise* — deterministic, model-free, un-foolable by a persuasive LLM.
-  3. An honest report format that separates *what is proven* from *what could not be confirmed*.
+
+Autonomous research agents promise to accelerate the loop from idea to experiment to report. Existing systems can draft hypotheses, modify code, run experiments, and summarize results. The critical risk is not only that they fail to improve a metric; it is that they produce a convincing report from weak evidence.
+
+Lucky Loop targets that failure mode by adding foresight before compute and discipline before claim. The core idea is simple:
+
+```text
+Predict before compute. Verify before claim.
+```
+
+An autoresearch agent proposes candidate experiments. Qwen-AgentWorld is used as a language world model: given the current research state and a candidate action, it predicts the next experimental observation. Lucky Loop then runs the real experiment, compares prediction against reality, and only allows claims that survive a deterministic evidence gate.
+
+Contributions:
+
+1. A world-model-guided autoresearch loop that predicts experiment outcomes before execution.
+2. A prediction-vs-actual trace format for auditing research-agent decisions.
+3. A deterministic verifier and claim ledger for claim-calibrated reporting.
+4. A small demonstration with useful predictions, prediction misses, and blocked overclaims.
 
 ## 2. Related Work
-- Autonomous research / AI Scientist agents *[TODO P3: cite 2-3, arXiv crawl]*.
-- Data-efficiency under fixed data: Konwoo et al., *Pre-training under infinite compute* (Stanford, arXiv:2509.14786) — regularization + ensembling + distillation. *(domaine d'expérience possible pour l'agent.)*
-- Generalization theory: Wilson, *Deep learning is not so mysterious* (inductive biases as the lever). *[TODO: positionner notre gating effet/bruit.]*
-- Gap: existing agents optimize for output, not **calibration/honesty**.
+
+**Autonomous research agents.** Systems such as The AI Scientist and Agent Laboratory automate parts of the scientific workflow: idea generation, literature review, code writing, experiments, and report drafting. Lucky Loop does not try to replace that stack. It adds a missing layer: explicit world-model prediction before compute and evidence-gated claims after execution.
+
+**ML experiment agents.** MLE-bench and related work frame ML agents as search policies over experiment spaces. These systems are often judged by final score. Lucky Loop also asks whether the agent could predict what would happen before acting, and whether its final claims are supported by the evidence it collected.
+
+**World models for agents.** Qwen-AgentWorld frames a language world model as a predictor of environment dynamics from state and action. Lucky Loop applies that idea to experimental research: the state is the current evidence base, the action is a candidate experiment, and the predicted observation is a metric/runtime/risk forecast.
+
+**Verification and reproducibility.** Critiques of AI scientist systems highlight hallucinated findings, weak implementations, and benchmark misuse. Lucky Loop addresses this with logs, prediction-vs-actual comparisons, a deterministic verifier, and a claim ledger.
 
 ## 3. Method
-**Architecture** (5 agents, orchestrated):
-1. **Literature** — retrieves relevant prior work (arXiv). *[TODO: real crawl]*
-2. **Planner** — turns the question into an executable experiment plan (which hyperparameter, values, seeds).
-3. **Experimenter** — runs **real** code in a sandbox; returns measured numbers only.
-4. **Verifier** ⭐ — *the contribution*. Deterministic checks on the real results:
-   - `effect_size = max(acc) − min(acc)` across hyperparameter values;
-   - `seed_noise = max−min` across seeds for the best config;
-   - a finding is **trustworthy iff effect_size > seed_noise**; else flagged "inconclusive (within noise)".
-5. **Writer** — produces a report containing only verified findings + an explicit "not confirmed" section.
 
-**Why deterministic verification?** An LLM verifier can be talked into agreeing. A numeric effect-vs-noise gate cannot. The truth comes from the logged numbers, not the model.
+### World Model as Experimental Simulator
 
-## 4. Experimental Setup
-- **Sandbox**: small MLP (1 hidden layer) on `sklearn digits` (10 classes), trained on the team's AMD MI300X. Fast, reproducible (fixed seeds). *[TODO P2: extend to more tasks/hyperparams + matplotlib figure.]*
-- **Search space**: `weight_decay`, `dropout`, `lr`, `hidden`.
-- **LLM backend**: [TODO: OpenAI gpt-4.1-mini / self-hosted vLLM on MI300X].
+At step `t`, Lucky Loop maintains an explicit research state `s_t`: goal, known results, budget, open questions, and unresolved risks. The autoresearch agent proposes candidate actions `a_t`, such as running a scaled model, testing a new inductive bias, or launching a multi-seed robustness sweep.
 
-## 5. Results
-**Preliminary (proven):** weight_decay sweep `{0, 1e-4, 1e-3, 1e-2}`, 2 seeds:
-- best = `weight_decay=1e-3`, acc = **0.9731**
-- **effect_size = 0.0064**, **seed_noise = 0.0055** → Verifier verdict: *trustworthy, but barely (effect ≈ noise)*.
-- → The system reports this honestly instead of overselling "1e-3 is best". *(This is the headline behavior.)*
+For each candidate action, Qwen-AgentWorld predicts a next observation:
 
-*[TODO: figure acc vs hyperparameter with seed error bars; a case where the Verifier correctly flags "inconclusive"; quantify fabrication avoided.]*
+```text
+o_hat_t+1 = world_model(s_t, a_t)
+```
 
-## 6. Limitations
-- Sandbox is a toy task; the calibration principle generalizes but absolute numbers don't. *[honnêteté assumée]*
-- Verifier uses a simple effect-vs-noise gate; richer statistics (CIs, significance tests) are future work.
-- Literature agent coverage is shallow in 48h.
+The predicted observation includes:
 
-## 7. Conclusion
-Autonomous research is only useful if you can trust it. By gating findings on real effect-vs-noise, Calibrated Autoresearch turns an LLM research loop into a reproducible, honest one. The contribution is a **trust layer**, portable to any autoresearch system.
+- expected metric range
+- expected runtime
+- expected failure modes
+- recommendation: run / skip / modify
+- rationale
+
+The selector chooses an action using the world-model signal. The executor then runs real code and returns the actual observation:
+
+```text
+o_t+1 = executor(a_t)
+```
+
+The comparator measures prediction-vs-reality. The verifier gates any scientific claim derived from the result. The loop updates state:
+
+```text
+s_t+1 = update(s_t, a_t, o_hat_t+1, o_t+1, verifier_result)
+```
+
+This makes Qwen-AgentWorld a simulator of experimental consequences, not merely a generic planner or text generator.
+
+### Claim-Calibrated Reporting
+
+Lucky Loop separates experiment outcomes from scientific claims. A single high score is an observation, not a claim. For sweep results, the verifier compares measured effect against seed noise:
+
+```text
+effect_size = best_mean_metric - worst_mean_metric
+seed_noise = max(best_config_seeds) - min(best_config_seeds)
+effect_to_noise_ratio = effect_size / seed_noise
+```
+
+The current verifier is deliberately conservative. It is not a full statistical significance engine; it is a claim gate that prevents obvious overclaiming.
+
+## 4. System
+
+Lucky Loop is implemented as a small auditable pipeline:
+
+1. **Autoresearch agent / planner** proposes candidate experiments and decides what to run.
+2. **Qwen-AgentWorld simulator** predicts each candidate's likely outcome before compute.
+3. **Executor** runs real sklearn experiments and returns measured metrics.
+4. **Comparator** logs prediction hits, misses, and lessons.
+5. **Verifier** labels claims as missing, inconclusive, weakly supported, supported, or strongly supported.
+6. **Claim ledger** records blocked and allowed claims with evidence run IDs.
+7. **Reporter/UI** show the timeline and only write evidence-backed claims.
+
+During the hackathon build, Codex can operate as the autoresearch agent while Lucky Loop records the same state/action/prediction/execution traces that an autonomous planner will later produce.
+
+## 5. Experiments
+
+Current experiments use sklearn tabular datasets, including `breast_cancer`, with fast classifiers such as logistic regression, random forest, SVC, and gradient boosting. The loop already contains real runs with:
+
+- unscaled and scaled logistic regression
+- random forest
+- scaled SVC
+- gradient boosting
+- noisy-label multi-seed sweep
+
+The key demonstrated verifier case is a noisy-label C sweep:
+
+```text
+best mean: C=0.1
+effect_size = 0.020979
+seed_noise = 0.027972
+verdict = inconclusive
+```
+
+A normal agent might report a robust winner. Lucky Loop blocks that overclaim and allows only a weaker statement: C=0.1 had the best mean in this sweep, but the effect was smaller than seed noise.
+
+## 6. Results To Report
+
+The final report should include:
+
+- prediction-vs-actual timeline
+- metric interval coverage
+- runtime interval coverage
+- prediction misses
+- useful world-model decisions
+- claim ledger summary
+- supported, weakly supported, and blocked claims
+
+The important result is not that the world model is always correct. The important result is that Lucky Loop measures when it is correct, exposes when it is wrong, and prevents unsupported claims from entering the final report.
+
+## 7. Limitations
+
+- The current benchmark is small and sklearn-based.
+- The verifier is conservative and simple; it is not a replacement for statistical testing.
+- Qwen-AgentWorld is not fine-tuned for this exact experimental environment.
+- The system demonstrates an auditable trust layer, not fully automated open-ended science.
+- Live Qwen-AgentWorld is the demo path, but local tests need a fallback for robustness.
+
+## 8. Conclusion
+
+Lucky Loop wraps autoresearch with foresight and discipline. An agent proposes experiments, Qwen-AgentWorld predicts what should happen, real code tests the prediction, and only evidence-backed claims survive. The result is not just an agent that sounds like a scientist, but a loop that is forced to behave like one: predict, test, compare, and claim only what the evidence supports.
 
 ## References
-*[TODO P3: Konwoo et al. 2509.14786; Wilson; AI Scientist papers; LeRobot/diffusion if used.]*
+
+- The AI Scientist: Towards Fully Automated Open-Ended Scientific Discovery, 2024.
+- Agent Laboratory: Using LLM Agents as Research Assistants, 2025.
+- MLE-bench, 2024.
+- AI Research Agents for Machine Learning: Search, Exploration, and Generalization in MLE-bench, 2025.
+- Qwen-AgentWorld: Language World Models for General Agents, 2026.
+- AI Scientists Fail Without Strong Implementation Capability, 2025.

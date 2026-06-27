@@ -1,97 +1,111 @@
-# Lucky Loop — cadrage final
+# Lucky Loop: cadrage final
 
-## One-liner
+## Framing
 
-Lucky Loop is an autonomous research loop that predicts before it computes and verifies before it claims.
+**Lucky Loop: World-Model-Guided Autonomous Research with Claim-Calibrated Reporting**
+
+Tagline:
+
+**Predict before compute. Verify before claim.**
+
+One-liner:
+
+Lucky Loop is a world-model-guided autonomous research loop: an autoresearch agent proposes experiments, Qwen-AgentWorld predicts their likely outcomes before compute, real code tests reality, and a deterministic verifier decides which claims survive the evidence.
 
 ## Positionnement
 
-On ne vend pas juste un agent qui lance des expériences. On vend un agent de recherche qui combine deux comportements complémentaires :
+On ne vend pas "un agent qui lance des expériences ML". On vend un agent de recherche qui a deux comportements que les autoresearch agents classiques n'ont pas assez:
 
-1. Imagination avant l'expérience : un language world model, Qwen-AgentWorld, prédit les métriques, runtime, risques et décisions probables avant de dépenser du compute.
-2. Scepticisme après l'expérience : un Verifier déterministe vérifie que les claims sont supportés par les vrais chiffres, notamment effet mesuré vs bruit inter-seed.
+1. **Foresight before compute**: Qwen-AgentWorld sert de language world model. Il prédit métriques, runtime, risques et failure modes à partir de l'état courant et d'une action candidate.
+2. **Discipline before claim**: après l'expérience réelle, un verifier déterministe bloque les claims non supportés et force le rapport à rester honnête.
 
-## Problème
+Le world model est le cœur wow. Le verifier est la deuxième couche de confiance.
 
-Les agents de recherche autonomes savent produire des plans et des rapports convaincants, mais un failure mode critique reste les claims non supportés : l'agent raconte une découverte alors que les logs ne la prouvent pas vraiment.
+## Rôles
 
-## Solution
+```text
+Autoresearch agent / planner
+    propose des actions candidates et décide quoi lancer
 
-Lucky Loop structure chaque itération comme une expérience auditable :
+Qwen-AgentWorld
+    prédit ce qui devrait arriver si une action est lancée
 
-question
--> Literature / context
--> Planner
--> World-model prediction with Qwen-AgentWorld
--> Experimenter runs real code
--> Comparator prediction vs actual
--> Verifier effect vs noise
--> Honest Writer
--> report + JSON evidence
+Executor
+    lance la vraie expérience sklearn et logge les métriques
 
-## Deux trust layers
+Comparator
+    compare prédiction et réalité
 
-### 1. Predict before compute
+Verifier
+    gate déterministe des claims scientifiques
 
-Avant d'exécuter, Qwen-AgentWorld reçoit l'état courant et l'action proposée. Il prédit :
-- metric range
-- runtime
-- risks
-- recommendation: run / skip / modify
-- rationale
+Claim ledger / reporter / UI
+    expose les preuves et n'écrit que les claims autorisés
+```
 
-Cette prédiction sert à mieux choisir la prochaine expérience et à rendre le raisonnement traçable.
+Pendant le build hackathon, Codex peut jouer le rôle de l'agent autoresearch. Le repo doit quand même produire des traces dans le format final: état, candidates, prédictions, décision, exécution, comparaison, verifier, claims.
 
-### 2. Verify before claim
+## Boucle cible
 
-Après exécution, un Verifier déterministe décide ce qui peut être affirmé :
-- effect_size = écart entre configurations
-- seed_noise = variance inter-seed pour la meilleure config
-- trustworthy = effect_size > seed_noise
+```text
+research question
+-> explicit state s_t
+-> candidate actions a_t
+-> Qwen-AgentWorld predicts observations o_hat_t+1
+-> selector chooses action using world-model signal
+-> executor returns real observation o_t+1
+-> comparator measures prediction-vs-reality
+-> verifier gates claims
+-> claim ledger
+-> honest report and demo UI
+-> updated state s_t+1
+```
 
-Si l'effet est dans le bruit, le rapport doit dire "inconclusive" au lieu de survendre.
+## Ce qu'il faut marteler
+
+- Qwen-AgentWorld n'est pas seulement un backend LLM.
+- Il joue le rôle de simulateur de l'environnement expérimental.
+- Le système prédit avant de dépenser du compute.
+- La prédiction est comparée au résultat réel.
+- Les prédictions ratées restent visibles.
+- Le verifier empêche de transformer un résultat fragile en claim.
+- Le claim ledger rend le rapport auditable.
 
 ## Démo cible
 
-### Acte 1 — world-model guided loop
+### Acte 1 - Predict before compute
 
-Dataset sklearn breast_cancer.
+Montrer un état courant et plusieurs candidates. Qwen-AgentWorld prédit pour chaque candidate:
 
-Qwen-AgentWorld prédit qu'une logistic regression sans scaling peut être limitée. La boucle choisit ensuite le scaling. Résultat réel : scaled logistic regression atteint 0.9860 accuracy.
+- metric range
+- runtime
+- risks
+- recommendation
+- rationale
 
-Preuve : traces JSON + final_report.md.
+### Acte 2 - World-model-guided decision
 
-### Acte 2 — verifier trust layer
+Montrer que le planner choisit une action à cause d'un signal du world model:
 
-On lance un mini sweep multi-seed sur un MLP/digits ou une variante sklearn avec perturbation contrôlée.
+> Qwen predicted seed variance risk, so the agent selected a multi-seed verifier sweep before allowing a strong claim.
 
-Le système montre un cas où une amélioration apparente est proche du bruit inter-seed. Le Verifier refuse de transformer ça en claim fort.
+### Acte 3 - Reality check
 
-Phrase démo :
+L'expérience réelle tourne. Le comparator affiche hit/miss.
 
-The model is creative before the experiment. The verifier is skeptical after it.
+### Acte 4 - Verify before claim
 
-## Ce qu'on doit construire maintenant
+Montrer le moment honnête:
 
-1. Fusionner le framing dans README/paper.
-2. Ajouter un Verifier effect-vs-noise dans le module LuckyWorld/Lucky Loop.
-3. Ajouter un scénario multi-seed ou noisy_labels pour obtenir un exemple "inconclusive".
-4. Générer un rapport qui sépare :
-   - supported claims
-   - weak/inconclusive findings
-   - prediction misses
-5. Mettre à jour Streamlit pour afficher : prediction, actual, verifier verdict.
-6. Poster les updates dans Notion.
-
-## Demo script final
-
-1. Montrer la question de recherche.
-2. Montrer la prédiction Qwen-AgentWorld avant run.
-3. Montrer l'exécution réelle.
-4. Montrer l'écart prediction vs actual.
-5. Montrer le Verifier qui accepte ou refuse un claim.
-6. Montrer le rapport final honnête.
+```text
+Apparent winner: C=0.1
+effect_size = 0.020979
+seed_noise = 0.027972
+verdict = inconclusive
+blocked claim: C=0.1 is robustly better
+allowed claim: C=0.1 had the best mean, but the effect was smaller than seed noise
+```
 
 ## Phrase finale
 
-Lucky Loop does not just automate research. It makes autonomous research auditable: every claim must survive both prediction and verification.
+Most AI scientists hallucinate after the experiment. Lucky Loop makes a prediction before the experiment, runs the real code, compares prediction with reality, and only claims what survives verification.
