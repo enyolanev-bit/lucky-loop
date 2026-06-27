@@ -74,7 +74,7 @@ def main() -> None:
         )
     out = ROOT / "reports" / "benchmark_summary.md"
     out.parent.mkdir(parents=True, exist_ok=True)
-    out.write_text("\n".join(report), encoding="utf-8")
+    out.write_text("\n".join(report) + "\n", encoding="utf-8")
     print(f"Wrote benchmark summary to {out.relative_to(ROOT)}")
 
 

@@ -53,12 +53,13 @@ Qwen-AgentWorld is never treated as the research agent or verifier. It is the wo
 - OpenAI-compatible endpoint: `http://134.199.205.222:8000/v1`.
 - `src/luckyloop/` contains the runnable task-agnostic ML research loop:
   - task specs for sklearn benchmarks
-  - candidate generation from dataset/model/search-space config
+  - adaptive candidate generation from dataset/model/search-space config
   - world-model prediction
   - real experiment execution
   - prediction-vs-actual comparison
   - automatic top-model detection
   - matched multi-seed top-model verification
+  - policy ablation against fixed-order and score-chaser baselines
   - JSON evidence traces
   - Markdown report
 - Benchmark tasks exist for real sklearn datasets:
@@ -108,6 +109,7 @@ reports/<task_id>/demo_summary.md
 reports/<task_id>/world_model_calibration.md
 reports/<task_id>/claim_ledger.json
 reports/benchmark_summary.md
+reports/policy_ablation.md
 app/streamlit_app.py
 ```
 

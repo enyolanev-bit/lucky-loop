@@ -1,69 +1,322 @@
 {
   "run_id": "run_005",
   "goal": "Maximize validation accuracy on sklearn wine under a small compute budget, while avoiding unsupported claims.",
-  "hypothesis": "Selected gradient_boosting because score=31; world model recommended run; ensemble baseline is useful as a late comparison; world model predicted overfitting risk. World model predicted accuracy around 0.90-0.98, runtime under 15, recommendation=run, risks=can overfit with too many estimators. Causal signal type: mixed.",
+  "hypothesis": "Selected top_model_verification because score=110.0; world model recommended run; top observed models need multi-seed verification before a robust best-model claim; world model predicted top-model robustness or claim risk. World model predicted accuracy around 0.90-0.99, runtime under 45, recommendation=run, risks=top single-run models may be tied across seeds, seed variance may exceed the observed top-model gap. Causal signal type: mixed.",
   "proposed_action": {
-    "action_id": "action_gradient_boosting",
-    "command": "python experiments/train_sklearn.py --dataset wine --model gradient_boosting --n-estimators 150 --learning-rate 0.05",
-    "model": "gradient_boosting",
+    "action_id": "action_verify_top_models",
+    "command": "python experiments/compare_models_sklearn.py --dataset wine --models logistic_regression:scale=true,C=0.1 random_forest:n_estimators=100 logistic_regression --seeds 0 1 2 3 4",
+    "model": "top_model_verification",
     "params": {
       "dataset": "wine",
-      "n_estimators": 150,
-      "learning_rate": 0.05
+      "models": [
+        {
+          "run_id": "run_002",
+          "model": "logistic_regression",
+          "model_key": "logistic_regression_scaled_C=0.1",
+          "metric": 1.0,
+          "params": {
+            "dataset": "wine",
+            "scale": true,
+            "C": 0.1
+          }
+        },
+        {
+          "run_id": "run_003",
+          "model": "random_forest",
+          "model_key": "random_forest_n=100",
+          "metric": 1.0,
+          "params": {
+            "dataset": "wine",
+            "n_estimators": 100,
+            "max_depth": null
+          }
+        },
+        {
+          "run_id": "run_001",
+          "model": "logistic_regression",
+          "model_key": "logistic_regression",
+          "metric": 0.9777777777777777,
+          "params": {
+            "dataset": "wine",
+            "scale": false
+          }
+        }
+      ],
+      "seeds": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "reason": "Top models are tied on single-split evidence; robust best-model claim requires multi-seed verification.",
+      "verification_action_key": "logistic_regression:logistic_regression_scaled_C=0.1:random_forest_n=100"
     }
   },
   "world_model_prediction": {
-    "expected_metric": "accuracy around 0.90-0.98",
-    "expected_runtime_seconds": "under 15",
+    "expected_metric": "accuracy around 0.90-0.99",
+    "expected_runtime_seconds": "under 45",
     "risks": [
-      "can overfit with too many estimators"
+      "top single-run models may be tied across seeds",
+      "seed variance may exceed the observed top-model gap"
     ],
     "recommendation": "run",
-    "rationale": "Boosting is a useful late comparison when linear and bagged-tree baselines are known.",
-    "action_specific_signal": "Use boosting to test a staged-tree alternative under the remaining budget.",
-    "claim_risk": "Do not report a robust winner from one boosted run."
+    "rationale": "A multi-seed top-model comparison is required before reporting a robust best model.",
+    "action_specific_signal": "Verify the top observed models on matched seeds before allowing a best-model claim.",
+    "claim_risk": "Best observed single-run model may not be a robust winner."
   },
   "actual_result": {
     "status": "success",
-    "accuracy": 0.9555555555555556,
-    "f1": 0.955430886707184,
-    "runtime_seconds": 0.5058,
-    "stdout_tail": "{\n  \"accuracy\": 0.9555555555555556,\n  \"dataset\": \"wine\",\n  \"f1\": 0.955430886707184,\n  \"model\": \"gradient_boosting\",\n  \"n_label_noise_flips\": 0,\n  \"n_test\": 45,\n  \"n_train\": 133,\n  \"params\": {\n    \"C\": 1.0,\n    \"dataset\": \"wine\",\n    \"kernel\": \"rbf\",\n    \"label_noise\": 0.0,\n    \"learning_rate\": 0.05,\n    \"max_depth\": null,\n    \"max_iter\": 1000,\n    \"model\": \"gradient_boosting\",\n    \"n_estimators\": 150,\n    \"scale\": false,\n    \"seed\": 42,\n    \"test_size\": 0.25\n  },\n  \"runtime_seconds\": 0.5058,\n  \"status\": \"success\"\n}\n",
+    "accuracy": null,
+    "f1": null,
+    "runtime_seconds": 43.2529,
+    "stdout_tail": " },\n    {\n      \"accuracy\": 0.9111111111111111,\n      \"config_key\": \"logistic_regression\",\n      \"f1\": 0.9110439432690072,\n      \"label\": \"logistic_regression\",\n      \"runtime_seconds\": 0.6195,\n      \"seed\": 1,\n      \"sweep_param\": \"model\",\n      \"value\": \"logistic_regression\"\n    },\n    {\n      \"accuracy\": 1.0,\n      \"config_key\": \"logistic_regression\",\n      \"f1\": 1.0,\n      \"label\": \"logistic_regression\",\n      \"runtime_seconds\": 0.6674,\n      \"seed\": 2,\n      \"sweep_param\": \"model\",\n      \"value\": \"logistic_regression\"\n    },\n    {\n      \"accuracy\": 0.9333333333333333,\n      \"config_key\": \"logistic_regression\",\n      \"f1\": 0.9328253968253967,\n      \"label\": \"logistic_regression\",\n      \"runtime_seconds\": 0.5081,\n      \"seed\": 3,\n      \"sweep_param\": \"model\",\n      \"value\": \"logistic_regression\"\n    },\n    {\n      \"accuracy\": 0.9777777777777777,\n      \"config_key\": \"logistic_regression\",\n      \"f1\": 0.9779047619047617,\n      \"label\": \"logistic_regression\",\n      \"runtime_seconds\": 0.7006,\n      \"seed\": 4,\n      \"sweep_param\": \"model\",\n      \"value\": \"logistic_regression\"\n    }\n  ],\n  \"runtime_seconds\": 43.2529,\n  \"seeds\": [\n    0,\n    1,\n    2,\n    3,\n    4\n  ],\n  \"status\": \"success\",\n  \"summary_by_value\": {\n    \"logistic_regression\": {\n      \"max_accuracy\": 1.0,\n      \"mean_accuracy\": 0.9511111111111111,\n      \"mean_f1\": 0.9509198997649124,\n      \"min_accuracy\": 0.9111111111111111,\n      \"n\": 5\n    },\n    \"logistic_regression_scaled_C=0.1\": {\n      \"max_accuracy\": 1.0,\n      \"mean_accuracy\": 0.9955555555555555,\n      \"mean_f1\": 0.9955637480798771,\n      \"min_accuracy\": 0.9777777777777777,\n      \"n\": 5\n    },\n    \"random_forest_n=100\": {\n      \"max_accuracy\": 1.0,\n      \"mean_accuracy\": 0.9955555555555555,\n      \"mean_f1\": 0.9955389872631253,\n      \"min_accuracy\": 0.9777777777777777,\n      \"n\": 5\n    }\n  },\n  \"type\": \"top_model_verification\",\n  \"verified_models\": [\n    \"logistic_regression_scaled_C=0.1\",\n    \"random_forest_n=100\",\n    \"logistic_regression\"\n  ]\n}\n",
     "stderr_tail": "",
     "raw": {
-      "accuracy": 0.9555555555555556,
-      "dataset": "wine",
-      "f1": 0.955430886707184,
-      "model": "gradient_boosting",
-      "n_label_noise_flips": 0,
-      "n_test": 45,
-      "n_train": 133,
-      "params": {
-        "C": 1.0,
-        "dataset": "wine",
-        "kernel": "rbf",
-        "label_noise": 0.0,
-        "learning_rate": 0.05,
-        "max_depth": null,
-        "max_iter": 1000,
-        "model": "gradient_boosting",
-        "n_estimators": 150,
-        "scale": false,
-        "seed": 42,
-        "test_size": 0.25
+      "best": {
+        "max_accuracy": 1.0,
+        "mean_accuracy": 0.9955555555555555,
+        "mean_f1": 0.9955637480798771,
+        "min_accuracy": 0.9777777777777777,
+        "n": 5,
+        "value": "logistic_regression_scaled_C=0.1"
       },
-      "runtime_seconds": 0.5058,
-      "status": "success"
+      "dataset": "wine",
+      "failures": [],
+      "metric": "accuracy",
+      "models": [
+        "logistic_regression:scale=true,C=0.1",
+        "random_forest:n_estimators=100",
+        "logistic_regression"
+      ],
+      "runner_up": {
+        "max_accuracy": 1.0,
+        "mean_accuracy": 0.9955555555555555,
+        "mean_f1": 0.9955389872631253,
+        "min_accuracy": 0.9777777777777777,
+        "n": 5,
+        "value": "random_forest_n=100"
+      },
+      "runs": [
+        {
+          "accuracy": 1.0,
+          "config_key": "logistic_regression_scaled_C=0.1",
+          "f1": 1.0,
+          "label": "logistic_regression_scaled_C=0.1",
+          "runtime_seconds": 0.0408,
+          "seed": 0,
+          "sweep_param": "model",
+          "value": "logistic_regression_scaled_C=0.1"
+        },
+        {
+          "accuracy": 0.9777777777777777,
+          "config_key": "logistic_regression_scaled_C=0.1",
+          "f1": 0.9778187403993854,
+          "label": "logistic_regression_scaled_C=0.1",
+          "runtime_seconds": 0.0195,
+          "seed": 1,
+          "sweep_param": "model",
+          "value": "logistic_regression_scaled_C=0.1"
+        },
+        {
+          "accuracy": 1.0,
+          "config_key": "logistic_regression_scaled_C=0.1",
+          "f1": 1.0,
+          "label": "logistic_regression_scaled_C=0.1",
+          "runtime_seconds": 0.0158,
+          "seed": 2,
+          "sweep_param": "model",
+          "value": "logistic_regression_scaled_C=0.1"
+        },
+        {
+          "accuracy": 1.0,
+          "config_key": "logistic_regression_scaled_C=0.1",
+          "f1": 1.0,
+          "label": "logistic_regression_scaled_C=0.1",
+          "runtime_seconds": 0.0204,
+          "seed": 3,
+          "sweep_param": "model",
+          "value": "logistic_regression_scaled_C=0.1"
+        },
+        {
+          "accuracy": 1.0,
+          "config_key": "logistic_regression_scaled_C=0.1",
+          "f1": 1.0,
+          "label": "logistic_regression_scaled_C=0.1",
+          "runtime_seconds": 0.0251,
+          "seed": 4,
+          "sweep_param": "model",
+          "value": "logistic_regression_scaled_C=0.1"
+        },
+        {
+          "accuracy": 1.0,
+          "config_key": "random_forest_n=100",
+          "f1": 1.0,
+          "label": "random_forest_n=100",
+          "runtime_seconds": 0.3424,
+          "seed": 0,
+          "sweep_param": "model",
+          "value": "random_forest_n=100"
+        },
+        {
+          "accuracy": 1.0,
+          "config_key": "random_forest_n=100",
+          "f1": 1.0,
+          "label": "random_forest_n=100",
+          "runtime_seconds": 0.379,
+          "seed": 1,
+          "sweep_param": "model",
+          "value": "random_forest_n=100"
+        },
+        {
+          "accuracy": 0.9777777777777777,
+          "config_key": "random_forest_n=100",
+          "f1": 0.9776949363156261,
+          "label": "random_forest_n=100",
+          "runtime_seconds": 0.3795,
+          "seed": 2,
+          "sweep_param": "model",
+          "value": "random_forest_n=100"
+        },
+        {
+          "accuracy": 1.0,
+          "config_key": "random_forest_n=100",
+          "f1": 1.0,
+          "label": "random_forest_n=100",
+          "runtime_seconds": 0.3546,
+          "seed": 3,
+          "sweep_param": "model",
+          "value": "random_forest_n=100"
+        },
+        {
+          "accuracy": 1.0,
+          "config_key": "random_forest_n=100",
+          "f1": 1.0,
+          "label": "random_forest_n=100",
+          "runtime_seconds": 0.3386,
+          "seed": 4,
+          "sweep_param": "model",
+          "value": "random_forest_n=100"
+        },
+        {
+          "accuracy": 0.9333333333333333,
+          "config_key": "logistic_regression",
+          "f1": 0.9328253968253967,
+          "label": "logistic_regression",
+          "runtime_seconds": 0.5981,
+          "seed": 0,
+          "sweep_param": "model",
+          "value": "logistic_regression"
+        },
+        {
+          "accuracy": 0.9111111111111111,
+          "config_key": "logistic_regression",
+          "f1": 0.9110439432690072,
+          "label": "logistic_regression",
+          "runtime_seconds": 0.6195,
+          "seed": 1,
+          "sweep_param": "model",
+          "value": "logistic_regression"
+        },
+        {
+          "accuracy": 1.0,
+          "config_key": "logistic_regression",
+          "f1": 1.0,
+          "label": "logistic_regression",
+          "runtime_seconds": 0.6674,
+          "seed": 2,
+          "sweep_param": "model",
+          "value": "logistic_regression"
+        },
+        {
+          "accuracy": 0.9333333333333333,
+          "config_key": "logistic_regression",
+          "f1": 0.9328253968253967,
+          "label": "logistic_regression",
+          "runtime_seconds": 0.5081,
+          "seed": 3,
+          "sweep_param": "model",
+          "value": "logistic_regression"
+        },
+        {
+          "accuracy": 0.9777777777777777,
+          "config_key": "logistic_regression",
+          "f1": 0.9779047619047617,
+          "label": "logistic_regression",
+          "runtime_seconds": 0.7006,
+          "seed": 4,
+          "sweep_param": "model",
+          "value": "logistic_regression"
+        }
+      ],
+      "runtime_seconds": 43.2529,
+      "seeds": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "status": "success",
+      "summary_by_value": {
+        "logistic_regression": {
+          "max_accuracy": 1.0,
+          "mean_accuracy": 0.9511111111111111,
+          "mean_f1": 0.9509198997649124,
+          "min_accuracy": 0.9111111111111111,
+          "n": 5
+        },
+        "logistic_regression_scaled_C=0.1": {
+          "max_accuracy": 1.0,
+          "mean_accuracy": 0.9955555555555555,
+          "mean_f1": 0.9955637480798771,
+          "min_accuracy": 0.9777777777777777,
+          "n": 5
+        },
+        "random_forest_n=100": {
+          "max_accuracy": 1.0,
+          "mean_accuracy": 0.9955555555555555,
+          "mean_f1": 0.9955389872631253,
+          "min_accuracy": 0.9777777777777777,
+          "n": 5
+        }
+      },
+      "type": "top_model_verification",
+      "verified_models": [
+        "logistic_regression_scaled_C=0.1",
+        "random_forest_n=100",
+        "logistic_regression"
+      ]
     }
   },
   "comparison": {
-    "metric_match": true,
+    "metric_match": false,
     "runtime_match": true,
-    "unexpected_events": [],
-    "lesson": "Prediction was broadly consistent with the real run."
+    "unexpected_events": [
+      "accuracy 0.9956 outside predicted range 0.90-0.99"
+    ],
+    "lesson": "Run succeeded, but the prediction missed at least one quantitative detail."
   },
   "next_decision": "Continue: regenerate candidates from the updated state and ask the world model to predict each option.",
-  "verification": null,
+  "verification": {
+    "status": "inconclusive",
+    "metric": "accuracy",
+    "effect_size": 0.0,
+    "seed_noise": 0.022222,
+    "effect_to_noise_ratio": 0.0,
+    "min_seed_count": 5,
+    "low_n_warning": false,
+    "trustworthy": false,
+    "best_config": "logistic_regression_scaled_C=0.1",
+    "worst_config": "random_forest_n=100",
+    "blocked_claim": "logistic_regression_scaled_C=0.1 is robustly better than random_forest_n=100.",
+    "allowed_claim": "logistic_regression_scaled_C=0.1 had the best multi-seed mean accuracy, but the effect was smaller than seed noise; no robust best-model claim is allowed.",
+    "supported_claims": [],
+    "inconclusive_findings": [
+      "Best config 'logistic_regression_scaled_C=0.1' improves over 'random_forest_n=100' by 0.0000 accuracy, but best-config seed noise is 0.0222."
+    ],
+    "rationale": "Measured top-model effect is not larger than inter-seed noise. The report must not claim a robust best model."
+  },
   "schema_version": "2.0",
   "state_before": {
     "state_id": "state_005",
@@ -86,7 +339,8 @@
         "f1": 1.0,
         "params": {
           "dataset": "wine",
-          "scale": true
+          "scale": true,
+          "C": 0.1
         }
       },
       {
@@ -96,7 +350,8 @@
         "f1": 1.0,
         "params": {
           "dataset": "wine",
-          "n_estimators": 300
+          "n_estimators": 100,
+          "max_depth": null
         }
       },
       {
@@ -107,7 +362,7 @@
         "params": {
           "dataset": "wine",
           "scale": true,
-          "C": 2.0,
+          "C": 0.5,
           "kernel": "rbf"
         }
       }
@@ -127,27 +382,29 @@
       "Top models are tied on single-split evidence; robust best-model claim requires multi-seed verification."
     ],
     "top_model_summary": {
-      "best_observed_model": "logistic_regression_scaled",
+      "best_observed_model": "logistic_regression_scaled_C=0.1",
       "best_observed_metric": 1.0,
       "top_models": [
         {
           "run_id": "run_002",
           "model": "logistic_regression",
-          "model_key": "logistic_regression_scaled",
+          "model_key": "logistic_regression_scaled_C=0.1",
           "metric": 1.0,
           "params": {
             "dataset": "wine",
-            "scale": true
+            "scale": true,
+            "C": 0.1
           }
         },
         {
           "run_id": "run_003",
           "model": "random_forest",
-          "model_key": "random_forest_n=300",
+          "model_key": "random_forest_n=100",
           "metric": 1.0,
           "params": {
             "dataset": "wine",
-            "n_estimators": 300
+            "n_estimators": 100,
+            "max_depth": null
           }
         },
         {
@@ -164,32 +421,310 @@
       "top_gap": 0.0,
       "needs_robustness_verification": true,
       "reason": "Top models are tied on single-split evidence; robust best-model claim requires multi-seed verification.",
-      "verification_action_key": "logistic_regression:logistic_regression_scaled:random_forest_n=300"
+      "verification_action_key": "logistic_regression:logistic_regression_scaled_C=0.1:random_forest_n=100"
     },
     "summary": "Task=wine_accuracy; dataset=wine; primary_metric=accuracy. Goal: Maximize validation accuracy on sklearn wine under a small compute budget, while avoiding unsupported claims.\nNo experiments have been run yet. Dataset: sklearn wine. Primary metric: accuracy; secondary metrics: f1.\nrun_001: logistic_regression actual=0.9777777777777777 status=success; prediction=accuracy around 0.90-0.97; recommendation=run; lesson=Run succeeded, but the prediction missed at least one quantitative detail.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_002: logistic_regression actual=1.0 status=success; prediction=accuracy around 0.95-0.98; recommendation=run; lesson=Run succeeded, but the prediction missed at least one quantitative detail.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_003: random_forest actual=1.0 status=success; prediction=accuracy around 0.90-0.98; recommendation=run; lesson=Run succeeded, but the prediction missed at least one quantitative detail.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_004: svc actual=0.9777777777777777 status=success; prediction=accuracy around 0.90-0.99; recommendation=run; lesson=Prediction was broadly consistent with the real run.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option."
   },
   "candidate_actions": [
     {
-      "action_id": "action_gradient_boosting",
+      "action_id": "action_logistic_regression_C-1p0_scale-True",
+      "command": "python experiments/train_sklearn.py --dataset wine --model logistic_regression --scale",
+      "model": "logistic_regression",
+      "params": {
+        "dataset": "wine",
+        "scale": true,
+        "C": 1.0
+      }
+    },
+    {
+      "action_id": "action_logistic_regression_C-10p0_scale-True",
+      "command": "python experiments/train_sklearn.py --dataset wine --model logistic_regression --scale --C 10.0",
+      "model": "logistic_regression",
+      "params": {
+        "dataset": "wine",
+        "scale": true,
+        "C": 10.0
+      }
+    },
+    {
+      "action_id": "action_logistic_regression_C-0p1_scale-False",
+      "command": "python experiments/train_sklearn.py --dataset wine --model logistic_regression --C 0.1",
+      "model": "logistic_regression",
+      "params": {
+        "dataset": "wine",
+        "scale": false,
+        "C": 0.1
+      }
+    },
+    {
+      "action_id": "action_logistic_regression_C-1p0_scale-False",
+      "command": "python experiments/train_sklearn.py --dataset wine --model logistic_regression",
+      "model": "logistic_regression",
+      "params": {
+        "dataset": "wine",
+        "scale": false,
+        "C": 1.0
+      }
+    },
+    {
+      "action_id": "action_logistic_regression_C-10p0_scale-False",
+      "command": "python experiments/train_sklearn.py --dataset wine --model logistic_regression --C 10.0",
+      "model": "logistic_regression",
+      "params": {
+        "dataset": "wine",
+        "scale": false,
+        "C": 10.0
+      }
+    },
+    {
+      "action_id": "action_gradient_boosting_learning_rate-0p05_n_estimators-100",
+      "command": "python experiments/train_sklearn.py --dataset wine --model gradient_boosting --n-estimators 100 --learning-rate 0.05",
+      "model": "gradient_boosting",
+      "params": {
+        "dataset": "wine",
+        "n_estimators": 100,
+        "learning_rate": 0.05,
+        "max_depth": null
+      }
+    },
+    {
+      "action_id": "action_gradient_boosting_learning_rate-0p1_n_estimators-100",
+      "command": "python experiments/train_sklearn.py --dataset wine --model gradient_boosting --n-estimators 100 --learning-rate 0.1",
+      "model": "gradient_boosting",
+      "params": {
+        "dataset": "wine",
+        "n_estimators": 100,
+        "learning_rate": 0.1,
+        "max_depth": null
+      }
+    },
+    {
+      "action_id": "action_gradient_boosting_learning_rate-0p05_n_estimators-150",
       "command": "python experiments/train_sklearn.py --dataset wine --model gradient_boosting --n-estimators 150 --learning-rate 0.05",
       "model": "gradient_boosting",
       "params": {
         "dataset": "wine",
         "n_estimators": 150,
-        "learning_rate": 0.05
+        "learning_rate": 0.05,
+        "max_depth": null
+      }
+    },
+    {
+      "action_id": "action_gradient_boosting_learning_rate-0p1_n_estimators-150",
+      "command": "python experiments/train_sklearn.py --dataset wine --model gradient_boosting --n-estimators 150 --learning-rate 0.1",
+      "model": "gradient_boosting",
+      "params": {
+        "dataset": "wine",
+        "n_estimators": 150,
+        "learning_rate": 0.1,
+        "max_depth": null
+      }
+    },
+    {
+      "action_id": "action_svc_C-2p0_kernel-rbf_scale-True",
+      "command": "python experiments/train_sklearn.py --dataset wine --model svc --scale --C 2.0 --kernel rbf",
+      "model": "svc",
+      "params": {
+        "dataset": "wine",
+        "scale": true,
+        "C": 2.0,
+        "kernel": "rbf"
+      }
+    },
+    {
+      "action_id": "action_svc_C-5p0_kernel-rbf_scale-True",
+      "command": "python experiments/train_sklearn.py --dataset wine --model svc --scale --C 5.0 --kernel rbf",
+      "model": "svc",
+      "params": {
+        "dataset": "wine",
+        "scale": true,
+        "C": 5.0,
+        "kernel": "rbf"
+      }
+    },
+    {
+      "action_id": "action_verify_top_models",
+      "command": "python experiments/compare_models_sklearn.py --dataset wine --models logistic_regression:scale=true,C=0.1 random_forest:n_estimators=100 logistic_regression --seeds 0 1 2 3 4",
+      "model": "top_model_verification",
+      "params": {
+        "dataset": "wine",
+        "models": [
+          {
+            "run_id": "run_002",
+            "model": "logistic_regression",
+            "model_key": "logistic_regression_scaled_C=0.1",
+            "metric": 1.0,
+            "params": {
+              "dataset": "wine",
+              "scale": true,
+              "C": 0.1
+            }
+          },
+          {
+            "run_id": "run_003",
+            "model": "random_forest",
+            "model_key": "random_forest_n=100",
+            "metric": 1.0,
+            "params": {
+              "dataset": "wine",
+              "n_estimators": 100,
+              "max_depth": null
+            }
+          },
+          {
+            "run_id": "run_001",
+            "model": "logistic_regression",
+            "model_key": "logistic_regression",
+            "metric": 0.9777777777777777,
+            "params": {
+              "dataset": "wine",
+              "scale": false
+            }
+          }
+        ],
+        "seeds": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "reason": "Top models are tied on single-split evidence; robust best-model claim requires multi-seed verification.",
+        "verification_action_key": "logistic_regression:logistic_regression_scaled_C=0.1:random_forest_n=100"
       }
     }
   ],
   "candidate_predictions": [
     {
       "action": {
-        "action_id": "action_gradient_boosting",
-        "command": "python experiments/train_sklearn.py --dataset wine --model gradient_boosting --n-estimators 150 --learning-rate 0.05",
+        "action_id": "action_logistic_regression_C-1p0_scale-True",
+        "command": "python experiments/train_sklearn.py --dataset wine --model logistic_regression --scale",
+        "model": "logistic_regression",
+        "params": {
+          "dataset": "wine",
+          "scale": true,
+          "C": 1.0
+        }
+      },
+      "prediction": {
+        "expected_metric": "accuracy around 0.95-0.98",
+        "expected_runtime_seconds": "under 5",
+        "risks": [
+          "minor convergence warning possible"
+        ],
+        "recommendation": "run",
+        "rationale": "Scaling usually helps logistic regression on tabular numeric features.",
+        "action_specific_signal": "Feature scaling is the direct intervention for a linear model after an unscaled baseline.",
+        "claim_risk": "Single-run best score should not be claimed as robust without repeated seeds."
+      },
+      "source": "heuristic_fallback"
+    },
+    {
+      "action": {
+        "action_id": "action_logistic_regression_C-10p0_scale-True",
+        "command": "python experiments/train_sklearn.py --dataset wine --model logistic_regression --scale --C 10.0",
+        "model": "logistic_regression",
+        "params": {
+          "dataset": "wine",
+          "scale": true,
+          "C": 10.0
+        }
+      },
+      "prediction": {
+        "expected_metric": "accuracy around 0.95-0.98",
+        "expected_runtime_seconds": "under 5",
+        "risks": [
+          "minor convergence warning possible"
+        ],
+        "recommendation": "run",
+        "rationale": "Scaling usually helps logistic regression on tabular numeric features.",
+        "action_specific_signal": "Feature scaling is the direct intervention for a linear model after an unscaled baseline.",
+        "claim_risk": "Single-run best score should not be claimed as robust without repeated seeds."
+      },
+      "source": "heuristic_fallback"
+    },
+    {
+      "action": {
+        "action_id": "action_logistic_regression_C-0p1_scale-False",
+        "command": "python experiments/train_sklearn.py --dataset wine --model logistic_regression --C 0.1",
+        "model": "logistic_regression",
+        "params": {
+          "dataset": "wine",
+          "scale": false,
+          "C": 0.1
+        }
+      },
+      "prediction": {
+        "expected_metric": "accuracy around 0.90-0.97",
+        "expected_runtime_seconds": "under 5",
+        "risks": [
+          "unscaled features can slow convergence or underperform when feature scales differ"
+        ],
+        "recommendation": "run",
+        "rationale": "A simple linear baseline is cheap and informative for sklearn tabular classification.",
+        "action_specific_signal": "Establish a baseline before testing scaling, nonlinear models, or sweeps.",
+        "claim_risk": "Baseline-only evidence cannot support a best-model claim."
+      },
+      "source": "heuristic_fallback"
+    },
+    {
+      "action": {
+        "action_id": "action_logistic_regression_C-1p0_scale-False",
+        "command": "python experiments/train_sklearn.py --dataset wine --model logistic_regression",
+        "model": "logistic_regression",
+        "params": {
+          "dataset": "wine",
+          "scale": false,
+          "C": 1.0
+        }
+      },
+      "prediction": {
+        "expected_metric": "accuracy around 0.90-0.97",
+        "expected_runtime_seconds": "under 5",
+        "risks": [
+          "unscaled features can slow convergence or underperform when feature scales differ"
+        ],
+        "recommendation": "run",
+        "rationale": "A simple linear baseline is cheap and informative for sklearn tabular classification.",
+        "action_specific_signal": "Establish a baseline before testing scaling, nonlinear models, or sweeps.",
+        "claim_risk": "Baseline-only evidence cannot support a best-model claim."
+      },
+      "source": "heuristic_fallback"
+    },
+    {
+      "action": {
+        "action_id": "action_logistic_regression_C-10p0_scale-False",
+        "command": "python experiments/train_sklearn.py --dataset wine --model logistic_regression --C 10.0",
+        "model": "logistic_regression",
+        "params": {
+          "dataset": "wine",
+          "scale": false,
+          "C": 10.0
+        }
+      },
+      "prediction": {
+        "expected_metric": "accuracy around 0.90-0.97",
+        "expected_runtime_seconds": "under 5",
+        "risks": [
+          "unscaled features can slow convergence or underperform when feature scales differ"
+        ],
+        "recommendation": "run",
+        "rationale": "A simple linear baseline is cheap and informative for sklearn tabular classification.",
+        "action_specific_signal": "Establish a baseline before testing scaling, nonlinear models, or sweeps.",
+        "claim_risk": "Baseline-only evidence cannot support a best-model claim."
+      },
+      "source": "heuristic_fallback"
+    },
+    {
+      "action": {
+        "action_id": "action_gradient_boosting_learning_rate-0p05_n_estimators-100",
+        "command": "python experiments/train_sklearn.py --dataset wine --model gradient_boosting --n-estimators 100 --learning-rate 0.05",
         "model": "gradient_boosting",
         "params": {
           "dataset": "wine",
-          "n_estimators": 150,
-          "learning_rate": 0.05
+          "n_estimators": 100,
+          "learning_rate": 0.05,
+          "max_depth": null
         }
       },
       "prediction": {
@@ -204,59 +739,628 @@
         "claim_risk": "Do not report a robust winner from one boosted run."
       },
       "source": "heuristic_fallback"
+    },
+    {
+      "action": {
+        "action_id": "action_gradient_boosting_learning_rate-0p1_n_estimators-100",
+        "command": "python experiments/train_sklearn.py --dataset wine --model gradient_boosting --n-estimators 100 --learning-rate 0.1",
+        "model": "gradient_boosting",
+        "params": {
+          "dataset": "wine",
+          "n_estimators": 100,
+          "learning_rate": 0.1,
+          "max_depth": null
+        }
+      },
+      "prediction": {
+        "expected_metric": "accuracy around 0.90-0.98",
+        "expected_runtime_seconds": "under 15",
+        "risks": [
+          "can overfit with too many estimators"
+        ],
+        "recommendation": "run",
+        "rationale": "Boosting is a useful late comparison when linear and bagged-tree baselines are known.",
+        "action_specific_signal": "Use boosting to test a staged-tree alternative under the remaining budget.",
+        "claim_risk": "Do not report a robust winner from one boosted run."
+      },
+      "source": "heuristic_fallback"
+    },
+    {
+      "action": {
+        "action_id": "action_gradient_boosting_learning_rate-0p05_n_estimators-150",
+        "command": "python experiments/train_sklearn.py --dataset wine --model gradient_boosting --n-estimators 150 --learning-rate 0.05",
+        "model": "gradient_boosting",
+        "params": {
+          "dataset": "wine",
+          "n_estimators": 150,
+          "learning_rate": 0.05,
+          "max_depth": null
+        }
+      },
+      "prediction": {
+        "expected_metric": "accuracy around 0.90-0.98",
+        "expected_runtime_seconds": "under 15",
+        "risks": [
+          "can overfit with too many estimators"
+        ],
+        "recommendation": "run",
+        "rationale": "Boosting is a useful late comparison when linear and bagged-tree baselines are known.",
+        "action_specific_signal": "Use boosting to test a staged-tree alternative under the remaining budget.",
+        "claim_risk": "Do not report a robust winner from one boosted run."
+      },
+      "source": "heuristic_fallback"
+    },
+    {
+      "action": {
+        "action_id": "action_gradient_boosting_learning_rate-0p1_n_estimators-150",
+        "command": "python experiments/train_sklearn.py --dataset wine --model gradient_boosting --n-estimators 150 --learning-rate 0.1",
+        "model": "gradient_boosting",
+        "params": {
+          "dataset": "wine",
+          "n_estimators": 150,
+          "learning_rate": 0.1,
+          "max_depth": null
+        }
+      },
+      "prediction": {
+        "expected_metric": "accuracy around 0.90-0.98",
+        "expected_runtime_seconds": "under 15",
+        "risks": [
+          "can overfit with too many estimators"
+        ],
+        "recommendation": "run",
+        "rationale": "Boosting is a useful late comparison when linear and bagged-tree baselines are known.",
+        "action_specific_signal": "Use boosting to test a staged-tree alternative under the remaining budget.",
+        "claim_risk": "Do not report a robust winner from one boosted run."
+      },
+      "source": "heuristic_fallback"
+    },
+    {
+      "action": {
+        "action_id": "action_svc_C-2p0_kernel-rbf_scale-True",
+        "command": "python experiments/train_sklearn.py --dataset wine --model svc --scale --C 2.0 --kernel rbf",
+        "model": "svc",
+        "params": {
+          "dataset": "wine",
+          "scale": true,
+          "C": 2.0,
+          "kernel": "rbf"
+        }
+      },
+      "prediction": {
+        "expected_metric": "accuracy around 0.90-0.99",
+        "expected_runtime_seconds": "under 10",
+        "risks": [
+          "sensitive to scaling and C"
+        ],
+        "recommendation": "run",
+        "rationale": "Scaled SVC can be strong on small numeric classification tasks but needs careful comparison.",
+        "action_specific_signal": "SVC tests a margin-based nonlinear hypothesis after linear/tree baselines.",
+        "claim_risk": "SVC should not be declared best without repeated-seed evidence."
+      },
+      "source": "heuristic_fallback"
+    },
+    {
+      "action": {
+        "action_id": "action_svc_C-5p0_kernel-rbf_scale-True",
+        "command": "python experiments/train_sklearn.py --dataset wine --model svc --scale --C 5.0 --kernel rbf",
+        "model": "svc",
+        "params": {
+          "dataset": "wine",
+          "scale": true,
+          "C": 5.0,
+          "kernel": "rbf"
+        }
+      },
+      "prediction": {
+        "expected_metric": "accuracy around 0.90-0.99",
+        "expected_runtime_seconds": "under 10",
+        "risks": [
+          "sensitive to scaling and C"
+        ],
+        "recommendation": "run",
+        "rationale": "Scaled SVC can be strong on small numeric classification tasks but needs careful comparison.",
+        "action_specific_signal": "SVC tests a margin-based nonlinear hypothesis after linear/tree baselines.",
+        "claim_risk": "SVC should not be declared best without repeated-seed evidence."
+      },
+      "source": "heuristic_fallback"
+    },
+    {
+      "action": {
+        "action_id": "action_verify_top_models",
+        "command": "python experiments/compare_models_sklearn.py --dataset wine --models logistic_regression:scale=true,C=0.1 random_forest:n_estimators=100 logistic_regression --seeds 0 1 2 3 4",
+        "model": "top_model_verification",
+        "params": {
+          "dataset": "wine",
+          "models": [
+            {
+              "run_id": "run_002",
+              "model": "logistic_regression",
+              "model_key": "logistic_regression_scaled_C=0.1",
+              "metric": 1.0,
+              "params": {
+                "dataset": "wine",
+                "scale": true,
+                "C": 0.1
+              }
+            },
+            {
+              "run_id": "run_003",
+              "model": "random_forest",
+              "model_key": "random_forest_n=100",
+              "metric": 1.0,
+              "params": {
+                "dataset": "wine",
+                "n_estimators": 100,
+                "max_depth": null
+              }
+            },
+            {
+              "run_id": "run_001",
+              "model": "logistic_regression",
+              "model_key": "logistic_regression",
+              "metric": 0.9777777777777777,
+              "params": {
+                "dataset": "wine",
+                "scale": false
+              }
+            }
+          ],
+          "seeds": [
+            0,
+            1,
+            2,
+            3,
+            4
+          ],
+          "reason": "Top models are tied on single-split evidence; robust best-model claim requires multi-seed verification.",
+          "verification_action_key": "logistic_regression:logistic_regression_scaled_C=0.1:random_forest_n=100"
+        }
+      },
+      "prediction": {
+        "expected_metric": "accuracy around 0.90-0.99",
+        "expected_runtime_seconds": "under 45",
+        "risks": [
+          "top single-run models may be tied across seeds",
+          "seed variance may exceed the observed top-model gap"
+        ],
+        "recommendation": "run",
+        "rationale": "A multi-seed top-model comparison is required before reporting a robust best model.",
+        "action_specific_signal": "Verify the top observed models on matched seeds before allowing a best-model claim.",
+        "claim_risk": "Best observed single-run model may not be a robust winner."
+      },
+      "source": "heuristic_fallback"
     }
   ],
   "selected_action": {
-    "action_id": "action_gradient_boosting",
-    "command": "python experiments/train_sklearn.py --dataset wine --model gradient_boosting --n-estimators 150 --learning-rate 0.05",
-    "model": "gradient_boosting",
+    "action_id": "action_verify_top_models",
+    "command": "python experiments/compare_models_sklearn.py --dataset wine --models logistic_regression:scale=true,C=0.1 random_forest:n_estimators=100 logistic_regression --seeds 0 1 2 3 4",
+    "model": "top_model_verification",
     "params": {
       "dataset": "wine",
-      "n_estimators": 150,
-      "learning_rate": 0.05
+      "models": [
+        {
+          "run_id": "run_002",
+          "model": "logistic_regression",
+          "model_key": "logistic_regression_scaled_C=0.1",
+          "metric": 1.0,
+          "params": {
+            "dataset": "wine",
+            "scale": true,
+            "C": 0.1
+          }
+        },
+        {
+          "run_id": "run_003",
+          "model": "random_forest",
+          "model_key": "random_forest_n=100",
+          "metric": 1.0,
+          "params": {
+            "dataset": "wine",
+            "n_estimators": 100,
+            "max_depth": null
+          }
+        },
+        {
+          "run_id": "run_001",
+          "model": "logistic_regression",
+          "model_key": "logistic_regression",
+          "metric": 0.9777777777777777,
+          "params": {
+            "dataset": "wine",
+            "scale": false
+          }
+        }
+      ],
+      "seeds": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "reason": "Top models are tied on single-split evidence; robust best-model claim requires multi-seed verification.",
+      "verification_action_key": "logistic_regression:logistic_regression_scaled_C=0.1:random_forest_n=100"
     }
   },
   "decision_trace": {
     "selected_action": {
-      "action_id": "action_gradient_boosting",
-      "command": "python experiments/train_sklearn.py --dataset wine --model gradient_boosting --n-estimators 150 --learning-rate 0.05",
-      "model": "gradient_boosting",
+      "action_id": "action_verify_top_models",
+      "command": "python experiments/compare_models_sklearn.py --dataset wine --models logistic_regression:scale=true,C=0.1 random_forest:n_estimators=100 logistic_regression --seeds 0 1 2 3 4",
+      "model": "top_model_verification",
       "params": {
         "dataset": "wine",
-        "n_estimators": 150,
-        "learning_rate": 0.05
+        "models": [
+          {
+            "run_id": "run_002",
+            "model": "logistic_regression",
+            "model_key": "logistic_regression_scaled_C=0.1",
+            "metric": 1.0,
+            "params": {
+              "dataset": "wine",
+              "scale": true,
+              "C": 0.1
+            }
+          },
+          {
+            "run_id": "run_003",
+            "model": "random_forest",
+            "model_key": "random_forest_n=100",
+            "metric": 1.0,
+            "params": {
+              "dataset": "wine",
+              "n_estimators": 100,
+              "max_depth": null
+            }
+          },
+          {
+            "run_id": "run_001",
+            "model": "logistic_regression",
+            "model_key": "logistic_regression",
+            "metric": 0.9777777777777777,
+            "params": {
+              "dataset": "wine",
+              "scale": false
+            }
+          }
+        ],
+        "seeds": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "reason": "Top models are tied on single-split evidence; robust best-model claim requires multi-seed verification.",
+        "verification_action_key": "logistic_regression:logistic_regression_scaled_C=0.1:random_forest_n=100"
       }
     },
     "world_model_signal_used": true,
     "selector_policy_signal_used": true,
     "causal_signal_type": "mixed",
-    "causal_reason": "Selected gradient_boosting because score=31; world model recommended run; ensemble baseline is useful as a late comparison; world model predicted overfitting risk. World model predicted accuracy around 0.90-0.98, runtime under 15, recommendation=run, risks=can overfit with too many estimators. Causal signal type: mixed.",
-    "rejected_candidates": []
+    "observed_state_signal": "Top models are tied on single-split evidence; robust best-model claim requires multi-seed verification.",
+    "world_model_signal": "prediction contained an action-specific research signal; world model predicted top-model robustness or claim risk",
+    "selector_policy_signal": "top observed models need multi-seed verification before a robust best-model claim",
+    "selected_score": 110.0,
+    "score_breakdown": {
+      "expected_gain": 0.0,
+      "uncertainty": 0.0,
+      "novelty": 0.0,
+      "verification_value": 45.0,
+      "qwen_signal": 65.0,
+      "redundancy_penalty": 0.0,
+      "compute_cost_penalty": 0.0,
+      "unsupported_claim_risk": 0.0
+    },
+    "qwen_suggested_action": "action_verify_top_models",
+    "catalog_validation": "accepted",
+    "causal_reason": "Selected top_model_verification because score=110.0; world model recommended run; top observed models need multi-seed verification before a robust best-model claim; world model predicted top-model robustness or claim risk. World model predicted accuracy around 0.90-0.99, runtime under 45, recommendation=run, risks=top single-run models may be tied across seeds, seed variance may exceed the observed top-model gap. Causal signal type: mixed.",
+    "rejected_candidates": [
+      {
+        "action": {
+          "action_id": "action_logistic_regression_C-1p0_scale-True",
+          "command": "python experiments/train_sklearn.py --dataset wine --model logistic_regression --scale",
+          "model": "logistic_regression",
+          "params": {
+            "dataset": "wine",
+            "scale": true,
+            "C": 1.0
+          }
+        },
+        "reason": "score=55.0; world model recommended run; candidate is a variant of an already tested family; after an unscaled logistic baseline, scaling is the direct world-model intervention to test; high best score increases claim risk for additional single-run score chasing",
+        "score_breakdown": {
+          "expected_gain": 45.0,
+          "uncertainty": 0.0,
+          "novelty": 0.0,
+          "verification_value": 0.0,
+          "qwen_signal": 30.0,
+          "redundancy_penalty": -12.0,
+          "compute_cost_penalty": 0.0,
+          "unsupported_claim_risk": -8.0
+        }
+      },
+      {
+        "action": {
+          "action_id": "action_logistic_regression_C-10p0_scale-True",
+          "command": "python experiments/train_sklearn.py --dataset wine --model logistic_regression --scale --C 10.0",
+          "model": "logistic_regression",
+          "params": {
+            "dataset": "wine",
+            "scale": true,
+            "C": 10.0
+          }
+        },
+        "reason": "score=55.0; world model recommended run; candidate is a variant of an already tested family; after an unscaled logistic baseline, scaling is the direct world-model intervention to test; high best score increases claim risk for additional single-run score chasing",
+        "score_breakdown": {
+          "expected_gain": 45.0,
+          "uncertainty": 0.0,
+          "novelty": 0.0,
+          "verification_value": 0.0,
+          "qwen_signal": 30.0,
+          "redundancy_penalty": -12.0,
+          "compute_cost_penalty": 0.0,
+          "unsupported_claim_risk": -8.0
+        }
+      },
+      {
+        "action": {
+          "action_id": "action_gradient_boosting_learning_rate-0p05_n_estimators-100",
+          "command": "python experiments/train_sklearn.py --dataset wine --model gradient_boosting --n-estimators 100 --learning-rate 0.05",
+          "model": "gradient_boosting",
+          "params": {
+            "dataset": "wine",
+            "n_estimators": 100,
+            "learning_rate": 0.05,
+            "max_depth": null
+          }
+        },
+        "reason": "score=41.0; world model recommended run; new model family increases search coverage; ensemble baseline is useful as a late comparison; world model predicted overfitting risk; high best score increases claim risk for additional single-run score chasing",
+        "score_breakdown": {
+          "expected_gain": 0.0,
+          "uncertainty": 0.0,
+          "novelty": 23.0,
+          "verification_value": 0.0,
+          "qwen_signal": 30.0,
+          "redundancy_penalty": 0.0,
+          "compute_cost_penalty": -4.0,
+          "unsupported_claim_risk": -8.0
+        }
+      },
+      {
+        "action": {
+          "action_id": "action_gradient_boosting_learning_rate-0p1_n_estimators-100",
+          "command": "python experiments/train_sklearn.py --dataset wine --model gradient_boosting --n-estimators 100 --learning-rate 0.1",
+          "model": "gradient_boosting",
+          "params": {
+            "dataset": "wine",
+            "n_estimators": 100,
+            "learning_rate": 0.1,
+            "max_depth": null
+          }
+        },
+        "reason": "score=41.0; world model recommended run; new model family increases search coverage; ensemble baseline is useful as a late comparison; world model predicted overfitting risk; high best score increases claim risk for additional single-run score chasing",
+        "score_breakdown": {
+          "expected_gain": 0.0,
+          "uncertainty": 0.0,
+          "novelty": 23.0,
+          "verification_value": 0.0,
+          "qwen_signal": 30.0,
+          "redundancy_penalty": 0.0,
+          "compute_cost_penalty": -4.0,
+          "unsupported_claim_risk": -8.0
+        }
+      },
+      {
+        "action": {
+          "action_id": "action_gradient_boosting_learning_rate-0p05_n_estimators-150",
+          "command": "python experiments/train_sklearn.py --dataset wine --model gradient_boosting --n-estimators 150 --learning-rate 0.05",
+          "model": "gradient_boosting",
+          "params": {
+            "dataset": "wine",
+            "n_estimators": 150,
+            "learning_rate": 0.05,
+            "max_depth": null
+          }
+        },
+        "reason": "score=41.0; world model recommended run; new model family increases search coverage; ensemble baseline is useful as a late comparison; world model predicted overfitting risk; high best score increases claim risk for additional single-run score chasing",
+        "score_breakdown": {
+          "expected_gain": 0.0,
+          "uncertainty": 0.0,
+          "novelty": 23.0,
+          "verification_value": 0.0,
+          "qwen_signal": 30.0,
+          "redundancy_penalty": 0.0,
+          "compute_cost_penalty": -4.0,
+          "unsupported_claim_risk": -8.0
+        }
+      },
+      {
+        "action": {
+          "action_id": "action_gradient_boosting_learning_rate-0p1_n_estimators-150",
+          "command": "python experiments/train_sklearn.py --dataset wine --model gradient_boosting --n-estimators 150 --learning-rate 0.1",
+          "model": "gradient_boosting",
+          "params": {
+            "dataset": "wine",
+            "n_estimators": 150,
+            "learning_rate": 0.1,
+            "max_depth": null
+          }
+        },
+        "reason": "score=41.0; world model recommended run; new model family increases search coverage; ensemble baseline is useful as a late comparison; world model predicted overfitting risk; high best score increases claim risk for additional single-run score chasing",
+        "score_breakdown": {
+          "expected_gain": 0.0,
+          "uncertainty": 0.0,
+          "novelty": 23.0,
+          "verification_value": 0.0,
+          "qwen_signal": 30.0,
+          "redundancy_penalty": 0.0,
+          "compute_cost_penalty": -4.0,
+          "unsupported_claim_risk": -8.0
+        }
+      },
+      {
+        "action": {
+          "action_id": "action_svc_C-2p0_kernel-rbf_scale-True",
+          "command": "python experiments/train_sklearn.py --dataset wine --model svc --scale --C 2.0 --kernel rbf",
+          "model": "svc",
+          "params": {
+            "dataset": "wine",
+            "scale": true,
+            "C": 2.0,
+            "kernel": "rbf"
+          }
+        },
+        "reason": "score=40.0; world model recommended run; candidate is a variant of an already tested family; tree prediction missed, so a scaled margin model tests a different hypothesis; high best score increases claim risk for additional single-run score chasing",
+        "score_breakdown": {
+          "expected_gain": 0.0,
+          "uncertainty": 30.0,
+          "novelty": 0.0,
+          "verification_value": 0.0,
+          "qwen_signal": 30.0,
+          "redundancy_penalty": -12.0,
+          "compute_cost_penalty": 0.0,
+          "unsupported_claim_risk": -8.0
+        }
+      },
+      {
+        "action": {
+          "action_id": "action_svc_C-5p0_kernel-rbf_scale-True",
+          "command": "python experiments/train_sklearn.py --dataset wine --model svc --scale --C 5.0 --kernel rbf",
+          "model": "svc",
+          "params": {
+            "dataset": "wine",
+            "scale": true,
+            "C": 5.0,
+            "kernel": "rbf"
+          }
+        },
+        "reason": "score=40.0; world model recommended run; candidate is a variant of an already tested family; tree prediction missed, so a scaled margin model tests a different hypothesis; high best score increases claim risk for additional single-run score chasing",
+        "score_breakdown": {
+          "expected_gain": 0.0,
+          "uncertainty": 30.0,
+          "novelty": 0.0,
+          "verification_value": 0.0,
+          "qwen_signal": 30.0,
+          "redundancy_penalty": -12.0,
+          "compute_cost_penalty": 0.0,
+          "unsupported_claim_risk": -8.0
+        }
+      },
+      {
+        "action": {
+          "action_id": "action_logistic_regression_C-0p1_scale-False",
+          "command": "python experiments/train_sklearn.py --dataset wine --model logistic_regression --C 0.1",
+          "model": "logistic_regression",
+          "params": {
+            "dataset": "wine",
+            "scale": false,
+            "C": 0.1
+          }
+        },
+        "reason": "score=10.0; world model recommended run; candidate is a variant of an already tested family; high best score increases claim risk for additional single-run score chasing",
+        "score_breakdown": {
+          "expected_gain": 0.0,
+          "uncertainty": 0.0,
+          "novelty": 0.0,
+          "verification_value": 0.0,
+          "qwen_signal": 30.0,
+          "redundancy_penalty": -12.0,
+          "compute_cost_penalty": 0.0,
+          "unsupported_claim_risk": -8.0
+        }
+      },
+      {
+        "action": {
+          "action_id": "action_logistic_regression_C-1p0_scale-False",
+          "command": "python experiments/train_sklearn.py --dataset wine --model logistic_regression",
+          "model": "logistic_regression",
+          "params": {
+            "dataset": "wine",
+            "scale": false,
+            "C": 1.0
+          }
+        },
+        "reason": "score=10.0; world model recommended run; candidate is a variant of an already tested family; high best score increases claim risk for additional single-run score chasing",
+        "score_breakdown": {
+          "expected_gain": 0.0,
+          "uncertainty": 0.0,
+          "novelty": 0.0,
+          "verification_value": 0.0,
+          "qwen_signal": 30.0,
+          "redundancy_penalty": -12.0,
+          "compute_cost_penalty": 0.0,
+          "unsupported_claim_risk": -8.0
+        }
+      },
+      {
+        "action": {
+          "action_id": "action_logistic_regression_C-10p0_scale-False",
+          "command": "python experiments/train_sklearn.py --dataset wine --model logistic_regression --C 10.0",
+          "model": "logistic_regression",
+          "params": {
+            "dataset": "wine",
+            "scale": false,
+            "C": 10.0
+          }
+        },
+        "reason": "score=10.0; world model recommended run; candidate is a variant of an already tested family; high best score increases claim risk for additional single-run score chasing",
+        "score_breakdown": {
+          "expected_gain": 0.0,
+          "uncertainty": 0.0,
+          "novelty": 0.0,
+          "verification_value": 0.0,
+          "qwen_signal": 30.0,
+          "redundancy_penalty": -12.0,
+          "compute_cost_penalty": 0.0,
+          "unsupported_claim_risk": -8.0
+        }
+      }
+    ]
   },
-  "claim_ledger_updates": [],
+  "claim_ledger_updates": [
+    {
+      "claim_id": "run_005_claim_001",
+      "claim": "logistic_regression_scaled_C=0.1 is robustly better than random_forest_n=100.",
+      "status": "blocked",
+      "evidence_run_ids": [
+        "run_005"
+      ],
+      "blocked_reason": "Measured top-model effect is not larger than inter-seed noise. The report must not claim a robust best model.",
+      "allowed_rewrite": "logistic_regression_scaled_C=0.1 had the best multi-seed mean accuracy, but the effect was smaller than seed noise; no robust best-model claim is allowed.",
+      "metrics": {
+        "effect_size": 0.0,
+        "seed_noise": 0.022222,
+        "effect_to_noise_ratio": 0.0,
+        "min_seed_count": 5,
+        "low_n_warning": false
+      }
+    }
+  ],
   "calibration_metrics": null,
   "top_model_summary": {
-    "best_observed_model": "logistic_regression_scaled",
+    "best_observed_model": "logistic_regression_scaled_C=0.1",
     "best_observed_metric": 1.0,
     "top_models": [
       {
         "run_id": "run_002",
         "model": "logistic_regression",
-        "model_key": "logistic_regression_scaled",
+        "model_key": "logistic_regression_scaled_C=0.1",
         "metric": 1.0,
         "params": {
           "dataset": "wine",
-          "scale": true
+          "scale": true,
+          "C": 0.1
         }
       },
       {
         "run_id": "run_003",
         "model": "random_forest",
-        "model_key": "random_forest_n=300",
+        "model_key": "random_forest_n=100",
         "metric": 1.0,
         "params": {
           "dataset": "wine",
-          "n_estimators": 300
+          "n_estimators": 100,
+          "max_depth": null
         }
       },
       {
@@ -273,7 +1377,7 @@
     "top_gap": 0.0,
     "needs_robustness_verification": true,
     "reason": "Top models are tied on single-split evidence; robust best-model claim requires multi-seed verification.",
-    "verification_action_key": "logistic_regression:logistic_regression_scaled:random_forest_n=300"
+    "verification_action_key": "logistic_regression:logistic_regression_scaled_C=0.1:random_forest_n=100"
   },
   "artifacts": {
     "task_id": "wine_accuracy",

@@ -27,6 +27,7 @@ class TaskSpec(BaseModel):
     secondary_metrics: list[str] = Field(default_factory=lambda: ["f1"])
     budget_runs: int = 6
     models: list[str] = Field(default_factory=list)
+    candidate_space: dict[str, dict[str, list[Any]]] = Field(default_factory=dict)
     sweeps: list[SweepSpec] = Field(default_factory=list)
     goal: str = ""
     notes: list[str] = Field(default_factory=list)
@@ -115,6 +116,7 @@ class CandidatePrediction(BaseModel):
 class RejectedCandidate(BaseModel):
     action: ProposedAction
     reason: str
+    score_breakdown: dict[str, float] = Field(default_factory=dict)
 
 
 class DecisionTrace(BaseModel):
@@ -128,6 +130,13 @@ class DecisionTrace(BaseModel):
         "demo_policy",
         "unknown",
     ] = "unknown"
+    observed_state_signal: str = ""
+    world_model_signal: str = ""
+    selector_policy_signal: str = ""
+    selected_score: float | None = None
+    score_breakdown: dict[str, float] = Field(default_factory=dict)
+    qwen_suggested_action: str | None = None
+    catalog_validation: str | None = None
     causal_reason: str
     rejected_candidates: list[RejectedCandidate] = Field(default_factory=list)
 

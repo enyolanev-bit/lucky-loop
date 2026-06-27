@@ -6,6 +6,25 @@
   "secondary_metrics": ["f1"],
   "budget_runs": 7,
   "models": ["logistic_regression", "random_forest", "svc", "gradient_boosting"],
+  "candidate_space": {
+    "logistic_regression": {
+      "scale": [false, true],
+      "C": [0.1, 1.0, 10.0]
+    },
+    "svc": {
+      "scale": [true],
+      "C": [0.5, 2.0, 5.0],
+      "kernel": ["rbf"]
+    },
+    "random_forest": {
+      "n_estimators": [100, 300],
+      "max_depth": [null, 4, 8]
+    },
+    "gradient_boosting": {
+      "n_estimators": [100, 150],
+      "learning_rate": [0.05, 0.1]
+    }
+  },
   "sweeps": [
     {
       "model": "logistic_regression",
