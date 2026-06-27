@@ -1,0 +1,39 @@
+{
+  "config": {
+    "dataset": "SetFit/sst2",
+    "epochs": 1.0,
+    "label_field": "label",
+    "learning_rate": 0.0002,
+    "lora_alpha": 16,
+    "lora_r": 8,
+    "max_test": 128,
+    "max_train": 256,
+    "model": "Qwen/Qwen3-0.6B",
+    "output_dir": "/Users/nevil/dev/sandbox/lucky-loop/reports/post_training_lora_probe",
+    "text_field": "text"
+  },
+  "dependency_status": [
+    {
+      "available": true,
+      "name": "torch"
+    },
+    {
+      "available": false,
+      "name": "transformers"
+    },
+    {
+      "available": false,
+      "name": "datasets"
+    },
+    {
+      "available": false,
+      "name": "peft"
+    }
+  ],
+  "missing_dependencies": [
+    "transformers",
+    "datasets",
+    "peft"
+  ],
+  "status": "missing_dependencies"
+}

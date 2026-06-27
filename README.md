@@ -113,7 +113,9 @@ reports/final_report.md
 reports/world_model_calibration.md
 reports/claim_ledger.json
 reports/verifier_crosscheck.md
+reports/post_training_feedback_response.md
 reports/selection_brief.md
+experiments/post_training_lora_probe.py
 app/streamlit_app.py
 ```
 
