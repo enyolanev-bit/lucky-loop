@@ -38,8 +38,8 @@
     "status": "success",
     "accuracy": null,
     "f1": null,
-    "runtime_seconds": 29.0251,
-    "stdout_tail": "19127026819333,\n      \"label\": \"C=1.0\",\n      \"runtime_seconds\": 0.0408,\n      \"seed\": 2,\n      \"sweep_param\": \"C\",\n      \"value\": \"1.0\"\n    },\n    {\n      \"accuracy\": 0.972027972027972,\n      \"config_key\": \"C=1.0\",\n      \"f1\": 0.9719127026819333,\n      \"label\": \"C=1.0\",\n      \"runtime_seconds\": 0.0576,\n      \"seed\": 3,\n      \"sweep_param\": \"C\",\n      \"value\": \"1.0\"\n    },\n    {\n      \"accuracy\": 0.9300699300699301,\n      \"config_key\": \"C=10.0\",\n      \"f1\": 0.9294588616839257,\n      \"label\": \"C=10.0\",\n      \"runtime_seconds\": 0.0668,\n      \"seed\": 0,\n      \"sweep_param\": \"C\",\n      \"value\": \"10.0\"\n    },\n    {\n      \"accuracy\": 0.9370629370629371,\n      \"config_key\": \"C=10.0\",\n      \"f1\": 0.935641677909719,\n      \"label\": \"C=10.0\",\n      \"runtime_seconds\": 0.205,\n      \"seed\": 1,\n      \"sweep_param\": \"C\",\n      \"value\": \"10.0\"\n    },\n    {\n      \"accuracy\": 0.9370629370629371,\n      \"config_key\": \"C=10.0\",\n      \"f1\": 0.9366622554590086,\n      \"label\": \"C=10.0\",\n      \"runtime_seconds\": 0.0312,\n      \"seed\": 2,\n      \"sweep_param\": \"C\",\n      \"value\": \"10.0\"\n    },\n    {\n      \"accuracy\": 0.958041958041958,\n      \"config_key\": \"C=10.0\",\n      \"f1\": 0.9578690540229003,\n      \"label\": \"C=10.0\",\n      \"runtime_seconds\": 0.0514,\n      \"seed\": 3,\n      \"sweep_param\": \"C\",\n      \"value\": \"10.0\"\n    }\n  ],\n  \"runtime_seconds\": 29.0251,\n  \"seeds\": [\n    0,\n    1,\n    2,\n    3\n  ],\n  \"status\": \"success\",\n  \"summary_by_value\": {\n    \"0.1\": {\n      \"max_accuracy\": 0.9790209790209791,\n      \"mean_accuracy\": 0.9615384615384616,\n      \"min_accuracy\": 0.951048951048951,\n      \"n\": 4\n    },\n    \"1.0\": {\n      \"max_accuracy\": 0.972027972027972,\n      \"mean_accuracy\": 0.9527972027972028,\n      \"min_accuracy\": 0.9300699300699301,\n      \"n\": 4\n    },\n    \"10.0\": {\n      \"max_accuracy\": 0.958041958041958,\n      \"mean_accuracy\": 0.9405594405594406,\n      \"min_accuracy\": 0.9300699300699301,\n      \"n\": 4\n    }\n  },\n  \"sweep_param\": \"C\",\n  \"values\": [\n    \"0.1\",\n    \"1.0\",\n    \"10.0\"\n  ]\n}\n",
+    "runtime_seconds": 24.155,
+    "stdout_tail": "19127026819333,\n      \"label\": \"C=1.0\",\n      \"runtime_seconds\": 0.0207,\n      \"seed\": 2,\n      \"sweep_param\": \"C\",\n      \"value\": \"1.0\"\n    },\n    {\n      \"accuracy\": 0.972027972027972,\n      \"config_key\": \"C=1.0\",\n      \"f1\": 0.9719127026819333,\n      \"label\": \"C=1.0\",\n      \"runtime_seconds\": 0.0378,\n      \"seed\": 3,\n      \"sweep_param\": \"C\",\n      \"value\": \"1.0\"\n    },\n    {\n      \"accuracy\": 0.9300699300699301,\n      \"config_key\": \"C=10.0\",\n      \"f1\": 0.9294588616839257,\n      \"label\": \"C=10.0\",\n      \"runtime_seconds\": 0.0268,\n      \"seed\": 0,\n      \"sweep_param\": \"C\",\n      \"value\": \"10.0\"\n    },\n    {\n      \"accuracy\": 0.9370629370629371,\n      \"config_key\": \"C=10.0\",\n      \"f1\": 0.935641677909719,\n      \"label\": \"C=10.0\",\n      \"runtime_seconds\": 0.0845,\n      \"seed\": 1,\n      \"sweep_param\": \"C\",\n      \"value\": \"10.0\"\n    },\n    {\n      \"accuracy\": 0.9370629370629371,\n      \"config_key\": \"C=10.0\",\n      \"f1\": 0.9366622554590086,\n      \"label\": \"C=10.0\",\n      \"runtime_seconds\": 0.1355,\n      \"seed\": 2,\n      \"sweep_param\": \"C\",\n      \"value\": \"10.0\"\n    },\n    {\n      \"accuracy\": 0.958041958041958,\n      \"config_key\": \"C=10.0\",\n      \"f1\": 0.9578690540229003,\n      \"label\": \"C=10.0\",\n      \"runtime_seconds\": 0.0339,\n      \"seed\": 3,\n      \"sweep_param\": \"C\",\n      \"value\": \"10.0\"\n    }\n  ],\n  \"runtime_seconds\": 24.155,\n  \"seeds\": [\n    0,\n    1,\n    2,\n    3\n  ],\n  \"status\": \"success\",\n  \"summary_by_value\": {\n    \"0.1\": {\n      \"max_accuracy\": 0.9790209790209791,\n      \"mean_accuracy\": 0.9615384615384616,\n      \"min_accuracy\": 0.951048951048951,\n      \"n\": 4\n    },\n    \"1.0\": {\n      \"max_accuracy\": 0.972027972027972,\n      \"mean_accuracy\": 0.9527972027972028,\n      \"min_accuracy\": 0.9300699300699301,\n      \"n\": 4\n    },\n    \"10.0\": {\n      \"max_accuracy\": 0.958041958041958,\n      \"mean_accuracy\": 0.9405594405594406,\n      \"min_accuracy\": 0.9300699300699301,\n      \"n\": 4\n    }\n  },\n  \"sweep_param\": \"C\",\n  \"values\": [\n    \"0.1\",\n    \"1.0\",\n    \"10.0\"\n  ]\n}\n",
     "stderr_tail": "",
     "raw": {
       "best": {
@@ -60,7 +60,7 @@
           "config_key": "C=0.1",
           "f1": 0.9502345545126294,
           "label": "C=0.1",
-          "runtime_seconds": 0.0249,
+          "runtime_seconds": 0.0179,
           "seed": 0,
           "sweep_param": "C",
           "value": "0.1"
@@ -70,7 +70,7 @@
           "config_key": "C=0.1",
           "f1": 0.9502345545126294,
           "label": "C=0.1",
-          "runtime_seconds": 0.0348,
+          "runtime_seconds": 0.0254,
           "seed": 1,
           "sweep_param": "C",
           "value": "0.1"
@@ -80,7 +80,7 @@
           "config_key": "C=0.1",
           "f1": 0.9788874184863361,
           "label": "C=0.1",
-          "runtime_seconds": 0.0486,
+          "runtime_seconds": 0.0347,
           "seed": 2,
           "sweep_param": "C",
           "value": "0.1"
@@ -90,7 +90,7 @@
           "config_key": "C=0.1",
           "f1": 0.9648123641438936,
           "label": "C=0.1",
-          "runtime_seconds": 0.0312,
+          "runtime_seconds": 0.0267,
           "seed": 3,
           "sweep_param": "C",
           "value": "0.1"
@@ -100,7 +100,7 @@
           "config_key": "C=1.0",
           "f1": 0.9290999323257388,
           "label": "C=1.0",
-          "runtime_seconds": 0.0547,
+          "runtime_seconds": 0.0505,
           "seed": 0,
           "sweep_param": "C",
           "value": "1.0"
@@ -110,7 +110,7 @@
           "config_key": "C=1.0",
           "f1": 0.935641677909719,
           "label": "C=1.0",
-          "runtime_seconds": 0.2676,
+          "runtime_seconds": 0.0218,
           "seed": 1,
           "sweep_param": "C",
           "value": "1.0"
@@ -120,7 +120,7 @@
           "config_key": "C=1.0",
           "f1": 0.9719127026819333,
           "label": "C=1.0",
-          "runtime_seconds": 0.0408,
+          "runtime_seconds": 0.0207,
           "seed": 2,
           "sweep_param": "C",
           "value": "1.0"
@@ -130,7 +130,7 @@
           "config_key": "C=1.0",
           "f1": 0.9719127026819333,
           "label": "C=1.0",
-          "runtime_seconds": 0.0576,
+          "runtime_seconds": 0.0378,
           "seed": 3,
           "sweep_param": "C",
           "value": "1.0"
@@ -140,7 +140,7 @@
           "config_key": "C=10.0",
           "f1": 0.9294588616839257,
           "label": "C=10.0",
-          "runtime_seconds": 0.0668,
+          "runtime_seconds": 0.0268,
           "seed": 0,
           "sweep_param": "C",
           "value": "10.0"
@@ -150,7 +150,7 @@
           "config_key": "C=10.0",
           "f1": 0.935641677909719,
           "label": "C=10.0",
-          "runtime_seconds": 0.205,
+          "runtime_seconds": 0.0845,
           "seed": 1,
           "sweep_param": "C",
           "value": "10.0"
@@ -160,7 +160,7 @@
           "config_key": "C=10.0",
           "f1": 0.9366622554590086,
           "label": "C=10.0",
-          "runtime_seconds": 0.0312,
+          "runtime_seconds": 0.1355,
           "seed": 2,
           "sweep_param": "C",
           "value": "10.0"
@@ -170,13 +170,13 @@
           "config_key": "C=10.0",
           "f1": 0.9578690540229003,
           "label": "C=10.0",
-          "runtime_seconds": 0.0514,
+          "runtime_seconds": 0.0339,
           "seed": 3,
           "sweep_param": "C",
           "value": "10.0"
         }
       ],
-      "runtime_seconds": 29.0251,
+      "runtime_seconds": 24.155,
       "seeds": [
         0,
         1,
@@ -214,11 +214,9 @@
   },
   "comparison": {
     "metric_match": true,
-    "runtime_match": false,
-    "unexpected_events": [
-      "runtime 29.03s exceeded predicted 25s"
-    ],
-    "lesson": "Run succeeded, but the prediction missed at least one quantitative detail."
+    "runtime_match": true,
+    "unexpected_events": [],
+    "lesson": "Prediction was broadly consistent with the real run."
   },
   "next_decision": "Continue: regenerate candidates from the updated state and ask the world model to predict each option.",
   "verification": {
@@ -226,8 +224,14 @@
     "metric": "accuracy",
     "effect_size": 0.020979,
     "seed_noise": 0.027972,
+    "effect_to_noise_ratio": 0.75,
+    "min_seed_count": 4,
+    "low_n_warning": false,
     "trustworthy": false,
     "best_config": "C=0.1",
+    "worst_config": "C=10.0",
+    "blocked_claim": "C=0.1 is robustly better than C=10.0.",
+    "allowed_claim": "C=0.1 had the best mean accuracy, but the effect was smaller than seed noise.",
     "supported_claims": [],
     "inconclusive_findings": [
       "Best config 'C=0.1' improves over 'C=10.0' by 0.0210 accuracy, but best-config seed noise is 0.0280."
@@ -482,22 +486,26 @@
   "claim_ledger_updates": [
     {
       "claim_id": "run_004_claim_001",
-      "claim": "Best config 'C=0.1' improves over 'C=10.0' by 0.0210 accuracy, but best-config seed noise is 0.0280.",
+      "claim": "C=0.1 is robustly better than C=10.0.",
       "status": "blocked",
       "evidence_run_ids": [
         "run_004"
       ],
       "blocked_reason": "Measured effect is not larger than inter-seed noise. The report must not oversell this as a robust discovery.",
-      "allowed_rewrite": "Best config 'C=0.1' improves over 'C=10.0' by 0.0210 accuracy, but best-config seed noise is 0.0280.",
+      "allowed_rewrite": "C=0.1 had the best mean accuracy, but the effect was smaller than seed noise.",
       "metrics": {
         "effect_size": 0.020979,
-        "seed_noise": 0.027972
+        "seed_noise": 0.027972,
+        "effect_to_noise_ratio": 0.75,
+        "min_seed_count": 4,
+        "low_n_warning": false
       }
     }
   ],
   "calibration_metrics": null,
   "artifacts": {
     "trace_path": "runs/run_004.json",
-    "report_path": "reports/final_report.md"
+    "report_path": "reports/final_report.md",
+    "claim_ledger_path": "reports/claim_ledger.json"
   }
 }

@@ -5,6 +5,7 @@ import os
 from pathlib import Path
 
 from .calibration import write_calibration_report
+from .claim_ledger import entries_from_verification, write_claim_ledger
 from .comparator import compare
 from .executor import execute
 from .planner import action_key, generate_candidates, initial_hypothesis, predict_candidates, select_candidate
@@ -77,32 +78,7 @@ def build_state(goal: str, traces: list[ExperimentTrace], run_index: int, max_ex
 
 
 def claim_updates_for(run_id: str, verification) -> list:
-    if verification is None:
-        return []
-    entries = []
-    for i, claim in enumerate(verification.supported_claims, start=1):
-        entries.append(
-            {
-                "claim_id": f"{run_id}_claim_{i:03d}",
-                "claim": claim,
-                "status": "supported",
-                "evidence_run_ids": [run_id],
-                "metrics": {"effect_size": verification.effect_size, "seed_noise": verification.seed_noise},
-            }
-        )
-    for i, finding in enumerate(verification.inconclusive_findings, start=len(entries) + 1):
-        entries.append(
-            {
-                "claim_id": f"{run_id}_claim_{i:03d}",
-                "claim": finding,
-                "status": "blocked",
-                "evidence_run_ids": [run_id],
-                "blocked_reason": verification.rationale,
-                "allowed_rewrite": finding,
-                "metrics": {"effect_size": verification.effect_size, "seed_noise": verification.seed_noise},
-            }
-        )
-    return entries
+    return entries_from_verification(run_id, verification)
 
 
 def run(goal: str, max_experiments: int = 5) -> list[ExperimentTrace]:
@@ -160,6 +136,7 @@ def run(goal: str, max_experiments: int = 5) -> list[ExperimentTrace]:
             artifacts={
                 "trace_path": f"runs/{run_id}.json",
                 "report_path": "reports/final_report.md",
+                "claim_ledger_path": "reports/claim_ledger.json",
             },
         )
         traces.append(trace)
@@ -185,6 +162,7 @@ def run(goal: str, max_experiments: int = 5) -> list[ExperimentTrace]:
             break
 
     write_calibration_report(traces, reports_dir / "world_model_calibration.md")
+    write_claim_ledger(traces, reports_dir / "claim_ledger.json")
     generate_report(goal, traces, reports_dir / "final_report.md")
     return traces
 

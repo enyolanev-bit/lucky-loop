@@ -36,12 +36,18 @@ class Comparison(BaseModel):
 
 
 class Verification(BaseModel):
-    status: Literal["supported", "inconclusive", "missing_data"] = "missing_data"
+    status: Literal["missing_data", "inconclusive", "weakly_supported", "supported", "strongly_supported"] = "missing_data"
     metric: str = "accuracy"
     effect_size: float | None = None
     seed_noise: float | None = None
+    effect_to_noise_ratio: float | None = None
+    min_seed_count: int | None = None
+    low_n_warning: bool = False
     trustworthy: bool = False
     best_config: str | None = None
+    worst_config: str | None = None
+    blocked_claim: str | None = None
+    allowed_claim: str | None = None
     supported_claims: list[str] = Field(default_factory=list)
     inconclusive_findings: list[str] = Field(default_factory=list)
     rationale: str = ""

@@ -25,8 +25,8 @@
     "status": "success",
     "accuracy": 0.986013986013986,
     "f1": 0.986013986013986,
-    "runtime_seconds": 0.0172,
-    "stdout_tail": "{\n  \"accuracy\": 0.986013986013986,\n  \"dataset\": \"breast_cancer\",\n  \"f1\": 0.986013986013986,\n  \"model\": \"svc\",\n  \"n_label_noise_flips\": 0,\n  \"n_test\": 143,\n  \"n_train\": 426,\n  \"params\": {\n    \"C\": 2.0,\n    \"dataset\": \"breast_cancer\",\n    \"kernel\": \"rbf\",\n    \"label_noise\": 0.0,\n    \"learning_rate\": 0.1,\n    \"max_depth\": null,\n    \"max_iter\": 1000,\n    \"model\": \"svc\",\n    \"n_estimators\": 200,\n    \"scale\": true,\n    \"seed\": 42,\n    \"test_size\": 0.25\n  },\n  \"runtime_seconds\": 0.0172,\n  \"status\": \"success\"\n}\n",
+    "runtime_seconds": 0.0177,
+    "stdout_tail": "{\n  \"accuracy\": 0.986013986013986,\n  \"dataset\": \"breast_cancer\",\n  \"f1\": 0.986013986013986,\n  \"model\": \"svc\",\n  \"n_label_noise_flips\": 0,\n  \"n_test\": 143,\n  \"n_train\": 426,\n  \"params\": {\n    \"C\": 2.0,\n    \"dataset\": \"breast_cancer\",\n    \"kernel\": \"rbf\",\n    \"label_noise\": 0.0,\n    \"learning_rate\": 0.1,\n    \"max_depth\": null,\n    \"max_iter\": 1000,\n    \"model\": \"svc\",\n    \"n_estimators\": 200,\n    \"scale\": true,\n    \"seed\": 42,\n    \"test_size\": 0.25\n  },\n  \"runtime_seconds\": 0.0177,\n  \"status\": \"success\"\n}\n",
     "stderr_tail": "",
     "raw": {
       "accuracy": 0.986013986013986,
@@ -50,7 +50,7 @@
         "seed": 42,
         "test_size": 0.25
       },
-      "runtime_seconds": 0.0172,
+      "runtime_seconds": 0.0177,
       "status": "success"
     }
   },
@@ -146,7 +146,7 @@
       "seed variance may exceed apparent model or hyperparameter effects",
       "world-model predictions may miss quantitative details"
     ],
-    "summary": "Goal: Maximize validation accuracy on sklearn breast cancer dataset in five experiments.\nNo experiments have been run yet. Dataset: sklearn breast_cancer. Metric: validation accuracy and weighted F1.\nrun_001: logistic_regression actual=0.951048951048951 status=success; prediction=accuracy around 0.92-0.96; recommendation=run; lesson=Prediction was broadly consistent with the real run.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_002: logistic_regression actual=0.986013986013986 status=success; prediction=accuracy around 0.95-0.98; recommendation=run; lesson=Run succeeded, but the prediction missed at least one quantitative detail.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_003: random_forest actual=0.958041958041958 status=success; prediction=accuracy around 0.94-0.98; recommendation=run; lesson=Prediction was broadly consistent with the real run.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_004: verification_sweep actual=None status=success; prediction=accuracy around 0.94-0.98; recommendation=run; lesson=Run succeeded, but the prediction missed at least one quantitative detail.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_005: gradient_boosting actual=0.951048951048951 status=success; prediction=accuracy around 0.94-0.98; recommendation=run; lesson=Prediction was broadly consistent with the real run.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option."
+    "summary": "Goal: Maximize validation accuracy on sklearn breast cancer dataset in five experiments.\nNo experiments have been run yet. Dataset: sklearn breast_cancer. Metric: validation accuracy and weighted F1.\nrun_001: logistic_regression actual=0.951048951048951 status=success; prediction=accuracy around 0.92-0.96; recommendation=run; lesson=Prediction was broadly consistent with the real run.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_002: logistic_regression actual=0.986013986013986 status=success; prediction=accuracy around 0.95-0.98; recommendation=run; lesson=Run succeeded, but the prediction missed at least one quantitative detail.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_003: random_forest actual=0.958041958041958 status=success; prediction=accuracy around 0.94-0.98; recommendation=run; lesson=Prediction was broadly consistent with the real run.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_004: verification_sweep actual=None status=success; prediction=accuracy around 0.94-0.98; recommendation=run; lesson=Prediction was broadly consistent with the real run.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_005: gradient_boosting actual=0.951048951048951 status=success; prediction=accuracy around 0.94-0.98; recommendation=run; lesson=Prediction was broadly consistent with the real run.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option."
   },
   "candidate_actions": [
     {
@@ -213,6 +213,7 @@
   "calibration_metrics": null,
   "artifacts": {
     "trace_path": "runs/run_006.json",
-    "report_path": "reports/final_report.md"
+    "report_path": "reports/final_report.md",
+    "claim_ledger_path": "reports/claim_ledger.json"
   }
 }

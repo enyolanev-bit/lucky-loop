@@ -1,0 +1,29 @@
+{
+  "schema_version": "1.0",
+  "entries": [
+    {
+      "claim_id": "run_004_claim_001",
+      "claim": "C=0.1 is robustly better than C=10.0.",
+      "status": "blocked",
+      "evidence_run_ids": [
+        "run_004"
+      ],
+      "blocked_reason": "Measured effect is not larger than inter-seed noise. The report must not oversell this as a robust discovery.",
+      "allowed_rewrite": "C=0.1 had the best mean accuracy, but the effect was smaller than seed noise.",
+      "metrics": {
+        "effect_size": 0.020979,
+        "seed_noise": 0.027972,
+        "effect_to_noise_ratio": 0.75,
+        "min_seed_count": 4,
+        "low_n_warning": false
+      }
+    }
+  ],
+  "summary": {
+    "total": 1,
+    "blocked": 1,
+    "weakly_supported": 0,
+    "supported": 0,
+    "strongly_supported": 0
+  }
+}

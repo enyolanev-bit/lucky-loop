@@ -1,12 +1,14 @@
 from __future__ import annotations
 from pathlib import Path
 from .calibration import compute_world_model_calibration
+from .claim_ledger import build_claim_ledger
 from .schemas import ExperimentTrace
 
 
 def generate_report(goal: str, traces: list[ExperimentTrace], path: Path) -> None:
     best = max((t for t in traces if t.actual_result.accuracy is not None), key=lambda t: t.actual_result.accuracy or -1, default=None)
     calibration = compute_world_model_calibration(traces)
+    ledger = build_claim_ledger(traces)
     lines = [
         "# Lucky Loop Research Report",
         "",
@@ -52,18 +54,30 @@ def generate_report(goal: str, traces: list[ExperimentTrace], path: Path) -> Non
     ]
 
     lines += ["", "## Supported claims", ""]
-    supported = [claim for t in traces if t.verification for claim in t.verification.supported_claims]
+    supported = [entry for entry in ledger if entry.status in {"supported", "strongly_supported"}]
     if supported:
-        lines += [f"- {claim}" for claim in supported]
+        lines += [f"- {entry.claim}" for entry in supported]
     else:
-        lines.append("- No sweep-level claim cleared the effect-vs-noise verifier yet.")
+        lines.append("- No claim reached supported or strongly_supported yet.")
 
-    lines += ["", "## Weak / inconclusive findings", ""]
-    inconclusive = [finding for t in traces if t.verification for finding in t.verification.inconclusive_findings]
-    if inconclusive:
-        lines += [f"- {finding}" for finding in inconclusive]
+    lines += ["", "## Weakly supported claims", ""]
+    weak = [entry for entry in ledger if entry.status == "weakly_supported"]
+    if weak:
+        lines += [f"- {entry.claim}" for entry in weak]
     else:
-        lines.append("- No verifier-level inconclusive finding was recorded.")
+        lines.append("- No weakly supported claim was recorded.")
+
+    lines += ["", "## Blocked / inconclusive claims", ""]
+    blocked = [entry for entry in ledger if entry.status in {"blocked", "inconclusive"}]
+    if blocked:
+        for entry in blocked:
+            lines.append(f"- Blocked: {entry.claim}")
+            if entry.allowed_rewrite:
+                lines.append(f"  Allowed rewrite: {entry.allowed_rewrite}")
+    else:
+        lines.append("- No verifier-level blocked claim was recorded.")
+
+    lines += ["", "## Claim ledger", "", "- Full ledger: `reports/claim_ledger.json`"]
 
     lines += ["", "## Prediction misses", ""]
     misses = []
@@ -92,7 +106,15 @@ def generate_report(goal: str, traces: list[ExperimentTrace], path: Path) -> Non
             lines.append(f"- Unexpected: {'; '.join(t.comparison.unexpected_events)}")
         lines.append(f"- Lesson: {t.comparison.lesson}")
         if t.verification:
-            lines.append(f"- Verifier verdict: {t.verification.status}; trustworthy={t.verification.trustworthy}; effect_size={t.verification.effect_size}; seed_noise={t.verification.seed_noise}")
+            lines.append(
+                f"- Verifier verdict: {t.verification.status}; trustworthy={t.verification.trustworthy}; "
+                f"effect_size={t.verification.effect_size}; seed_noise={t.verification.seed_noise}; "
+                f"effect_to_noise_ratio={t.verification.effect_to_noise_ratio}"
+            )
+            if t.verification.blocked_claim:
+                lines.append(f"- Blocked claim: {t.verification.blocked_claim}")
+            if t.verification.allowed_claim:
+                lines.append(f"- Allowed claim: {t.verification.allowed_claim}")
             lines.append(f"- Verifier rationale: {t.verification.rationale}")
         lines.append("")
     path.parent.mkdir(parents=True, exist_ok=True)
