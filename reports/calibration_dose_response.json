@@ -1,0 +1,13 @@
+{
+  "n_points": 96,
+  "n_datasets": 4,
+  "n_corruptions": 8,
+  "n_seeds": 3,
+  "pearson_r": 0.4545,
+  "spearman_rho": 0.5733,
+  "bootstrap_95ci": [
+    0.2797,
+    0.6342
+  ],
+  "ci_excludes_zero": true
+}

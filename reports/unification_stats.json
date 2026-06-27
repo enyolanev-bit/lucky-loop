@@ -1,0 +1,17 @@
+{
+  "n_datasets": 12,
+  "pearson_r": 0.7498,
+  "spearman_rho": 0.3916,
+  "bootstrap_95ci": [
+    -0.3869,
+    0.9901
+  ],
+  "bootstrap_mean_r": 0.652,
+  "permutation_p_value": 0.0167,
+  "n_bootstrap": 10000,
+  "n_permutation": 10000,
+  "ci_excludes_zero": false,
+  "significant_at_05": true,
+  "n_real_datasets": 4,
+  "n_synth_datasets": 8
+}
