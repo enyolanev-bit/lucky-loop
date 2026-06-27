@@ -23,8 +23,8 @@
     "status": "success",
     "accuracy": 0.958041958041958,
     "f1": 0.9578690540229003,
-    "runtime_seconds": 0.71,
-    "stdout_tail": "{\n  \"accuracy\": 0.958041958041958,\n  \"dataset\": \"breast_cancer\",\n  \"f1\": 0.9578690540229003,\n  \"model\": \"random_forest\",\n  \"n_label_noise_flips\": 0,\n  \"n_test\": 143,\n  \"n_train\": 426,\n  \"params\": {\n    \"C\": 1.0,\n    \"dataset\": \"breast_cancer\",\n    \"kernel\": \"rbf\",\n    \"label_noise\": 0.0,\n    \"learning_rate\": 0.1,\n    \"max_depth\": null,\n    \"max_iter\": 1000,\n    \"model\": \"random_forest\",\n    \"n_estimators\": 300,\n    \"scale\": false,\n    \"seed\": 42,\n    \"test_size\": 0.25\n  },\n  \"runtime_seconds\": 0.71,\n  \"status\": \"success\"\n}\n",
+    "runtime_seconds": 0.8226,
+    "stdout_tail": "{\n  \"accuracy\": 0.958041958041958,\n  \"dataset\": \"breast_cancer\",\n  \"f1\": 0.9578690540229003,\n  \"model\": \"random_forest\",\n  \"n_label_noise_flips\": 0,\n  \"n_test\": 143,\n  \"n_train\": 426,\n  \"params\": {\n    \"C\": 1.0,\n    \"dataset\": \"breast_cancer\",\n    \"kernel\": \"rbf\",\n    \"label_noise\": 0.0,\n    \"learning_rate\": 0.1,\n    \"max_depth\": null,\n    \"max_iter\": 1000,\n    \"model\": \"random_forest\",\n    \"n_estimators\": 300,\n    \"scale\": false,\n    \"seed\": 42,\n    \"test_size\": 0.25\n  },\n  \"runtime_seconds\": 0.8226,\n  \"status\": \"success\"\n}\n",
     "stderr_tail": "",
     "raw": {
       "accuracy": 0.958041958041958,
@@ -48,7 +48,7 @@
         "seed": 42,
         "test_size": 0.25
       },
-      "runtime_seconds": 0.71,
+      "runtime_seconds": 0.8226,
       "status": "success"
     }
   },
@@ -84,7 +84,7 @@
         }
       }
     ],
-    "budget_remaining": 4,
+    "budget_remaining": 8,
     "open_questions": [
       "Which candidate should receive the next compute budget?",
       "Is the best observed score robust across seeds or perturbations?",
@@ -146,6 +146,38 @@
       "params": {
         "n_estimators": 150,
         "learning_rate": 0.05
+      }
+    },
+    {
+      "action_id": "action_weak_effect",
+      "command": "python experiments/scenario_sklearn.py --scenario weak_effect",
+      "model": "weak_effect",
+      "params": {
+        "scenario": "weak_effect"
+      }
+    },
+    {
+      "action_id": "action_real_effect",
+      "command": "python experiments/scenario_sklearn.py --scenario real_effect",
+      "model": "real_effect",
+      "params": {
+        "scenario": "real_effect"
+      }
+    },
+    {
+      "action_id": "action_leakage_trap",
+      "command": "python experiments/scenario_sklearn.py --scenario data_leakage_trap",
+      "model": "data_leakage_trap",
+      "params": {
+        "scenario": "data_leakage_trap"
+      }
+    },
+    {
+      "action_id": "action_metric_misuse",
+      "command": "python experiments/scenario_sklearn.py --scenario metric_misuse",
+      "model": "metric_misuse",
+      "params": {
+        "scenario": "metric_misuse"
       }
     }
   ],
@@ -247,6 +279,89 @@
         "rationale": "Boosting often performs well but needs tuning."
       },
       "source": "heuristic_fallback"
+    },
+    {
+      "action": {
+        "action_id": "action_weak_effect",
+        "command": "python experiments/scenario_sklearn.py --scenario weak_effect",
+        "model": "weak_effect",
+        "params": {
+          "scenario": "weak_effect"
+        }
+      },
+      "prediction": {
+        "expected_metric": "accuracy around 0.94-0.99",
+        "expected_runtime_seconds": "under 5",
+        "risks": [
+          "effect may be smaller than seed noise",
+          "claim should likely be weak or blocked"
+        ],
+        "recommendation": "run",
+        "rationale": "A weak-effect scenario tests whether the verifier refuses to overclaim a small apparent improvement."
+      },
+      "source": "heuristic_fallback"
+    },
+    {
+      "action": {
+        "action_id": "action_real_effect",
+        "command": "python experiments/scenario_sklearn.py --scenario real_effect",
+        "model": "real_effect",
+        "params": {
+          "scenario": "real_effect"
+        }
+      },
+      "prediction": {
+        "expected_metric": "accuracy around 0.76-0.88",
+        "expected_runtime_seconds": "under 5",
+        "risks": [
+          "large effect should be checked against seed noise"
+        ],
+        "recommendation": "run",
+        "rationale": "A real-effect scenario should produce a supported claim when the effect/noise ratio is high."
+      },
+      "source": "heuristic_fallback"
+    },
+    {
+      "action": {
+        "action_id": "action_leakage_trap",
+        "command": "python experiments/scenario_sklearn.py --scenario data_leakage_trap",
+        "model": "data_leakage_trap",
+        "params": {
+          "scenario": "data_leakage_trap"
+        }
+      },
+      "prediction": {
+        "expected_metric": "accuracy around 0.95-1.00",
+        "expected_runtime_seconds": "under 5",
+        "risks": [
+          "suspiciously high accuracy may indicate data leakage",
+          "protocol warning should block a strong claim"
+        ],
+        "recommendation": "run",
+        "rationale": "A leakage trap tests whether the system blocks claims from invalid protocols even when metrics look excellent."
+      },
+      "source": "heuristic_fallback"
+    },
+    {
+      "action": {
+        "action_id": "action_metric_misuse",
+        "command": "python experiments/scenario_sklearn.py --scenario metric_misuse",
+        "model": "metric_misuse",
+        "params": {
+          "scenario": "metric_misuse"
+        }
+      },
+      "prediction": {
+        "expected_metric": "balanced_accuracy around 0.50-0.73",
+        "expected_runtime_seconds": "under 5",
+        "risks": [
+          "accuracy may be misleading under class imbalance",
+          "balanced accuracy or F1 should be preferred"
+        ],
+        "recommendation": "run",
+        "rationale": "Metric misuse tests whether the report avoids accuracy-only claims on an imbalanced setting."
+      },
+      "source": "heuristic_fallback"
     }
   ],
   "selected_action": {
@@ -315,6 +430,50 @@
             "scale": true,
             "C": 2.0,
             "kernel": "rbf"
+          }
+        },
+        "reason": "score=30; world model recommended run"
+      },
+      {
+        "action": {
+          "action_id": "action_weak_effect",
+          "command": "python experiments/scenario_sklearn.py --scenario weak_effect",
+          "model": "weak_effect",
+          "params": {
+            "scenario": "weak_effect"
+          }
+        },
+        "reason": "score=30; world model recommended run"
+      },
+      {
+        "action": {
+          "action_id": "action_real_effect",
+          "command": "python experiments/scenario_sklearn.py --scenario real_effect",
+          "model": "real_effect",
+          "params": {
+            "scenario": "real_effect"
+          }
+        },
+        "reason": "score=30; world model recommended run"
+      },
+      {
+        "action": {
+          "action_id": "action_leakage_trap",
+          "command": "python experiments/scenario_sklearn.py --scenario data_leakage_trap",
+          "model": "data_leakage_trap",
+          "params": {
+            "scenario": "data_leakage_trap"
+          }
+        },
+        "reason": "score=30; world model recommended run"
+      },
+      {
+        "action": {
+          "action_id": "action_metric_misuse",
+          "command": "python experiments/scenario_sklearn.py --scenario metric_misuse",
+          "model": "metric_misuse",
+          "params": {
+            "scenario": "metric_misuse"
           }
         },
         "reason": "score=30; world model recommended run"

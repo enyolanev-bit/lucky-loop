@@ -28,6 +28,14 @@ def heuristic_prediction(action: ProposedAction, state: str) -> Prediction:
         return Prediction(expected_metric="accuracy around 0.94-0.98", expected_runtime_seconds="under 10", risks=["sensitive to scaling and C"], recommendation="run", rationale="Scaled RBF SVC is strong on small tabular datasets.")
     if m == "verification_sweep":
         return Prediction(expected_metric="accuracy around 0.94-0.98", expected_runtime_seconds="under 25", risks=["label noise can make small hyperparameter differences non-robust", "seed variance may exceed apparent gains"], recommendation="run", rationale="A multi-seed sweep is useful for the deterministic verifier: it tests whether an apparent gain survives effect-vs-noise scrutiny.")
+    if m == "weak_effect":
+        return Prediction(expected_metric="accuracy around 0.94-0.99", expected_runtime_seconds="under 5", risks=["effect may be smaller than seed noise", "claim should likely be weak or blocked"], recommendation="run", rationale="A weak-effect scenario tests whether the verifier refuses to overclaim a small apparent improvement.")
+    if m == "real_effect":
+        return Prediction(expected_metric="accuracy around 0.76-0.88", expected_runtime_seconds="under 5", risks=["large effect should be checked against seed noise"], recommendation="run", rationale="A real-effect scenario should produce a supported claim when the effect/noise ratio is high.")
+    if m == "data_leakage_trap":
+        return Prediction(expected_metric="accuracy around 0.95-1.00", expected_runtime_seconds="under 5", risks=["suspiciously high accuracy may indicate data leakage", "protocol warning should block a strong claim"], recommendation="run", rationale="A leakage trap tests whether the system blocks claims from invalid protocols even when metrics look excellent.")
+    if m == "metric_misuse":
+        return Prediction(expected_metric="balanced_accuracy around 0.50-0.73", expected_runtime_seconds="under 5", risks=["accuracy may be misleading under class imbalance", "balanced accuracy or F1 should be preferred"], recommendation="run", rationale="Metric misuse tests whether the report avoids accuracy-only claims on an imbalanced setting.")
     return Prediction(expected_metric="unknown", expected_runtime_seconds="unknown", risks=["no calibrated prior"], recommendation="run", rationale="Fallback prediction.")
 
 

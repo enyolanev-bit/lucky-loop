@@ -1,56 +1,142 @@
 {
   "run_id": "run_005",
   "goal": "Maximize validation accuracy on sklearn breast cancer dataset in five experiments.",
-  "hypothesis": "Selected gradient_boosting because score=31; world model recommended run; ensemble baseline is useful as a late comparison; world model predicted overfitting risk. World model predicted accuracy around 0.94-0.98, runtime under 15, recommendation=run, risks=can overfit with too many estimators.",
+  "hypothesis": "Selected real_effect because score=54; world model recommended run; real-effect scenario should produce a supported trust-ladder case. World model predicted accuracy around 0.76-0.88, runtime under 5, recommendation=run, risks=large effect should be checked against seed noise.",
   "proposed_action": {
-    "action_id": "action_gradient_boosting",
-    "command": "python experiments/train_sklearn.py --dataset breast_cancer --model gradient_boosting --n-estimators 150 --learning-rate 0.05",
-    "model": "gradient_boosting",
+    "action_id": "action_real_effect",
+    "command": "python experiments/scenario_sklearn.py --scenario real_effect",
+    "model": "real_effect",
     "params": {
-      "n_estimators": 150,
-      "learning_rate": 0.05
+      "scenario": "real_effect"
     }
   },
   "world_model_prediction": {
-    "expected_metric": "accuracy around 0.94-0.98",
-    "expected_runtime_seconds": "under 15",
+    "expected_metric": "accuracy around 0.76-0.88",
+    "expected_runtime_seconds": "under 5",
     "risks": [
-      "can overfit with too many estimators"
+      "large effect should be checked against seed noise"
     ],
     "recommendation": "run",
-    "rationale": "Boosting often performs well but needs tuning."
+    "rationale": "A real-effect scenario should produce a supported claim when the effect/noise ratio is high."
   },
   "actual_result": {
     "status": "success",
-    "accuracy": 0.951048951048951,
-    "f1": 0.9507373098014511,
-    "runtime_seconds": 0.5826,
-    "stdout_tail": "{\n  \"accuracy\": 0.951048951048951,\n  \"dataset\": \"breast_cancer\",\n  \"f1\": 0.9507373098014511,\n  \"model\": \"gradient_boosting\",\n  \"n_label_noise_flips\": 0,\n  \"n_test\": 143,\n  \"n_train\": 426,\n  \"params\": {\n    \"C\": 1.0,\n    \"dataset\": \"breast_cancer\",\n    \"kernel\": \"rbf\",\n    \"label_noise\": 0.0,\n    \"learning_rate\": 0.05,\n    \"max_depth\": null,\n    \"max_iter\": 1000,\n    \"model\": \"gradient_boosting\",\n    \"n_estimators\": 150,\n    \"scale\": false,\n    \"seed\": 42,\n    \"test_size\": 0.25\n  },\n  \"runtime_seconds\": 0.5826,\n  \"status\": \"success\"\n}\n",
+    "accuracy": null,
+    "f1": null,
+    "runtime_seconds": 0.0,
+    "stdout_tail": "ue\": \"baseline\"\n    },\n    {\n      \"accuracy\": 0.765,\n      \"config_key\": \"baseline\",\n      \"label\": \"baseline\",\n      \"runtime_seconds\": 0.001,\n      \"seed\": 1,\n      \"sweep_param\": \"scenario_config\",\n      \"value\": \"baseline\"\n    },\n    {\n      \"accuracy\": 0.77,\n      \"config_key\": \"baseline\",\n      \"label\": \"baseline\",\n      \"runtime_seconds\": 0.001,\n      \"seed\": 2,\n      \"sweep_param\": \"scenario_config\",\n      \"value\": \"baseline\"\n    },\n    {\n      \"accuracy\": 0.775,\n      \"config_key\": \"baseline\",\n      \"label\": \"baseline\",\n      \"runtime_seconds\": 0.001,\n      \"seed\": 3,\n      \"sweep_param\": \"scenario_config\",\n      \"value\": \"baseline\"\n    },\n    {\n      \"accuracy\": 0.86,\n      \"config_key\": \"candidate\",\n      \"label\": \"candidate\",\n      \"runtime_seconds\": 0.001,\n      \"seed\": 0,\n      \"sweep_param\": \"scenario_config\",\n      \"value\": \"candidate\"\n    },\n    {\n      \"accuracy\": 0.865,\n      \"config_key\": \"candidate\",\n      \"label\": \"candidate\",\n      \"runtime_seconds\": 0.001,\n      \"seed\": 1,\n      \"sweep_param\": \"scenario_config\",\n      \"value\": \"candidate\"\n    },\n    {\n      \"accuracy\": 0.87,\n      \"config_key\": \"candidate\",\n      \"label\": \"candidate\",\n      \"runtime_seconds\": 0.001,\n      \"seed\": 2,\n      \"sweep_param\": \"scenario_config\",\n      \"value\": \"candidate\"\n    },\n    {\n      \"accuracy\": 0.875,\n      \"config_key\": \"candidate\",\n      \"label\": \"candidate\",\n      \"runtime_seconds\": 0.001,\n      \"seed\": 3,\n      \"sweep_param\": \"scenario_config\",\n      \"value\": \"candidate\"\n    }\n  ],\n  \"runtime_seconds\": 0.0,\n  \"scenario\": \"real_effect\",\n  \"seeds\": [\n    0,\n    1,\n    2,\n    3\n  ],\n  \"status\": \"success\",\n  \"summary_by_value\": {\n    \"baseline\": {\n      \"max_accuracy\": 0.775,\n      \"mean_accuracy\": 0.7675000000000001,\n      \"min_accuracy\": 0.76,\n      \"n\": 4\n    },\n    \"candidate\": {\n      \"max_accuracy\": 0.875,\n      \"mean_accuracy\": 0.8674999999999999,\n      \"min_accuracy\": 0.86,\n      \"n\": 4\n    }\n  },\n  \"values\": [\n    \"baseline\",\n    \"candidate\"\n  ]\n}\n",
     "stderr_tail": "",
     "raw": {
-      "accuracy": 0.951048951048951,
-      "dataset": "breast_cancer",
-      "f1": 0.9507373098014511,
-      "model": "gradient_boosting",
-      "n_label_noise_flips": 0,
-      "n_test": 143,
-      "n_train": 426,
-      "params": {
-        "C": 1.0,
-        "dataset": "breast_cancer",
-        "kernel": "rbf",
-        "label_noise": 0.0,
-        "learning_rate": 0.05,
-        "max_depth": null,
-        "max_iter": 1000,
-        "model": "gradient_boosting",
-        "n_estimators": 150,
-        "scale": false,
-        "seed": 42,
-        "test_size": 0.25
+      "best": {
+        "max_accuracy": 0.875,
+        "mean_accuracy": 0.8674999999999999,
+        "min_accuracy": 0.86,
+        "n": 4,
+        "value": "candidate"
       },
-      "runtime_seconds": 0.5826,
-      "status": "success"
+      "metric": "accuracy",
+      "protocol_warning": null,
+      "runs": [
+        {
+          "accuracy": 0.76,
+          "config_key": "baseline",
+          "label": "baseline",
+          "runtime_seconds": 0.001,
+          "seed": 0,
+          "sweep_param": "scenario_config",
+          "value": "baseline"
+        },
+        {
+          "accuracy": 0.765,
+          "config_key": "baseline",
+          "label": "baseline",
+          "runtime_seconds": 0.001,
+          "seed": 1,
+          "sweep_param": "scenario_config",
+          "value": "baseline"
+        },
+        {
+          "accuracy": 0.77,
+          "config_key": "baseline",
+          "label": "baseline",
+          "runtime_seconds": 0.001,
+          "seed": 2,
+          "sweep_param": "scenario_config",
+          "value": "baseline"
+        },
+        {
+          "accuracy": 0.775,
+          "config_key": "baseline",
+          "label": "baseline",
+          "runtime_seconds": 0.001,
+          "seed": 3,
+          "sweep_param": "scenario_config",
+          "value": "baseline"
+        },
+        {
+          "accuracy": 0.86,
+          "config_key": "candidate",
+          "label": "candidate",
+          "runtime_seconds": 0.001,
+          "seed": 0,
+          "sweep_param": "scenario_config",
+          "value": "candidate"
+        },
+        {
+          "accuracy": 0.865,
+          "config_key": "candidate",
+          "label": "candidate",
+          "runtime_seconds": 0.001,
+          "seed": 1,
+          "sweep_param": "scenario_config",
+          "value": "candidate"
+        },
+        {
+          "accuracy": 0.87,
+          "config_key": "candidate",
+          "label": "candidate",
+          "runtime_seconds": 0.001,
+          "seed": 2,
+          "sweep_param": "scenario_config",
+          "value": "candidate"
+        },
+        {
+          "accuracy": 0.875,
+          "config_key": "candidate",
+          "label": "candidate",
+          "runtime_seconds": 0.001,
+          "seed": 3,
+          "sweep_param": "scenario_config",
+          "value": "candidate"
+        }
+      ],
+      "runtime_seconds": 0.0,
+      "scenario": "real_effect",
+      "seeds": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "status": "success",
+      "summary_by_value": {
+        "baseline": {
+          "max_accuracy": 0.775,
+          "mean_accuracy": 0.7675000000000001,
+          "min_accuracy": 0.76,
+          "n": 4
+        },
+        "candidate": {
+          "max_accuracy": 0.875,
+          "mean_accuracy": 0.8674999999999999,
+          "min_accuracy": 0.86,
+          "n": 4
+        }
+      },
+      "values": [
+        "baseline",
+        "candidate"
+      ]
     }
   },
   "comparison": {
@@ -60,7 +146,25 @@
     "lesson": "Prediction was broadly consistent with the real run."
   },
   "next_decision": "Continue: regenerate candidates from the updated state and ask the world model to predict each option.",
-  "verification": null,
+  "verification": {
+    "status": "strongly_supported",
+    "metric": "accuracy",
+    "effect_size": 0.1,
+    "seed_noise": 0.015,
+    "effect_to_noise_ratio": 6.666667,
+    "min_seed_count": 4,
+    "low_n_warning": false,
+    "trustworthy": true,
+    "best_config": "candidate",
+    "worst_config": "baseline",
+    "blocked_claim": null,
+    "allowed_claim": "candidate beat baseline by 0.1000 accuracy; effect/noise ratio=6.67, status=strongly supported.",
+    "supported_claims": [
+      "Best config 'candidate' beats worst config 'baseline' by 0.1000 accuracy, above seed noise 0.0150; status=strongly supported."
+    ],
+    "inconclusive_findings": [],
+    "rationale": "Measured effect is larger than inter-seed noise for the best config. This is not a full statistical significance engine; it is a conservative claim gate."
+  },
   "schema_version": "2.0",
   "state_before": {
     "state_id": "state_005",
@@ -122,7 +226,7 @@
         }
       }
     ],
-    "budget_remaining": 2,
+    "budget_remaining": 6,
     "open_questions": [
       "Which candidate should receive the next compute budget?",
       "Is the best observed score robust across seeds or perturbations?",
@@ -133,7 +237,7 @@
       "seed variance may exceed apparent model or hyperparameter effects",
       "world-model predictions may miss quantitative details"
     ],
-    "summary": "Goal: Maximize validation accuracy on sklearn breast cancer dataset in five experiments.\nNo experiments have been run yet. Dataset: sklearn breast_cancer. Metric: validation accuracy and weighted F1.\nrun_001: logistic_regression actual=0.951048951048951 status=success; prediction=accuracy around 0.92-0.96; recommendation=run; lesson=Prediction was broadly consistent with the real run.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_002: logistic_regression actual=0.986013986013986 status=success; prediction=accuracy around 0.95-0.98; recommendation=run; lesson=Run succeeded, but the prediction missed at least one quantitative detail.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_003: random_forest actual=0.958041958041958 status=success; prediction=accuracy around 0.94-0.98; recommendation=run; lesson=Prediction was broadly consistent with the real run.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_004: verification_sweep actual=None status=success; prediction=accuracy around 0.94-0.98; recommendation=run; lesson=Prediction was broadly consistent with the real run.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option."
+    "summary": "Goal: Maximize validation accuracy on sklearn breast cancer dataset in five experiments.\nNo experiments have been run yet. Dataset: sklearn breast_cancer. Metric: validation accuracy and weighted F1.\nrun_001: logistic_regression actual=0.951048951048951 status=success; prediction=accuracy around 0.92-0.96; recommendation=run; lesson=Prediction was broadly consistent with the real run.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_002: logistic_regression actual=0.986013986013986 status=success; prediction=accuracy around 0.95-0.98; recommendation=run; lesson=Run succeeded, but the prediction missed at least one quantitative detail.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_003: random_forest actual=0.958041958041958 status=success; prediction=accuracy around 0.94-0.98; recommendation=run; lesson=Prediction was broadly consistent with the real run.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_004: verification_sweep actual=None status=success; prediction=accuracy around 0.94-0.98; recommendation=run; lesson=Run succeeded, but the prediction missed at least one quantitative detail.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option."
   },
   "candidate_actions": [
     {
@@ -153,6 +257,38 @@
       "params": {
         "n_estimators": 150,
         "learning_rate": 0.05
+      }
+    },
+    {
+      "action_id": "action_weak_effect",
+      "command": "python experiments/scenario_sklearn.py --scenario weak_effect",
+      "model": "weak_effect",
+      "params": {
+        "scenario": "weak_effect"
+      }
+    },
+    {
+      "action_id": "action_real_effect",
+      "command": "python experiments/scenario_sklearn.py --scenario real_effect",
+      "model": "real_effect",
+      "params": {
+        "scenario": "real_effect"
+      }
+    },
+    {
+      "action_id": "action_leakage_trap",
+      "command": "python experiments/scenario_sklearn.py --scenario data_leakage_trap",
+      "model": "data_leakage_trap",
+      "params": {
+        "scenario": "data_leakage_trap"
+      }
+    },
+    {
+      "action_id": "action_metric_misuse",
+      "command": "python experiments/scenario_sklearn.py --scenario metric_misuse",
+      "model": "metric_misuse",
+      "params": {
+        "scenario": "metric_misuse"
       }
     }
   ],
@@ -199,30 +335,134 @@
         "rationale": "Boosting often performs well but needs tuning."
       },
       "source": "heuristic_fallback"
+    },
+    {
+      "action": {
+        "action_id": "action_weak_effect",
+        "command": "python experiments/scenario_sklearn.py --scenario weak_effect",
+        "model": "weak_effect",
+        "params": {
+          "scenario": "weak_effect"
+        }
+      },
+      "prediction": {
+        "expected_metric": "accuracy around 0.94-0.99",
+        "expected_runtime_seconds": "under 5",
+        "risks": [
+          "effect may be smaller than seed noise",
+          "claim should likely be weak or blocked"
+        ],
+        "recommendation": "run",
+        "rationale": "A weak-effect scenario tests whether the verifier refuses to overclaim a small apparent improvement."
+      },
+      "source": "heuristic_fallback"
+    },
+    {
+      "action": {
+        "action_id": "action_real_effect",
+        "command": "python experiments/scenario_sklearn.py --scenario real_effect",
+        "model": "real_effect",
+        "params": {
+          "scenario": "real_effect"
+        }
+      },
+      "prediction": {
+        "expected_metric": "accuracy around 0.76-0.88",
+        "expected_runtime_seconds": "under 5",
+        "risks": [
+          "large effect should be checked against seed noise"
+        ],
+        "recommendation": "run",
+        "rationale": "A real-effect scenario should produce a supported claim when the effect/noise ratio is high."
+      },
+      "source": "heuristic_fallback"
+    },
+    {
+      "action": {
+        "action_id": "action_leakage_trap",
+        "command": "python experiments/scenario_sklearn.py --scenario data_leakage_trap",
+        "model": "data_leakage_trap",
+        "params": {
+          "scenario": "data_leakage_trap"
+        }
+      },
+      "prediction": {
+        "expected_metric": "accuracy around 0.95-1.00",
+        "expected_runtime_seconds": "under 5",
+        "risks": [
+          "suspiciously high accuracy may indicate data leakage",
+          "protocol warning should block a strong claim"
+        ],
+        "recommendation": "run",
+        "rationale": "A leakage trap tests whether the system blocks claims from invalid protocols even when metrics look excellent."
+      },
+      "source": "heuristic_fallback"
+    },
+    {
+      "action": {
+        "action_id": "action_metric_misuse",
+        "command": "python experiments/scenario_sklearn.py --scenario metric_misuse",
+        "model": "metric_misuse",
+        "params": {
+          "scenario": "metric_misuse"
+        }
+      },
+      "prediction": {
+        "expected_metric": "balanced_accuracy around 0.50-0.73",
+        "expected_runtime_seconds": "under 5",
+        "risks": [
+          "accuracy may be misleading under class imbalance",
+          "balanced accuracy or F1 should be preferred"
+        ],
+        "recommendation": "run",
+        "rationale": "Metric misuse tests whether the report avoids accuracy-only claims on an imbalanced setting."
+      },
+      "source": "heuristic_fallback"
     }
   ],
   "selected_action": {
-    "action_id": "action_gradient_boosting",
-    "command": "python experiments/train_sklearn.py --dataset breast_cancer --model gradient_boosting --n-estimators 150 --learning-rate 0.05",
-    "model": "gradient_boosting",
+    "action_id": "action_real_effect",
+    "command": "python experiments/scenario_sklearn.py --scenario real_effect",
+    "model": "real_effect",
     "params": {
-      "n_estimators": 150,
-      "learning_rate": 0.05
+      "scenario": "real_effect"
     }
   },
   "decision_trace": {
     "selected_action": {
-      "action_id": "action_gradient_boosting",
-      "command": "python experiments/train_sklearn.py --dataset breast_cancer --model gradient_boosting --n-estimators 150 --learning-rate 0.05",
-      "model": "gradient_boosting",
+      "action_id": "action_real_effect",
+      "command": "python experiments/scenario_sklearn.py --scenario real_effect",
+      "model": "real_effect",
       "params": {
-        "n_estimators": 150,
-        "learning_rate": 0.05
+        "scenario": "real_effect"
       }
     },
     "world_model_signal_used": true,
-    "causal_reason": "Selected gradient_boosting because score=31; world model recommended run; ensemble baseline is useful as a late comparison; world model predicted overfitting risk. World model predicted accuracy around 0.94-0.98, runtime under 15, recommendation=run, risks=can overfit with too many estimators.",
+    "causal_reason": "Selected real_effect because score=54; world model recommended run; real-effect scenario should produce a supported trust-ladder case. World model predicted accuracy around 0.76-0.88, runtime under 5, recommendation=run, risks=large effect should be checked against seed noise.",
     "rejected_candidates": [
+      {
+        "action": {
+          "action_id": "action_weak_effect",
+          "command": "python experiments/scenario_sklearn.py --scenario weak_effect",
+          "model": "weak_effect",
+          "params": {
+            "scenario": "weak_effect"
+          }
+        },
+        "reason": "score=48; world model recommended run; weak-effect scenario demonstrates the lower rung of the trust ladder"
+      },
+      {
+        "action": {
+          "action_id": "action_gradient_boosting",
+          "command": "python experiments/train_sklearn.py --dataset breast_cancer --model gradient_boosting --n-estimators 150 --learning-rate 0.05",
+          "model": "gradient_boosting",
+          "params": {
+            "n_estimators": 150,
+            "learning_rate": 0.05
+          }
+        },
+        "reason": "score=31; world model recommended run; ensemble baseline is useful as a late comparison; world model predicted overfitting risk"
+      },
       {
         "action": {
           "action_id": "action_svc_scaled",
@@ -235,10 +475,50 @@
           }
         },
         "reason": "score=30; world model recommended run"
+      },
+      {
+        "action": {
+          "action_id": "action_leakage_trap",
+          "command": "python experiments/scenario_sklearn.py --scenario data_leakage_trap",
+          "model": "data_leakage_trap",
+          "params": {
+            "scenario": "data_leakage_trap"
+          }
+        },
+        "reason": "score=30; world model recommended run"
+      },
+      {
+        "action": {
+          "action_id": "action_metric_misuse",
+          "command": "python experiments/scenario_sklearn.py --scenario metric_misuse",
+          "model": "metric_misuse",
+          "params": {
+            "scenario": "metric_misuse"
+          }
+        },
+        "reason": "score=30; world model recommended run"
       }
     ]
   },
-  "claim_ledger_updates": [],
+  "claim_ledger_updates": [
+    {
+      "claim_id": "run_005_claim_001",
+      "claim": "candidate beat baseline by 0.1000 accuracy; effect/noise ratio=6.67, status=strongly supported.",
+      "status": "strongly_supported",
+      "evidence_run_ids": [
+        "run_005"
+      ],
+      "blocked_reason": null,
+      "allowed_rewrite": "candidate beat baseline by 0.1000 accuracy; effect/noise ratio=6.67, status=strongly supported.",
+      "metrics": {
+        "effect_size": 0.1,
+        "seed_noise": 0.015,
+        "effect_to_noise_ratio": 6.666667,
+        "min_seed_count": 4,
+        "low_n_warning": false
+      }
+    }
+  ],
   "calibration_metrics": null,
   "artifacts": {
     "trace_path": "runs/run_005.json",

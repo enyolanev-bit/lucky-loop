@@ -29,8 +29,9 @@ def _actual_metric(trace: ExperimentTrace) -> float | None:
     if trace.actual_result.accuracy is not None:
         return trace.actual_result.accuracy
     best = trace.actual_result.raw.get("best")
-    if best and best.get("mean_accuracy") is not None:
-        return float(best["mean_accuracy"])
+    metric = trace.actual_result.raw.get("metric", "accuracy")
+    if best and best.get(f"mean_{metric}") is not None:
+        return float(best[f"mean_{metric}"])
     return None
 
 
@@ -60,7 +61,10 @@ def _risk_hit(trace: ExperimentTrace) -> bool:
     observed = " ".join(trace.comparison.unexpected_events).lower()
     if trace.verification and trace.verification.status == "inconclusive":
         observed += " seed variance noise non-robust inconclusive"
+    if trace.verification and trace.verification.rationale:
+        observed += " " + trace.verification.rationale.lower()
     keywords = ["seed", "noise", "non-robust", "runtime", "overfit", "scal", "convergence"]
+    keywords += ["leak", "protocol", "misleading", "imbalance", "balanced", "f1", "metric"]
     return any(k in predicted and k in observed for k in keywords)
 
 
@@ -68,7 +72,21 @@ def _useful_decision(trace: ExperimentTrace) -> bool:
     if not trace.decision_trace or not trace.decision_trace.world_model_signal_used:
         return False
     decision = trace.decision_trace.causal_reason.lower()
-    return any(k in decision for k in ["scaling", "scaled", "robustness", "seed", "variance", "baseline", "inductive bias"])
+    keywords = [
+        "scaling",
+        "scaled",
+        "robustness",
+        "seed",
+        "variance",
+        "baseline",
+        "inductive bias",
+        "trust-ladder",
+        "leakage",
+        "protocol",
+        "metric misuse",
+        "accuracy-only",
+    ]
+    return any(k in decision for k in keywords)
 
 
 def compute_world_model_calibration(traces: list[ExperimentTrace]) -> CalibrationMetrics:

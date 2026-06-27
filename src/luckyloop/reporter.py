@@ -20,15 +20,16 @@ def generate_report(goal: str, traces: list[ExperimentTrace], path: Path) -> Non
         "",
         "## Experiment timeline",
         "",
-        "| Run | Hypothesis | Model | Prediction | Actual accuracy | Match | Verifier | Decision |",
+        "| Run | Hypothesis | Model | Prediction | Actual metric | Match | Verifier | Decision |",
         "|---|---|---|---|---:|---|---|---|",
     ]
     for t in traces:
         acc = "" if t.actual_result.accuracy is None else f"{t.actual_result.accuracy:.4f}"
         if acc == "" and t.actual_result.raw.get("best"):
             best_raw = t.actual_result.raw["best"]
-            if best_raw.get("mean_accuracy") is not None:
-                acc = f"best mean {best_raw['mean_accuracy']:.4f}"
+            metric = t.actual_result.raw.get("metric", "accuracy")
+            if best_raw.get(f"mean_{metric}") is not None:
+                acc = f"best mean {best_raw[f'mean_{metric}']:.4f}"
         match = "yes" if t.comparison.metric_match and t.comparison.runtime_match else "partial/no"
         verifier = ""
         if t.verification:

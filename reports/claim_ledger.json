@@ -17,13 +17,81 @@
         "min_seed_count": 4,
         "low_n_warning": false
       }
+    },
+    {
+      "claim_id": "run_005_claim_001",
+      "claim": "candidate beat baseline by 0.1000 accuracy; effect/noise ratio=6.67, status=strongly supported.",
+      "status": "strongly_supported",
+      "evidence_run_ids": [
+        "run_005"
+      ],
+      "blocked_reason": null,
+      "allowed_rewrite": "candidate beat baseline by 0.1000 accuracy; effect/noise ratio=6.67, status=strongly supported.",
+      "metrics": {
+        "effect_size": 0.1,
+        "seed_noise": 0.015,
+        "effect_to_noise_ratio": 6.666667,
+        "min_seed_count": 4,
+        "low_n_warning": false
+      }
+    },
+    {
+      "claim_id": "run_006_claim_001",
+      "claim": "candidate is robustly better than baseline.",
+      "status": "blocked",
+      "evidence_run_ids": [
+        "run_006"
+      ],
+      "blocked_reason": "Measured effect is not larger than inter-seed noise. The report must not oversell this as a robust discovery.",
+      "allowed_rewrite": "candidate had the best mean accuracy, but the effect was smaller than seed noise.",
+      "metrics": {
+        "effect_size": 0.012,
+        "seed_noise": 0.03,
+        "effect_to_noise_ratio": 0.4,
+        "min_seed_count": 4,
+        "low_n_warning": false
+      }
+    },
+    {
+      "claim_id": "run_007_claim_001",
+      "claim": "leaky_protocol is a valid scientific winner.",
+      "status": "blocked",
+      "evidence_run_ids": [
+        "run_007"
+      ],
+      "blocked_reason": "Protocol warning blocks the claim even though the metric effect may look large: suspiciously high score; label-derived feature was included before the split",
+      "allowed_rewrite": "leaky_protocol produced the best observed accuracy, but the protocol warning blocks a strong claim: suspiciously high score; label-derived feature was included before the split.",
+      "metrics": {
+        "effect_size": 0.04525,
+        "seed_noise": 0.002,
+        "effect_to_noise_ratio": 22.625,
+        "min_seed_count": 4,
+        "low_n_warning": false
+      }
+    },
+    {
+      "claim_id": "run_008_claim_001",
+      "claim": "balanced_objective is a valid scientific winner.",
+      "status": "blocked",
+      "evidence_run_ids": [
+        "run_008"
+      ],
+      "blocked_reason": "Protocol warning blocks the claim even though the metric effect may look large: accuracy is misleading on an imbalanced dataset; balanced_accuracy is the verifier metric",
+      "allowed_rewrite": "balanced_objective produced the best observed balanced_accuracy, but the protocol warning blocks a strong claim: accuracy is misleading on an imbalanced dataset; balanced_accuracy is the verifier metric.",
+      "metrics": {
+        "effect_size": 0.21,
+        "seed_noise": 0.015,
+        "effect_to_noise_ratio": 14.0,
+        "min_seed_count": 4,
+        "low_n_warning": false
+      }
     }
   ],
   "summary": {
-    "total": 1,
-    "blocked": 1,
+    "total": 5,
+    "blocked": 4,
     "weakly_supported": 0,
     "supported": 0,
-    "strongly_supported": 0
+    "strongly_supported": 1
   }
 }

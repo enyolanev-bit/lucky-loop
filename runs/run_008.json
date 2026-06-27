@@ -1,0 +1,460 @@
+{
+  "run_id": "run_008",
+  "goal": "Maximize validation accuracy on sklearn breast cancer dataset in five experiments.",
+  "hypothesis": "Selected metric_misuse because score=50; world model recommended run; metric misuse scenario tests whether the system avoids accuracy-only claims. World model predicted balanced_accuracy around 0.50-0.73, runtime under 5, recommendation=run, risks=accuracy may be misleading under class imbalance, balanced accuracy or F1 should be preferred.",
+  "proposed_action": {
+    "action_id": "action_metric_misuse",
+    "command": "python experiments/scenario_sklearn.py --scenario metric_misuse",
+    "model": "metric_misuse",
+    "params": {
+      "scenario": "metric_misuse"
+    }
+  },
+  "world_model_prediction": {
+    "expected_metric": "balanced_accuracy around 0.50-0.73",
+    "expected_runtime_seconds": "under 5",
+    "risks": [
+      "accuracy may be misleading under class imbalance",
+      "balanced accuracy or F1 should be preferred"
+    ],
+    "recommendation": "run",
+    "rationale": "Metric misuse tests whether the report avoids accuracy-only claims on an imbalanced setting."
+  },
+  "actual_result": {
+    "status": "success",
+    "accuracy": null,
+    "f1": null,
+    "runtime_seconds": 0.0,
+    "stdout_tail": " \"value\": \"accuracy_only_baseline\"\n    },\n    {\n      \"accuracy\": null,\n      \"balanced_accuracy\": 0.515,\n      \"config_key\": \"accuracy_only_baseline\",\n      \"label\": \"accuracy_only_baseline\",\n      \"runtime_seconds\": 0.001,\n      \"seed\": 3,\n      \"sweep_param\": \"scenario_config\",\n      \"value\": \"accuracy_only_baseline\"\n    },\n    {\n      \"accuracy\": null,\n      \"balanced_accuracy\": 0.71,\n      \"config_key\": \"balanced_objective\",\n      \"label\": \"balanced_objective\",\n      \"runtime_seconds\": 0.001,\n      \"seed\": 0,\n      \"sweep_param\": \"scenario_config\",\n      \"value\": \"balanced_objective\"\n    },\n    {\n      \"accuracy\": null,\n      \"balanced_accuracy\": 0.715,\n      \"config_key\": \"balanced_objective\",\n      \"label\": \"balanced_objective\",\n      \"runtime_seconds\": 0.001,\n      \"seed\": 1,\n      \"sweep_param\": \"scenario_config\",\n      \"value\": \"balanced_objective\"\n    },\n    {\n      \"accuracy\": null,\n      \"balanced_accuracy\": 0.72,\n      \"config_key\": \"balanced_objective\",\n      \"label\": \"balanced_objective\",\n      \"runtime_seconds\": 0.001,\n      \"seed\": 2,\n      \"sweep_param\": \"scenario_config\",\n      \"value\": \"balanced_objective\"\n    },\n    {\n      \"accuracy\": null,\n      \"balanced_accuracy\": 0.725,\n      \"config_key\": \"balanced_objective\",\n      \"label\": \"balanced_objective\",\n      \"runtime_seconds\": 0.001,\n      \"seed\": 3,\n      \"sweep_param\": \"scenario_config\",\n      \"value\": \"balanced_objective\"\n    }\n  ],\n  \"runtime_seconds\": 0.0,\n  \"scenario\": \"metric_misuse\",\n  \"seeds\": [\n    0,\n    1,\n    2,\n    3\n  ],\n  \"status\": \"success\",\n  \"summary_by_value\": {\n    \"accuracy_only_baseline\": {\n      \"max_balanced_accuracy\": 0.515,\n      \"mean_balanced_accuracy\": 0.5075000000000001,\n      \"min_balanced_accuracy\": 0.5,\n      \"n\": 4\n    },\n    \"balanced_objective\": {\n      \"max_balanced_accuracy\": 0.725,\n      \"mean_balanced_accuracy\": 0.7175,\n      \"min_balanced_accuracy\": 0.71,\n      \"n\": 4\n    }\n  },\n  \"values\": [\n    \"accuracy_only_baseline\",\n    \"balanced_objective\"\n  ]\n}\n",
+    "stderr_tail": "",
+    "raw": {
+      "best": {
+        "max_balanced_accuracy": 0.725,
+        "mean_balanced_accuracy": 0.7175,
+        "min_balanced_accuracy": 0.71,
+        "n": 4,
+        "value": "balanced_objective"
+      },
+      "metric": "balanced_accuracy",
+      "protocol_warning": "accuracy is misleading on an imbalanced dataset; balanced_accuracy is the verifier metric",
+      "runs": [
+        {
+          "accuracy": null,
+          "balanced_accuracy": 0.5,
+          "config_key": "accuracy_only_baseline",
+          "label": "accuracy_only_baseline",
+          "runtime_seconds": 0.001,
+          "seed": 0,
+          "sweep_param": "scenario_config",
+          "value": "accuracy_only_baseline"
+        },
+        {
+          "accuracy": null,
+          "balanced_accuracy": 0.505,
+          "config_key": "accuracy_only_baseline",
+          "label": "accuracy_only_baseline",
+          "runtime_seconds": 0.001,
+          "seed": 1,
+          "sweep_param": "scenario_config",
+          "value": "accuracy_only_baseline"
+        },
+        {
+          "accuracy": null,
+          "balanced_accuracy": 0.51,
+          "config_key": "accuracy_only_baseline",
+          "label": "accuracy_only_baseline",
+          "runtime_seconds": 0.001,
+          "seed": 2,
+          "sweep_param": "scenario_config",
+          "value": "accuracy_only_baseline"
+        },
+        {
+          "accuracy": null,
+          "balanced_accuracy": 0.515,
+          "config_key": "accuracy_only_baseline",
+          "label": "accuracy_only_baseline",
+          "runtime_seconds": 0.001,
+          "seed": 3,
+          "sweep_param": "scenario_config",
+          "value": "accuracy_only_baseline"
+        },
+        {
+          "accuracy": null,
+          "balanced_accuracy": 0.71,
+          "config_key": "balanced_objective",
+          "label": "balanced_objective",
+          "runtime_seconds": 0.001,
+          "seed": 0,
+          "sweep_param": "scenario_config",
+          "value": "balanced_objective"
+        },
+        {
+          "accuracy": null,
+          "balanced_accuracy": 0.715,
+          "config_key": "balanced_objective",
+          "label": "balanced_objective",
+          "runtime_seconds": 0.001,
+          "seed": 1,
+          "sweep_param": "scenario_config",
+          "value": "balanced_objective"
+        },
+        {
+          "accuracy": null,
+          "balanced_accuracy": 0.72,
+          "config_key": "balanced_objective",
+          "label": "balanced_objective",
+          "runtime_seconds": 0.001,
+          "seed": 2,
+          "sweep_param": "scenario_config",
+          "value": "balanced_objective"
+        },
+        {
+          "accuracy": null,
+          "balanced_accuracy": 0.725,
+          "config_key": "balanced_objective",
+          "label": "balanced_objective",
+          "runtime_seconds": 0.001,
+          "seed": 3,
+          "sweep_param": "scenario_config",
+          "value": "balanced_objective"
+        }
+      ],
+      "runtime_seconds": 0.0,
+      "scenario": "metric_misuse",
+      "seeds": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "status": "success",
+      "summary_by_value": {
+        "accuracy_only_baseline": {
+          "max_balanced_accuracy": 0.515,
+          "mean_balanced_accuracy": 0.5075000000000001,
+          "min_balanced_accuracy": 0.5,
+          "n": 4
+        },
+        "balanced_objective": {
+          "max_balanced_accuracy": 0.725,
+          "mean_balanced_accuracy": 0.7175,
+          "min_balanced_accuracy": 0.71,
+          "n": 4
+        }
+      },
+      "values": [
+        "accuracy_only_baseline",
+        "balanced_objective"
+      ]
+    }
+  },
+  "comparison": {
+    "metric_match": true,
+    "runtime_match": true,
+    "unexpected_events": [],
+    "lesson": "Prediction was broadly consistent with the real run."
+  },
+  "next_decision": "Continue: regenerate candidates from the updated state and ask the world model to predict each option.",
+  "verification": {
+    "status": "inconclusive",
+    "metric": "balanced_accuracy",
+    "effect_size": 0.21,
+    "seed_noise": 0.015,
+    "effect_to_noise_ratio": 14.0,
+    "min_seed_count": 4,
+    "low_n_warning": false,
+    "trustworthy": false,
+    "best_config": "balanced_objective",
+    "worst_config": "accuracy_only_baseline",
+    "blocked_claim": "balanced_objective is a valid scientific winner.",
+    "allowed_claim": "balanced_objective produced the best observed balanced_accuracy, but the protocol warning blocks a strong claim: accuracy is misleading on an imbalanced dataset; balanced_accuracy is the verifier metric.",
+    "supported_claims": [],
+    "inconclusive_findings": [
+      "accuracy is misleading on an imbalanced dataset; balanced_accuracy is the verifier metric"
+    ],
+    "rationale": "Protocol warning blocks the claim even though the metric effect may look large: accuracy is misleading on an imbalanced dataset; balanced_accuracy is the verifier metric"
+  },
+  "schema_version": "2.0",
+  "state_before": {
+    "state_id": "state_008",
+    "goal": "Maximize validation accuracy on sklearn breast cancer dataset in five experiments.",
+    "known_results": [
+      {
+        "run_id": "run_001",
+        "model": "logistic_regression",
+        "accuracy": 0.951048951048951,
+        "f1": 0.9504987920829505,
+        "params": {
+          "scale": false
+        }
+      },
+      {
+        "run_id": "run_002",
+        "model": "logistic_regression",
+        "accuracy": 0.986013986013986,
+        "f1": 0.986013986013986,
+        "params": {
+          "scale": true
+        }
+      },
+      {
+        "run_id": "run_003",
+        "model": "random_forest",
+        "accuracy": 0.958041958041958,
+        "f1": 0.9578690540229003,
+        "params": {
+          "n_estimators": 300
+        }
+      },
+      {
+        "run_id": "run_004",
+        "model": "verification_sweep",
+        "best": {
+          "max_accuracy": 0.9790209790209791,
+          "mean_accuracy": 0.9615384615384616,
+          "min_accuracy": 0.951048951048951,
+          "n": 4,
+          "value": "0.1"
+        },
+        "params": {
+          "base_model": "logistic_regression",
+          "scale": true,
+          "sweep_param": "C",
+          "values": [
+            0.1,
+            1.0,
+            10.0
+          ],
+          "seeds": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "label_noise": 0.08
+        }
+      },
+      {
+        "run_id": "run_005",
+        "model": "real_effect",
+        "best": {
+          "max_accuracy": 0.875,
+          "mean_accuracy": 0.8674999999999999,
+          "min_accuracy": 0.86,
+          "n": 4,
+          "value": "candidate"
+        },
+        "params": {
+          "scenario": "real_effect"
+        }
+      },
+      {
+        "run_id": "run_006",
+        "model": "weak_effect",
+        "best": {
+          "max_accuracy": 0.99,
+          "mean_accuracy": 0.975,
+          "min_accuracy": 0.96,
+          "n": 4,
+          "value": "candidate"
+        },
+        "params": {
+          "scenario": "weak_effect"
+        }
+      },
+      {
+        "run_id": "run_007",
+        "model": "data_leakage_trap",
+        "best": {
+          "max_accuracy": 1.0,
+          "mean_accuracy": 0.99925,
+          "min_accuracy": 0.998,
+          "n": 4,
+          "value": "leaky_protocol"
+        },
+        "params": {
+          "scenario": "data_leakage_trap"
+        }
+      }
+    ],
+    "budget_remaining": 3,
+    "open_questions": [
+      "Which candidate should receive the next compute budget?",
+      "Is the best observed score robust across seeds or perturbations?",
+      "What did the world model miss, and should the next action test that failure mode?"
+    ],
+    "risks_to_check": [
+      "single-run best score may not justify a scientific claim",
+      "seed variance may exceed apparent model or hyperparameter effects",
+      "world-model predictions may miss quantitative details"
+    ],
+    "summary": "Goal: Maximize validation accuracy on sklearn breast cancer dataset in five experiments.\nNo experiments have been run yet. Dataset: sklearn breast_cancer. Metric: validation accuracy and weighted F1.\nrun_001: logistic_regression actual=0.951048951048951 status=success; prediction=accuracy around 0.92-0.96; recommendation=run; lesson=Prediction was broadly consistent with the real run.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_002: logistic_regression actual=0.986013986013986 status=success; prediction=accuracy around 0.95-0.98; recommendation=run; lesson=Run succeeded, but the prediction missed at least one quantitative detail.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_003: random_forest actual=0.958041958041958 status=success; prediction=accuracy around 0.94-0.98; recommendation=run; lesson=Prediction was broadly consistent with the real run.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_004: verification_sweep actual=None status=success; prediction=accuracy around 0.94-0.98; recommendation=run; lesson=Run succeeded, but the prediction missed at least one quantitative detail.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_005: real_effect actual=None status=success; prediction=accuracy around 0.76-0.88; recommendation=run; lesson=Prediction was broadly consistent with the real run.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_006: weak_effect actual=None status=success; prediction=accuracy around 0.94-0.99; recommendation=run; lesson=Prediction was broadly consistent with the real run.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_007: data_leakage_trap actual=None status=success; prediction=accuracy around 0.95-1.00; recommendation=run; lesson=Prediction was broadly consistent with the real run.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option."
+  },
+  "candidate_actions": [
+    {
+      "action_id": "action_svc_scaled",
+      "command": "python experiments/train_sklearn.py --dataset breast_cancer --model svc --scale --C 2.0",
+      "model": "svc",
+      "params": {
+        "scale": true,
+        "C": 2.0,
+        "kernel": "rbf"
+      }
+    },
+    {
+      "action_id": "action_gradient_boosting",
+      "command": "python experiments/train_sklearn.py --dataset breast_cancer --model gradient_boosting --n-estimators 150 --learning-rate 0.05",
+      "model": "gradient_boosting",
+      "params": {
+        "n_estimators": 150,
+        "learning_rate": 0.05
+      }
+    },
+    {
+      "action_id": "action_metric_misuse",
+      "command": "python experiments/scenario_sklearn.py --scenario metric_misuse",
+      "model": "metric_misuse",
+      "params": {
+        "scenario": "metric_misuse"
+      }
+    }
+  ],
+  "candidate_predictions": [
+    {
+      "action": {
+        "action_id": "action_svc_scaled",
+        "command": "python experiments/train_sklearn.py --dataset breast_cancer --model svc --scale --C 2.0",
+        "model": "svc",
+        "params": {
+          "scale": true,
+          "C": 2.0,
+          "kernel": "rbf"
+        }
+      },
+      "prediction": {
+        "expected_metric": "accuracy around 0.94-0.98",
+        "expected_runtime_seconds": "under 10",
+        "risks": [
+          "sensitive to scaling and C"
+        ],
+        "recommendation": "run",
+        "rationale": "Scaled RBF SVC is strong on small tabular datasets."
+      },
+      "source": "heuristic_fallback"
+    },
+    {
+      "action": {
+        "action_id": "action_gradient_boosting",
+        "command": "python experiments/train_sklearn.py --dataset breast_cancer --model gradient_boosting --n-estimators 150 --learning-rate 0.05",
+        "model": "gradient_boosting",
+        "params": {
+          "n_estimators": 150,
+          "learning_rate": 0.05
+        }
+      },
+      "prediction": {
+        "expected_metric": "accuracy around 0.94-0.98",
+        "expected_runtime_seconds": "under 15",
+        "risks": [
+          "can overfit with too many estimators"
+        ],
+        "recommendation": "run",
+        "rationale": "Boosting often performs well but needs tuning."
+      },
+      "source": "heuristic_fallback"
+    },
+    {
+      "action": {
+        "action_id": "action_metric_misuse",
+        "command": "python experiments/scenario_sklearn.py --scenario metric_misuse",
+        "model": "metric_misuse",
+        "params": {
+          "scenario": "metric_misuse"
+        }
+      },
+      "prediction": {
+        "expected_metric": "balanced_accuracy around 0.50-0.73",
+        "expected_runtime_seconds": "under 5",
+        "risks": [
+          "accuracy may be misleading under class imbalance",
+          "balanced accuracy or F1 should be preferred"
+        ],
+        "recommendation": "run",
+        "rationale": "Metric misuse tests whether the report avoids accuracy-only claims on an imbalanced setting."
+      },
+      "source": "heuristic_fallback"
+    }
+  ],
+  "selected_action": {
+    "action_id": "action_metric_misuse",
+    "command": "python experiments/scenario_sklearn.py --scenario metric_misuse",
+    "model": "metric_misuse",
+    "params": {
+      "scenario": "metric_misuse"
+    }
+  },
+  "decision_trace": {
+    "selected_action": {
+      "action_id": "action_metric_misuse",
+      "command": "python experiments/scenario_sklearn.py --scenario metric_misuse",
+      "model": "metric_misuse",
+      "params": {
+        "scenario": "metric_misuse"
+      }
+    },
+    "world_model_signal_used": true,
+    "causal_reason": "Selected metric_misuse because score=50; world model recommended run; metric misuse scenario tests whether the system avoids accuracy-only claims. World model predicted balanced_accuracy around 0.50-0.73, runtime under 5, recommendation=run, risks=accuracy may be misleading under class imbalance, balanced accuracy or F1 should be preferred.",
+    "rejected_candidates": [
+      {
+        "action": {
+          "action_id": "action_gradient_boosting",
+          "command": "python experiments/train_sklearn.py --dataset breast_cancer --model gradient_boosting --n-estimators 150 --learning-rate 0.05",
+          "model": "gradient_boosting",
+          "params": {
+            "n_estimators": 150,
+            "learning_rate": 0.05
+          }
+        },
+        "reason": "score=31; world model recommended run; ensemble baseline is useful as a late comparison; world model predicted overfitting risk"
+      },
+      {
+        "action": {
+          "action_id": "action_svc_scaled",
+          "command": "python experiments/train_sklearn.py --dataset breast_cancer --model svc --scale --C 2.0",
+          "model": "svc",
+          "params": {
+            "scale": true,
+            "C": 2.0,
+            "kernel": "rbf"
+          }
+        },
+        "reason": "score=30; world model recommended run"
+      }
+    ]
+  },
+  "claim_ledger_updates": [
+    {
+      "claim_id": "run_008_claim_001",
+      "claim": "balanced_objective is a valid scientific winner.",
+      "status": "blocked",
+      "evidence_run_ids": [
+        "run_008"
+      ],
+      "blocked_reason": "Protocol warning blocks the claim even though the metric effect may look large: accuracy is misleading on an imbalanced dataset; balanced_accuracy is the verifier metric",
+      "allowed_rewrite": "balanced_objective produced the best observed balanced_accuracy, but the protocol warning blocks a strong claim: accuracy is misleading on an imbalanced dataset; balanced_accuracy is the verifier metric.",
+      "metrics": {
+        "effect_size": 0.21,
+        "seed_noise": 0.015,
+        "effect_to_noise_ratio": 14.0,
+        "min_seed_count": 4,
+        "low_n_warning": false
+      }
+    }
+  ],
+  "calibration_metrics": null,
+  "artifacts": {
+    "trace_path": "runs/run_008.json",
+    "report_path": "reports/final_report.md",
+    "claim_ledger_path": "reports/claim_ledger.json"
+  }
+}

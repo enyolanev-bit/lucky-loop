@@ -1,118 +1,118 @@
 {
-  "run_id": "run_006",
+  "run_id": "run_007",
   "goal": "Maximize validation accuracy on sklearn breast cancer dataset in five experiments.",
-  "hypothesis": "Selected weak_effect because score=48; world model recommended run; weak-effect scenario demonstrates the lower rung of the trust ladder. World model predicted accuracy around 0.94-0.99, runtime under 5, recommendation=run, risks=effect may be smaller than seed noise, claim should likely be weak or blocked.",
+  "hypothesis": "Selected data_leakage_trap because score=52; world model recommended run; data leakage trap tests whether protocol warnings block suspicious wins. World model predicted accuracy around 0.95-1.00, runtime under 5, recommendation=run, risks=suspiciously high accuracy may indicate data leakage, protocol warning should block a strong claim.",
   "proposed_action": {
-    "action_id": "action_weak_effect",
-    "command": "python experiments/scenario_sklearn.py --scenario weak_effect",
-    "model": "weak_effect",
+    "action_id": "action_leakage_trap",
+    "command": "python experiments/scenario_sklearn.py --scenario data_leakage_trap",
+    "model": "data_leakage_trap",
     "params": {
-      "scenario": "weak_effect"
+      "scenario": "data_leakage_trap"
     }
   },
   "world_model_prediction": {
-    "expected_metric": "accuracy around 0.94-0.99",
+    "expected_metric": "accuracy around 0.95-1.00",
     "expected_runtime_seconds": "under 5",
     "risks": [
-      "effect may be smaller than seed noise",
-      "claim should likely be weak or blocked"
+      "suspiciously high accuracy may indicate data leakage",
+      "protocol warning should block a strong claim"
     ],
     "recommendation": "run",
-    "rationale": "A weak-effect scenario tests whether the verifier refuses to overclaim a small apparent improvement."
+    "rationale": "A leakage trap tests whether the system blocks claims from invalid protocols even when metrics look excellent."
   },
   "actual_result": {
     "status": "success",
     "accuracy": null,
     "f1": null,
     "runtime_seconds": 0.0,
-    "stdout_tail": "cenario_config\",\n      \"value\": \"baseline\"\n    },\n    {\n      \"accuracy\": 0.958,\n      \"config_key\": \"baseline\",\n      \"label\": \"baseline\",\n      \"runtime_seconds\": 0.001,\n      \"seed\": 1,\n      \"sweep_param\": \"scenario_config\",\n      \"value\": \"baseline\"\n    },\n    {\n      \"accuracy\": 0.968,\n      \"config_key\": \"baseline\",\n      \"label\": \"baseline\",\n      \"runtime_seconds\": 0.001,\n      \"seed\": 2,\n      \"sweep_param\": \"scenario_config\",\n      \"value\": \"baseline\"\n    },\n    {\n      \"accuracy\": 0.978,\n      \"config_key\": \"baseline\",\n      \"label\": \"baseline\",\n      \"runtime_seconds\": 0.001,\n      \"seed\": 3,\n      \"sweep_param\": \"scenario_config\",\n      \"value\": \"baseline\"\n    },\n    {\n      \"accuracy\": 0.96,\n      \"config_key\": \"candidate\",\n      \"label\": \"candidate\",\n      \"runtime_seconds\": 0.001,\n      \"seed\": 0,\n      \"sweep_param\": \"scenario_config\",\n      \"value\": \"candidate\"\n    },\n    {\n      \"accuracy\": 0.97,\n      \"config_key\": \"candidate\",\n      \"label\": \"candidate\",\n      \"runtime_seconds\": 0.001,\n      \"seed\": 1,\n      \"sweep_param\": \"scenario_config\",\n      \"value\": \"candidate\"\n    },\n    {\n      \"accuracy\": 0.98,\n      \"config_key\": \"candidate\",\n      \"label\": \"candidate\",\n      \"runtime_seconds\": 0.001,\n      \"seed\": 2,\n      \"sweep_param\": \"scenario_config\",\n      \"value\": \"candidate\"\n    },\n    {\n      \"accuracy\": 0.99,\n      \"config_key\": \"candidate\",\n      \"label\": \"candidate\",\n      \"runtime_seconds\": 0.001,\n      \"seed\": 3,\n      \"sweep_param\": \"scenario_config\",\n      \"value\": \"candidate\"\n    }\n  ],\n  \"runtime_seconds\": 0.0,\n  \"scenario\": \"weak_effect\",\n  \"seeds\": [\n    0,\n    1,\n    2,\n    3\n  ],\n  \"status\": \"success\",\n  \"summary_by_value\": {\n    \"baseline\": {\n      \"max_accuracy\": 0.978,\n      \"mean_accuracy\": 0.963,\n      \"min_accuracy\": 0.948,\n      \"n\": 4\n    },\n    \"candidate\": {\n      \"max_accuracy\": 0.99,\n      \"mean_accuracy\": 0.975,\n      \"min_accuracy\": 0.96,\n      \"n\": 4\n    }\n  },\n  \"values\": [\n    \"baseline\",\n    \"candidate\"\n  ]\n}\n",
+    "stdout_tail": "\n      \"runtime_seconds\": 0.001,\n      \"seed\": 1,\n      \"sweep_param\": \"scenario_config\",\n      \"value\": \"proper_protocol\"\n    },\n    {\n      \"accuracy\": 0.956,\n      \"config_key\": \"proper_protocol\",\n      \"label\": \"proper_protocol\",\n      \"runtime_seconds\": 0.001,\n      \"seed\": 2,\n      \"sweep_param\": \"scenario_config\",\n      \"value\": \"proper_protocol\"\n    },\n    {\n      \"accuracy\": 0.96,\n      \"config_key\": \"proper_protocol\",\n      \"label\": \"proper_protocol\",\n      \"runtime_seconds\": 0.001,\n      \"seed\": 3,\n      \"sweep_param\": \"scenario_config\",\n      \"value\": \"proper_protocol\"\n    },\n    {\n      \"accuracy\": 0.998,\n      \"config_key\": \"leaky_protocol\",\n      \"label\": \"leaky_protocol\",\n      \"runtime_seconds\": 0.001,\n      \"seed\": 0,\n      \"sweep_param\": \"scenario_config\",\n      \"value\": \"leaky_protocol\"\n    },\n    {\n      \"accuracy\": 0.999,\n      \"config_key\": \"leaky_protocol\",\n      \"label\": \"leaky_protocol\",\n      \"runtime_seconds\": 0.001,\n      \"seed\": 1,\n      \"sweep_param\": \"scenario_config\",\n      \"value\": \"leaky_protocol\"\n    },\n    {\n      \"accuracy\": 1.0,\n      \"config_key\": \"leaky_protocol\",\n      \"label\": \"leaky_protocol\",\n      \"runtime_seconds\": 0.001,\n      \"seed\": 2,\n      \"sweep_param\": \"scenario_config\",\n      \"value\": \"leaky_protocol\"\n    },\n    {\n      \"accuracy\": 1.0,\n      \"config_key\": \"leaky_protocol\",\n      \"label\": \"leaky_protocol\",\n      \"runtime_seconds\": 0.001,\n      \"seed\": 3,\n      \"sweep_param\": \"scenario_config\",\n      \"value\": \"leaky_protocol\"\n    }\n  ],\n  \"runtime_seconds\": 0.0,\n  \"scenario\": \"data_leakage_trap\",\n  \"seeds\": [\n    0,\n    1,\n    2,\n    3\n  ],\n  \"status\": \"success\",\n  \"summary_by_value\": {\n    \"leaky_protocol\": {\n      \"max_accuracy\": 1.0,\n      \"mean_accuracy\": 0.99925,\n      \"min_accuracy\": 0.998,\n      \"n\": 4\n    },\n    \"proper_protocol\": {\n      \"max_accuracy\": 0.96,\n      \"mean_accuracy\": 0.954,\n      \"min_accuracy\": 0.948,\n      \"n\": 4\n    }\n  },\n  \"values\": [\n    \"proper_protocol\",\n    \"leaky_protocol\"\n  ]\n}\n",
     "stderr_tail": "",
     "raw": {
       "best": {
-        "max_accuracy": 0.99,
-        "mean_accuracy": 0.975,
-        "min_accuracy": 0.96,
+        "max_accuracy": 1.0,
+        "mean_accuracy": 0.99925,
+        "min_accuracy": 0.998,
         "n": 4,
-        "value": "candidate"
+        "value": "leaky_protocol"
       },
       "metric": "accuracy",
-      "protocol_warning": null,
+      "protocol_warning": "suspiciously high score; label-derived feature was included before the split",
       "runs": [
         {
           "accuracy": 0.948,
-          "config_key": "baseline",
-          "label": "baseline",
+          "config_key": "proper_protocol",
+          "label": "proper_protocol",
           "runtime_seconds": 0.001,
           "seed": 0,
           "sweep_param": "scenario_config",
-          "value": "baseline"
+          "value": "proper_protocol"
         },
         {
-          "accuracy": 0.958,
-          "config_key": "baseline",
-          "label": "baseline",
+          "accuracy": 0.952,
+          "config_key": "proper_protocol",
+          "label": "proper_protocol",
           "runtime_seconds": 0.001,
           "seed": 1,
           "sweep_param": "scenario_config",
-          "value": "baseline"
+          "value": "proper_protocol"
         },
         {
-          "accuracy": 0.968,
-          "config_key": "baseline",
-          "label": "baseline",
+          "accuracy": 0.956,
+          "config_key": "proper_protocol",
+          "label": "proper_protocol",
           "runtime_seconds": 0.001,
           "seed": 2,
           "sweep_param": "scenario_config",
-          "value": "baseline"
-        },
-        {
-          "accuracy": 0.978,
-          "config_key": "baseline",
-          "label": "baseline",
-          "runtime_seconds": 0.001,
-          "seed": 3,
-          "sweep_param": "scenario_config",
-          "value": "baseline"
+          "value": "proper_protocol"
         },
         {
           "accuracy": 0.96,
-          "config_key": "candidate",
-          "label": "candidate",
-          "runtime_seconds": 0.001,
-          "seed": 0,
-          "sweep_param": "scenario_config",
-          "value": "candidate"
-        },
-        {
-          "accuracy": 0.97,
-          "config_key": "candidate",
-          "label": "candidate",
-          "runtime_seconds": 0.001,
-          "seed": 1,
-          "sweep_param": "scenario_config",
-          "value": "candidate"
-        },
-        {
-          "accuracy": 0.98,
-          "config_key": "candidate",
-          "label": "candidate",
-          "runtime_seconds": 0.001,
-          "seed": 2,
-          "sweep_param": "scenario_config",
-          "value": "candidate"
-        },
-        {
-          "accuracy": 0.99,
-          "config_key": "candidate",
-          "label": "candidate",
+          "config_key": "proper_protocol",
+          "label": "proper_protocol",
           "runtime_seconds": 0.001,
           "seed": 3,
           "sweep_param": "scenario_config",
-          "value": "candidate"
+          "value": "proper_protocol"
+        },
+        {
+          "accuracy": 0.998,
+          "config_key": "leaky_protocol",
+          "label": "leaky_protocol",
+          "runtime_seconds": 0.001,
+          "seed": 0,
+          "sweep_param": "scenario_config",
+          "value": "leaky_protocol"
+        },
+        {
+          "accuracy": 0.999,
+          "config_key": "leaky_protocol",
+          "label": "leaky_protocol",
+          "runtime_seconds": 0.001,
+          "seed": 1,
+          "sweep_param": "scenario_config",
+          "value": "leaky_protocol"
+        },
+        {
+          "accuracy": 1.0,
+          "config_key": "leaky_protocol",
+          "label": "leaky_protocol",
+          "runtime_seconds": 0.001,
+          "seed": 2,
+          "sweep_param": "scenario_config",
+          "value": "leaky_protocol"
+        },
+        {
+          "accuracy": 1.0,
+          "config_key": "leaky_protocol",
+          "label": "leaky_protocol",
+          "runtime_seconds": 0.001,
+          "seed": 3,
+          "sweep_param": "scenario_config",
+          "value": "leaky_protocol"
         }
       ],
       "runtime_seconds": 0.0,
-      "scenario": "weak_effect",
+      "scenario": "data_leakage_trap",
       "seeds": [
         0,
         1,
@@ -121,22 +121,22 @@
       ],
       "status": "success",
       "summary_by_value": {
-        "baseline": {
-          "max_accuracy": 0.978,
-          "mean_accuracy": 0.963,
-          "min_accuracy": 0.948,
+        "leaky_protocol": {
+          "max_accuracy": 1.0,
+          "mean_accuracy": 0.99925,
+          "min_accuracy": 0.998,
           "n": 4
         },
-        "candidate": {
-          "max_accuracy": 0.99,
-          "mean_accuracy": 0.975,
-          "min_accuracy": 0.96,
+        "proper_protocol": {
+          "max_accuracy": 0.96,
+          "mean_accuracy": 0.954,
+          "min_accuracy": 0.948,
           "n": 4
         }
       },
       "values": [
-        "baseline",
-        "candidate"
+        "proper_protocol",
+        "leaky_protocol"
       ]
     }
   },
@@ -150,25 +150,25 @@
   "verification": {
     "status": "inconclusive",
     "metric": "accuracy",
-    "effect_size": 0.012,
-    "seed_noise": 0.03,
-    "effect_to_noise_ratio": 0.4,
+    "effect_size": 0.04525,
+    "seed_noise": 0.002,
+    "effect_to_noise_ratio": 22.625,
     "min_seed_count": 4,
     "low_n_warning": false,
     "trustworthy": false,
-    "best_config": "candidate",
-    "worst_config": "baseline",
-    "blocked_claim": "candidate is robustly better than baseline.",
-    "allowed_claim": "candidate had the best mean accuracy, but the effect was smaller than seed noise.",
+    "best_config": "leaky_protocol",
+    "worst_config": "proper_protocol",
+    "blocked_claim": "leaky_protocol is a valid scientific winner.",
+    "allowed_claim": "leaky_protocol produced the best observed accuracy, but the protocol warning blocks a strong claim: suspiciously high score; label-derived feature was included before the split.",
     "supported_claims": [],
     "inconclusive_findings": [
-      "Best config 'candidate' improves over 'baseline' by 0.0120 accuracy, but best-config seed noise is 0.0300."
+      "suspiciously high score; label-derived feature was included before the split"
     ],
-    "rationale": "Measured effect is not larger than inter-seed noise. The report must not oversell this as a robust discovery."
+    "rationale": "Protocol warning blocks the claim even though the metric effect may look large: suspiciously high score; label-derived feature was included before the split"
   },
   "schema_version": "2.0",
   "state_before": {
-    "state_id": "state_006",
+    "state_id": "state_007",
     "goal": "Maximize validation accuracy on sklearn breast cancer dataset in five experiments.",
     "known_results": [
       {
@@ -239,9 +239,23 @@
         "params": {
           "scenario": "real_effect"
         }
+      },
+      {
+        "run_id": "run_006",
+        "model": "weak_effect",
+        "best": {
+          "max_accuracy": 0.99,
+          "mean_accuracy": 0.975,
+          "min_accuracy": 0.96,
+          "n": 4,
+          "value": "candidate"
+        },
+        "params": {
+          "scenario": "weak_effect"
+        }
       }
     ],
-    "budget_remaining": 5,
+    "budget_remaining": 4,
     "open_questions": [
       "Which candidate should receive the next compute budget?",
       "Is the best observed score robust across seeds or perturbations?",
@@ -252,7 +266,7 @@
       "seed variance may exceed apparent model or hyperparameter effects",
       "world-model predictions may miss quantitative details"
     ],
-    "summary": "Goal: Maximize validation accuracy on sklearn breast cancer dataset in five experiments.\nNo experiments have been run yet. Dataset: sklearn breast_cancer. Metric: validation accuracy and weighted F1.\nrun_001: logistic_regression actual=0.951048951048951 status=success; prediction=accuracy around 0.92-0.96; recommendation=run; lesson=Prediction was broadly consistent with the real run.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_002: logistic_regression actual=0.986013986013986 status=success; prediction=accuracy around 0.95-0.98; recommendation=run; lesson=Run succeeded, but the prediction missed at least one quantitative detail.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_003: random_forest actual=0.958041958041958 status=success; prediction=accuracy around 0.94-0.98; recommendation=run; lesson=Prediction was broadly consistent with the real run.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_004: verification_sweep actual=None status=success; prediction=accuracy around 0.94-0.98; recommendation=run; lesson=Run succeeded, but the prediction missed at least one quantitative detail.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_005: real_effect actual=None status=success; prediction=accuracy around 0.76-0.88; recommendation=run; lesson=Prediction was broadly consistent with the real run.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option."
+    "summary": "Goal: Maximize validation accuracy on sklearn breast cancer dataset in five experiments.\nNo experiments have been run yet. Dataset: sklearn breast_cancer. Metric: validation accuracy and weighted F1.\nrun_001: logistic_regression actual=0.951048951048951 status=success; prediction=accuracy around 0.92-0.96; recommendation=run; lesson=Prediction was broadly consistent with the real run.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_002: logistic_regression actual=0.986013986013986 status=success; prediction=accuracy around 0.95-0.98; recommendation=run; lesson=Run succeeded, but the prediction missed at least one quantitative detail.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_003: random_forest actual=0.958041958041958 status=success; prediction=accuracy around 0.94-0.98; recommendation=run; lesson=Prediction was broadly consistent with the real run.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_004: verification_sweep actual=None status=success; prediction=accuracy around 0.94-0.98; recommendation=run; lesson=Run succeeded, but the prediction missed at least one quantitative detail.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_005: real_effect actual=None status=success; prediction=accuracy around 0.76-0.88; recommendation=run; lesson=Prediction was broadly consistent with the real run.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_006: weak_effect actual=None status=success; prediction=accuracy around 0.94-0.99; recommendation=run; lesson=Prediction was broadly consistent with the real run.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option."
   },
   "candidate_actions": [
     {
@@ -272,14 +286,6 @@
       "params": {
         "n_estimators": 150,
         "learning_rate": 0.05
-      }
-    },
-    {
-      "action_id": "action_weak_effect",
-      "command": "python experiments/scenario_sklearn.py --scenario weak_effect",
-      "model": "weak_effect",
-      "params": {
-        "scenario": "weak_effect"
       }
     },
     {
@@ -345,27 +351,6 @@
     },
     {
       "action": {
-        "action_id": "action_weak_effect",
-        "command": "python experiments/scenario_sklearn.py --scenario weak_effect",
-        "model": "weak_effect",
-        "params": {
-          "scenario": "weak_effect"
-        }
-      },
-      "prediction": {
-        "expected_metric": "accuracy around 0.94-0.99",
-        "expected_runtime_seconds": "under 5",
-        "risks": [
-          "effect may be smaller than seed noise",
-          "claim should likely be weak or blocked"
-        ],
-        "recommendation": "run",
-        "rationale": "A weak-effect scenario tests whether the verifier refuses to overclaim a small apparent improvement."
-      },
-      "source": "heuristic_fallback"
-    },
-    {
-      "action": {
         "action_id": "action_leakage_trap",
         "command": "python experiments/scenario_sklearn.py --scenario data_leakage_trap",
         "model": "data_leakage_trap",
@@ -408,25 +393,36 @@
     }
   ],
   "selected_action": {
-    "action_id": "action_weak_effect",
-    "command": "python experiments/scenario_sklearn.py --scenario weak_effect",
-    "model": "weak_effect",
+    "action_id": "action_leakage_trap",
+    "command": "python experiments/scenario_sklearn.py --scenario data_leakage_trap",
+    "model": "data_leakage_trap",
     "params": {
-      "scenario": "weak_effect"
+      "scenario": "data_leakage_trap"
     }
   },
   "decision_trace": {
     "selected_action": {
-      "action_id": "action_weak_effect",
-      "command": "python experiments/scenario_sklearn.py --scenario weak_effect",
-      "model": "weak_effect",
+      "action_id": "action_leakage_trap",
+      "command": "python experiments/scenario_sklearn.py --scenario data_leakage_trap",
+      "model": "data_leakage_trap",
       "params": {
-        "scenario": "weak_effect"
+        "scenario": "data_leakage_trap"
       }
     },
     "world_model_signal_used": true,
-    "causal_reason": "Selected weak_effect because score=48; world model recommended run; weak-effect scenario demonstrates the lower rung of the trust ladder. World model predicted accuracy around 0.94-0.99, runtime under 5, recommendation=run, risks=effect may be smaller than seed noise, claim should likely be weak or blocked.",
+    "causal_reason": "Selected data_leakage_trap because score=52; world model recommended run; data leakage trap tests whether protocol warnings block suspicious wins. World model predicted accuracy around 0.95-1.00, runtime under 5, recommendation=run, risks=suspiciously high accuracy may indicate data leakage, protocol warning should block a strong claim.",
     "rejected_candidates": [
+      {
+        "action": {
+          "action_id": "action_metric_misuse",
+          "command": "python experiments/scenario_sklearn.py --scenario metric_misuse",
+          "model": "metric_misuse",
+          "params": {
+            "scenario": "metric_misuse"
+          }
+        },
+        "reason": "score=50; world model recommended run; metric misuse scenario tests whether the system avoids accuracy-only claims"
+      },
       {
         "action": {
           "action_id": "action_gradient_boosting",
@@ -451,45 +447,23 @@
           }
         },
         "reason": "score=30; world model recommended run"
-      },
-      {
-        "action": {
-          "action_id": "action_leakage_trap",
-          "command": "python experiments/scenario_sklearn.py --scenario data_leakage_trap",
-          "model": "data_leakage_trap",
-          "params": {
-            "scenario": "data_leakage_trap"
-          }
-        },
-        "reason": "score=30; world model recommended run"
-      },
-      {
-        "action": {
-          "action_id": "action_metric_misuse",
-          "command": "python experiments/scenario_sklearn.py --scenario metric_misuse",
-          "model": "metric_misuse",
-          "params": {
-            "scenario": "metric_misuse"
-          }
-        },
-        "reason": "score=30; world model recommended run"
       }
     ]
   },
   "claim_ledger_updates": [
     {
-      "claim_id": "run_006_claim_001",
-      "claim": "candidate is robustly better than baseline.",
+      "claim_id": "run_007_claim_001",
+      "claim": "leaky_protocol is a valid scientific winner.",
       "status": "blocked",
       "evidence_run_ids": [
-        "run_006"
+        "run_007"
       ],
-      "blocked_reason": "Measured effect is not larger than inter-seed noise. The report must not oversell this as a robust discovery.",
-      "allowed_rewrite": "candidate had the best mean accuracy, but the effect was smaller than seed noise.",
+      "blocked_reason": "Protocol warning blocks the claim even though the metric effect may look large: suspiciously high score; label-derived feature was included before the split",
+      "allowed_rewrite": "leaky_protocol produced the best observed accuracy, but the protocol warning blocks a strong claim: suspiciously high score; label-derived feature was included before the split.",
       "metrics": {
-        "effect_size": 0.012,
-        "seed_noise": 0.03,
-        "effect_to_noise_ratio": 0.4,
+        "effect_size": 0.04525,
+        "seed_noise": 0.002,
+        "effect_to_noise_ratio": 22.625,
         "min_seed_count": 4,
         "low_n_warning": false
       }
@@ -497,7 +471,7 @@
   ],
   "calibration_metrics": null,
   "artifacts": {
-    "trace_path": "runs/run_006.json",
+    "trace_path": "runs/run_007.json",
     "report_path": "reports/final_report.md",
     "claim_ledger_path": "reports/claim_ledger.json"
   }

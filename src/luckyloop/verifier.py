@@ -27,6 +27,7 @@ def verify_sweep(sweep: dict) -> Verification:
     """
     runs = sweep.get("runs") or []
     metric = sweep.get("metric", "accuracy")
+    protocol_warning = sweep.get("protocol_warning")
     if not runs:
         return Verification(
             status="missing_data",
@@ -107,6 +108,25 @@ def verify_sweep(sweep: dict) -> Verification:
     allowed_claim = (
         f"{best_label} had the best mean {metric}, but the effect was smaller than seed noise."
     )
+
+    if protocol_warning:
+        return Verification(
+            status="inconclusive",
+            metric=metric,
+            effect_size=effect_size,
+            seed_noise=seed_noise,
+            effect_to_noise_ratio=ratio,
+            min_seed_count=min_seed_count,
+            low_n_warning=low_n_warning,
+            trustworthy=False,
+            best_config=best_label,
+            worst_config=worst_label,
+            blocked_claim=f"{best_label} is a valid scientific winner.",
+            allowed_claim=f"{best_label} produced the best observed {metric}, but the protocol warning blocks a strong claim: {protocol_warning}.",
+            supported_claims=[],
+            inconclusive_findings=[protocol_warning],
+            rationale=f"Protocol warning blocks the claim even though the metric effect may look large: {protocol_warning}",
+        )
 
     if status == "missing_data":
         inconclusive.append("Seed noise could not be estimated for the best config.")

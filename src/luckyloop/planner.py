@@ -70,13 +70,37 @@ def generate_candidates(state: ResearchState, traces: list[ExperimentTrace], see
             "gradient_boosting",
             {"n_estimators": 150, "learning_rate": 0.05},
         ),
+        _candidate(
+            "action_weak_effect",
+            "python experiments/scenario_sklearn.py --scenario weak_effect",
+            "weak_effect",
+            {"scenario": "weak_effect"},
+        ),
+        _candidate(
+            "action_real_effect",
+            "python experiments/scenario_sklearn.py --scenario real_effect",
+            "real_effect",
+            {"scenario": "real_effect"},
+        ),
+        _candidate(
+            "action_leakage_trap",
+            "python experiments/scenario_sklearn.py --scenario data_leakage_trap",
+            "data_leakage_trap",
+            {"scenario": "data_leakage_trap"},
+        ),
+        _candidate(
+            "action_metric_misuse",
+            "python experiments/scenario_sklearn.py --scenario metric_misuse",
+            "metric_misuse",
+            {"scenario": "metric_misuse"},
+        ),
     ]
 
     if not traces:
         candidates.insert(0, initial_action())
 
     unseen = [c for c in candidates if action_key(c) not in seen]
-    return unseen[:5]
+    return unseen[:8]
 
 
 def prediction_source(prediction, simulator_configured: bool) -> str:
@@ -159,6 +183,22 @@ def _score_candidate(candidate_prediction: CandidatePrediction, traces: list[Exp
     if action.model == "gradient_boosting":
         score += 5
         reasons.append("ensemble baseline is useful as a late comparison")
+
+    if action.model == "weak_effect" and any(t.verification and t.verification.status == "inconclusive" for t in traces):
+        score += 18
+        reasons.append("weak-effect scenario demonstrates the lower rung of the trust ladder")
+
+    if action.model == "real_effect" and any(t.verification for t in traces):
+        score += 24
+        reasons.append("real-effect scenario should produce a supported trust-ladder case")
+
+    if action.model == "data_leakage_trap" and len(traces) >= 6:
+        score += 22
+        reasons.append("data leakage trap tests whether protocol warnings block suspicious wins")
+
+    if action.model == "metric_misuse" and len(traces) >= 6:
+        score += 20
+        reasons.append("metric misuse scenario tests whether the system avoids accuracy-only claims")
 
     if "overfit" in risks or "overfit" in rationale:
         score -= 4

@@ -23,8 +23,8 @@
     "status": "success",
     "accuracy": 0.951048951048951,
     "f1": 0.9504987920829505,
-    "runtime_seconds": 0.3489,
-    "stdout_tail": "{\n  \"accuracy\": 0.951048951048951,\n  \"dataset\": \"breast_cancer\",\n  \"f1\": 0.9504987920829505,\n  \"model\": \"logistic_regression\",\n  \"n_label_noise_flips\": 0,\n  \"n_test\": 143,\n  \"n_train\": 426,\n  \"params\": {\n    \"C\": 1.0,\n    \"dataset\": \"breast_cancer\",\n    \"kernel\": \"rbf\",\n    \"label_noise\": 0.0,\n    \"learning_rate\": 0.1,\n    \"max_depth\": null,\n    \"max_iter\": 1000,\n    \"model\": \"logistic_regression\",\n    \"n_estimators\": 200,\n    \"scale\": false,\n    \"seed\": 42,\n    \"test_size\": 0.25\n  },\n  \"runtime_seconds\": 0.3489,\n  \"status\": \"success\"\n}\n",
+    "runtime_seconds": 0.5161,
+    "stdout_tail": "{\n  \"accuracy\": 0.951048951048951,\n  \"dataset\": \"breast_cancer\",\n  \"f1\": 0.9504987920829505,\n  \"model\": \"logistic_regression\",\n  \"n_label_noise_flips\": 0,\n  \"n_test\": 143,\n  \"n_train\": 426,\n  \"params\": {\n    \"C\": 1.0,\n    \"dataset\": \"breast_cancer\",\n    \"kernel\": \"rbf\",\n    \"label_noise\": 0.0,\n    \"learning_rate\": 0.1,\n    \"max_depth\": null,\n    \"max_iter\": 1000,\n    \"model\": \"logistic_regression\",\n    \"n_estimators\": 200,\n    \"scale\": false,\n    \"seed\": 42,\n    \"test_size\": 0.25\n  },\n  \"runtime_seconds\": 0.5161,\n  \"status\": \"success\"\n}\n",
     "stderr_tail": "",
     "raw": {
       "accuracy": 0.951048951048951,
@@ -48,7 +48,7 @@
         "seed": 42,
         "test_size": 0.25
       },
-      "runtime_seconds": 0.3489,
+      "runtime_seconds": 0.5161,
       "status": "success"
     }
   },
@@ -65,7 +65,7 @@
     "state_id": "state_001",
     "goal": "Maximize validation accuracy on sklearn breast cancer dataset in five experiments.",
     "known_results": [],
-    "budget_remaining": 6,
+    "budget_remaining": 10,
     "open_questions": [
       "Which candidate should receive the next compute budget?",
       "Do apparent improvements survive an effect-vs-noise verifier?"
@@ -130,6 +130,31 @@
           3
         ],
         "label_noise": 0.08
+      }
+    },
+    {
+      "action_id": "action_gradient_boosting",
+      "command": "python experiments/train_sklearn.py --dataset breast_cancer --model gradient_boosting --n-estimators 150 --learning-rate 0.05",
+      "model": "gradient_boosting",
+      "params": {
+        "n_estimators": 150,
+        "learning_rate": 0.05
+      }
+    },
+    {
+      "action_id": "action_weak_effect",
+      "command": "python experiments/scenario_sklearn.py --scenario weak_effect",
+      "model": "weak_effect",
+      "params": {
+        "scenario": "weak_effect"
+      }
+    },
+    {
+      "action_id": "action_real_effect",
+      "command": "python experiments/scenario_sklearn.py --scenario real_effect",
+      "model": "real_effect",
+      "params": {
+        "scenario": "real_effect"
       }
     }
   ],
@@ -250,6 +275,68 @@
         "rationale": "A multi-seed sweep is useful for the deterministic verifier: it tests whether an apparent gain survives effect-vs-noise scrutiny."
       },
       "source": "heuristic_fallback"
+    },
+    {
+      "action": {
+        "action_id": "action_gradient_boosting",
+        "command": "python experiments/train_sklearn.py --dataset breast_cancer --model gradient_boosting --n-estimators 150 --learning-rate 0.05",
+        "model": "gradient_boosting",
+        "params": {
+          "n_estimators": 150,
+          "learning_rate": 0.05
+        }
+      },
+      "prediction": {
+        "expected_metric": "accuracy around 0.94-0.98",
+        "expected_runtime_seconds": "under 15",
+        "risks": [
+          "can overfit with too many estimators"
+        ],
+        "recommendation": "run",
+        "rationale": "Boosting often performs well but needs tuning."
+      },
+      "source": "heuristic_fallback"
+    },
+    {
+      "action": {
+        "action_id": "action_weak_effect",
+        "command": "python experiments/scenario_sklearn.py --scenario weak_effect",
+        "model": "weak_effect",
+        "params": {
+          "scenario": "weak_effect"
+        }
+      },
+      "prediction": {
+        "expected_metric": "accuracy around 0.94-0.99",
+        "expected_runtime_seconds": "under 5",
+        "risks": [
+          "effect may be smaller than seed noise",
+          "claim should likely be weak or blocked"
+        ],
+        "recommendation": "run",
+        "rationale": "A weak-effect scenario tests whether the verifier refuses to overclaim a small apparent improvement."
+      },
+      "source": "heuristic_fallback"
+    },
+    {
+      "action": {
+        "action_id": "action_real_effect",
+        "command": "python experiments/scenario_sklearn.py --scenario real_effect",
+        "model": "real_effect",
+        "params": {
+          "scenario": "real_effect"
+        }
+      },
+      "prediction": {
+        "expected_metric": "accuracy around 0.76-0.88",
+        "expected_runtime_seconds": "under 5",
+        "risks": [
+          "large effect should be checked against seed noise"
+        ],
+        "recommendation": "run",
+        "rationale": "A real-effect scenario should produce a supported claim when the effect/noise ratio is high."
+      },
+      "source": "heuristic_fallback"
     }
   ],
   "selected_action": {
@@ -274,6 +361,18 @@
     "rejected_candidates": [
       {
         "action": {
+          "action_id": "action_gradient_boosting",
+          "command": "python experiments/train_sklearn.py --dataset breast_cancer --model gradient_boosting --n-estimators 150 --learning-rate 0.05",
+          "model": "gradient_boosting",
+          "params": {
+            "n_estimators": 150,
+            "learning_rate": 0.05
+          }
+        },
+        "reason": "score=31; world model recommended run; ensemble baseline is useful as a late comparison; world model predicted overfitting risk"
+      },
+      {
+        "action": {
           "action_id": "action_svc_scaled",
           "command": "python experiments/train_sklearn.py --dataset breast_cancer --model svc --scale --C 2.0",
           "model": "svc",
@@ -281,6 +380,28 @@
             "scale": true,
             "C": 2.0,
             "kernel": "rbf"
+          }
+        },
+        "reason": "score=30; world model recommended run"
+      },
+      {
+        "action": {
+          "action_id": "action_weak_effect",
+          "command": "python experiments/scenario_sklearn.py --scenario weak_effect",
+          "model": "weak_effect",
+          "params": {
+            "scenario": "weak_effect"
+          }
+        },
+        "reason": "score=30; world model recommended run"
+      },
+      {
+        "action": {
+          "action_id": "action_real_effect",
+          "command": "python experiments/scenario_sklearn.py --scenario real_effect",
+          "model": "real_effect",
+          "params": {
+            "scenario": "real_effect"
           }
         },
         "reason": "score=30; world model recommended run"
