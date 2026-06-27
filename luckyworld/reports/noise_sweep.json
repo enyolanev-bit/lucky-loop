@@ -1,0 +1,172 @@
+{
+  "dataset": "breast_cancer",
+  "noise_levels": [
+    0.0,
+    0.1,
+    0.2,
+    0.4
+  ],
+  "seeds": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "levels": [
+    {
+      "noise": 0.0,
+      "per_method": {
+        "logreg_scaled": [
+          0.958,
+          0.965,
+          0.972,
+          0.986
+        ],
+        "random_forest": [
+          0.9441,
+          0.9441,
+          0.965,
+          0.972
+        ],
+        "svc_rbf": [
+          0.958,
+          0.979,
+          0.965,
+          0.965
+        ],
+        "hist_gb": [
+          0.9371,
+          0.958,
+          0.951,
+          0.965
+        ]
+      },
+      "verdict": {
+        "best_method": "logreg_scaled",
+        "best_acc": 0.9702,
+        "second_method": "svc_rbf",
+        "effect_size": 0.0035,
+        "seed_noise": 0.028,
+        "trustworthy": false,
+        "statement": "AUCUN gagnant fiable : \u00e9cart best-2e 0.0035 \u2264 bruit inter-seed 0.0280 \u2192 inconclusive (within noise)."
+      }
+    },
+    {
+      "noise": 0.1,
+      "per_method": {
+        "logreg_scaled": [
+          0.9301,
+          0.9441,
+          0.9301,
+          0.965
+        ],
+        "random_forest": [
+          0.9441,
+          0.965,
+          0.951,
+          0.9161
+        ],
+        "svc_rbf": [
+          0.9441,
+          0.972,
+          0.965,
+          0.965
+        ],
+        "hist_gb": [
+          0.9441,
+          0.9441,
+          0.958,
+          0.9301
+        ]
+      },
+      "verdict": {
+        "best_method": "svc_rbf",
+        "best_acc": 0.9615,
+        "second_method": "hist_gb",
+        "effect_size": 0.0174,
+        "seed_noise": 0.0279,
+        "trustworthy": false,
+        "statement": "AUCUN gagnant fiable : \u00e9cart best-2e 0.0174 \u2264 bruit inter-seed 0.0279 \u2192 inconclusive (within noise)."
+      }
+    },
+    {
+      "noise": 0.2,
+      "per_method": {
+        "logreg_scaled": [
+          0.8531,
+          0.9091,
+          0.9231,
+          0.9301
+        ],
+        "random_forest": [
+          0.9161,
+          0.9231,
+          0.979,
+          0.9161
+        ],
+        "svc_rbf": [
+          0.9301,
+          0.972,
+          0.965,
+          0.965
+        ],
+        "hist_gb": [
+          0.8252,
+          0.8811,
+          0.8881,
+          0.8811
+        ]
+      },
+      "verdict": {
+        "best_method": "svc_rbf",
+        "best_acc": 0.958,
+        "second_method": "random_forest",
+        "effect_size": 0.0244,
+        "seed_noise": 0.0419,
+        "trustworthy": false,
+        "statement": "AUCUN gagnant fiable : \u00e9cart best-2e 0.0244 \u2264 bruit inter-seed 0.0419 \u2192 inconclusive (within noise)."
+      }
+    },
+    {
+      "noise": 0.4,
+      "per_method": {
+        "logreg_scaled": [
+          0.7832,
+          0.8392,
+          0.6993,
+          0.7483
+        ],
+        "random_forest": [
+          0.7483,
+          0.8182,
+          0.7483,
+          0.7063
+        ],
+        "svc_rbf": [
+          0.8252,
+          0.9231,
+          0.8601,
+          0.8881
+        ],
+        "hist_gb": [
+          0.6364,
+          0.6993,
+          0.5944,
+          0.6434
+        ]
+      },
+      "verdict": {
+        "best_method": "svc_rbf",
+        "best_acc": 0.8741,
+        "second_method": "logreg_scaled",
+        "effect_size": 0.1066,
+        "seed_noise": 0.0979,
+        "trustworthy": true,
+        "statement": "'svc_rbf' est le meilleur (\u00e9cart 0.1066 > bruit 0.0979) \u2014 finding fiable."
+      }
+    }
+  ],
+  "naive_claims": 4,
+  "verifier_claims": 1,
+  "false_winners_avoided": 3
+}

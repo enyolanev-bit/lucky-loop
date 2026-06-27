@@ -7,7 +7,7 @@
 ---
 
 ## Abstract
-*[TODO P3 — 120 mots. Draft :]* Autonomous research agents promise to automate the full loop from literature review to experimentation and reporting. A critical failure mode, however, is **fabrication**: agents report findings that are not supported by their own data. We present **Calibrated Autoresearch**, a multi-agent system that runs an end-to-end research loop (literature → plan → real code execution → verification → report) with an explicit **Verifier** that gates every claimed finding on a simple, deterministic criterion: the measured effect must exceed inter-seed noise. On a hyperparameter-search benchmark, our system [TODO: headline result — e.g. "abstains from N% of unsupported claims while preserving M% of true findings"]. Our contribution is not a stronger model but a **trust layer** that makes autonomous research reproducible and honest.
+Autonomous research agents promise to automate the full loop from literature review to experimentation and reporting. A critical failure mode, however, is **fabrication**: agents report findings their own data does not support. We present **Calibrated Autoresearch**, a multi-agent system running an end-to-end research loop with **two trust layers**: (1) a *world-model* that predicts each experiment's outcome before running it and checks prediction-vs-reality, and (2) a deterministic **Verifier** that gates every "best method" claim on the criterion *effect > inter-seed noise*. On a method-comparison benchmark across increasing label noise, a naive agent claims a winner at **all 4** noise levels, while our Verifier confirms only **1** and abstains on **3** — including on clean data, where the methods are statistically tied (gap 0.0035 vs noise 0.028). Our contribution is not a stronger model but a **trust layer** that makes autonomous research reproducible and honest.
 
 ## 1. Introduction
 - Research is slow and painful: literature triage, hyperparameter search, compute scheduling. *(cf. challenge framing.)*
@@ -43,12 +43,23 @@
 - **LLM backend**: [TODO: OpenAI gpt-4.1-mini / self-hosted vLLM on MI300X].
 
 ## 5. Results
-**Preliminary (proven):** weight_decay sweep `{0, 1e-4, 1e-3, 1e-2}`, 2 seeds:
-- best = `weight_decay=1e-3`, acc = **0.9731**
-- **effect_size = 0.0064**, **seed_noise = 0.0055** → Verifier verdict: *trustworthy, but barely (effect ≈ noise)*.
-- → The system reports this honestly instead of overselling "1e-3 is best". *(This is the headline behavior.)*
+**Headline experiment (proven, `experiments/noise_sweep.py`):** 4 methods (logreg-scaled, random-forest,
+SVC-rbf, hist-GB) on `breast_cancer`, across label-noise levels {0, 0.1, 0.2, 0.4}, 4 seeds.
+The Verifier verdict per level (effect = best−2nd vs inter-seed noise):
 
-*[TODO: figure acc vs hyperparameter with seed error bars; a case where the Verifier correctly flags "inconclusive"; quantify fabrication avoided.]*
+| Noise | best vs 2nd (effect) | inter-seed noise | Verifier verdict |
+|---|---|---|---|
+| 0.0 | 0.0035 | 0.0280 | ❌ inconclusive (within noise) |
+| 0.1 | 0.0174 | 0.0279 | ❌ inconclusive |
+| 0.2 | 0.0244 | 0.0419 | ❌ inconclusive |
+| 0.4 | 0.1066 | 0.0979 | ✅ svc_rbf is a reliable winner |
+
+**Naive agent: 4 winners claimed. Verifier: 1. → 3 false winners avoided.**
+
+The counter-intuitive finding: even on **clean** labels, the four methods are statistically tied
+(gap 0.0035 ≪ seed noise 0.028) — a naive agent that "picks the best" reports noise as signal.
+The Verifier abstains, and only at heavy noise (0.4) does a genuine, noise-exceeding gap appear.
+*(Figure: `reports/noise_sweep.png` — accuracy vs noise per method with inter-seed error bars + the abstention line.)*
 
 ## 6. Limitations
 - Sandbox is a toy task; the calibration principle generalizes but absolute numbers don't. *[honnêteté assumée]*
