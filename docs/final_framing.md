@@ -24,8 +24,8 @@ Le world model est le cœur wow. Le verifier est la deuxième couche de confianc
 ## Rôles
 
 ```text
-Autoresearch agent / planner
-    propose des actions candidates et décide quoi lancer
+Autoresearch agent / planner API
+    propose une hypothèse, une shortlist d'actions candidates et l'action préférée
 
 Qwen-AgentWorld
     prédit ce qui devrait arriver si une action est lancée
@@ -43,21 +43,21 @@ Claim ledger / reporter / UI
     expose les preuves et n'écrit que les claims autorisés
 ```
 
-## Mode actuel vs version autonome
+## Mode API-first
 
 ```text
-Hackathon implementation:
-    Autoresearch agent = planner / selector dans src/luckyloop
+Product path:
+    Autoresearch agent = planner API OpenAI-compatible
     World model = Qwen-AgentWorld
-    Executor / Comparator / Verifier = code Python dans le repo
+    Safety selector / Executor / Comparator / Verifier = code Python dans le repo
 
-Autonomous extension:
-    Autoresearch agent = planner API ou deterministic selector
+Development path:
+    Autoresearch agent = replay mode au même schema, uniquement pour tester sans clé API
     World model = Qwen-AgentWorld
     Executor / Comparator / Verifier = mêmes modules Python
 ```
 
-Le point important: l'agent autoresearch est distinct de Qwen-AgentWorld. L'agent propose et décide; Qwen-AgentWorld prédit. Si on remplace plus tard le selector par une API planner plus avancée, les artifacts et l'UI ne doivent pas changer.
+Le point important: l'agent autoresearch est distinct de Qwen-AgentWorld. L'agent propose et décide; Qwen-AgentWorld prédit. Le replay mode n'est qu'un test double pour valider les traces et les rapports avant d'avoir une clé API planner.
 
 ## Boucle cible
 
@@ -65,8 +65,9 @@ Le point important: l'agent autoresearch est distinct de Qwen-AgentWorld. L'agen
 research question
 -> explicit state s_t
 -> candidate actions a_t
+-> planner API returns AgentDecision
 -> Qwen-AgentWorld predicts observations o_hat_t+1
--> selector chooses action using world-model signal
+-> safety selector validates the agent decision using world-model and evidence-risk signals
 -> executor returns real observation o_t+1
 -> comparator measures prediction-vs-reality
 -> verifier gates claims

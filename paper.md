@@ -6,7 +6,7 @@
 
 ## Abstract
 
-Autonomous research agents can generate plausible experiments and convincing reports, but they often lack two safeguards: prospective prediction before compute and conservative claim calibration after execution. We present **Lucky Loop**, a world-model-guided autoresearch loop in which an agent proposes candidate ML experiments, Qwen-AgentWorld predicts likely metrics, runtime, and failure modes before execution, and real sklearn experiments test those predictions. A comparator records prediction-vs-reality, while a deterministic verifier and claim ledger prevent fragile results from becoming unsupported scientific claims. On small tabular benchmarks, Lucky Loop produces auditable traces containing state, action, predicted observation, real observation, comparison, and claim verdicts. The contribution is a research loop that measures both experimental outcomes and the agent's own predictive reliability.
+Autonomous research agents can generate plausible experiments and convincing reports, but they often lack two safeguards: prospective prediction before compute and conservative claim calibration after execution. We present **Lucky Loop**, a world-model-guided autoresearch loop in which an API-backed planner proposes candidate ML experiments, Qwen-AgentWorld predicts likely metrics, runtime, and failure modes before execution, and real sklearn experiments test those predictions. A comparator records prediction-vs-reality, while a deterministic verifier and claim ledger prevent fragile results from becoming unsupported scientific claims. On small tabular benchmarks, Lucky Loop produces auditable traces containing state, agent decision, action, predicted observation, real observation, comparison, and claim verdicts. The contribution is a research loop that measures both experimental outcomes and the agent's own predictive reliability.
 
 ## 1. Introduction
 
@@ -87,7 +87,7 @@ The current verifier is deliberately conservative. It is not a full statistical 
 
 Lucky Loop is implemented as a small auditable pipeline:
 
-1. **Autoresearch agent / planner** proposes candidate experiments and decides what to run.
+1. **Autoresearch agent / planner API** proposes hypotheses, candidate action IDs, and the preferred next experiment.
 2. **Qwen-AgentWorld simulator** predicts each candidate's likely outcome before compute.
 3. **Executor** runs real sklearn experiments and returns measured metrics.
 4. **Comparator** logs prediction hits, misses, and lessons.
@@ -95,7 +95,7 @@ Lucky Loop is implemented as a small auditable pipeline:
 6. **Claim ledger** records blocked and allowed claims with evidence run IDs.
 7. **Reporter/UI** show the timeline and only write evidence-backed claims.
 
-In the hackathon implementation, the autoresearch agent is implemented as a transparent planner/selector inside the Lucky Loop package: it proposes candidate actions, queries Qwen-AgentWorld for predicted outcomes, runs the selected experiment, and records evidence. In a fuller autonomous version, this same role can be backed by a planner API while preserving the same state/action/prediction trace format. The rest of the system remains unchanged: Qwen-AgentWorld is the world model, the executor tests reality, the comparator measures prediction-vs-reality, and the verifier gates claims.
+Lucky Loop is API-first: the production planner mode calls an OpenAI-compatible autoresearch agent API that returns a strict `AgentDecision` over a safe action catalog. For development without credentials, replay mode tests the same schema and validation path. The rest of the system remains unchanged: Qwen-AgentWorld is the world model, the safety selector validates catalog choices, the executor tests reality, the comparator measures prediction-vs-reality, and the verifier gates claims.
 
 This separation is central to the design. Qwen-AgentWorld is not the research agent and not the verifier. It is the simulator used by the agent before compute.
 
@@ -150,7 +150,7 @@ The important result is not that the world model is always correct. The importan
 - The verifier is conservative and simple; it is not a replacement for statistical testing.
 - Qwen-AgentWorld is not fine-tuned for this exact experimental environment.
 - The system demonstrates an auditable trust layer, not fully automated open-ended science.
-- Live Qwen-AgentWorld is the demo path, but local tests need a fallback for robustness.
+- Live Qwen-AgentWorld is the world-model demo path. The planner API path is separated from Qwen-AgentWorld and can be tested with replay mode until credentials are available.
 
 ## 8. Conclusion
 

@@ -113,6 +113,25 @@ class CandidatePrediction(BaseModel):
     source: Literal["qwen_agentworld", "heuristic_fallback", "unknown"] = "unknown"
 
 
+class AgentDecision(BaseModel):
+    research_question: str
+    working_hypothesis: str
+    candidate_action_ids: list[str] = Field(default_factory=list)
+    preferred_action_id: str
+    rationale: str
+    expected_evidence_needed: str
+    claim_risk: str
+    stop_or_continue: Literal["continue", "stop_and_report"] = "continue"
+
+
+class SafetyValidation(BaseModel):
+    valid_agent_action: bool = True
+    selected_action_id: str
+    selection_overrode_agent: bool = False
+    override_reason: str | None = None
+    validation_notes: list[str] = Field(default_factory=list)
+
+
 class RejectedCandidate(BaseModel):
     action: ProposedAction
     reason: str
@@ -121,9 +140,11 @@ class RejectedCandidate(BaseModel):
 
 class DecisionTrace(BaseModel):
     selected_action: ProposedAction
+    agent_signal_used: bool = False
     world_model_signal_used: bool = False
     selector_policy_signal_used: bool = False
     causal_signal_type: Literal[
+        "agent_decision",
         "world_model_prediction",
         "selector_policy",
         "mixed",
@@ -137,6 +158,10 @@ class DecisionTrace(BaseModel):
     score_breakdown: dict[str, float] = Field(default_factory=dict)
     qwen_suggested_action: str | None = None
     catalog_validation: str | None = None
+    agent_rationale: str = ""
+    preferred_action_id: str | None = None
+    selection_overrode_agent: bool = False
+    override_reason: str | None = None
     causal_reason: str
     rejected_candidates: list[RejectedCandidate] = Field(default_factory=list)
 
@@ -173,6 +198,13 @@ class ExperimentTrace(BaseModel):
     next_decision: str
     verification: Verification | None = None
     schema_version: str = "1.0"
+    planner_mode: str | None = None
+    agent_backend: str | None = None
+    agent_model: str | None = None
+    agent_prompt_hash: str | None = None
+    agent_decision: AgentDecision | None = None
+    safety_validation: SafetyValidation | None = None
+    research_hypothesis: str | None = None
     state_before: ResearchState | None = None
     candidate_actions: list[ProposedAction] = Field(default_factory=list)
     candidate_predictions: list[CandidatePrediction] = Field(default_factory=list)

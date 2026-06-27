@@ -28,6 +28,12 @@ def _world_model_summary(t: ExperimentTrace) -> str:
     return signal or risks or t.world_model_prediction.expected_metric
 
 
+def _agent_hypothesis(t: ExperimentTrace) -> str:
+    if t.agent_decision:
+        return t.agent_decision.working_hypothesis
+    return t.research_hypothesis or t.hypothesis
+
+
 def _claim_verdict(t: ExperimentTrace) -> str:
     if t.verification:
         if t.verification.trustworthy:
@@ -62,14 +68,14 @@ def write_demo_summary(goal: str, traces: list[ExperimentTrace], path: Path) -> 
         "",
         f"Goal: {goal}",
         "",
-        "All rows are real sklearn executions or real multi-seed sweeps. The table summarizes the auditable loop: predict, run, compare, verify.",
+        "All rows are real sklearn executions or real multi-seed sweeps. The table summarizes the auditable loop: agent proposes, world model predicts, Lucky Loop runs, verifier gates claims.",
         "",
-        "| Run | World model said | Agent did | Reality showed | Claim verdict |",
-        "|---|---|---|---|---|",
+        "| Run | Agent hypothesis | Qwen predicted | Action run | Reality showed | Claim verdict |",
+        "|---|---|---|---|---|---|",
     ]
     for t in traces:
         lines.append(
-            f"| {t.run_id} | {_world_model_summary(t)} | {_agent_action_text(t)} | "
+            f"| {t.run_id} | {_agent_hypothesis(t)} | {_world_model_summary(t)} | {_agent_action_text(t)} | "
             f"{_actual_metric_text(t)} | {_claim_verdict(t)} |"
         )
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -87,18 +93,31 @@ def generate_report(goal: str, traces: list[ExperimentTrace], path: Path) -> Non
         "",
         "## Thesis",
         "",
-        "Predict before you compute, then verify before you claim: each experiment is simulated before real execution, compared against actual metrics, and any sweep claim is gated by a deterministic effect-vs-noise verifier.",
+        "An API-backed autoresearch planner proposes hypotheses and safe catalog actions. Qwen-AgentWorld predicts experimental consequences before compute. Lucky Loop then runs real code, compares prediction with reality, and gates scientific claims through a deterministic verifier.",
         "",
         "## Experiment timeline",
         "",
-        "| Run | World model said | Agent did | Reality showed | Claim verdict |",
-        "|---|---|---|---|---|",
+        "| Run | Agent hypothesis | Qwen predicted | Action run | Reality showed | Claim verdict |",
+        "|---|---|---|---|---|---|",
     ]
     for t in traces:
         lines.append(
-            f"| {t.run_id} | {_world_model_summary(t)} | {_agent_action_text(t)} | "
+            f"| {t.run_id} | {_agent_hypothesis(t)} | {_world_model_summary(t)} | {_agent_action_text(t)} | "
             f"{_actual_metric_text(t)} | {_claim_verdict(t)} |"
         )
+
+    lines += ["", "## Autoresearch agent decisions", ""]
+    for t in traces:
+        if t.agent_decision:
+            override = ""
+            if t.safety_validation and t.safety_validation.selection_overrode_agent:
+                override = f"; safety override={t.safety_validation.override_reason}"
+            lines.append(
+                f"- {t.run_id}: preferred={t.agent_decision.preferred_action_id}; "
+                f"backend={t.agent_backend}; evidence_needed={t.agent_decision.expected_evidence_needed}{override}"
+            )
+        elif t.decision_trace:
+            lines.append(f"- {t.run_id}: selector-only mode; {t.decision_trace.causal_reason}")
 
     lines += ["", "## Best result", ""]
     if best:
@@ -175,6 +194,16 @@ def generate_report(goal: str, traces: list[ExperimentTrace], path: Path) -> Non
             lines.append(f"- Candidates considered: {candidates}")
         if t.decision_trace:
             lines.append(f"- Planner decision: {t.decision_trace.causal_reason}")
+            if t.agent_decision:
+                lines.append(f"- Agent rationale: {t.agent_decision.rationale}")
+                lines.append(f"- Evidence needed: {t.agent_decision.expected_evidence_needed}")
+                lines.append(f"- Claim risk: {t.agent_decision.claim_risk}")
+            if t.safety_validation:
+                lines.append(
+                    f"- Safety validation: selected={t.safety_validation.selected_action_id}; "
+                    f"override={t.safety_validation.selection_overrode_agent}; "
+                    f"reason={t.safety_validation.override_reason or 'none'}"
+                )
             if t.decision_trace.rejected_candidates:
                 rejected = "; ".join(f"{r.action.model}: {r.reason}" for r in t.decision_trace.rejected_candidates)
                 lines.append(f"- Rejected / deferred: {rejected}")
