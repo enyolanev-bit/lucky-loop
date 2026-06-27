@@ -1,0 +1,14 @@
+{
+  "breast_cancer": {
+    "calibration_spearman": 0.75,
+    "compute_saved_pct": 97.1
+  },
+  "wine": {
+    "calibration_spearman": 0.714,
+    "compute_saved_pct": 97.8
+  },
+  "digits": {
+    "calibration_spearman": -0.214,
+    "compute_saved_pct": -99.1
+  }
+}
