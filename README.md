@@ -57,11 +57,27 @@ Qwen-AgentWorld is never treated as the research agent or verifier. It is the wo
   - prediction-vs-actual comparison
   - JSON evidence traces
   - Markdown report
-- Six real runs exist under `runs/`.
-- The current verifier already blocks an overclaim in `run_005`:
+- Ten real runs exist under `runs/`.
+- The current verifier blocks overclaims and records them in `reports/claim_ledger.json`:
   - `effect_size = 0.020979`
   - `seed_noise = 0.027972`
   - verdict: `inconclusive`
+- An additive IC95 cross-check exists at `experiments/verifier_crosscheck.py` and writes `reports/verifier_crosscheck.md` without replacing the trust-ladder verifier.
+
+## Judge Evidence
+
+| Artifact | Current result |
+|---|---:|
+| Real experiment traces | 10 runs |
+| Metric interval coverage | 80% |
+| Runtime interval coverage | 90% |
+| Useful world-model decisions | 10/10 |
+| Claim ledger entries | 5 |
+| Strongly supported claims | 1 |
+| Blocked overclaims | 4 |
+| IC95 cross-check agreement | 2/5 |
+
+The key point is not that Qwen-AgentWorld is always right. The key point is that Lucky Loop measures its predictions, keeps misses visible, and prevents fragile or protocol-invalid findings from becoming final claims.
 
 ## Demo Message
 
@@ -92,8 +108,12 @@ If the simulator endpoint is unavailable, Lucky Loop keeps a deterministic heuri
 ## Artifacts
 
 ```text
-runs/run_001.json ... run_006.json
+runs/run_001.json ... run_010.json
 reports/final_report.md
+reports/world_model_calibration.md
+reports/claim_ledger.json
+reports/verifier_crosscheck.md
+reports/selection_brief.md
 app/streamlit_app.py
 ```
 
