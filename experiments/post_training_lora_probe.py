@@ -104,6 +104,8 @@ def write_report(path: Path, payload: dict[str, Any]) -> None:
                 f"- Baseline accuracy: `{payload['baseline_accuracy']:.4f}`",
                 f"- Post-training accuracy: `{payload['post_training_accuracy']:.4f}`",
                 f"- Delta: `{payload['delta']:+.4f}`",
+                f"- Trainable parameters: `{payload.get('trainable_params', 'n/a')}`",
+                f"- Trainable parameter percent: `{payload.get('trainable_param_pct', 'n/a')}`",
                 f"- Runtime seconds: `{payload['runtime_seconds']:.2f}`",
             ]
         )
@@ -235,6 +237,9 @@ def run_real_probe(config: ProbeConfig) -> dict[str, Any]:
         report_to=[],
         remove_unused_columns=False,
     )
+    trainable_params = sum(param.numel() for param in model.parameters() if param.requires_grad)
+    total_params = sum(param.numel() for param in model.parameters())
+
     trainer = Trainer(model=model, args=args, train_dataset=tokenized_train)
     trainer.train()
     post_accuracy = score_accuracy(test_ds)
@@ -245,6 +250,9 @@ def run_real_probe(config: ProbeConfig) -> dict[str, Any]:
         "baseline_accuracy": baseline_accuracy,
         "post_training_accuracy": post_accuracy,
         "delta": post_accuracy - baseline_accuracy,
+        "trainable_params": trainable_params,
+        "total_params": total_params,
+        "trainable_param_pct": 100 * trainable_params / total_params if total_params else None,
         "runtime_seconds": time.perf_counter() - started,
         "claim_guardrail": "Only claim post-training helped if delta > 0 on held-out test split.",
     }
