@@ -54,9 +54,12 @@ Rules:
 - Do not claim execution happened.
 - Recommend top-model verification when single-run top models are close.
 
-Lucky Loop validates the response with Pydantic. Invalid actions are rejected or overridden by the safety selector.
+Lucky Loop validates the response with Pydantic. For external agents (`agent_handoff` / `agent_command`), invalid action_ids are **overridden by the safety selector** (`validate_agent_decision(..., override_on_invalid=True)`): an invalid `preferred_action_id` is replaced with a safe catalog action, unknown `candidate_action_ids` are dropped, and the override is recorded in the rationale for audit. The strict `llm` planner still rejects invalid actions by raising.
 
 ## Command Mode
+
+> Security: `LUCKYLOOP_AGENT_COMMAND` is run via the shell and is **trusted input only** — set it yourself, never from an untrusted source. Request/response paths are shell-quoted.
+
 
 If an agent system exposes a CLI, use:
 

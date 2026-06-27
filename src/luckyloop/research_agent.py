@@ -140,14 +140,50 @@ def _catalog_ids(candidates: list[ProposedAction]) -> set[str]:
     return {candidate.action_id or "" for candidate in candidates}
 
 
-def validate_agent_decision(decision: AgentDecision, candidates: list[ProposedAction]) -> AgentDecision:
+def _safe_default_action_id(candidates: list[ProposedAction]) -> str:
+    """The safety selector's fallback pick: first valid catalog action (catalog is curated/safe)."""
+    for candidate in candidates:
+        if candidate.action_id:
+            return candidate.action_id
+    raise ValueError("candidate catalog has no usable action_id")
+
+
+def validate_agent_decision(
+    decision: AgentDecision,
+    candidates: list[ProposedAction],
+    *,
+    override_on_invalid: bool = False,
+) -> AgentDecision:
+    """Validate an external agent's choice against the safe catalog.
+
+    Strict mode (default) rejects invalid action_ids by raising. With override_on_invalid=True
+    (used for external/untrusted agents), the safety selector replaces invalid choices with a safe
+    catalog action instead of crashing the loop, and records the override in the rationale.
+    """
     ids = _catalog_ids(candidates)
-    if decision.preferred_action_id not in ids:
-        raise ValueError(f"agent preferred unknown action_id: {decision.preferred_action_id}")
+    invalid_preferred = decision.preferred_action_id not in ids
     unknown = [action_id for action_id in decision.candidate_action_ids if action_id not in ids]
-    if unknown:
+    if not invalid_preferred and not unknown:
+        return decision
+    if not override_on_invalid:
+        if invalid_preferred:
+            raise ValueError(f"agent preferred unknown action_id: {decision.preferred_action_id}")
         raise ValueError(f"agent referenced unknown candidate_action_ids: {unknown}")
-    return decision
+    safe_id = _safe_default_action_id(candidates)
+    sanitized = [action_id for action_id in decision.candidate_action_ids if action_id in ids] or [safe_id]
+    note = (
+        " [safety-selector override: invalid action(s) "
+        f"{'preferred=' + decision.preferred_action_id + ' ' if invalid_preferred else ''}"
+        f"{'unknown=' + ','.join(unknown) + ' ' if unknown else ''}"
+        f"replaced; preferred set to {safe_id}]"
+    )
+    return decision.model_copy(
+        update={
+            "preferred_action_id": safe_id if invalid_preferred else decision.preferred_action_id,
+            "candidate_action_ids": sanitized,
+            "rationale": decision.rationale + note,
+        }
+    )
 
 
 class LLMResearchAgent:
@@ -214,9 +250,14 @@ class HandoffResearchAgent:
         deadline = time.time() + self.timeout_seconds
         while time.time() < deadline:
             if response_path.exists():
-                data = json.loads(response_path.read_text(encoding="utf-8"))
-                decision = AgentDecision(**data)
-                return validate_agent_decision(decision, candidate_catalog), prompt
+                try:
+                    data = json.loads(response_path.read_text(encoding="utf-8"))
+                    decision = AgentDecision(**data)
+                except (json.JSONDecodeError, ValueError, TypeError):
+                    # File may be mid-write (non-atomic external writer): tolerate and keep polling.
+                    time.sleep(self.poll_seconds)
+                    continue
+                return validate_agent_decision(decision, candidate_catalog, override_on_invalid=True), prompt
             time.sleep(self.poll_seconds)
         raise TimeoutError(f"Timed out waiting for agent response: {response_path}")
 
@@ -261,7 +302,7 @@ class CommandResearchAgent:
             raise RuntimeError(f"agent command completed but did not write {response_path}")
         data = json.loads(response_path.read_text(encoding="utf-8"))
         decision = AgentDecision(**data)
-        return validate_agent_decision(decision, candidate_catalog), prompt
+        return validate_agent_decision(decision, candidate_catalog, override_on_invalid=True), prompt
 
 
 @dataclass
