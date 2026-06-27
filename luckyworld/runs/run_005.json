@@ -1,63 +1,237 @@
 {
   "run_id": "run_005",
   "goal": "Maximize validation accuracy on sklearn breast cancer dataset in five experiments.",
-  "hypothesis": "Try conservative gradient boosting as a final ensemble baseline and compare prediction accuracy against actual metrics.",
+  "hypothesis": "Run a controlled noisy-label multi-seed sweep so the deterministic Verifier can decide whether an apparent improvement is larger than seed noise.",
   "proposed_action": {
-    "command": "python experiments/train_sklearn.py --dataset breast_cancer --model gradient_boosting --n-estimators 150 --learning-rate 0.05",
-    "model": "gradient_boosting",
+    "command": "python experiments/sweep_sklearn.py --dataset breast_cancer --model logistic_regression --scale --sweep-param C --values 0.1 1.0 10.0 --seeds 0 1 2 3 --label-noise 0.08",
+    "model": "verification_sweep",
     "params": {
-      "n_estimators": 150,
-      "learning_rate": 0.05
+      "base_model": "logistic_regression",
+      "scale": true,
+      "sweep_param": "C",
+      "values": [
+        0.1,
+        1.0,
+        10.0
+      ],
+      "seeds": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "label_noise": 0.08
     }
   },
   "world_model_prediction": {
-    "expected_metric": "accuracy around 0.97-0.99, weighted F1 around 0.97-0.99",
+    "expected_metric": "accuracy around 0.95-0.97, weighted F1 around 0.95-0.97",
     "expected_runtime_seconds": "under 10",
     "risks": [
-      "Prediction may miss exact quantitative details like previous runs",
-      "Gradient boosting might not significantly improve over SVC or scaled logistic regression"
+      "Label noise may reduce validation accuracy and F1 scores",
+      "Hyperparameter sweep may not significantly improve over best baseline",
+      "Seed variance could lead to inconsistent results across runs"
     ],
-    "recommendation": "run",
-    "rationale": "The gradient boosting model is a conservative ensemble method that should perform well on the breast cancer dataset, likely achieving accuracy and weighted F1 in the 0.97-0.99 range. Previous runs show that ensemble methods like random forest and SVC perform strongly, and gradient boosting is a logical next step to compare against these baselines. The runtime is expected to be under 10 seconds given the dataset size and model complexity."
+    "recommendation": "modify",
+    "rationale": "The proposed experiment introduces label noise (0.08) which is not typical for the sklearn breast_cancer dataset and may artificially degrade performance. Additionally, the logistic regression with scaling has already achieved high accuracy (0.986) in run_002, so a sweep over C values with noise is unlikely to yield meaningful improvements. Consider removing the label noise parameter or testing on a different model variant."
   },
   "actual_result": {
     "status": "success",
-    "accuracy": 0.951048951048951,
-    "f1": 0.9507373098014511,
-    "runtime_seconds": 0.4891,
-    "stdout_tail": "{\n  \"accuracy\": 0.951048951048951,\n  \"dataset\": \"breast_cancer\",\n  \"f1\": 0.9507373098014511,\n  \"model\": \"gradient_boosting\",\n  \"n_test\": 143,\n  \"n_train\": 426,\n  \"params\": {\n    \"C\": 1.0,\n    \"dataset\": \"breast_cancer\",\n    \"kernel\": \"rbf\",\n    \"learning_rate\": 0.05,\n    \"max_depth\": null,\n    \"max_iter\": 1000,\n    \"model\": \"gradient_boosting\",\n    \"n_estimators\": 150,\n    \"scale\": false,\n    \"seed\": 42,\n    \"test_size\": 0.25\n  },\n  \"runtime_seconds\": 0.4891,\n  \"status\": \"success\"\n}\n",
+    "accuracy": null,
+    "f1": null,
+    "runtime_seconds": 20.3479,
+    "stdout_tail": "719127026819333,\n      \"label\": \"C=1.0\",\n      \"runtime_seconds\": 0.025,\n      \"seed\": 2,\n      \"sweep_param\": \"C\",\n      \"value\": \"1.0\"\n    },\n    {\n      \"accuracy\": 0.972027972027972,\n      \"config_key\": \"C=1.0\",\n      \"f1\": 0.9719127026819333,\n      \"label\": \"C=1.0\",\n      \"runtime_seconds\": 0.0207,\n      \"seed\": 3,\n      \"sweep_param\": \"C\",\n      \"value\": \"1.0\"\n    },\n    {\n      \"accuracy\": 0.9300699300699301,\n      \"config_key\": \"C=10.0\",\n      \"f1\": 0.9294588616839257,\n      \"label\": \"C=10.0\",\n      \"runtime_seconds\": 0.034,\n      \"seed\": 0,\n      \"sweep_param\": \"C\",\n      \"value\": \"10.0\"\n    },\n    {\n      \"accuracy\": 0.9370629370629371,\n      \"config_key\": \"C=10.0\",\n      \"f1\": 0.935641677909719,\n      \"label\": \"C=10.0\",\n      \"runtime_seconds\": 0.0364,\n      \"seed\": 1,\n      \"sweep_param\": \"C\",\n      \"value\": \"10.0\"\n    },\n    {\n      \"accuracy\": 0.9370629370629371,\n      \"config_key\": \"C=10.0\",\n      \"f1\": 0.9366622554590086,\n      \"label\": \"C=10.0\",\n      \"runtime_seconds\": 0.0277,\n      \"seed\": 2,\n      \"sweep_param\": \"C\",\n      \"value\": \"10.0\"\n    },\n    {\n      \"accuracy\": 0.958041958041958,\n      \"config_key\": \"C=10.0\",\n      \"f1\": 0.9578690540229003,\n      \"label\": \"C=10.0\",\n      \"runtime_seconds\": 0.0286,\n      \"seed\": 3,\n      \"sweep_param\": \"C\",\n      \"value\": \"10.0\"\n    }\n  ],\n  \"runtime_seconds\": 20.3479,\n  \"seeds\": [\n    0,\n    1,\n    2,\n    3\n  ],\n  \"status\": \"success\",\n  \"summary_by_value\": {\n    \"0.1\": {\n      \"max_accuracy\": 0.9790209790209791,\n      \"mean_accuracy\": 0.9615384615384616,\n      \"min_accuracy\": 0.951048951048951,\n      \"n\": 4\n    },\n    \"1.0\": {\n      \"max_accuracy\": 0.972027972027972,\n      \"mean_accuracy\": 0.9527972027972028,\n      \"min_accuracy\": 0.9300699300699301,\n      \"n\": 4\n    },\n    \"10.0\": {\n      \"max_accuracy\": 0.958041958041958,\n      \"mean_accuracy\": 0.9405594405594406,\n      \"min_accuracy\": 0.9300699300699301,\n      \"n\": 4\n    }\n  },\n  \"sweep_param\": \"C\",\n  \"values\": [\n    \"0.1\",\n    \"1.0\",\n    \"10.0\"\n  ]\n}\n",
     "stderr_tail": "",
     "raw": {
-      "accuracy": 0.951048951048951,
-      "dataset": "breast_cancer",
-      "f1": 0.9507373098014511,
-      "model": "gradient_boosting",
-      "n_test": 143,
-      "n_train": 426,
-      "params": {
-        "C": 1.0,
-        "dataset": "breast_cancer",
-        "kernel": "rbf",
-        "learning_rate": 0.05,
-        "max_depth": null,
-        "max_iter": 1000,
-        "model": "gradient_boosting",
-        "n_estimators": 150,
-        "scale": false,
-        "seed": 42,
-        "test_size": 0.25
+      "best": {
+        "max_accuracy": 0.9790209790209791,
+        "mean_accuracy": 0.9615384615384616,
+        "min_accuracy": 0.951048951048951,
+        "n": 4,
+        "value": "0.1"
       },
-      "runtime_seconds": 0.4891,
-      "status": "success"
+      "dataset": "breast_cancer",
+      "failures": [],
+      "label_noise": 0.08,
+      "metric": "accuracy",
+      "model": "logistic_regression",
+      "runs": [
+        {
+          "accuracy": 0.951048951048951,
+          "config_key": "C=0.1",
+          "f1": 0.9502345545126294,
+          "label": "C=0.1",
+          "runtime_seconds": 0.0172,
+          "seed": 0,
+          "sweep_param": "C",
+          "value": "0.1"
+        },
+        {
+          "accuracy": 0.951048951048951,
+          "config_key": "C=0.1",
+          "f1": 0.9502345545126294,
+          "label": "C=0.1",
+          "runtime_seconds": 0.0179,
+          "seed": 1,
+          "sweep_param": "C",
+          "value": "0.1"
+        },
+        {
+          "accuracy": 0.9790209790209791,
+          "config_key": "C=0.1",
+          "f1": 0.9788874184863361,
+          "label": "C=0.1",
+          "runtime_seconds": 0.0251,
+          "seed": 2,
+          "sweep_param": "C",
+          "value": "0.1"
+        },
+        {
+          "accuracy": 0.965034965034965,
+          "config_key": "C=0.1",
+          "f1": 0.9648123641438936,
+          "label": "C=0.1",
+          "runtime_seconds": 0.0168,
+          "seed": 3,
+          "sweep_param": "C",
+          "value": "0.1"
+        },
+        {
+          "accuracy": 0.9300699300699301,
+          "config_key": "C=1.0",
+          "f1": 0.9290999323257388,
+          "label": "C=1.0",
+          "runtime_seconds": 0.0207,
+          "seed": 0,
+          "sweep_param": "C",
+          "value": "1.0"
+        },
+        {
+          "accuracy": 0.9370629370629371,
+          "config_key": "C=1.0",
+          "f1": 0.935641677909719,
+          "label": "C=1.0",
+          "runtime_seconds": 0.0247,
+          "seed": 1,
+          "sweep_param": "C",
+          "value": "1.0"
+        },
+        {
+          "accuracy": 0.972027972027972,
+          "config_key": "C=1.0",
+          "f1": 0.9719127026819333,
+          "label": "C=1.0",
+          "runtime_seconds": 0.025,
+          "seed": 2,
+          "sweep_param": "C",
+          "value": "1.0"
+        },
+        {
+          "accuracy": 0.972027972027972,
+          "config_key": "C=1.0",
+          "f1": 0.9719127026819333,
+          "label": "C=1.0",
+          "runtime_seconds": 0.0207,
+          "seed": 3,
+          "sweep_param": "C",
+          "value": "1.0"
+        },
+        {
+          "accuracy": 0.9300699300699301,
+          "config_key": "C=10.0",
+          "f1": 0.9294588616839257,
+          "label": "C=10.0",
+          "runtime_seconds": 0.034,
+          "seed": 0,
+          "sweep_param": "C",
+          "value": "10.0"
+        },
+        {
+          "accuracy": 0.9370629370629371,
+          "config_key": "C=10.0",
+          "f1": 0.935641677909719,
+          "label": "C=10.0",
+          "runtime_seconds": 0.0364,
+          "seed": 1,
+          "sweep_param": "C",
+          "value": "10.0"
+        },
+        {
+          "accuracy": 0.9370629370629371,
+          "config_key": "C=10.0",
+          "f1": 0.9366622554590086,
+          "label": "C=10.0",
+          "runtime_seconds": 0.0277,
+          "seed": 2,
+          "sweep_param": "C",
+          "value": "10.0"
+        },
+        {
+          "accuracy": 0.958041958041958,
+          "config_key": "C=10.0",
+          "f1": 0.9578690540229003,
+          "label": "C=10.0",
+          "runtime_seconds": 0.0286,
+          "seed": 3,
+          "sweep_param": "C",
+          "value": "10.0"
+        }
+      ],
+      "runtime_seconds": 20.3479,
+      "seeds": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "status": "success",
+      "summary_by_value": {
+        "0.1": {
+          "max_accuracy": 0.9790209790209791,
+          "mean_accuracy": 0.9615384615384616,
+          "min_accuracy": 0.951048951048951,
+          "n": 4
+        },
+        "1.0": {
+          "max_accuracy": 0.972027972027972,
+          "mean_accuracy": 0.9527972027972028,
+          "min_accuracy": 0.9300699300699301,
+          "n": 4
+        },
+        "10.0": {
+          "max_accuracy": 0.958041958041958,
+          "mean_accuracy": 0.9405594405594406,
+          "min_accuracy": 0.9300699300699301,
+          "n": 4
+        }
+      },
+      "sweep_param": "C",
+      "values": [
+        "0.1",
+        "1.0",
+        "10.0"
+      ]
     }
   },
   "comparison": {
     "metric_match": false,
-    "runtime_match": true,
+    "runtime_match": false,
     "unexpected_events": [
-      "accuracy 0.9510 outside predicted range 0.97-0.99"
+      "runtime 20.35s exceeded predicted 10s"
     ],
     "lesson": "Run succeeded, but the prediction missed at least one quantitative detail."
   },
-  "next_decision": "Stop and report the best observed model."
+  "next_decision": "Next selected by world-model-guided policy: Try conservative gradient boosting as a final ensemble baseline and compare prediction accuracy against actual metrics.",
+  "verification": {
+    "status": "inconclusive",
+    "metric": "accuracy",
+    "effect_size": 0.020979,
+    "seed_noise": 0.027972,
+    "trustworthy": false,
+    "best_config": "C=0.1",
+    "supported_claims": [],
+    "inconclusive_findings": [
+      "Best config 'C=0.1' improves over 'C=10.0' by 0.0210 accuracy, but best-config seed noise is 0.0280."
+    ],
+    "rationale": "Measured effect is not larger than inter-seed noise. The report must not oversell this as a robust discovery."
+  }
 }

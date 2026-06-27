@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 import argparse, json, time, warnings
+import numpy as np
 from sklearn.datasets import load_breast_cancer, load_wine, load_digits
 from sklearn.exceptions import ConvergenceWarning
 from sklearn.metrics import accuracy_score, f1_score
@@ -53,12 +54,23 @@ def main():
     p.add_argument("--max-iter", type=int, default=1000)
     p.add_argument("--test-size", type=float, default=0.25)
     p.add_argument("--seed", type=int, default=42)
+    p.add_argument("--label-noise", type=float, default=0.0, help="Fraction of training labels to flip for controlled perturbation demos.")
     args = p.parse_args()
 
     t0 = time.perf_counter()
     warnings.filterwarnings("ignore", category=ConvergenceWarning)
     X, y = get_dataset(args.dataset)
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=args.test_size, random_state=args.seed, stratify=y)
+    if args.label_noise:
+        rng = np.random.default_rng(args.seed)
+        y_train = y_train.copy()
+        classes = np.unique(y_train)
+        n_flip = int(round(len(y_train) * args.label_noise))
+        if n_flip > 0:
+            idxs = rng.choice(len(y_train), size=n_flip, replace=False)
+            for idx in idxs:
+                alternatives = classes[classes != y_train[idx]]
+                y_train[idx] = rng.choice(alternatives)
     clf = build_model(args)
     clf.fit(X_train, y_train)
     pred = clf.predict(X_test)
@@ -73,6 +85,7 @@ def main():
         "runtime_seconds": round(runtime, 4),
         "n_train": int(len(y_train)),
         "n_test": int(len(y_test)),
+        "n_label_noise_flips": int(round(len(y_train) * args.label_noise)) if args.label_noise else 0,
     }
     print(json.dumps(out, indent=2, sort_keys=True))
 

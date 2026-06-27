@@ -22,6 +22,10 @@ for t in traces:
         "actual_accuracy": t["actual_result"].get("accuracy"),
         "runtime_s": t["actual_result"].get("runtime_seconds"),
         "metric_match": t["comparison"].get("metric_match"),
+        "verifier": (t.get("verification") or {}).get("status"),
+        "effect_size": (t.get("verification") or {}).get("effect_size"),
+        "seed_noise": (t.get("verification") or {}).get("seed_noise"),
+        "trustworthy": (t.get("verification") or {}).get("trustworthy"),
         "decision": t["next_decision"],
     })
 st.dataframe(pd.DataFrame(rows), use_container_width=True)
