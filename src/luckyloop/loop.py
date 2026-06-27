@@ -4,6 +4,7 @@ import argparse
 import os
 from pathlib import Path
 
+from .calibration import write_calibration_report
 from .comparator import compare
 from .executor import execute
 from .planner import action_key, generate_candidates, initial_hypothesis, predict_candidates, select_candidate
@@ -183,6 +184,7 @@ def run(goal: str, max_experiments: int = 5) -> list[ExperimentTrace]:
         if i >= max_experiments:
             break
 
+    write_calibration_report(traces, reports_dir / "world_model_calibration.md")
     generate_report(goal, traces, reports_dir / "final_report.md")
     return traces
 

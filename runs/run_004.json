@@ -38,8 +38,8 @@
     "status": "success",
     "accuracy": null,
     "f1": null,
-    "runtime_seconds": 33.0821,
-    "stdout_tail": "19127026819333,\n      \"label\": \"C=1.0\",\n      \"runtime_seconds\": 0.149,\n      \"seed\": 2,\n      \"sweep_param\": \"C\",\n      \"value\": \"1.0\"\n    },\n    {\n      \"accuracy\": 0.972027972027972,\n      \"config_key\": \"C=1.0\",\n      \"f1\": 0.9719127026819333,\n      \"label\": \"C=1.0\",\n      \"runtime_seconds\": 0.0671,\n      \"seed\": 3,\n      \"sweep_param\": \"C\",\n      \"value\": \"1.0\"\n    },\n    {\n      \"accuracy\": 0.9300699300699301,\n      \"config_key\": \"C=10.0\",\n      \"f1\": 0.9294588616839257,\n      \"label\": \"C=10.0\",\n      \"runtime_seconds\": 0.0387,\n      \"seed\": 0,\n      \"sweep_param\": \"C\",\n      \"value\": \"10.0\"\n    },\n    {\n      \"accuracy\": 0.9370629370629371,\n      \"config_key\": \"C=10.0\",\n      \"f1\": 0.935641677909719,\n      \"label\": \"C=10.0\",\n      \"runtime_seconds\": 0.0954,\n      \"seed\": 1,\n      \"sweep_param\": \"C\",\n      \"value\": \"10.0\"\n    },\n    {\n      \"accuracy\": 0.9370629370629371,\n      \"config_key\": \"C=10.0\",\n      \"f1\": 0.9366622554590086,\n      \"label\": \"C=10.0\",\n      \"runtime_seconds\": 0.0703,\n      \"seed\": 2,\n      \"sweep_param\": \"C\",\n      \"value\": \"10.0\"\n    },\n    {\n      \"accuracy\": 0.958041958041958,\n      \"config_key\": \"C=10.0\",\n      \"f1\": 0.9578690540229003,\n      \"label\": \"C=10.0\",\n      \"runtime_seconds\": 0.0364,\n      \"seed\": 3,\n      \"sweep_param\": \"C\",\n      \"value\": \"10.0\"\n    }\n  ],\n  \"runtime_seconds\": 33.0821,\n  \"seeds\": [\n    0,\n    1,\n    2,\n    3\n  ],\n  \"status\": \"success\",\n  \"summary_by_value\": {\n    \"0.1\": {\n      \"max_accuracy\": 0.9790209790209791,\n      \"mean_accuracy\": 0.9615384615384616,\n      \"min_accuracy\": 0.951048951048951,\n      \"n\": 4\n    },\n    \"1.0\": {\n      \"max_accuracy\": 0.972027972027972,\n      \"mean_accuracy\": 0.9527972027972028,\n      \"min_accuracy\": 0.9300699300699301,\n      \"n\": 4\n    },\n    \"10.0\": {\n      \"max_accuracy\": 0.958041958041958,\n      \"mean_accuracy\": 0.9405594405594406,\n      \"min_accuracy\": 0.9300699300699301,\n      \"n\": 4\n    }\n  },\n  \"sweep_param\": \"C\",\n  \"values\": [\n    \"0.1\",\n    \"1.0\",\n    \"10.0\"\n  ]\n}\n",
+    "runtime_seconds": 29.0251,
+    "stdout_tail": "19127026819333,\n      \"label\": \"C=1.0\",\n      \"runtime_seconds\": 0.0408,\n      \"seed\": 2,\n      \"sweep_param\": \"C\",\n      \"value\": \"1.0\"\n    },\n    {\n      \"accuracy\": 0.972027972027972,\n      \"config_key\": \"C=1.0\",\n      \"f1\": 0.9719127026819333,\n      \"label\": \"C=1.0\",\n      \"runtime_seconds\": 0.0576,\n      \"seed\": 3,\n      \"sweep_param\": \"C\",\n      \"value\": \"1.0\"\n    },\n    {\n      \"accuracy\": 0.9300699300699301,\n      \"config_key\": \"C=10.0\",\n      \"f1\": 0.9294588616839257,\n      \"label\": \"C=10.0\",\n      \"runtime_seconds\": 0.0668,\n      \"seed\": 0,\n      \"sweep_param\": \"C\",\n      \"value\": \"10.0\"\n    },\n    {\n      \"accuracy\": 0.9370629370629371,\n      \"config_key\": \"C=10.0\",\n      \"f1\": 0.935641677909719,\n      \"label\": \"C=10.0\",\n      \"runtime_seconds\": 0.205,\n      \"seed\": 1,\n      \"sweep_param\": \"C\",\n      \"value\": \"10.0\"\n    },\n    {\n      \"accuracy\": 0.9370629370629371,\n      \"config_key\": \"C=10.0\",\n      \"f1\": 0.9366622554590086,\n      \"label\": \"C=10.0\",\n      \"runtime_seconds\": 0.0312,\n      \"seed\": 2,\n      \"sweep_param\": \"C\",\n      \"value\": \"10.0\"\n    },\n    {\n      \"accuracy\": 0.958041958041958,\n      \"config_key\": \"C=10.0\",\n      \"f1\": 0.9578690540229003,\n      \"label\": \"C=10.0\",\n      \"runtime_seconds\": 0.0514,\n      \"seed\": 3,\n      \"sweep_param\": \"C\",\n      \"value\": \"10.0\"\n    }\n  ],\n  \"runtime_seconds\": 29.0251,\n  \"seeds\": [\n    0,\n    1,\n    2,\n    3\n  ],\n  \"status\": \"success\",\n  \"summary_by_value\": {\n    \"0.1\": {\n      \"max_accuracy\": 0.9790209790209791,\n      \"mean_accuracy\": 0.9615384615384616,\n      \"min_accuracy\": 0.951048951048951,\n      \"n\": 4\n    },\n    \"1.0\": {\n      \"max_accuracy\": 0.972027972027972,\n      \"mean_accuracy\": 0.9527972027972028,\n      \"min_accuracy\": 0.9300699300699301,\n      \"n\": 4\n    },\n    \"10.0\": {\n      \"max_accuracy\": 0.958041958041958,\n      \"mean_accuracy\": 0.9405594405594406,\n      \"min_accuracy\": 0.9300699300699301,\n      \"n\": 4\n    }\n  },\n  \"sweep_param\": \"C\",\n  \"values\": [\n    \"0.1\",\n    \"1.0\",\n    \"10.0\"\n  ]\n}\n",
     "stderr_tail": "",
     "raw": {
       "best": {
@@ -60,7 +60,7 @@
           "config_key": "C=0.1",
           "f1": 0.9502345545126294,
           "label": "C=0.1",
-          "runtime_seconds": 0.0666,
+          "runtime_seconds": 0.0249,
           "seed": 0,
           "sweep_param": "C",
           "value": "0.1"
@@ -70,7 +70,7 @@
           "config_key": "C=0.1",
           "f1": 0.9502345545126294,
           "label": "C=0.1",
-          "runtime_seconds": 0.0517,
+          "runtime_seconds": 0.0348,
           "seed": 1,
           "sweep_param": "C",
           "value": "0.1"
@@ -80,7 +80,7 @@
           "config_key": "C=0.1",
           "f1": 0.9788874184863361,
           "label": "C=0.1",
-          "runtime_seconds": 0.0681,
+          "runtime_seconds": 0.0486,
           "seed": 2,
           "sweep_param": "C",
           "value": "0.1"
@@ -90,7 +90,7 @@
           "config_key": "C=0.1",
           "f1": 0.9648123641438936,
           "label": "C=0.1",
-          "runtime_seconds": 0.0294,
+          "runtime_seconds": 0.0312,
           "seed": 3,
           "sweep_param": "C",
           "value": "0.1"
@@ -100,7 +100,7 @@
           "config_key": "C=1.0",
           "f1": 0.9290999323257388,
           "label": "C=1.0",
-          "runtime_seconds": 0.0787,
+          "runtime_seconds": 0.0547,
           "seed": 0,
           "sweep_param": "C",
           "value": "1.0"
@@ -110,7 +110,7 @@
           "config_key": "C=1.0",
           "f1": 0.935641677909719,
           "label": "C=1.0",
-          "runtime_seconds": 0.1518,
+          "runtime_seconds": 0.2676,
           "seed": 1,
           "sweep_param": "C",
           "value": "1.0"
@@ -120,7 +120,7 @@
           "config_key": "C=1.0",
           "f1": 0.9719127026819333,
           "label": "C=1.0",
-          "runtime_seconds": 0.149,
+          "runtime_seconds": 0.0408,
           "seed": 2,
           "sweep_param": "C",
           "value": "1.0"
@@ -130,7 +130,7 @@
           "config_key": "C=1.0",
           "f1": 0.9719127026819333,
           "label": "C=1.0",
-          "runtime_seconds": 0.0671,
+          "runtime_seconds": 0.0576,
           "seed": 3,
           "sweep_param": "C",
           "value": "1.0"
@@ -140,7 +140,7 @@
           "config_key": "C=10.0",
           "f1": 0.9294588616839257,
           "label": "C=10.0",
-          "runtime_seconds": 0.0387,
+          "runtime_seconds": 0.0668,
           "seed": 0,
           "sweep_param": "C",
           "value": "10.0"
@@ -150,7 +150,7 @@
           "config_key": "C=10.0",
           "f1": 0.935641677909719,
           "label": "C=10.0",
-          "runtime_seconds": 0.0954,
+          "runtime_seconds": 0.205,
           "seed": 1,
           "sweep_param": "C",
           "value": "10.0"
@@ -160,7 +160,7 @@
           "config_key": "C=10.0",
           "f1": 0.9366622554590086,
           "label": "C=10.0",
-          "runtime_seconds": 0.0703,
+          "runtime_seconds": 0.0312,
           "seed": 2,
           "sweep_param": "C",
           "value": "10.0"
@@ -170,13 +170,13 @@
           "config_key": "C=10.0",
           "f1": 0.9578690540229003,
           "label": "C=10.0",
-          "runtime_seconds": 0.0364,
+          "runtime_seconds": 0.0514,
           "seed": 3,
           "sweep_param": "C",
           "value": "10.0"
         }
       ],
-      "runtime_seconds": 33.0821,
+      "runtime_seconds": 29.0251,
       "seeds": [
         0,
         1,
@@ -213,10 +213,10 @@
     }
   },
   "comparison": {
-    "metric_match": false,
+    "metric_match": true,
     "runtime_match": false,
     "unexpected_events": [
-      "runtime 33.08s exceeded predicted 25s"
+      "runtime 29.03s exceeded predicted 25s"
     ],
     "lesson": "Run succeeded, but the prediction missed at least one quantitative detail."
   },

@@ -23,8 +23,8 @@
     "status": "success",
     "accuracy": 0.958041958041958,
     "f1": 0.9578690540229003,
-    "runtime_seconds": 1.1416,
-    "stdout_tail": "{\n  \"accuracy\": 0.958041958041958,\n  \"dataset\": \"breast_cancer\",\n  \"f1\": 0.9578690540229003,\n  \"model\": \"random_forest\",\n  \"n_label_noise_flips\": 0,\n  \"n_test\": 143,\n  \"n_train\": 426,\n  \"params\": {\n    \"C\": 1.0,\n    \"dataset\": \"breast_cancer\",\n    \"kernel\": \"rbf\",\n    \"label_noise\": 0.0,\n    \"learning_rate\": 0.1,\n    \"max_depth\": null,\n    \"max_iter\": 1000,\n    \"model\": \"random_forest\",\n    \"n_estimators\": 300,\n    \"scale\": false,\n    \"seed\": 42,\n    \"test_size\": 0.25\n  },\n  \"runtime_seconds\": 1.1416,\n  \"status\": \"success\"\n}\n",
+    "runtime_seconds": 0.9695,
+    "stdout_tail": "{\n  \"accuracy\": 0.958041958041958,\n  \"dataset\": \"breast_cancer\",\n  \"f1\": 0.9578690540229003,\n  \"model\": \"random_forest\",\n  \"n_label_noise_flips\": 0,\n  \"n_test\": 143,\n  \"n_train\": 426,\n  \"params\": {\n    \"C\": 1.0,\n    \"dataset\": \"breast_cancer\",\n    \"kernel\": \"rbf\",\n    \"label_noise\": 0.0,\n    \"learning_rate\": 0.1,\n    \"max_depth\": null,\n    \"max_iter\": 1000,\n    \"model\": \"random_forest\",\n    \"n_estimators\": 300,\n    \"scale\": false,\n    \"seed\": 42,\n    \"test_size\": 0.25\n  },\n  \"runtime_seconds\": 0.9695,\n  \"status\": \"success\"\n}\n",
     "stderr_tail": "",
     "raw": {
       "accuracy": 0.958041958041958,
@@ -48,7 +48,7 @@
         "seed": 42,
         "test_size": 0.25
       },
-      "runtime_seconds": 1.1416,
+      "runtime_seconds": 0.9695,
       "status": "success"
     }
   },

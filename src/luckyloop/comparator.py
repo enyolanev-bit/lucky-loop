@@ -16,14 +16,17 @@ def compare(pred: Prediction, actual: ActualResult) -> Comparison:
     unexpected = []
     metric_match = False
     rng = _range_from_text(pred.expected_metric)
+    actual_metric = actual.accuracy
+    if actual_metric is None and actual.raw.get("best", {}).get("mean_accuracy") is not None:
+        actual_metric = float(actual.raw["best"]["mean_accuracy"])
     if actual.status != "success":
         unexpected.append(f"execution status was {actual.status}")
-    if actual.accuracy is not None and rng:
+    if actual_metric is not None and rng:
         lo, hi = rng
-        metric_match = lo <= actual.accuracy <= hi
+        metric_match = lo <= actual_metric <= hi
         if not metric_match:
-            unexpected.append(f"accuracy {actual.accuracy:.4f} outside predicted range {lo:.2f}-{hi:.2f}")
-    elif actual.accuracy is not None:
+            unexpected.append(f"accuracy {actual_metric:.4f} outside predicted range {lo:.2f}-{hi:.2f}")
+    elif actual_metric is not None:
         metric_match = True
     runtime_match = True
     if actual.runtime_seconds is not None:

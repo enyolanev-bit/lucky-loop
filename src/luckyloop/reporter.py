@@ -1,10 +1,12 @@
 from __future__ import annotations
 from pathlib import Path
+from .calibration import compute_world_model_calibration
 from .schemas import ExperimentTrace
 
 
 def generate_report(goal: str, traces: list[ExperimentTrace], path: Path) -> None:
     best = max((t for t in traces if t.actual_result.accuracy is not None), key=lambda t: t.actual_result.accuracy or -1, default=None)
+    calibration = compute_world_model_calibration(traces)
     lines = [
         "# Lucky Loop Research Report",
         "",
@@ -37,6 +39,17 @@ def generate_report(goal: str, traces: list[ExperimentTrace], path: Path) -> Non
         lines.append(f"Best single run: {best.run_id}, model={best.proposed_action.model}, accuracy={best.actual_result.accuracy:.4f}, f1={best.actual_result.f1:.4f}.")
     else:
         lines.append("No successful accuracy-bearing single run yet.")
+
+    lines += [
+        "",
+        "## World model calibration",
+        "",
+        f"- Metric interval coverage: {'n/a' if calibration.metric_interval_coverage is None else f'{calibration.metric_interval_coverage:.2%}'}",
+        f"- Runtime interval coverage: {'n/a' if calibration.runtime_interval_coverage is None else f'{calibration.runtime_interval_coverage:.2%}'}",
+        f"- Prediction miss count: {calibration.prediction_miss_count}",
+        f"- Useful decision signals: {calibration.useful_decision_count}/{len(traces)}",
+        "- Full calibration table: `reports/world_model_calibration.md`",
+    ]
 
     lines += ["", "## Supported claims", ""]
     supported = [claim for t in traces if t.verification for claim in t.verification.supported_claims]

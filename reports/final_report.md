@@ -21,6 +21,14 @@ Predict before you compute, then verify before you claim: each experiment is sim
 
 Best single run: run_002, model=logistic_regression, accuracy=0.9860, f1=0.9860.
 
+## World model calibration
+
+- Metric interval coverage: 66.67%
+- Runtime interval coverage: 83.33%
+- Prediction miss count: 3
+- Useful decision signals: 6/6
+- Full calibration table: `reports/world_model_calibration.md`
+
 ## Supported claims
 
 - No sweep-level claim cleared the effect-vs-noise verifier yet.
@@ -32,7 +40,7 @@ Best single run: run_002, model=logistic_regression, accuracy=0.9860, f1=0.9860.
 ## Prediction misses
 
 - run_002: accuracy 0.9860 outside predicted range 0.95-0.98
-- run_004: runtime 33.08s exceeded predicted 25s
+- run_004: runtime 29.03s exceeded predicted 25s
 - run_006: accuracy 0.9860 outside predicted range 0.94-0.98
 
 ## Evidence notes
@@ -44,7 +52,7 @@ Best single run: run_002, model=logistic_regression, accuracy=0.9860, f1=0.9860.
 - Candidates considered: action_001:logistic_regression, action_scaled_logreg:logistic_regression, action_random_forest:random_forest, action_svc_scaled:svc, action_noisy_sweep:verification_sweep
 - Planner decision: Selected logistic_regression because score=110; world model recommended run; first run should establish the unscaled baseline before interventions. World model predicted accuracy around 0.92-0.96, runtime under 5, recommendation=run, risks=unscaled features can slow convergence.
 - Rejected / deferred: svc: score=30; world model recommended run; random_forest: score=26; world model recommended run; world model predicted overfitting risk; verification_sweep: score=25; world model recommended run; world model predicted robustness or seed-variance risk; defer verifier sweep until several single-model baselines exist; logistic_regression: score=-10; world model recommended run; scaled baseline is deferred until after an unscaled control
-- Actual status: success, runtime: 1.7253s
+- Actual status: success, runtime: 0.4864s
 - Lesson: Prediction was broadly consistent with the real run.
 
 ### run_002
@@ -54,7 +62,7 @@ Best single run: run_002, model=logistic_regression, accuracy=0.9860, f1=0.9860.
 - Candidates considered: action_scaled_logreg:logistic_regression, action_random_forest:random_forest, action_svc_scaled:svc, action_noisy_sweep:verification_sweep, action_gradient_boosting:gradient_boosting
 - Planner decision: Selected logistic_regression because score=75; world model recommended run; after an unscaled logistic baseline, scaling is the direct world-model intervention to test. World model predicted accuracy around 0.95-0.98, runtime under 5, recommendation=run, risks=minor convergence warning possible.
 - Rejected / deferred: gradient_boosting: score=31; world model recommended run; ensemble baseline is useful as a late comparison; world model predicted overfitting risk; svc: score=30; world model recommended run; random_forest: score=26; world model recommended run; world model predicted overfitting risk; verification_sweep: score=25; world model recommended run; world model predicted robustness or seed-variance risk; defer verifier sweep until several single-model baselines exist
-- Actual status: success, runtime: 0.0515s
+- Actual status: success, runtime: 0.0221s
 - Unexpected: accuracy 0.9860 outside predicted range 0.95-0.98
 - Lesson: Run succeeded, but the prediction missed at least one quantitative detail.
 
@@ -65,7 +73,7 @@ Best single run: run_002, model=logistic_regression, accuracy=0.9860, f1=0.9860.
 - Candidates considered: action_random_forest:random_forest, action_svc_scaled:svc, action_noisy_sweep:verification_sweep, action_gradient_boosting:gradient_boosting
 - Planner decision: Selected random_forest because score=61; world model recommended run; strong linear baseline makes a different inductive bias useful; world model predicted overfitting risk. World model predicted accuracy around 0.94-0.98, runtime under 10, recommendation=run, risks=overfitting if max_depth is unconstrained.
 - Rejected / deferred: verification_sweep: score=60; world model recommended run; high single-run score needs robustness verification before a strong claim; world model predicted robustness or seed-variance risk; defer verifier sweep until several single-model baselines exist; gradient_boosting: score=31; world model recommended run; ensemble baseline is useful as a late comparison; world model predicted overfitting risk; svc: score=30; world model recommended run
-- Actual status: success, runtime: 1.1416s
+- Actual status: success, runtime: 0.9695s
 - Lesson: Prediction was broadly consistent with the real run.
 
 ### run_004
@@ -75,8 +83,8 @@ Best single run: run_002, model=logistic_regression, accuracy=0.9860, f1=0.9860.
 - Candidates considered: action_svc_scaled:svc, action_noisy_sweep:verification_sweep, action_gradient_boosting:gradient_boosting
 - Planner decision: Selected verification_sweep because score=60; world model recommended run; high single-run score needs robustness verification before a strong claim; world model predicted robustness or seed-variance risk; defer verifier sweep until several single-model baselines exist. World model predicted accuracy around 0.94-0.98, runtime under 25, recommendation=run, risks=label noise can make small hyperparameter differences non-robust, seed variance may exceed apparent gains.
 - Rejected / deferred: gradient_boosting: score=31; world model recommended run; ensemble baseline is useful as a late comparison; world model predicted overfitting risk; svc: score=30; world model recommended run
-- Actual status: success, runtime: 33.0821s
-- Unexpected: runtime 33.08s exceeded predicted 25s
+- Actual status: success, runtime: 29.0251s
+- Unexpected: runtime 29.03s exceeded predicted 25s
 - Lesson: Run succeeded, but the prediction missed at least one quantitative detail.
 - Verifier verdict: inconclusive; trustworthy=False; effect_size=0.020979; seed_noise=0.027972
 - Verifier rationale: Measured effect is not larger than inter-seed noise. The report must not oversell this as a robust discovery.
@@ -88,7 +96,7 @@ Best single run: run_002, model=logistic_regression, accuracy=0.9860, f1=0.9860.
 - Candidates considered: action_svc_scaled:svc, action_gradient_boosting:gradient_boosting
 - Planner decision: Selected gradient_boosting because score=31; world model recommended run; ensemble baseline is useful as a late comparison; world model predicted overfitting risk. World model predicted accuracy around 0.94-0.98, runtime under 15, recommendation=run, risks=can overfit with too many estimators.
 - Rejected / deferred: svc: score=30; world model recommended run
-- Actual status: success, runtime: 0.6002s
+- Actual status: success, runtime: 0.6773s
 - Lesson: Prediction was broadly consistent with the real run.
 
 ### run_006
@@ -97,6 +105,6 @@ Best single run: run_002, model=logistic_regression, accuracy=0.9860, f1=0.9860.
 - State before: state_006; budget_remaining=1; known_results=5
 - Candidates considered: action_svc_scaled:svc
 - Planner decision: Selected svc because score=30; world model recommended run. World model predicted accuracy around 0.94-0.98, runtime under 10, recommendation=run, risks=sensitive to scaling and C.
-- Actual status: success, runtime: 0.0226s
+- Actual status: success, runtime: 0.0172s
 - Unexpected: accuracy 0.9860 outside predicted range 0.94-0.98
 - Lesson: Run succeeded, but the prediction missed at least one quantitative detail.
