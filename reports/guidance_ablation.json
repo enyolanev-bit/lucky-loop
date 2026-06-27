@@ -1,0 +1,59 @@
+{
+  "datasets": {
+    "breast_cancer": {
+      "best_acc": 0.958,
+      "total_compute_s": 0.908,
+      "guided_cost_s": 0.003,
+      "random_cost_s": 0.249,
+      "compute_saved_vs_random_pct": 98.9,
+      "guided_vs_exhaustive_pct": 0.3
+    },
+    "wine": {
+      "best_acc": 1.0,
+      "total_compute_s": 0.682,
+      "guided_cost_s": 0.003,
+      "random_cost_s": 0.147,
+      "compute_saved_vs_random_pct": 98.2,
+      "guided_vs_exhaustive_pct": 0.4
+    },
+    "digits": {
+      "best_acc": 0.9867,
+      "total_compute_s": 13.394,
+      "guided_cost_s": 13.394,
+      "random_cost_s": 6.905,
+      "compute_saved_vs_random_pct": -94.0,
+      "guided_vs_exhaustive_pct": 100.0
+    }
+  },
+  "avg_compute_saved_vs_random_pct": 34.4,
+  "candidates": [
+    [
+      "logistic_regression",
+      false
+    ],
+    [
+      "logistic_regression",
+      true
+    ],
+    [
+      "random_forest",
+      false
+    ],
+    [
+      "gradient_boosting",
+      false
+    ],
+    [
+      "hist_gb",
+      false
+    ],
+    [
+      "svc",
+      false
+    ],
+    [
+      "svc",
+      true
+    ]
+  ]
+}
