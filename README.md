@@ -57,13 +57,15 @@ Qwen-AgentWorld is never treated as the research agent or verifier. It is the wo
   - world-model prediction
   - real experiment execution
   - prediction-vs-actual comparison
+  - automatic top-model detection
+  - matched multi-seed top-model verification
   - JSON evidence traces
   - Markdown report
 - Benchmark tasks exist for real sklearn datasets:
   - `breast_cancer_accuracy`
   - `wine_accuracy`
   - `digits_accuracy`
-- Each benchmark uses real sklearn training commands and real multi-seed sweeps. The legacy controlled probes are not the primary demo path.
+- Each benchmark uses real sklearn training commands, detects the top observed models, asks the world model whether a best-model claim needs verification, and runs matched multi-seed top-model checks before claims are allowed. The legacy controlled probes are not the primary demo path.
 
 ## Demo Message
 

@@ -28,8 +28,8 @@
     "status": "success",
     "accuracy": 0.98,
     "f1": 0.9799633772681454,
-    "runtime_seconds": 0.1677,
-    "stdout_tail": "{\n  \"accuracy\": 0.98,\n  \"dataset\": \"digits\",\n  \"f1\": 0.9799633772681454,\n  \"model\": \"svc\",\n  \"n_label_noise_flips\": 0,\n  \"n_test\": 450,\n  \"n_train\": 1347,\n  \"params\": {\n    \"C\": 2.0,\n    \"dataset\": \"digits\",\n    \"kernel\": \"rbf\",\n    \"label_noise\": 0.0,\n    \"learning_rate\": 0.1,\n    \"max_depth\": null,\n    \"max_iter\": 1000,\n    \"model\": \"svc\",\n    \"n_estimators\": 200,\n    \"scale\": true,\n    \"seed\": 42,\n    \"test_size\": 0.25\n  },\n  \"runtime_seconds\": 0.1677,\n  \"status\": \"success\"\n}\n",
+    "runtime_seconds": 0.1243,
+    "stdout_tail": "{\n  \"accuracy\": 0.98,\n  \"dataset\": \"digits\",\n  \"f1\": 0.9799633772681454,\n  \"model\": \"svc\",\n  \"n_label_noise_flips\": 0,\n  \"n_test\": 450,\n  \"n_train\": 1347,\n  \"params\": {\n    \"C\": 2.0,\n    \"dataset\": \"digits\",\n    \"kernel\": \"rbf\",\n    \"label_noise\": 0.0,\n    \"learning_rate\": 0.1,\n    \"max_depth\": null,\n    \"max_iter\": 1000,\n    \"model\": \"svc\",\n    \"n_estimators\": 200,\n    \"scale\": true,\n    \"seed\": 42,\n    \"test_size\": 0.25\n  },\n  \"runtime_seconds\": 0.1243,\n  \"status\": \"success\"\n}\n",
     "stderr_tail": "",
     "raw": {
       "accuracy": 0.98,
@@ -53,7 +53,7 @@
         "seed": 42,
         "test_size": 0.25
       },
-      "runtime_seconds": 0.1677,
+      "runtime_seconds": 0.1243,
       "status": "success"
     }
   },
@@ -91,7 +91,7 @@
         }
       }
     ],
-    "budget_remaining": 4,
+    "budget_remaining": 5,
     "open_questions": [
       "Which candidate should receive the next compute budget?",
       "Do apparent improvements survive an effect-vs-noise verifier?"
@@ -99,6 +99,36 @@
     "risks_to_check": [
       "single-run best score may not justify a scientific claim"
     ],
+    "top_model_summary": {
+      "best_observed_model": null,
+      "best_observed_metric": null,
+      "top_models": [
+        {
+          "run_id": "run_002",
+          "model": "logistic_regression",
+          "model_key": "logistic_regression_scaled",
+          "metric": 0.9777777777777777,
+          "params": {
+            "dataset": "digits",
+            "scale": true
+          }
+        },
+        {
+          "run_id": "run_001",
+          "model": "logistic_regression",
+          "model_key": "logistic_regression",
+          "metric": 0.9622222222222222,
+          "params": {
+            "dataset": "digits",
+            "scale": false
+          }
+        }
+      ],
+      "top_gap": null,
+      "needs_robustness_verification": false,
+      "reason": "Need at least 3 single-run model results before top-model verification.",
+      "verification_action_key": null
+    },
     "summary": "Task=digits_accuracy; dataset=digits; primary_metric=accuracy. Goal: Maximize validation accuracy on sklearn digits under a small compute budget, while avoiding unsupported claims.\nNo experiments have been run yet. Dataset: sklearn digits. Primary metric: accuracy; secondary metrics: f1.\nrun_001: logistic_regression actual=0.9622222222222222 status=success; prediction=accuracy around 0.90-0.97; recommendation=run; lesson=Prediction was broadly consistent with the real run.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_002: logistic_regression actual=0.9777777777777777 status=success; prediction=accuracy around 0.95-0.98; recommendation=run; lesson=Prediction was broadly consistent with the real run.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option."
   },
   "candidate_actions": [
@@ -130,29 +160,6 @@
         "dataset": "digits",
         "n_estimators": 150,
         "learning_rate": 0.08
-      }
-    },
-    {
-      "action_id": "action_sweep_1_svc_C",
-      "command": "python experiments/sweep_sklearn.py --dataset digits --model svc --sweep-param C --values 0.5 1.0 2.0 --seeds 0 1 2 3 --scale --label-noise 0.03",
-      "model": "verification_sweep",
-      "params": {
-        "dataset": "digits",
-        "base_model": "svc",
-        "scale": true,
-        "sweep_param": "C",
-        "values": [
-          0.5,
-          1.0,
-          2.0
-        ],
-        "seeds": [
-          0,
-          1,
-          2,
-          3
-        ],
-        "label_noise": 0.03
       }
     }
   ],
@@ -228,44 +235,6 @@
         "claim_risk": "Do not report a robust winner from one boosted run."
       },
       "source": "heuristic_fallback"
-    },
-    {
-      "action": {
-        "action_id": "action_sweep_1_svc_C",
-        "command": "python experiments/sweep_sklearn.py --dataset digits --model svc --sweep-param C --values 0.5 1.0 2.0 --seeds 0 1 2 3 --scale --label-noise 0.03",
-        "model": "verification_sweep",
-        "params": {
-          "dataset": "digits",
-          "base_model": "svc",
-          "scale": true,
-          "sweep_param": "C",
-          "values": [
-            0.5,
-            1.0,
-            2.0
-          ],
-          "seeds": [
-            0,
-            1,
-            2,
-            3
-          ],
-          "label_noise": 0.03
-        }
-      },
-      "prediction": {
-        "expected_metric": "accuracy around 0.85-0.98",
-        "expected_runtime_seconds": "under 35",
-        "risks": [
-          "label noise can make small hyperparameter differences non-robust",
-          "seed variance may exceed apparent gains"
-        ],
-        "recommendation": "run",
-        "rationale": "A multi-seed sweep is useful for the deterministic verifier: it tests whether an apparent gain survives effect-vs-noise scrutiny.",
-        "action_specific_signal": "Run a robustness sweep before allowing a best-hyperparameter claim.",
-        "claim_risk": "The apparent winner may be blocked if effect size is smaller than seed noise."
-      },
-      "source": "heuristic_fallback"
     }
   ],
   "selected_action": {
@@ -320,37 +289,41 @@
           }
         },
         "reason": "score=26; world model recommended run; world model predicted overfitting risk"
-      },
-      {
-        "action": {
-          "action_id": "action_sweep_1_svc_C",
-          "command": "python experiments/sweep_sklearn.py --dataset digits --model svc --sweep-param C --values 0.5 1.0 2.0 --seeds 0 1 2 3 --scale --label-noise 0.03",
-          "model": "verification_sweep",
-          "params": {
-            "dataset": "digits",
-            "base_model": "svc",
-            "scale": true,
-            "sweep_param": "C",
-            "values": [
-              0.5,
-              1.0,
-              2.0
-            ],
-            "seeds": [
-              0,
-              1,
-              2,
-              3
-            ],
-            "label_noise": 0.03
-          }
-        },
-        "reason": "score=25; world model recommended run; world model predicted robustness or seed-variance risk; defer verifier sweep until several single-model baselines exist"
       }
     ]
   },
   "claim_ledger_updates": [],
   "calibration_metrics": null,
+  "top_model_summary": {
+    "best_observed_model": null,
+    "best_observed_metric": null,
+    "top_models": [
+      {
+        "run_id": "run_002",
+        "model": "logistic_regression",
+        "model_key": "logistic_regression_scaled",
+        "metric": 0.9777777777777777,
+        "params": {
+          "dataset": "digits",
+          "scale": true
+        }
+      },
+      {
+        "run_id": "run_001",
+        "model": "logistic_regression",
+        "model_key": "logistic_regression",
+        "metric": 0.9622222222222222,
+        "params": {
+          "dataset": "digits",
+          "scale": false
+        }
+      }
+    ],
+    "top_gap": null,
+    "needs_robustness_verification": false,
+    "reason": "Need at least 3 single-run model results before top-model verification.",
+    "verification_action_key": null
+  },
   "artifacts": {
     "task_id": "digits_accuracy",
     "trace_path": "runs/digits_accuracy/run_003.json",

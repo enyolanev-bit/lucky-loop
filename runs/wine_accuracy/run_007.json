@@ -1,0 +1,596 @@
+{
+  "run_id": "run_007",
+  "goal": "Maximize validation accuracy on sklearn wine under a small compute budget, while avoiding unsupported claims.",
+  "hypothesis": "Selected verification_sweep because score=90; world model recommended run; high single-run score needs robustness verification before a strong claim; world model predicted robustness or seed-variance risk. World model predicted accuracy around 0.85-0.98, runtime under 35, recommendation=run, risks=label noise can make small hyperparameter differences non-robust, seed variance may exceed apparent gains. Causal signal type: mixed.",
+  "proposed_action": {
+    "action_id": "action_sweep_1_logistic_regression_C",
+    "command": "python experiments/sweep_sklearn.py --dataset wine --model logistic_regression --sweep-param C --values 0.1 1.0 10.0 --seeds 0 1 2 3 --scale --label-noise 0.05",
+    "model": "verification_sweep",
+    "params": {
+      "dataset": "wine",
+      "base_model": "logistic_regression",
+      "scale": true,
+      "sweep_param": "C",
+      "values": [
+        0.1,
+        1.0,
+        10.0
+      ],
+      "seeds": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "label_noise": 0.05
+    }
+  },
+  "world_model_prediction": {
+    "expected_metric": "accuracy around 0.85-0.98",
+    "expected_runtime_seconds": "under 35",
+    "risks": [
+      "label noise can make small hyperparameter differences non-robust",
+      "seed variance may exceed apparent gains"
+    ],
+    "recommendation": "run",
+    "rationale": "A multi-seed sweep is useful for the deterministic verifier: it tests whether an apparent gain survives effect-vs-noise scrutiny.",
+    "action_specific_signal": "Run a robustness sweep before allowing a best-hyperparameter claim.",
+    "claim_risk": "The apparent winner may be blocked if effect size is smaller than seed noise."
+  },
+  "actual_result": {
+    "status": "success",
+    "accuracy": null,
+    "f1": null,
+    "runtime_seconds": 21.2372,
+    "stdout_tail": "f1\": 0.9779047619047617,\n      \"label\": \"C=1.0\",\n      \"runtime_seconds\": 0.0123,\n      \"seed\": 2,\n      \"sweep_param\": \"C\",\n      \"value\": \"1.0\"\n    },\n    {\n      \"accuracy\": 0.9555555555555556,\n      \"config_key\": \"C=1.0\",\n      \"f1\": 0.9558589126489386,\n      \"label\": \"C=1.0\",\n      \"runtime_seconds\": 0.0147,\n      \"seed\": 3,\n      \"sweep_param\": \"C\",\n      \"value\": \"1.0\"\n    },\n    {\n      \"accuracy\": 0.9555555555555556,\n      \"config_key\": \"C=10.0\",\n      \"f1\": 0.9555555555555556,\n      \"label\": \"C=10.0\",\n      \"runtime_seconds\": 0.016,\n      \"seed\": 0,\n      \"sweep_param\": \"C\",\n      \"value\": \"10.0\"\n    },\n    {\n      \"accuracy\": 0.8222222222222222,\n      \"config_key\": \"C=10.0\",\n      \"f1\": 0.8194047619047619,\n      \"label\": \"C=10.0\",\n      \"runtime_seconds\": 0.0169,\n      \"seed\": 1,\n      \"sweep_param\": \"C\",\n      \"value\": \"10.0\"\n    },\n    {\n      \"accuracy\": 0.9777777777777777,\n      \"config_key\": \"C=10.0\",\n      \"f1\": 0.9779047619047617,\n      \"label\": \"C=10.0\",\n      \"runtime_seconds\": 0.0152,\n      \"seed\": 2,\n      \"sweep_param\": \"C\",\n      \"value\": \"10.0\"\n    },\n    {\n      \"accuracy\": 0.9333333333333333,\n      \"config_key\": \"C=10.0\",\n      \"f1\": 0.9338270425226948,\n      \"label\": \"C=10.0\",\n      \"runtime_seconds\": 0.0202,\n      \"seed\": 3,\n      \"sweep_param\": \"C\",\n      \"value\": \"10.0\"\n    }\n  ],\n  \"runtime_seconds\": 21.2372,\n  \"seeds\": [\n    0,\n    1,\n    2,\n    3\n  ],\n  \"status\": \"success\",\n  \"summary_by_value\": {\n    \"0.1\": {\n      \"max_accuracy\": 1.0,\n      \"mean_accuracy\": 0.9666666666666667,\n      \"min_accuracy\": 0.9111111111111111,\n      \"n\": 4\n    },\n    \"1.0\": {\n      \"max_accuracy\": 0.9777777777777777,\n      \"mean_accuracy\": 0.9444444444444444,\n      \"min_accuracy\": 0.8888888888888888,\n      \"n\": 4\n    },\n    \"10.0\": {\n      \"max_accuracy\": 0.9777777777777777,\n      \"mean_accuracy\": 0.9222222222222223,\n      \"min_accuracy\": 0.8222222222222222,\n      \"n\": 4\n    }\n  },\n  \"sweep_param\": \"C\",\n  \"values\": [\n    \"0.1\",\n    \"1.0\",\n    \"10.0\"\n  ]\n}\n",
+    "stderr_tail": "",
+    "raw": {
+      "best": {
+        "max_accuracy": 1.0,
+        "mean_accuracy": 0.9666666666666667,
+        "min_accuracy": 0.9111111111111111,
+        "n": 4,
+        "value": "0.1"
+      },
+      "dataset": "wine",
+      "failures": [],
+      "label_noise": 0.05,
+      "metric": "accuracy",
+      "model": "logistic_regression",
+      "runs": [
+        {
+          "accuracy": 1.0,
+          "config_key": "C=0.1",
+          "f1": 1.0,
+          "label": "C=0.1",
+          "runtime_seconds": 0.0125,
+          "seed": 0,
+          "sweep_param": "C",
+          "value": "0.1"
+        },
+        {
+          "accuracy": 0.9111111111111111,
+          "config_key": "C=0.1",
+          "f1": 0.9090303030303031,
+          "label": "C=0.1",
+          "runtime_seconds": 0.0109,
+          "seed": 1,
+          "sweep_param": "C",
+          "value": "0.1"
+        },
+        {
+          "accuracy": 0.9777777777777777,
+          "config_key": "C=0.1",
+          "f1": 0.9779047619047617,
+          "label": "C=0.1",
+          "runtime_seconds": 0.0129,
+          "seed": 2,
+          "sweep_param": "C",
+          "value": "0.1"
+        },
+        {
+          "accuracy": 0.9777777777777777,
+          "config_key": "C=0.1",
+          "f1": 0.9776949363156261,
+          "label": "C=0.1",
+          "runtime_seconds": 0.0125,
+          "seed": 3,
+          "sweep_param": "C",
+          "value": "0.1"
+        },
+        {
+          "accuracy": 0.9555555555555556,
+          "config_key": "C=1.0",
+          "f1": 0.9555555555555556,
+          "label": "C=1.0",
+          "runtime_seconds": 0.013,
+          "seed": 0,
+          "sweep_param": "C",
+          "value": "1.0"
+        },
+        {
+          "accuracy": 0.8888888888888888,
+          "config_key": "C=1.0",
+          "f1": 0.8856015180265655,
+          "label": "C=1.0",
+          "runtime_seconds": 0.0124,
+          "seed": 1,
+          "sweep_param": "C",
+          "value": "1.0"
+        },
+        {
+          "accuracy": 0.9777777777777777,
+          "config_key": "C=1.0",
+          "f1": 0.9779047619047617,
+          "label": "C=1.0",
+          "runtime_seconds": 0.0123,
+          "seed": 2,
+          "sweep_param": "C",
+          "value": "1.0"
+        },
+        {
+          "accuracy": 0.9555555555555556,
+          "config_key": "C=1.0",
+          "f1": 0.9558589126489386,
+          "label": "C=1.0",
+          "runtime_seconds": 0.0147,
+          "seed": 3,
+          "sweep_param": "C",
+          "value": "1.0"
+        },
+        {
+          "accuracy": 0.9555555555555556,
+          "config_key": "C=10.0",
+          "f1": 0.9555555555555556,
+          "label": "C=10.0",
+          "runtime_seconds": 0.016,
+          "seed": 0,
+          "sweep_param": "C",
+          "value": "10.0"
+        },
+        {
+          "accuracy": 0.8222222222222222,
+          "config_key": "C=10.0",
+          "f1": 0.8194047619047619,
+          "label": "C=10.0",
+          "runtime_seconds": 0.0169,
+          "seed": 1,
+          "sweep_param": "C",
+          "value": "10.0"
+        },
+        {
+          "accuracy": 0.9777777777777777,
+          "config_key": "C=10.0",
+          "f1": 0.9779047619047617,
+          "label": "C=10.0",
+          "runtime_seconds": 0.0152,
+          "seed": 2,
+          "sweep_param": "C",
+          "value": "10.0"
+        },
+        {
+          "accuracy": 0.9333333333333333,
+          "config_key": "C=10.0",
+          "f1": 0.9338270425226948,
+          "label": "C=10.0",
+          "runtime_seconds": 0.0202,
+          "seed": 3,
+          "sweep_param": "C",
+          "value": "10.0"
+        }
+      ],
+      "runtime_seconds": 21.2372,
+      "seeds": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "status": "success",
+      "summary_by_value": {
+        "0.1": {
+          "max_accuracy": 1.0,
+          "mean_accuracy": 0.9666666666666667,
+          "min_accuracy": 0.9111111111111111,
+          "n": 4
+        },
+        "1.0": {
+          "max_accuracy": 0.9777777777777777,
+          "mean_accuracy": 0.9444444444444444,
+          "min_accuracy": 0.8888888888888888,
+          "n": 4
+        },
+        "10.0": {
+          "max_accuracy": 0.9777777777777777,
+          "mean_accuracy": 0.9222222222222223,
+          "min_accuracy": 0.8222222222222222,
+          "n": 4
+        }
+      },
+      "sweep_param": "C",
+      "values": [
+        "0.1",
+        "1.0",
+        "10.0"
+      ]
+    }
+  },
+  "comparison": {
+    "metric_match": true,
+    "runtime_match": true,
+    "unexpected_events": [],
+    "lesson": "Prediction was broadly consistent with the real run."
+  },
+  "next_decision": "Stop and report the best observed model.",
+  "verification": {
+    "status": "inconclusive",
+    "metric": "accuracy",
+    "effect_size": 0.044444,
+    "seed_noise": 0.088889,
+    "effect_to_noise_ratio": 0.499994,
+    "min_seed_count": 4,
+    "low_n_warning": false,
+    "trustworthy": false,
+    "best_config": "C=0.1",
+    "worst_config": "C=10.0",
+    "blocked_claim": "C=0.1 is robustly better than C=10.0.",
+    "allowed_claim": "C=0.1 had the best mean accuracy, but the effect was smaller than seed noise.",
+    "supported_claims": [],
+    "inconclusive_findings": [
+      "Best config 'C=0.1' improves over 'C=10.0' by 0.0444 accuracy, but best-config seed noise is 0.0889."
+    ],
+    "rationale": "Measured effect is not larger than inter-seed noise. The report must not oversell this as a robust discovery."
+  },
+  "schema_version": "2.0",
+  "state_before": {
+    "state_id": "state_007",
+    "goal": "Maximize validation accuracy on sklearn wine under a small compute budget, while avoiding unsupported claims.",
+    "known_results": [
+      {
+        "run_id": "run_001",
+        "model": "logistic_regression",
+        "accuracy": 0.9777777777777777,
+        "f1": 0.9775949862906386,
+        "params": {
+          "dataset": "wine",
+          "scale": false
+        }
+      },
+      {
+        "run_id": "run_002",
+        "model": "logistic_regression",
+        "accuracy": 1.0,
+        "f1": 1.0,
+        "params": {
+          "dataset": "wine",
+          "scale": true
+        }
+      },
+      {
+        "run_id": "run_003",
+        "model": "random_forest",
+        "accuracy": 1.0,
+        "f1": 1.0,
+        "params": {
+          "dataset": "wine",
+          "n_estimators": 300
+        }
+      },
+      {
+        "run_id": "run_004",
+        "model": "svc",
+        "accuracy": 0.9777777777777777,
+        "f1": 0.9775949862906386,
+        "params": {
+          "dataset": "wine",
+          "scale": true,
+          "C": 2.0,
+          "kernel": "rbf"
+        }
+      },
+      {
+        "run_id": "run_005",
+        "model": "gradient_boosting",
+        "accuracy": 0.9555555555555556,
+        "f1": 0.955430886707184,
+        "params": {
+          "dataset": "wine",
+          "n_estimators": 150,
+          "learning_rate": 0.05
+        }
+      },
+      {
+        "run_id": "run_006",
+        "model": "top_model_verification",
+        "best": {
+          "max_accuracy": 1.0,
+          "mean_accuracy": 0.9955555555555555,
+          "mean_f1": 0.9955389872631253,
+          "min_accuracy": 0.9777777777777777,
+          "n": 5,
+          "value": "random_forest_n=300"
+        },
+        "params": {
+          "dataset": "wine",
+          "models": [
+            {
+              "run_id": "run_002",
+              "model": "logistic_regression",
+              "model_key": "logistic_regression_scaled",
+              "metric": 1.0,
+              "params": {
+                "dataset": "wine",
+                "scale": true
+              }
+            },
+            {
+              "run_id": "run_003",
+              "model": "random_forest",
+              "model_key": "random_forest_n=300",
+              "metric": 1.0,
+              "params": {
+                "dataset": "wine",
+                "n_estimators": 300
+              }
+            },
+            {
+              "run_id": "run_001",
+              "model": "logistic_regression",
+              "model_key": "logistic_regression",
+              "metric": 0.9777777777777777,
+              "params": {
+                "dataset": "wine",
+                "scale": false
+              }
+            }
+          ],
+          "seeds": [
+            0,
+            1,
+            2,
+            3,
+            4
+          ],
+          "reason": "Top models are tied on single-split evidence; robust best-model claim requires multi-seed verification.",
+          "verification_action_key": "logistic_regression:logistic_regression_scaled:random_forest_n=300"
+        }
+      }
+    ],
+    "budget_remaining": 1,
+    "open_questions": [
+      "Which candidate should receive the next compute budget?",
+      "Is the best observed score robust across seeds or perturbations?",
+      "What did the world model miss, and should the next action test that failure mode?"
+    ],
+    "risks_to_check": [
+      "single-run best score may not justify a scientific claim",
+      "seed variance may exceed apparent model or hyperparameter effects",
+      "world-model predictions may miss quantitative details"
+    ],
+    "top_model_summary": {
+      "best_observed_model": "logistic_regression_scaled",
+      "best_observed_metric": 1.0,
+      "top_models": [
+        {
+          "run_id": "run_002",
+          "model": "logistic_regression",
+          "model_key": "logistic_regression_scaled",
+          "metric": 1.0,
+          "params": {
+            "dataset": "wine",
+            "scale": true
+          }
+        },
+        {
+          "run_id": "run_003",
+          "model": "random_forest",
+          "model_key": "random_forest_n=300",
+          "metric": 1.0,
+          "params": {
+            "dataset": "wine",
+            "n_estimators": 300
+          }
+        },
+        {
+          "run_id": "run_001",
+          "model": "logistic_regression",
+          "model_key": "logistic_regression",
+          "metric": 0.9777777777777777,
+          "params": {
+            "dataset": "wine",
+            "scale": false
+          }
+        }
+      ],
+      "top_gap": 0.0,
+      "needs_robustness_verification": false,
+      "reason": "Top observed models already have a multi-seed verification run.",
+      "verification_action_key": "logistic_regression:logistic_regression_scaled:random_forest_n=300"
+    },
+    "summary": "Task=wine_accuracy; dataset=wine; primary_metric=accuracy. Goal: Maximize validation accuracy on sklearn wine under a small compute budget, while avoiding unsupported claims.\nNo experiments have been run yet. Dataset: sklearn wine. Primary metric: accuracy; secondary metrics: f1.\nrun_001: logistic_regression actual=0.9777777777777777 status=success; prediction=accuracy around 0.90-0.97; recommendation=run; lesson=Run succeeded, but the prediction missed at least one quantitative detail.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_002: logistic_regression actual=1.0 status=success; prediction=accuracy around 0.95-0.98; recommendation=run; lesson=Run succeeded, but the prediction missed at least one quantitative detail.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_003: random_forest actual=1.0 status=success; prediction=accuracy around 0.90-0.98; recommendation=run; lesson=Run succeeded, but the prediction missed at least one quantitative detail.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_004: svc actual=0.9777777777777777 status=success; prediction=accuracy around 0.90-0.99; recommendation=run; lesson=Prediction was broadly consistent with the real run.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_005: gradient_boosting actual=0.9555555555555556 status=success; prediction=accuracy around 0.90-0.98; recommendation=run; lesson=Prediction was broadly consistent with the real run.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_006: top_model_verification actual=None status=success; prediction=accuracy around 0.90-0.99; recommendation=run; lesson=Run succeeded, but the prediction missed at least one quantitative detail.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option."
+  },
+  "candidate_actions": [
+    {
+      "action_id": "action_sweep_1_logistic_regression_C",
+      "command": "python experiments/sweep_sklearn.py --dataset wine --model logistic_regression --sweep-param C --values 0.1 1.0 10.0 --seeds 0 1 2 3 --scale --label-noise 0.05",
+      "model": "verification_sweep",
+      "params": {
+        "dataset": "wine",
+        "base_model": "logistic_regression",
+        "scale": true,
+        "sweep_param": "C",
+        "values": [
+          0.1,
+          1.0,
+          10.0
+        ],
+        "seeds": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "label_noise": 0.05
+      }
+    }
+  ],
+  "candidate_predictions": [
+    {
+      "action": {
+        "action_id": "action_sweep_1_logistic_regression_C",
+        "command": "python experiments/sweep_sklearn.py --dataset wine --model logistic_regression --sweep-param C --values 0.1 1.0 10.0 --seeds 0 1 2 3 --scale --label-noise 0.05",
+        "model": "verification_sweep",
+        "params": {
+          "dataset": "wine",
+          "base_model": "logistic_regression",
+          "scale": true,
+          "sweep_param": "C",
+          "values": [
+            0.1,
+            1.0,
+            10.0
+          ],
+          "seeds": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "label_noise": 0.05
+        }
+      },
+      "prediction": {
+        "expected_metric": "accuracy around 0.85-0.98",
+        "expected_runtime_seconds": "under 35",
+        "risks": [
+          "label noise can make small hyperparameter differences non-robust",
+          "seed variance may exceed apparent gains"
+        ],
+        "recommendation": "run",
+        "rationale": "A multi-seed sweep is useful for the deterministic verifier: it tests whether an apparent gain survives effect-vs-noise scrutiny.",
+        "action_specific_signal": "Run a robustness sweep before allowing a best-hyperparameter claim.",
+        "claim_risk": "The apparent winner may be blocked if effect size is smaller than seed noise."
+      },
+      "source": "heuristic_fallback"
+    }
+  ],
+  "selected_action": {
+    "action_id": "action_sweep_1_logistic_regression_C",
+    "command": "python experiments/sweep_sklearn.py --dataset wine --model logistic_regression --sweep-param C --values 0.1 1.0 10.0 --seeds 0 1 2 3 --scale --label-noise 0.05",
+    "model": "verification_sweep",
+    "params": {
+      "dataset": "wine",
+      "base_model": "logistic_regression",
+      "scale": true,
+      "sweep_param": "C",
+      "values": [
+        0.1,
+        1.0,
+        10.0
+      ],
+      "seeds": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "label_noise": 0.05
+    }
+  },
+  "decision_trace": {
+    "selected_action": {
+      "action_id": "action_sweep_1_logistic_regression_C",
+      "command": "python experiments/sweep_sklearn.py --dataset wine --model logistic_regression --sweep-param C --values 0.1 1.0 10.0 --seeds 0 1 2 3 --scale --label-noise 0.05",
+      "model": "verification_sweep",
+      "params": {
+        "dataset": "wine",
+        "base_model": "logistic_regression",
+        "scale": true,
+        "sweep_param": "C",
+        "values": [
+          0.1,
+          1.0,
+          10.0
+        ],
+        "seeds": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "label_noise": 0.05
+      }
+    },
+    "world_model_signal_used": true,
+    "selector_policy_signal_used": true,
+    "causal_signal_type": "mixed",
+    "causal_reason": "Selected verification_sweep because score=90; world model recommended run; high single-run score needs robustness verification before a strong claim; world model predicted robustness or seed-variance risk. World model predicted accuracy around 0.85-0.98, runtime under 35, recommendation=run, risks=label noise can make small hyperparameter differences non-robust, seed variance may exceed apparent gains. Causal signal type: mixed.",
+    "rejected_candidates": []
+  },
+  "claim_ledger_updates": [
+    {
+      "claim_id": "run_007_claim_001",
+      "claim": "C=0.1 is robustly better than C=10.0.",
+      "status": "blocked",
+      "evidence_run_ids": [
+        "run_007"
+      ],
+      "blocked_reason": "Measured effect is not larger than inter-seed noise. The report must not oversell this as a robust discovery.",
+      "allowed_rewrite": "C=0.1 had the best mean accuracy, but the effect was smaller than seed noise.",
+      "metrics": {
+        "effect_size": 0.044444,
+        "seed_noise": 0.088889,
+        "effect_to_noise_ratio": 0.499994,
+        "min_seed_count": 4,
+        "low_n_warning": false
+      }
+    }
+  ],
+  "calibration_metrics": null,
+  "top_model_summary": {
+    "best_observed_model": "logistic_regression_scaled",
+    "best_observed_metric": 1.0,
+    "top_models": [
+      {
+        "run_id": "run_002",
+        "model": "logistic_regression",
+        "model_key": "logistic_regression_scaled",
+        "metric": 1.0,
+        "params": {
+          "dataset": "wine",
+          "scale": true
+        }
+      },
+      {
+        "run_id": "run_003",
+        "model": "random_forest",
+        "model_key": "random_forest_n=300",
+        "metric": 1.0,
+        "params": {
+          "dataset": "wine",
+          "n_estimators": 300
+        }
+      },
+      {
+        "run_id": "run_001",
+        "model": "logistic_regression",
+        "model_key": "logistic_regression",
+        "metric": 0.9777777777777777,
+        "params": {
+          "dataset": "wine",
+          "scale": false
+        }
+      }
+    ],
+    "top_gap": 0.0,
+    "needs_robustness_verification": false,
+    "reason": "Top observed models already have a multi-seed verification run.",
+    "verification_action_key": "logistic_regression:logistic_regression_scaled:random_forest_n=300"
+  },
+  "artifacts": {
+    "task_id": "wine_accuracy",
+    "trace_path": "runs/wine_accuracy/run_007.json",
+    "report_path": "reports/wine_accuracy/final_report.md",
+    "claim_ledger_path": "reports/wine_accuracy/claim_ledger.json"
+  }
+}

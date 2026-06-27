@@ -47,6 +47,12 @@ def _agent_action_text(t: ExperimentTrace) -> str:
         base = t.proposed_action.params.get("base_model", "model")
         param = t.proposed_action.params.get("sweep_param", "param")
         return f"ran multi-seed {base} {param} sweep; signal={signal}"
+    if t.proposed_action.model == "top_model_verification":
+        models = t.actual_result.raw.get("verified_models") or [
+            item.get("model_key", item.get("model", "model"))
+            for item in t.proposed_action.params.get("models", [])
+        ]
+        return f"verified top models: {', '.join(models)}; signal={signal}"
     return f"ran {t.proposed_action.model}; signal={signal}"
 
 
@@ -99,6 +105,19 @@ def generate_report(goal: str, traces: list[ExperimentTrace], path: Path) -> Non
         lines.append(f"Best single run: {best.run_id}, model={best.proposed_action.model}, accuracy={best.actual_result.accuracy:.4f}, f1={best.actual_result.f1:.4f}.")
     else:
         lines.append("No successful accuracy-bearing single run yet.")
+
+    lines += ["", "## Top model robustness", ""]
+    top_verifications = [t for t in traces if t.proposed_action.model == "top_model_verification"]
+    if top_verifications:
+        for t in top_verifications:
+            raw = t.actual_result.raw
+            models = ", ".join(raw.get("verified_models") or [])
+            verdict = t.verification.status if t.verification else "missing_data"
+            ratio = t.verification.effect_to_noise_ratio if t.verification else None
+            allowed = t.verification.allowed_claim if t.verification else "No verifier claim was produced."
+            lines.append(f"- {t.run_id}: verified {models}; verdict={verdict}; effect/noise={ratio}; {allowed}")
+    else:
+        lines.append("- No top-model multi-seed verification was run.")
 
     lines += [
         "",

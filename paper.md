@@ -107,9 +107,19 @@ Current experiments use sklearn tabular benchmarks declared as task specs: `brea
 - random forest
 - scaled SVC
 - gradient boosting
+- matched multi-seed top-model verification
 - noisy-label multi-seed sweep
 
-The key demonstrated verifier cases are noisy-label multi-seed sweeps run on real sklearn datasets. For example, the `breast_cancer_accuracy` C sweep produced:
+The key demonstrated verifier case is now top-model verification. After real single-run search, Lucky Loop detects the best observed models and runs a matched multi-seed comparison before allowing a robust best-model claim. In `breast_cancer_accuracy`, the best single-run models tied at 0.9860, but the multi-seed comparison produced:
+
+```text
+best mean: logistic_regression_scaled
+effect_size = 0.005594
+seed_noise = 0.027972
+verdict = inconclusive
+```
+
+The older hyperparameter verifier remains useful. For example, the `breast_cancer_accuracy` C sweep produced:
 
 ```text
 best mean: C=0.1

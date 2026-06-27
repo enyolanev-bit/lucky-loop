@@ -26,8 +26,8 @@
     "status": "success",
     "accuracy": 0.958041958041958,
     "f1": 0.9578690540229003,
-    "runtime_seconds": 0.992,
-    "stdout_tail": "{\n  \"accuracy\": 0.958041958041958,\n  \"dataset\": \"breast_cancer\",\n  \"f1\": 0.9578690540229003,\n  \"model\": \"random_forest\",\n  \"n_label_noise_flips\": 0,\n  \"n_test\": 143,\n  \"n_train\": 426,\n  \"params\": {\n    \"C\": 1.0,\n    \"dataset\": \"breast_cancer\",\n    \"kernel\": \"rbf\",\n    \"label_noise\": 0.0,\n    \"learning_rate\": 0.1,\n    \"max_depth\": null,\n    \"max_iter\": 1000,\n    \"model\": \"random_forest\",\n    \"n_estimators\": 300,\n    \"scale\": false,\n    \"seed\": 42,\n    \"test_size\": 0.25\n  },\n  \"runtime_seconds\": 0.992,\n  \"status\": \"success\"\n}\n",
+    "runtime_seconds": 1.1251,
+    "stdout_tail": "{\n  \"accuracy\": 0.958041958041958,\n  \"dataset\": \"breast_cancer\",\n  \"f1\": 0.9578690540229003,\n  \"model\": \"random_forest\",\n  \"n_label_noise_flips\": 0,\n  \"n_test\": 143,\n  \"n_train\": 426,\n  \"params\": {\n    \"C\": 1.0,\n    \"dataset\": \"breast_cancer\",\n    \"kernel\": \"rbf\",\n    \"label_noise\": 0.0,\n    \"learning_rate\": 0.1,\n    \"max_depth\": null,\n    \"max_iter\": 1000,\n    \"model\": \"random_forest\",\n    \"n_estimators\": 300,\n    \"scale\": false,\n    \"seed\": 42,\n    \"test_size\": 0.25\n  },\n  \"runtime_seconds\": 1.1251,\n  \"status\": \"success\"\n}\n",
     "stderr_tail": "",
     "raw": {
       "accuracy": 0.958041958041958,
@@ -51,7 +51,7 @@
         "seed": 42,
         "test_size": 0.25
       },
-      "runtime_seconds": 0.992,
+      "runtime_seconds": 1.1251,
       "status": "success"
     }
   },
@@ -89,7 +89,7 @@
         }
       }
     ],
-    "budget_remaining": 4,
+    "budget_remaining": 5,
     "open_questions": [
       "Which candidate should receive the next compute budget?",
       "Is the best observed score robust across seeds or perturbations?",
@@ -101,6 +101,36 @@
       "seed variance may exceed apparent model or hyperparameter effects",
       "world-model predictions may miss quantitative details"
     ],
+    "top_model_summary": {
+      "best_observed_model": null,
+      "best_observed_metric": null,
+      "top_models": [
+        {
+          "run_id": "run_002",
+          "model": "logistic_regression",
+          "model_key": "logistic_regression_scaled",
+          "metric": 0.986013986013986,
+          "params": {
+            "dataset": "breast_cancer",
+            "scale": true
+          }
+        },
+        {
+          "run_id": "run_001",
+          "model": "logistic_regression",
+          "model_key": "logistic_regression",
+          "metric": 0.951048951048951,
+          "params": {
+            "dataset": "breast_cancer",
+            "scale": false
+          }
+        }
+      ],
+      "top_gap": null,
+      "needs_robustness_verification": false,
+      "reason": "Need at least 3 single-run model results before top-model verification.",
+      "verification_action_key": null
+    },
     "summary": "Task=breast_cancer_accuracy; dataset=breast_cancer; primary_metric=accuracy. Goal: Maximize validation accuracy on sklearn breast_cancer under a small compute budget, while avoiding unsupported claims.\nNo experiments have been run yet. Dataset: sklearn breast_cancer. Primary metric: accuracy; secondary metrics: f1.\nrun_001: logistic_regression actual=0.951048951048951 status=success; prediction=accuracy around 0.90-0.97; recommendation=run; lesson=Prediction was broadly consistent with the real run.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_002: logistic_regression actual=0.986013986013986 status=success; prediction=accuracy around 0.95-0.98; recommendation=run; lesson=Run succeeded, but the prediction missed at least one quantitative detail.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option."
   },
   "candidate_actions": [
@@ -132,29 +162,6 @@
         "dataset": "breast_cancer",
         "n_estimators": 150,
         "learning_rate": 0.05
-      }
-    },
-    {
-      "action_id": "action_sweep_1_logistic_regression_C",
-      "command": "python experiments/sweep_sklearn.py --dataset breast_cancer --model logistic_regression --sweep-param C --values 0.1 1.0 10.0 --seeds 0 1 2 3 --scale --label-noise 0.08",
-      "model": "verification_sweep",
-      "params": {
-        "dataset": "breast_cancer",
-        "base_model": "logistic_regression",
-        "scale": true,
-        "sweep_param": "C",
-        "values": [
-          0.1,
-          1.0,
-          10.0
-        ],
-        "seeds": [
-          0,
-          1,
-          2,
-          3
-        ],
-        "label_noise": 0.08
       }
     }
   ],
@@ -230,44 +237,6 @@
         "claim_risk": "Do not report a robust winner from one boosted run."
       },
       "source": "heuristic_fallback"
-    },
-    {
-      "action": {
-        "action_id": "action_sweep_1_logistic_regression_C",
-        "command": "python experiments/sweep_sklearn.py --dataset breast_cancer --model logistic_regression --sweep-param C --values 0.1 1.0 10.0 --seeds 0 1 2 3 --scale --label-noise 0.08",
-        "model": "verification_sweep",
-        "params": {
-          "dataset": "breast_cancer",
-          "base_model": "logistic_regression",
-          "scale": true,
-          "sweep_param": "C",
-          "values": [
-            0.1,
-            1.0,
-            10.0
-          ],
-          "seeds": [
-            0,
-            1,
-            2,
-            3
-          ],
-          "label_noise": 0.08
-        }
-      },
-      "prediction": {
-        "expected_metric": "accuracy around 0.85-0.98",
-        "expected_runtime_seconds": "under 35",
-        "risks": [
-          "label noise can make small hyperparameter differences non-robust",
-          "seed variance may exceed apparent gains"
-        ],
-        "recommendation": "run",
-        "rationale": "A multi-seed sweep is useful for the deterministic verifier: it tests whether an apparent gain survives effect-vs-noise scrutiny.",
-        "action_specific_signal": "Run a robustness sweep before allowing a best-hyperparameter claim.",
-        "claim_risk": "The apparent winner may be blocked if effect size is smaller than seed noise."
-      },
-      "source": "heuristic_fallback"
     }
   ],
   "selected_action": {
@@ -294,32 +263,6 @@
     "causal_signal_type": "mixed",
     "causal_reason": "Selected random_forest because score=61; world model recommended run; strong linear baseline makes a different inductive bias useful; world model predicted overfitting risk. World model predicted accuracy around 0.90-0.98, runtime under 10, recommendation=run, risks=overfitting or split variance if depth is unconstrained. Causal signal type: mixed.",
     "rejected_candidates": [
-      {
-        "action": {
-          "action_id": "action_sweep_1_logistic_regression_C",
-          "command": "python experiments/sweep_sklearn.py --dataset breast_cancer --model logistic_regression --sweep-param C --values 0.1 1.0 10.0 --seeds 0 1 2 3 --scale --label-noise 0.08",
-          "model": "verification_sweep",
-          "params": {
-            "dataset": "breast_cancer",
-            "base_model": "logistic_regression",
-            "scale": true,
-            "sweep_param": "C",
-            "values": [
-              0.1,
-              1.0,
-              10.0
-            ],
-            "seeds": [
-              0,
-              1,
-              2,
-              3
-            ],
-            "label_noise": 0.08
-          }
-        },
-        "reason": "score=60; world model recommended run; high single-run score needs robustness verification before a strong claim; world model predicted robustness or seed-variance risk; defer verifier sweep until several single-model baselines exist"
-      },
       {
         "action": {
           "action_id": "action_gradient_boosting",
@@ -351,6 +294,36 @@
   },
   "claim_ledger_updates": [],
   "calibration_metrics": null,
+  "top_model_summary": {
+    "best_observed_model": null,
+    "best_observed_metric": null,
+    "top_models": [
+      {
+        "run_id": "run_002",
+        "model": "logistic_regression",
+        "model_key": "logistic_regression_scaled",
+        "metric": 0.986013986013986,
+        "params": {
+          "dataset": "breast_cancer",
+          "scale": true
+        }
+      },
+      {
+        "run_id": "run_001",
+        "model": "logistic_regression",
+        "model_key": "logistic_regression",
+        "metric": 0.951048951048951,
+        "params": {
+          "dataset": "breast_cancer",
+          "scale": false
+        }
+      }
+    ],
+    "top_gap": null,
+    "needs_robustness_verification": false,
+    "reason": "Need at least 3 single-run model results before top-model verification.",
+    "verification_action_key": null
+  },
   "artifacts": {
     "task_id": "breast_cancer_accuracy",
     "trace_path": "runs/run_003.json",

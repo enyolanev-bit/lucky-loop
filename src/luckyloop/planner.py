@@ -4,6 +4,7 @@ import json
 
 from .schemas import CandidatePrediction, DecisionTrace, ExperimentTrace, ProposedAction, RejectedCandidate, ResearchState, TaskSpec
 from .simulator import predict
+from .top_models import build_top_model_verification_action
 
 
 def action_key(action: ProposedAction) -> str:
@@ -80,14 +81,29 @@ def _sweep_candidate(task: TaskSpec, index: int) -> ProposedAction:
     )
 
 
+def _single_model_search_complete(task: TaskSpec, seen: set[str]) -> bool:
+    for model in task.models:
+        cmd, params = _model_command(task, model)
+        if action_key(_candidate(f"action_{model}", cmd, model, params)) not in seen:
+            return False
+    return True
+
+
 def generate_candidates(task: TaskSpec, state: ResearchState, traces: list[ExperimentTrace], seen: set[str]) -> list[ProposedAction]:
     candidates = []
     for model in task.models:
         cmd, params = _model_command(task, model)
         candidates.append(_candidate(f"action_{model}", cmd, model, params))
 
-    for index, _sweep in enumerate(task.sweeps):
-        candidates.append(_sweep_candidate(task, index))
+    model_search_complete = _single_model_search_complete(task, seen)
+    if state.top_model_summary and model_search_complete:
+        top_model_action = build_top_model_verification_action(task, state.top_model_summary)
+        if top_model_action is not None:
+            candidates.append(top_model_action)
+
+    if model_search_complete:
+        for index, _sweep in enumerate(task.sweeps):
+            candidates.append(_sweep_candidate(task, index))
 
     if not traces:
         candidates.insert(0, initial_action(task))
@@ -178,6 +194,15 @@ def _score_candidate(candidate_prediction: CandidatePrediction, traces: list[Exp
         score -= 30
         reasons.append("defer verifier sweep until several single-model baselines exist")
         selector_reasons.append("defer verifier sweep until several single-model baselines exist")
+
+    if action.model == "top_model_verification":
+        score += 45
+        reasons.append("top observed models need multi-seed verification before a robust best-model claim")
+        selector_reasons.append("top observed models need multi-seed verification before a robust best-model claim")
+        if any(word in signal for word in ["seed", "variance", "robust", "claim", "single split", "tied", "top"]):
+            score += 35
+            reasons.append("world model predicted top-model robustness or claim risk")
+            world_reasons.append("world model predicted top-model robustness or claim risk")
 
     if action.model == "svc" and any(t.proposed_action.model == "random_forest" and not t.comparison.metric_match for t in traces):
         score += 30

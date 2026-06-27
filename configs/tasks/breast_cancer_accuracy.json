@@ -4,7 +4,7 @@
   "problem_type": "classification",
   "primary_metric": "accuracy",
   "secondary_metrics": ["f1"],
-  "budget_runs": 6,
+  "budget_runs": 7,
   "models": ["logistic_regression", "random_forest", "svc", "gradient_boosting"],
   "sweeps": [
     {

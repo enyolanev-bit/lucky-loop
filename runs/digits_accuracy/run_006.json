@@ -1,69 +1,322 @@
 {
   "run_id": "run_006",
   "goal": "Maximize validation accuracy on sklearn digits under a small compute budget, while avoiding unsupported claims.",
-  "hypothesis": "Selected hist_gradient_boosting because score=26; world model recommended run; world model predicted overfitting risk. World model predicted accuracy around 0.90-0.98, runtime under 15, recommendation=run, risks=can overfit with too many estimators. Causal signal type: world_model_prediction.",
+  "hypothesis": "Selected top_model_verification because score=110; world model recommended run; top observed models need multi-seed verification before a robust best-model claim; world model predicted top-model robustness or claim risk. World model predicted accuracy around 0.90-0.99, runtime under 45, recommendation=run, risks=top single-run models may be tied across seeds, seed variance may exceed the observed top-model gap. Causal signal type: mixed.",
   "proposed_action": {
-    "action_id": "action_hist_gradient_boosting",
-    "command": "python experiments/train_sklearn.py --dataset digits --model hist_gradient_boosting --n-estimators 150 --learning-rate 0.08",
-    "model": "hist_gradient_boosting",
+    "action_id": "action_verify_top_models",
+    "command": "python experiments/compare_models_sklearn.py --dataset digits --models svc:scale=true,C=2.0,kernel=rbf logistic_regression:scale=true random_forest:n_estimators=300 --seeds 0 1 2 3 4",
+    "model": "top_model_verification",
     "params": {
       "dataset": "digits",
-      "n_estimators": 150,
-      "learning_rate": 0.08
+      "models": [
+        {
+          "run_id": "run_003",
+          "model": "svc",
+          "model_key": "svc_scaled_C=2.0_kernel=rbf",
+          "metric": 0.98,
+          "params": {
+            "dataset": "digits",
+            "scale": true,
+            "C": 2.0,
+            "kernel": "rbf"
+          }
+        },
+        {
+          "run_id": "run_002",
+          "model": "logistic_regression",
+          "model_key": "logistic_regression_scaled",
+          "metric": 0.9777777777777777,
+          "params": {
+            "dataset": "digits",
+            "scale": true
+          }
+        },
+        {
+          "run_id": "run_004",
+          "model": "random_forest",
+          "model_key": "random_forest_n=300",
+          "metric": 0.9688888888888889,
+          "params": {
+            "dataset": "digits",
+            "n_estimators": 300
+          }
+        }
+      ],
+      "seeds": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "reason": "Top-model gap 0.0022 is within margin 0.0100; verify before claiming a winner.",
+      "verification_action_key": "logistic_regression_scaled:random_forest_n=300:svc_scaled_C=2.0_kernel=rbf"
     }
   },
   "world_model_prediction": {
-    "expected_metric": "accuracy around 0.90-0.98",
-    "expected_runtime_seconds": "under 15",
+    "expected_metric": "accuracy around 0.90-0.99",
+    "expected_runtime_seconds": "under 45",
     "risks": [
-      "can overfit with too many estimators"
+      "top single-run models may be tied across seeds",
+      "seed variance may exceed the observed top-model gap"
     ],
     "recommendation": "run",
-    "rationale": "Boosting is a useful late comparison when linear and bagged-tree baselines are known.",
-    "action_specific_signal": "Use boosting to test a staged-tree alternative under the remaining budget.",
-    "claim_risk": "Do not report a robust winner from one boosted run."
+    "rationale": "A multi-seed top-model comparison is required before reporting a robust best model.",
+    "action_specific_signal": "Verify the top observed models on matched seeds before allowing a best-model claim.",
+    "claim_risk": "Best observed single-run model may not be a robust winner."
   },
   "actual_result": {
     "status": "success",
-    "accuracy": 0.96,
-    "f1": 0.959623544739232,
-    "runtime_seconds": 5.455,
-    "stdout_tail": "{\n  \"accuracy\": 0.96,\n  \"dataset\": \"digits\",\n  \"f1\": 0.959623544739232,\n  \"model\": \"hist_gradient_boosting\",\n  \"n_label_noise_flips\": 0,\n  \"n_test\": 450,\n  \"n_train\": 1347,\n  \"params\": {\n    \"C\": 1.0,\n    \"dataset\": \"digits\",\n    \"kernel\": \"rbf\",\n    \"label_noise\": 0.0,\n    \"learning_rate\": 0.08,\n    \"max_depth\": null,\n    \"max_iter\": 1000,\n    \"model\": \"hist_gradient_boosting\",\n    \"n_estimators\": 150,\n    \"scale\": false,\n    \"seed\": 42,\n    \"test_size\": 0.25\n  },\n  \"runtime_seconds\": 5.455,\n  \"status\": \"success\"\n}\n",
+    "accuracy": null,
+    "f1": null,
+    "runtime_seconds": 47.907,
+    "stdout_tail": "y\": \"random_forest_n=300\",\n      \"f1\": 0.9687923888311301,\n      \"label\": \"random_forest_n=300\",\n      \"runtime_seconds\": 1.2801,\n      \"seed\": 1,\n      \"sweep_param\": \"model\",\n      \"value\": \"random_forest_n=300\"\n    },\n    {\n      \"accuracy\": 0.9777777777777777,\n      \"config_key\": \"random_forest_n=300\",\n      \"f1\": 0.9776569945515106,\n      \"label\": \"random_forest_n=300\",\n      \"runtime_seconds\": 1.2458,\n      \"seed\": 2,\n      \"sweep_param\": \"model\",\n      \"value\": \"random_forest_n=300\"\n    },\n    {\n      \"accuracy\": 0.9822222222222222,\n      \"config_key\": \"random_forest_n=300\",\n      \"f1\": 0.9822331555813694,\n      \"label\": \"random_forest_n=300\",\n      \"runtime_seconds\": 1.2348,\n      \"seed\": 3,\n      \"sweep_param\": \"model\",\n      \"value\": \"random_forest_n=300\"\n    },\n    {\n      \"accuracy\": 0.9733333333333334,\n      \"config_key\": \"random_forest_n=300\",\n      \"f1\": 0.9731711492891794,\n      \"label\": \"random_forest_n=300\",\n      \"runtime_seconds\": 1.3065,\n      \"seed\": 4,\n      \"sweep_param\": \"model\",\n      \"value\": \"random_forest_n=300\"\n    }\n  ],\n  \"runtime_seconds\": 47.907,\n  \"seeds\": [\n    0,\n    1,\n    2,\n    3,\n    4\n  ],\n  \"status\": \"success\",\n  \"summary_by_value\": {\n    \"logistic_regression_scaled\": {\n      \"max_accuracy\": 0.98,\n      \"mean_accuracy\": 0.9693333333333334,\n      \"mean_f1\": 0.9693974260204404,\n      \"min_accuracy\": 0.9488888888888889,\n      \"n\": 5\n    },\n    \"random_forest_n=300\": {\n      \"max_accuracy\": 0.9844444444444445,\n      \"mean_accuracy\": 0.9773333333333334,\n      \"mean_f1\": 0.9772591396472687,\n      \"min_accuracy\": 0.9688888888888889,\n      \"n\": 5\n    },\n    \"svc_scaled_C=2.0_kernel=rbf\": {\n      \"max_accuracy\": 0.9866666666666667,\n      \"mean_accuracy\": 0.9817777777777777,\n      \"mean_f1\": 0.9817751619679045,\n      \"min_accuracy\": 0.9777777777777777,\n      \"n\": 5\n    }\n  },\n  \"type\": \"top_model_verification\",\n  \"verified_models\": [\n    \"svc_scaled_C=2.0_kernel=rbf\",\n    \"logistic_regression_scaled\",\n    \"random_forest_n=300\"\n  ]\n}\n",
     "stderr_tail": "",
     "raw": {
-      "accuracy": 0.96,
-      "dataset": "digits",
-      "f1": 0.959623544739232,
-      "model": "hist_gradient_boosting",
-      "n_label_noise_flips": 0,
-      "n_test": 450,
-      "n_train": 1347,
-      "params": {
-        "C": 1.0,
-        "dataset": "digits",
-        "kernel": "rbf",
-        "label_noise": 0.0,
-        "learning_rate": 0.08,
-        "max_depth": null,
-        "max_iter": 1000,
-        "model": "hist_gradient_boosting",
-        "n_estimators": 150,
-        "scale": false,
-        "seed": 42,
-        "test_size": 0.25
+      "best": {
+        "max_accuracy": 0.9866666666666667,
+        "mean_accuracy": 0.9817777777777777,
+        "mean_f1": 0.9817751619679045,
+        "min_accuracy": 0.9777777777777777,
+        "n": 5,
+        "value": "svc_scaled_C=2.0_kernel=rbf"
       },
-      "runtime_seconds": 5.455,
-      "status": "success"
+      "dataset": "digits",
+      "failures": [],
+      "metric": "accuracy",
+      "models": [
+        "svc:scale=true,C=2.0,kernel=rbf",
+        "logistic_regression:scale=true",
+        "random_forest:n_estimators=300"
+      ],
+      "runner_up": {
+        "max_accuracy": 0.9844444444444445,
+        "mean_accuracy": 0.9773333333333334,
+        "mean_f1": 0.9772591396472687,
+        "min_accuracy": 0.9688888888888889,
+        "n": 5,
+        "value": "random_forest_n=300"
+      },
+      "runs": [
+        {
+          "accuracy": 0.9822222222222222,
+          "config_key": "svc_scaled_C=2.0_kernel=rbf",
+          "f1": 0.9823063215247015,
+          "label": "svc_scaled_C=2.0_kernel=rbf",
+          "runtime_seconds": 0.1052,
+          "seed": 0,
+          "sweep_param": "model",
+          "value": "svc_scaled_C=2.0_kernel=rbf"
+        },
+        {
+          "accuracy": 0.9822222222222222,
+          "config_key": "svc_scaled_C=2.0_kernel=rbf",
+          "f1": 0.9821590845559875,
+          "label": "svc_scaled_C=2.0_kernel=rbf",
+          "runtime_seconds": 0.1246,
+          "seed": 1,
+          "sweep_param": "model",
+          "value": "svc_scaled_C=2.0_kernel=rbf"
+        },
+        {
+          "accuracy": 0.9777777777777777,
+          "config_key": "svc_scaled_C=2.0_kernel=rbf",
+          "f1": 0.977741338676599,
+          "label": "svc_scaled_C=2.0_kernel=rbf",
+          "runtime_seconds": 0.129,
+          "seed": 2,
+          "sweep_param": "model",
+          "value": "svc_scaled_C=2.0_kernel=rbf"
+        },
+        {
+          "accuracy": 0.98,
+          "config_key": "svc_scaled_C=2.0_kernel=rbf",
+          "f1": 0.9800178915676812,
+          "label": "svc_scaled_C=2.0_kernel=rbf",
+          "runtime_seconds": 0.1232,
+          "seed": 3,
+          "sweep_param": "model",
+          "value": "svc_scaled_C=2.0_kernel=rbf"
+        },
+        {
+          "accuracy": 0.9866666666666667,
+          "config_key": "svc_scaled_C=2.0_kernel=rbf",
+          "f1": 0.9866511735145537,
+          "label": "svc_scaled_C=2.0_kernel=rbf",
+          "runtime_seconds": 0.1451,
+          "seed": 4,
+          "sweep_param": "model",
+          "value": "svc_scaled_C=2.0_kernel=rbf"
+        },
+        {
+          "accuracy": 0.9688888888888889,
+          "config_key": "logistic_regression_scaled",
+          "f1": 0.9691218883006076,
+          "label": "logistic_regression_scaled",
+          "runtime_seconds": 0.7918,
+          "seed": 0,
+          "sweep_param": "model",
+          "value": "logistic_regression_scaled"
+        },
+        {
+          "accuracy": 0.9688888888888889,
+          "config_key": "logistic_regression_scaled",
+          "f1": 0.9687469425020353,
+          "label": "logistic_regression_scaled",
+          "runtime_seconds": 0.3924,
+          "seed": 1,
+          "sweep_param": "model",
+          "value": "logistic_regression_scaled"
+        },
+        {
+          "accuracy": 0.9488888888888889,
+          "config_key": "logistic_regression_scaled",
+          "f1": 0.9490281970972656,
+          "label": "logistic_regression_scaled",
+          "runtime_seconds": 0.7958,
+          "seed": 2,
+          "sweep_param": "model",
+          "value": "logistic_regression_scaled"
+        },
+        {
+          "accuracy": 0.98,
+          "config_key": "logistic_regression_scaled",
+          "f1": 0.9800719178533867,
+          "label": "logistic_regression_scaled",
+          "runtime_seconds": 0.3871,
+          "seed": 3,
+          "sweep_param": "model",
+          "value": "logistic_regression_scaled"
+        },
+        {
+          "accuracy": 0.98,
+          "config_key": "logistic_regression_scaled",
+          "f1": 0.9800181843489072,
+          "label": "logistic_regression_scaled",
+          "runtime_seconds": 0.562,
+          "seed": 4,
+          "sweep_param": "model",
+          "value": "logistic_regression_scaled"
+        },
+        {
+          "accuracy": 0.9844444444444445,
+          "config_key": "random_forest_n=300",
+          "f1": 0.9844420099831549,
+          "label": "random_forest_n=300",
+          "runtime_seconds": 1.2215,
+          "seed": 0,
+          "sweep_param": "model",
+          "value": "random_forest_n=300"
+        },
+        {
+          "accuracy": 0.9688888888888889,
+          "config_key": "random_forest_n=300",
+          "f1": 0.9687923888311301,
+          "label": "random_forest_n=300",
+          "runtime_seconds": 1.2801,
+          "seed": 1,
+          "sweep_param": "model",
+          "value": "random_forest_n=300"
+        },
+        {
+          "accuracy": 0.9777777777777777,
+          "config_key": "random_forest_n=300",
+          "f1": 0.9776569945515106,
+          "label": "random_forest_n=300",
+          "runtime_seconds": 1.2458,
+          "seed": 2,
+          "sweep_param": "model",
+          "value": "random_forest_n=300"
+        },
+        {
+          "accuracy": 0.9822222222222222,
+          "config_key": "random_forest_n=300",
+          "f1": 0.9822331555813694,
+          "label": "random_forest_n=300",
+          "runtime_seconds": 1.2348,
+          "seed": 3,
+          "sweep_param": "model",
+          "value": "random_forest_n=300"
+        },
+        {
+          "accuracy": 0.9733333333333334,
+          "config_key": "random_forest_n=300",
+          "f1": 0.9731711492891794,
+          "label": "random_forest_n=300",
+          "runtime_seconds": 1.3065,
+          "seed": 4,
+          "sweep_param": "model",
+          "value": "random_forest_n=300"
+        }
+      ],
+      "runtime_seconds": 47.907,
+      "seeds": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "status": "success",
+      "summary_by_value": {
+        "logistic_regression_scaled": {
+          "max_accuracy": 0.98,
+          "mean_accuracy": 0.9693333333333334,
+          "mean_f1": 0.9693974260204404,
+          "min_accuracy": 0.9488888888888889,
+          "n": 5
+        },
+        "random_forest_n=300": {
+          "max_accuracy": 0.9844444444444445,
+          "mean_accuracy": 0.9773333333333334,
+          "mean_f1": 0.9772591396472687,
+          "min_accuracy": 0.9688888888888889,
+          "n": 5
+        },
+        "svc_scaled_C=2.0_kernel=rbf": {
+          "max_accuracy": 0.9866666666666667,
+          "mean_accuracy": 0.9817777777777777,
+          "mean_f1": 0.9817751619679045,
+          "min_accuracy": 0.9777777777777777,
+          "n": 5
+        }
+      },
+      "type": "top_model_verification",
+      "verified_models": [
+        "svc_scaled_C=2.0_kernel=rbf",
+        "logistic_regression_scaled",
+        "random_forest_n=300"
+      ]
     }
   },
   "comparison": {
     "metric_match": true,
-    "runtime_match": true,
-    "unexpected_events": [],
-    "lesson": "Prediction was broadly consistent with the real run."
+    "runtime_match": false,
+    "unexpected_events": [
+      "runtime 47.91s exceeded predicted 45s"
+    ],
+    "lesson": "Run succeeded, but the prediction missed at least one quantitative detail."
   },
-  "next_decision": "Stop and report the best observed model.",
-  "verification": null,
+  "next_decision": "Continue: regenerate candidates from the updated state and ask the world model to predict each option.",
+  "verification": {
+    "status": "inconclusive",
+    "metric": "accuracy",
+    "effect_size": 0.004444,
+    "seed_noise": 0.008889,
+    "effect_to_noise_ratio": 0.499944,
+    "min_seed_count": 5,
+    "low_n_warning": false,
+    "trustworthy": false,
+    "best_config": "svc_scaled_C=2.0_kernel=rbf",
+    "worst_config": "random_forest_n=300",
+    "blocked_claim": "svc_scaled_C=2.0_kernel=rbf is robustly better than random_forest_n=300.",
+    "allowed_claim": "svc_scaled_C=2.0_kernel=rbf had the best multi-seed mean accuracy, but the effect was smaller than seed noise; no robust best-model claim is allowed.",
+    "supported_claims": [],
+    "inconclusive_findings": [
+      "Best config 'svc_scaled_C=2.0_kernel=rbf' improves over 'random_forest_n=300' by 0.0044 accuracy, but best-config seed noise is 0.0089."
+    ],
+    "rationale": "Measured top-model effect is not larger than inter-seed noise. The report must not claim a robust best model."
+  },
   "schema_version": "2.0",
   "state_before": {
     "state_id": "state_006",
@@ -113,14 +366,220 @@
       },
       {
         "run_id": "run_005",
-        "model": "verification_sweep",
-        "best": {
-          "max_accuracy": 0.9866666666666667,
-          "mean_accuracy": 0.9805555555555555,
-          "min_accuracy": 0.9755555555555555,
-          "n": 4,
-          "value": "2.0"
+        "model": "hist_gradient_boosting",
+        "accuracy": 0.96,
+        "f1": 0.959623544739232,
+        "params": {
+          "dataset": "digits",
+          "n_estimators": 150,
+          "learning_rate": 0.08
+        }
+      }
+    ],
+    "budget_remaining": 2,
+    "open_questions": [
+      "Which candidate should receive the next compute budget?",
+      "Is the best observed score robust across seeds or perturbations?",
+      "Do apparent improvements survive an effect-vs-noise verifier?",
+      "Can the observed top model survive matched multi-seed verification?"
+    ],
+    "risks_to_check": [
+      "single-run best score may not justify a scientific claim",
+      "seed variance may exceed apparent model or hyperparameter effects",
+      "Top-model gap 0.0022 is within margin 0.0100; verify before claiming a winner."
+    ],
+    "top_model_summary": {
+      "best_observed_model": "svc_scaled_C=2.0_kernel=rbf",
+      "best_observed_metric": 0.98,
+      "top_models": [
+        {
+          "run_id": "run_003",
+          "model": "svc",
+          "model_key": "svc_scaled_C=2.0_kernel=rbf",
+          "metric": 0.98,
+          "params": {
+            "dataset": "digits",
+            "scale": true,
+            "C": 2.0,
+            "kernel": "rbf"
+          }
         },
+        {
+          "run_id": "run_002",
+          "model": "logistic_regression",
+          "model_key": "logistic_regression_scaled",
+          "metric": 0.9777777777777777,
+          "params": {
+            "dataset": "digits",
+            "scale": true
+          }
+        },
+        {
+          "run_id": "run_004",
+          "model": "random_forest",
+          "model_key": "random_forest_n=300",
+          "metric": 0.9688888888888889,
+          "params": {
+            "dataset": "digits",
+            "n_estimators": 300
+          }
+        }
+      ],
+      "top_gap": 0.002222,
+      "needs_robustness_verification": true,
+      "reason": "Top-model gap 0.0022 is within margin 0.0100; verify before claiming a winner.",
+      "verification_action_key": "logistic_regression_scaled:random_forest_n=300:svc_scaled_C=2.0_kernel=rbf"
+    },
+    "summary": "Task=digits_accuracy; dataset=digits; primary_metric=accuracy. Goal: Maximize validation accuracy on sklearn digits under a small compute budget, while avoiding unsupported claims.\nNo experiments have been run yet. Dataset: sklearn digits. Primary metric: accuracy; secondary metrics: f1.\nrun_001: logistic_regression actual=0.9622222222222222 status=success; prediction=accuracy around 0.90-0.97; recommendation=run; lesson=Prediction was broadly consistent with the real run.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_002: logistic_regression actual=0.9777777777777777 status=success; prediction=accuracy around 0.95-0.98; recommendation=run; lesson=Prediction was broadly consistent with the real run.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_003: svc actual=0.98 status=success; prediction=accuracy around 0.90-0.99; recommendation=run; lesson=Prediction was broadly consistent with the real run.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_004: random_forest actual=0.9688888888888889 status=success; prediction=accuracy around 0.90-0.98; recommendation=run; lesson=Prediction was broadly consistent with the real run.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_005: hist_gradient_boosting actual=0.96 status=success; prediction=accuracy around 0.90-0.98; recommendation=run; lesson=Prediction was broadly consistent with the real run.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option."
+  },
+  "candidate_actions": [
+    {
+      "action_id": "action_verify_top_models",
+      "command": "python experiments/compare_models_sklearn.py --dataset digits --models svc:scale=true,C=2.0,kernel=rbf logistic_regression:scale=true random_forest:n_estimators=300 --seeds 0 1 2 3 4",
+      "model": "top_model_verification",
+      "params": {
+        "dataset": "digits",
+        "models": [
+          {
+            "run_id": "run_003",
+            "model": "svc",
+            "model_key": "svc_scaled_C=2.0_kernel=rbf",
+            "metric": 0.98,
+            "params": {
+              "dataset": "digits",
+              "scale": true,
+              "C": 2.0,
+              "kernel": "rbf"
+            }
+          },
+          {
+            "run_id": "run_002",
+            "model": "logistic_regression",
+            "model_key": "logistic_regression_scaled",
+            "metric": 0.9777777777777777,
+            "params": {
+              "dataset": "digits",
+              "scale": true
+            }
+          },
+          {
+            "run_id": "run_004",
+            "model": "random_forest",
+            "model_key": "random_forest_n=300",
+            "metric": 0.9688888888888889,
+            "params": {
+              "dataset": "digits",
+              "n_estimators": 300
+            }
+          }
+        ],
+        "seeds": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "reason": "Top-model gap 0.0022 is within margin 0.0100; verify before claiming a winner.",
+        "verification_action_key": "logistic_regression_scaled:random_forest_n=300:svc_scaled_C=2.0_kernel=rbf"
+      }
+    },
+    {
+      "action_id": "action_sweep_1_svc_C",
+      "command": "python experiments/sweep_sklearn.py --dataset digits --model svc --sweep-param C --values 0.5 1.0 2.0 --seeds 0 1 2 3 --scale --label-noise 0.03",
+      "model": "verification_sweep",
+      "params": {
+        "dataset": "digits",
+        "base_model": "svc",
+        "scale": true,
+        "sweep_param": "C",
+        "values": [
+          0.5,
+          1.0,
+          2.0
+        ],
+        "seeds": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "label_noise": 0.03
+      }
+    }
+  ],
+  "candidate_predictions": [
+    {
+      "action": {
+        "action_id": "action_verify_top_models",
+        "command": "python experiments/compare_models_sklearn.py --dataset digits --models svc:scale=true,C=2.0,kernel=rbf logistic_regression:scale=true random_forest:n_estimators=300 --seeds 0 1 2 3 4",
+        "model": "top_model_verification",
+        "params": {
+          "dataset": "digits",
+          "models": [
+            {
+              "run_id": "run_003",
+              "model": "svc",
+              "model_key": "svc_scaled_C=2.0_kernel=rbf",
+              "metric": 0.98,
+              "params": {
+                "dataset": "digits",
+                "scale": true,
+                "C": 2.0,
+                "kernel": "rbf"
+              }
+            },
+            {
+              "run_id": "run_002",
+              "model": "logistic_regression",
+              "model_key": "logistic_regression_scaled",
+              "metric": 0.9777777777777777,
+              "params": {
+                "dataset": "digits",
+                "scale": true
+              }
+            },
+            {
+              "run_id": "run_004",
+              "model": "random_forest",
+              "model_key": "random_forest_n=300",
+              "metric": 0.9688888888888889,
+              "params": {
+                "dataset": "digits",
+                "n_estimators": 300
+              }
+            }
+          ],
+          "seeds": [
+            0,
+            1,
+            2,
+            3,
+            4
+          ],
+          "reason": "Top-model gap 0.0022 is within margin 0.0100; verify before claiming a winner.",
+          "verification_action_key": "logistic_regression_scaled:random_forest_n=300:svc_scaled_C=2.0_kernel=rbf"
+        }
+      },
+      "prediction": {
+        "expected_metric": "accuracy around 0.90-0.99",
+        "expected_runtime_seconds": "under 45",
+        "risks": [
+          "top single-run models may be tied across seeds",
+          "seed variance may exceed the observed top-model gap"
+        ],
+        "recommendation": "run",
+        "rationale": "A multi-seed top-model comparison is required before reporting a robust best model.",
+        "action_specific_signal": "Verify the top observed models on matched seeds before allowing a best-model claim.",
+        "claim_risk": "Best observed single-run model may not be a robust winner."
+      },
+      "source": "heuristic_fallback"
+    },
+    {
+      "action": {
+        "action_id": "action_sweep_1_svc_C",
+        "command": "python experiments/sweep_sklearn.py --dataset digits --model svc --sweep-param C --values 0.5 1.0 2.0 --seeds 0 1 2 3 --scale --label-noise 0.03",
+        "model": "verification_sweep",
         "params": {
           "dataset": "digits",
           "base_model": "svc",
@@ -139,88 +598,220 @@
           ],
           "label_noise": 0.03
         }
-      }
-    ],
-    "budget_remaining": 1,
-    "open_questions": [
-      "Which candidate should receive the next compute budget?",
-      "Is the best observed score robust across seeds or perturbations?",
-      "What did the world model miss, and should the next action test that failure mode?"
-    ],
-    "risks_to_check": [
-      "single-run best score may not justify a scientific claim",
-      "seed variance may exceed apparent model or hyperparameter effects",
-      "world-model predictions may miss quantitative details"
-    ],
-    "summary": "Task=digits_accuracy; dataset=digits; primary_metric=accuracy. Goal: Maximize validation accuracy on sklearn digits under a small compute budget, while avoiding unsupported claims.\nNo experiments have been run yet. Dataset: sklearn digits. Primary metric: accuracy; secondary metrics: f1.\nrun_001: logistic_regression actual=0.9622222222222222 status=success; prediction=accuracy around 0.90-0.97; recommendation=run; lesson=Prediction was broadly consistent with the real run.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_002: logistic_regression actual=0.9777777777777777 status=success; prediction=accuracy around 0.95-0.98; recommendation=run; lesson=Prediction was broadly consistent with the real run.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_003: svc actual=0.98 status=success; prediction=accuracy around 0.90-0.99; recommendation=run; lesson=Prediction was broadly consistent with the real run.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_004: random_forest actual=0.9688888888888889 status=success; prediction=accuracy around 0.90-0.98; recommendation=run; lesson=Prediction was broadly consistent with the real run.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_005: verification_sweep actual=None status=success; prediction=accuracy around 0.85-0.98; recommendation=run; lesson=Run succeeded, but the prediction missed at least one quantitative detail.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option."
-  },
-  "candidate_actions": [
-    {
-      "action_id": "action_hist_gradient_boosting",
-      "command": "python experiments/train_sklearn.py --dataset digits --model hist_gradient_boosting --n-estimators 150 --learning-rate 0.08",
-      "model": "hist_gradient_boosting",
-      "params": {
-        "dataset": "digits",
-        "n_estimators": 150,
-        "learning_rate": 0.08
-      }
-    }
-  ],
-  "candidate_predictions": [
-    {
-      "action": {
-        "action_id": "action_hist_gradient_boosting",
-        "command": "python experiments/train_sklearn.py --dataset digits --model hist_gradient_boosting --n-estimators 150 --learning-rate 0.08",
-        "model": "hist_gradient_boosting",
-        "params": {
-          "dataset": "digits",
-          "n_estimators": 150,
-          "learning_rate": 0.08
-        }
       },
       "prediction": {
-        "expected_metric": "accuracy around 0.90-0.98",
-        "expected_runtime_seconds": "under 15",
+        "expected_metric": "accuracy around 0.85-0.98",
+        "expected_runtime_seconds": "under 35",
         "risks": [
-          "can overfit with too many estimators"
+          "label noise can make small hyperparameter differences non-robust",
+          "seed variance may exceed apparent gains"
         ],
         "recommendation": "run",
-        "rationale": "Boosting is a useful late comparison when linear and bagged-tree baselines are known.",
-        "action_specific_signal": "Use boosting to test a staged-tree alternative under the remaining budget.",
-        "claim_risk": "Do not report a robust winner from one boosted run."
+        "rationale": "A multi-seed sweep is useful for the deterministic verifier: it tests whether an apparent gain survives effect-vs-noise scrutiny.",
+        "action_specific_signal": "Run a robustness sweep before allowing a best-hyperparameter claim.",
+        "claim_risk": "The apparent winner may be blocked if effect size is smaller than seed noise."
       },
       "source": "heuristic_fallback"
     }
   ],
   "selected_action": {
-    "action_id": "action_hist_gradient_boosting",
-    "command": "python experiments/train_sklearn.py --dataset digits --model hist_gradient_boosting --n-estimators 150 --learning-rate 0.08",
-    "model": "hist_gradient_boosting",
+    "action_id": "action_verify_top_models",
+    "command": "python experiments/compare_models_sklearn.py --dataset digits --models svc:scale=true,C=2.0,kernel=rbf logistic_regression:scale=true random_forest:n_estimators=300 --seeds 0 1 2 3 4",
+    "model": "top_model_verification",
     "params": {
       "dataset": "digits",
-      "n_estimators": 150,
-      "learning_rate": 0.08
+      "models": [
+        {
+          "run_id": "run_003",
+          "model": "svc",
+          "model_key": "svc_scaled_C=2.0_kernel=rbf",
+          "metric": 0.98,
+          "params": {
+            "dataset": "digits",
+            "scale": true,
+            "C": 2.0,
+            "kernel": "rbf"
+          }
+        },
+        {
+          "run_id": "run_002",
+          "model": "logistic_regression",
+          "model_key": "logistic_regression_scaled",
+          "metric": 0.9777777777777777,
+          "params": {
+            "dataset": "digits",
+            "scale": true
+          }
+        },
+        {
+          "run_id": "run_004",
+          "model": "random_forest",
+          "model_key": "random_forest_n=300",
+          "metric": 0.9688888888888889,
+          "params": {
+            "dataset": "digits",
+            "n_estimators": 300
+          }
+        }
+      ],
+      "seeds": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "reason": "Top-model gap 0.0022 is within margin 0.0100; verify before claiming a winner.",
+      "verification_action_key": "logistic_regression_scaled:random_forest_n=300:svc_scaled_C=2.0_kernel=rbf"
     }
   },
   "decision_trace": {
     "selected_action": {
-      "action_id": "action_hist_gradient_boosting",
-      "command": "python experiments/train_sklearn.py --dataset digits --model hist_gradient_boosting --n-estimators 150 --learning-rate 0.08",
-      "model": "hist_gradient_boosting",
+      "action_id": "action_verify_top_models",
+      "command": "python experiments/compare_models_sklearn.py --dataset digits --models svc:scale=true,C=2.0,kernel=rbf logistic_regression:scale=true random_forest:n_estimators=300 --seeds 0 1 2 3 4",
+      "model": "top_model_verification",
       "params": {
         "dataset": "digits",
-        "n_estimators": 150,
-        "learning_rate": 0.08
+        "models": [
+          {
+            "run_id": "run_003",
+            "model": "svc",
+            "model_key": "svc_scaled_C=2.0_kernel=rbf",
+            "metric": 0.98,
+            "params": {
+              "dataset": "digits",
+              "scale": true,
+              "C": 2.0,
+              "kernel": "rbf"
+            }
+          },
+          {
+            "run_id": "run_002",
+            "model": "logistic_regression",
+            "model_key": "logistic_regression_scaled",
+            "metric": 0.9777777777777777,
+            "params": {
+              "dataset": "digits",
+              "scale": true
+            }
+          },
+          {
+            "run_id": "run_004",
+            "model": "random_forest",
+            "model_key": "random_forest_n=300",
+            "metric": 0.9688888888888889,
+            "params": {
+              "dataset": "digits",
+              "n_estimators": 300
+            }
+          }
+        ],
+        "seeds": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "reason": "Top-model gap 0.0022 is within margin 0.0100; verify before claiming a winner.",
+        "verification_action_key": "logistic_regression_scaled:random_forest_n=300:svc_scaled_C=2.0_kernel=rbf"
       }
     },
     "world_model_signal_used": true,
-    "selector_policy_signal_used": false,
-    "causal_signal_type": "world_model_prediction",
-    "causal_reason": "Selected hist_gradient_boosting because score=26; world model recommended run; world model predicted overfitting risk. World model predicted accuracy around 0.90-0.98, runtime under 15, recommendation=run, risks=can overfit with too many estimators. Causal signal type: world_model_prediction.",
-    "rejected_candidates": []
+    "selector_policy_signal_used": true,
+    "causal_signal_type": "mixed",
+    "causal_reason": "Selected top_model_verification because score=110; world model recommended run; top observed models need multi-seed verification before a robust best-model claim; world model predicted top-model robustness or claim risk. World model predicted accuracy around 0.90-0.99, runtime under 45, recommendation=run, risks=top single-run models may be tied across seeds, seed variance may exceed the observed top-model gap. Causal signal type: mixed.",
+    "rejected_candidates": [
+      {
+        "action": {
+          "action_id": "action_sweep_1_svc_C",
+          "command": "python experiments/sweep_sklearn.py --dataset digits --model svc --sweep-param C --values 0.5 1.0 2.0 --seeds 0 1 2 3 --scale --label-noise 0.03",
+          "model": "verification_sweep",
+          "params": {
+            "dataset": "digits",
+            "base_model": "svc",
+            "scale": true,
+            "sweep_param": "C",
+            "values": [
+              0.5,
+              1.0,
+              2.0
+            ],
+            "seeds": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "label_noise": 0.03
+          }
+        },
+        "reason": "score=90; world model recommended run; high single-run score needs robustness verification before a strong claim; world model predicted robustness or seed-variance risk"
+      }
+    ]
   },
-  "claim_ledger_updates": [],
+  "claim_ledger_updates": [
+    {
+      "claim_id": "run_006_claim_001",
+      "claim": "svc_scaled_C=2.0_kernel=rbf is robustly better than random_forest_n=300.",
+      "status": "blocked",
+      "evidence_run_ids": [
+        "run_006"
+      ],
+      "blocked_reason": "Measured top-model effect is not larger than inter-seed noise. The report must not claim a robust best model.",
+      "allowed_rewrite": "svc_scaled_C=2.0_kernel=rbf had the best multi-seed mean accuracy, but the effect was smaller than seed noise; no robust best-model claim is allowed.",
+      "metrics": {
+        "effect_size": 0.004444,
+        "seed_noise": 0.008889,
+        "effect_to_noise_ratio": 0.499944,
+        "min_seed_count": 5,
+        "low_n_warning": false
+      }
+    }
+  ],
   "calibration_metrics": null,
+  "top_model_summary": {
+    "best_observed_model": "svc_scaled_C=2.0_kernel=rbf",
+    "best_observed_metric": 0.98,
+    "top_models": [
+      {
+        "run_id": "run_003",
+        "model": "svc",
+        "model_key": "svc_scaled_C=2.0_kernel=rbf",
+        "metric": 0.98,
+        "params": {
+          "dataset": "digits",
+          "scale": true,
+          "C": 2.0,
+          "kernel": "rbf"
+        }
+      },
+      {
+        "run_id": "run_002",
+        "model": "logistic_regression",
+        "model_key": "logistic_regression_scaled",
+        "metric": 0.9777777777777777,
+        "params": {
+          "dataset": "digits",
+          "scale": true
+        }
+      },
+      {
+        "run_id": "run_004",
+        "model": "random_forest",
+        "model_key": "random_forest_n=300",
+        "metric": 0.9688888888888889,
+        "params": {
+          "dataset": "digits",
+          "n_estimators": 300
+        }
+      }
+    ],
+    "top_gap": 0.002222,
+    "needs_robustness_verification": true,
+    "reason": "Top-model gap 0.0022 is within margin 0.0100; verify before claiming a winner.",
+    "verification_action_key": "logistic_regression_scaled:random_forest_n=300:svc_scaled_C=2.0_kernel=rbf"
+  },
   "artifacts": {
     "task_id": "digits_accuracy",
     "trace_path": "runs/digits_accuracy/run_006.json",

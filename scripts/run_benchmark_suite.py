@@ -31,7 +31,8 @@ def main() -> None:
         metric_traces = [
             t
             for t in traces
-            if _actual_metric(t) is not None and t.proposed_action.model != "verification_sweep"
+            if _actual_metric(t) is not None
+            and t.proposed_action.model not in {"verification_sweep", "top_model_verification"}
         ]
         best = max(metric_traces, key=lambda t: _actual_metric(t) or -1, default=None)
         ledger_path = ROOT / "reports" / task.task_id / "claim_ledger.json"
@@ -50,6 +51,7 @@ def main() -> None:
                 "best_model": best.proposed_action.model if best else "",
                 "best_metric": _actual_metric(best) if best else None,
                 "prediction_misses": sum(1 for t in traces if t.comparison.unexpected_events),
+                "top_model_verifications": sum(1 for t in traces if t.proposed_action.model == "top_model_verification"),
                 "claims_blocked": blocked,
                 "supported_claims": supported,
             }
@@ -60,14 +62,15 @@ def main() -> None:
         "",
         "These benchmark tasks use real sklearn datasets, real training commands, and real multi-seed sweeps.",
         "",
-        "| Task | Runs | Best model | Best metric | Prediction misses | Claims blocked | Supported claims |",
-        "|---|---:|---|---:|---:|---:|---:|",
+        "| Task | Runs | Best model | Best metric | Top-model verifications | Prediction misses | Claims blocked | Supported claims |",
+        "|---|---:|---|---:|---:|---:|---:|---:|",
     ]
     for row in rows:
         best_metric = "" if row["best_metric"] is None else f"{row['best_metric']:.4f}"
         report.append(
             f"| {row['task']} | {row['runs']} | {row['best_model']} | {best_metric} | "
-            f"{row['prediction_misses']} | {row['claims_blocked']} | {row['supported_claims']} |"
+            f"{row['top_model_verifications']} | {row['prediction_misses']} | "
+            f"{row['claims_blocked']} | {row['supported_claims']} |"
         )
     out = ROOT / "reports" / "benchmark_summary.md"
     out.parent.mkdir(parents=True, exist_ok=True)

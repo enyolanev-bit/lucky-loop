@@ -13,6 +13,7 @@ For sklearn tabular classification:
 - mention overfitting or variance for tree ensembles when appropriate
 - mention robustness sweeps before strong claims when a high single-run score exists
 - mention that label-noise sweeps test claim robustness, not leaderboard performance
+- when the action is top_model_verification, predict whether top single-run models are likely robustly separated or tied across seeds
 
 Return strict JSON only, with exactly these keys:
 - expected_metric: string, e.g. "accuracy around 0.94-0.97"
@@ -39,6 +40,8 @@ def heuristic_prediction(action: ProposedAction, state: str) -> Prediction:
         return Prediction(expected_metric="accuracy around 0.90-0.99", expected_runtime_seconds="under 10", risks=["sensitive to scaling and C"], recommendation="run", rationale="Scaled SVC can be strong on small numeric classification tasks but needs careful comparison.", action_specific_signal="SVC tests a margin-based nonlinear hypothesis after linear/tree baselines.", claim_risk="SVC should not be declared best without repeated-seed evidence.")
     if m == "verification_sweep":
         return Prediction(expected_metric="accuracy around 0.85-0.98", expected_runtime_seconds="under 35", risks=["label noise can make small hyperparameter differences non-robust", "seed variance may exceed apparent gains"], recommendation="run", rationale="A multi-seed sweep is useful for the deterministic verifier: it tests whether an apparent gain survives effect-vs-noise scrutiny.", action_specific_signal="Run a robustness sweep before allowing a best-hyperparameter claim.", claim_risk="The apparent winner may be blocked if effect size is smaller than seed noise.")
+    if m == "top_model_verification":
+        return Prediction(expected_metric="accuracy around 0.90-0.99", expected_runtime_seconds="under 45", risks=["top single-run models may be tied across seeds", "seed variance may exceed the observed top-model gap"], recommendation="run", rationale="A multi-seed top-model comparison is required before reporting a robust best model.", action_specific_signal="Verify the top observed models on matched seeds before allowing a best-model claim.", claim_risk="Best observed single-run model may not be a robust winner.")
     return Prediction(expected_metric="unknown", expected_runtime_seconds="unknown", risks=["no calibrated prior"], recommendation="run", rationale="Fallback prediction.", action_specific_signal="No action-specific prior available.", claim_risk="No claim should be made from this prediction alone.")
 
 

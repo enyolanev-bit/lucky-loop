@@ -33,16 +33,17 @@ Observed loop:
 | 2 | The planner generates candidate actions from the spec, not from a hardcoded breast_cancer script. |
 | 3 | Qwen-AgentWorld predicts each candidate's metric range, runtime, risks, and claim risk before compute. |
 | 4 | The selector records whether the decision came from a world-model signal, selector policy, or both. |
-| 5 | The executor runs real sklearn training or a real multi-seed sweep. |
-| 6 | The comparator logs prediction hits and misses. The verifier blocks unsupported sweep claims. |
+| 5 | After real search, Lucky Loop detects the top observed models and asks Qwen whether a best-model claim needs verification. |
+| 6 | The executor runs matched multi-seed top-model verification. |
+| 7 | The comparator logs prediction hits and misses. The verifier allows or blocks the best-model claim. |
 
 Current benchmark suite:
 
-| Task | Runs | Best model | Best metric |
-|---|---:|---|---:|
-| breast_cancer_accuracy | 6 | logistic_regression | 0.9860 |
-| wine_accuracy | 6 | logistic_regression | 1.0000 |
-| digits_accuracy | 6 | svc | 0.9800 |
+| Task | Runs | Best model | Best metric | Top-model verification |
+|---|---:|---|---:|---:|
+| breast_cancer_accuracy | 7 | logistic_regression | 0.9860 | 1 |
+| wine_accuracy | 7 | logistic_regression | 1.0000 | 1 |
+| digits_accuracy | 7 | svc | 0.9800 | 1 |
 
 ## Why this is not just AutoML
 AutoML searches configurations. Lucky Loop records a scientific loop:

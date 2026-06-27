@@ -12,6 +12,7 @@ from .planner import action_key, generate_candidates, initial_hypothesis, predic
 from .reporter import generate_report
 from .schemas import ExperimentTrace, ResearchState, TaskSpec
 from .tasks import load_task
+from .top_models import detect_top_models
 from .verifier import verify_sweep
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -67,13 +68,20 @@ def risks_for(traces: list[ExperimentTrace]) -> list[str]:
 
 
 def build_state(task: TaskSpec, traces: list[ExperimentTrace], run_index: int, max_experiments: int, summary: str) -> ResearchState:
+    top_model_summary = detect_top_models(traces, metric=task.primary_metric)
+    open_questions = open_questions_for(traces)
+    risks = risks_for(traces)
+    if top_model_summary.needs_robustness_verification:
+        open_questions.append("Can the observed top model survive matched multi-seed verification?")
+        risks.append(top_model_summary.reason)
     return ResearchState(
         state_id=f"state_{run_index:03d}",
         goal=task.goal,
         known_results=best_accuracy_results(traces),
         budget_remaining=max(max_experiments - run_index + 1, 0),
-        open_questions=open_questions_for(traces),
-        risks_to_check=risks_for(traces),
+        open_questions=open_questions,
+        risks_to_check=risks,
+        top_model_summary=top_model_summary,
         summary=f"Task={task.task_id}; dataset={task.dataset}; primary_metric={task.primary_metric}. {summary}",
     )
 
@@ -121,6 +129,7 @@ def run(
         actual = execute(action.command, cwd=ROOT)
         comparison = compare(prediction, actual)
         verification = verify_sweep(actual.raw) if actual.raw.get("runs") else None
+        top_model_summary = detect_top_models(traces, metric=task.primary_metric)
         hypothesis = decision_trace.causal_reason if traces else initial_hypothesis()
 
         if i >= max_experiments:
@@ -147,6 +156,7 @@ def run(
             selected_action=action,
             decision_trace=decision_trace,
             claim_ledger_updates=claim_updates_for(run_id, verification),
+            top_model_summary=top_model_summary,
             artifacts={
                 "task_id": task.task_id,
                 "trace_path": f"{runs_dir.relative_to(ROOT)}/{run_id}.json",

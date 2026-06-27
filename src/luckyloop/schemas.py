@@ -32,6 +32,24 @@ class TaskSpec(BaseModel):
     notes: list[str] = Field(default_factory=list)
 
 
+class TopModelCandidate(BaseModel):
+    run_id: str
+    model: str
+    model_key: str
+    metric: float
+    params: dict[str, Any] = Field(default_factory=dict)
+
+
+class TopModelSummary(BaseModel):
+    best_observed_model: str | None = None
+    best_observed_metric: float | None = None
+    top_models: list[TopModelCandidate] = Field(default_factory=list)
+    top_gap: float | None = None
+    needs_robustness_verification: bool = False
+    reason: str = ""
+    verification_action_key: str | None = None
+
+
 class Prediction(BaseModel):
     expected_metric: str
     expected_runtime_seconds: str
@@ -84,6 +102,7 @@ class ResearchState(BaseModel):
     budget_remaining: int | None = None
     open_questions: list[str] = Field(default_factory=list)
     risks_to_check: list[str] = Field(default_factory=list)
+    top_model_summary: TopModelSummary | None = None
     summary: str = ""
 
 
@@ -152,4 +171,5 @@ class ExperimentTrace(BaseModel):
     decision_trace: DecisionTrace | None = None
     claim_ledger_updates: list[ClaimLedgerEntry] = Field(default_factory=list)
     calibration_metrics: CalibrationMetrics | None = None
+    top_model_summary: TopModelSummary | None = None
     artifacts: dict[str, Any] = Field(default_factory=dict)

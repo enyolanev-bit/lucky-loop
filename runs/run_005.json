@@ -1,58 +1,59 @@
 {
   "run_id": "run_005",
   "goal": "Maximize validation accuracy on sklearn breast_cancer under a small compute budget, while avoiding unsupported claims.",
-  "hypothesis": "Selected gradient_boosting because score=31; world model recommended run; ensemble baseline is useful as a late comparison; world model predicted overfitting risk. World model predicted accuracy around 0.90-0.98, runtime under 15, recommendation=run, risks=can overfit with too many estimators. Causal signal type: mixed.",
+  "hypothesis": "Selected svc because score=30; world model recommended run. World model predicted accuracy around 0.90-0.99, runtime under 10, recommendation=run, risks=sensitive to scaling and C. Causal signal type: world_model_prediction.",
   "proposed_action": {
-    "action_id": "action_gradient_boosting",
-    "command": "python experiments/train_sklearn.py --dataset breast_cancer --model gradient_boosting --n-estimators 150 --learning-rate 0.05",
-    "model": "gradient_boosting",
+    "action_id": "action_svc",
+    "command": "python experiments/train_sklearn.py --dataset breast_cancer --model svc --scale --C 2.0",
+    "model": "svc",
     "params": {
       "dataset": "breast_cancer",
-      "n_estimators": 150,
-      "learning_rate": 0.05
+      "scale": true,
+      "C": 2.0,
+      "kernel": "rbf"
     }
   },
   "world_model_prediction": {
-    "expected_metric": "accuracy around 0.90-0.98",
-    "expected_runtime_seconds": "under 15",
+    "expected_metric": "accuracy around 0.90-0.99",
+    "expected_runtime_seconds": "under 10",
     "risks": [
-      "can overfit with too many estimators"
+      "sensitive to scaling and C"
     ],
     "recommendation": "run",
-    "rationale": "Boosting is a useful late comparison when linear and bagged-tree baselines are known.",
-    "action_specific_signal": "Use boosting to test a staged-tree alternative under the remaining budget.",
-    "claim_risk": "Do not report a robust winner from one boosted run."
+    "rationale": "Scaled SVC can be strong on small numeric classification tasks but needs careful comparison.",
+    "action_specific_signal": "SVC tests a margin-based nonlinear hypothesis after linear/tree baselines.",
+    "claim_risk": "SVC should not be declared best without repeated-seed evidence."
   },
   "actual_result": {
     "status": "success",
-    "accuracy": 0.951048951048951,
-    "f1": 0.9507373098014511,
-    "runtime_seconds": 0.6818,
-    "stdout_tail": "{\n  \"accuracy\": 0.951048951048951,\n  \"dataset\": \"breast_cancer\",\n  \"f1\": 0.9507373098014511,\n  \"model\": \"gradient_boosting\",\n  \"n_label_noise_flips\": 0,\n  \"n_test\": 143,\n  \"n_train\": 426,\n  \"params\": {\n    \"C\": 1.0,\n    \"dataset\": \"breast_cancer\",\n    \"kernel\": \"rbf\",\n    \"label_noise\": 0.0,\n    \"learning_rate\": 0.05,\n    \"max_depth\": null,\n    \"max_iter\": 1000,\n    \"model\": \"gradient_boosting\",\n    \"n_estimators\": 150,\n    \"scale\": false,\n    \"seed\": 42,\n    \"test_size\": 0.25\n  },\n  \"runtime_seconds\": 0.6818,\n  \"status\": \"success\"\n}\n",
+    "accuracy": 0.986013986013986,
+    "f1": 0.986013986013986,
+    "runtime_seconds": 0.0288,
+    "stdout_tail": "{\n  \"accuracy\": 0.986013986013986,\n  \"dataset\": \"breast_cancer\",\n  \"f1\": 0.986013986013986,\n  \"model\": \"svc\",\n  \"n_label_noise_flips\": 0,\n  \"n_test\": 143,\n  \"n_train\": 426,\n  \"params\": {\n    \"C\": 2.0,\n    \"dataset\": \"breast_cancer\",\n    \"kernel\": \"rbf\",\n    \"label_noise\": 0.0,\n    \"learning_rate\": 0.1,\n    \"max_depth\": null,\n    \"max_iter\": 1000,\n    \"model\": \"svc\",\n    \"n_estimators\": 200,\n    \"scale\": true,\n    \"seed\": 42,\n    \"test_size\": 0.25\n  },\n  \"runtime_seconds\": 0.0288,\n  \"status\": \"success\"\n}\n",
     "stderr_tail": "",
     "raw": {
-      "accuracy": 0.951048951048951,
+      "accuracy": 0.986013986013986,
       "dataset": "breast_cancer",
-      "f1": 0.9507373098014511,
-      "model": "gradient_boosting",
+      "f1": 0.986013986013986,
+      "model": "svc",
       "n_label_noise_flips": 0,
       "n_test": 143,
       "n_train": 426,
       "params": {
-        "C": 1.0,
+        "C": 2.0,
         "dataset": "breast_cancer",
         "kernel": "rbf",
         "label_noise": 0.0,
-        "learning_rate": 0.05,
+        "learning_rate": 0.1,
         "max_depth": null,
         "max_iter": 1000,
-        "model": "gradient_boosting",
-        "n_estimators": 150,
-        "scale": false,
+        "model": "svc",
+        "n_estimators": 200,
+        "scale": true,
         "seed": 42,
         "test_size": 0.25
       },
-      "runtime_seconds": 0.6818,
+      "runtime_seconds": 0.0288,
       "status": "success"
     }
   },
@@ -101,46 +102,71 @@
       },
       {
         "run_id": "run_004",
-        "model": "verification_sweep",
-        "best": {
-          "max_accuracy": 0.9790209790209791,
-          "mean_accuracy": 0.9615384615384616,
-          "min_accuracy": 0.951048951048951,
-          "n": 4,
-          "value": "0.1"
-        },
+        "model": "gradient_boosting",
+        "accuracy": 0.951048951048951,
+        "f1": 0.9507373098014511,
         "params": {
           "dataset": "breast_cancer",
-          "base_model": "logistic_regression",
-          "scale": true,
-          "sweep_param": "C",
-          "values": [
-            0.1,
-            1.0,
-            10.0
-          ],
-          "seeds": [
-            0,
-            1,
-            2,
-            3
-          ],
-          "label_noise": 0.08
+          "n_estimators": 150,
+          "learning_rate": 0.05
         }
       }
     ],
-    "budget_remaining": 2,
+    "budget_remaining": 3,
     "open_questions": [
       "Which candidate should receive the next compute budget?",
       "Is the best observed score robust across seeds or perturbations?",
-      "What did the world model miss, and should the next action test that failure mode?"
+      "Do apparent improvements survive an effect-vs-noise verifier?",
+      "What did the world model miss, and should the next action test that failure mode?",
+      "Can the observed top model survive matched multi-seed verification?"
     ],
     "risks_to_check": [
       "single-run best score may not justify a scientific claim",
       "seed variance may exceed apparent model or hyperparameter effects",
-      "world-model predictions may miss quantitative details"
+      "world-model predictions may miss quantitative details",
+      "Best observed model is based on a single split; verify top models before making a robust claim."
     ],
-    "summary": "Task=breast_cancer_accuracy; dataset=breast_cancer; primary_metric=accuracy. Goal: Maximize validation accuracy on sklearn breast_cancer under a small compute budget, while avoiding unsupported claims.\nNo experiments have been run yet. Dataset: sklearn breast_cancer. Primary metric: accuracy; secondary metrics: f1.\nrun_001: logistic_regression actual=0.951048951048951 status=success; prediction=accuracy around 0.90-0.97; recommendation=run; lesson=Prediction was broadly consistent with the real run.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_002: logistic_regression actual=0.986013986013986 status=success; prediction=accuracy around 0.95-0.98; recommendation=run; lesson=Run succeeded, but the prediction missed at least one quantitative detail.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_003: random_forest actual=0.958041958041958 status=success; prediction=accuracy around 0.90-0.98; recommendation=run; lesson=Prediction was broadly consistent with the real run.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_004: verification_sweep actual=None status=success; prediction=accuracy around 0.85-0.98; recommendation=run; lesson=Prediction was broadly consistent with the real run.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option."
+    "top_model_summary": {
+      "best_observed_model": "logistic_regression_scaled",
+      "best_observed_metric": 0.986013986013986,
+      "top_models": [
+        {
+          "run_id": "run_002",
+          "model": "logistic_regression",
+          "model_key": "logistic_regression_scaled",
+          "metric": 0.986013986013986,
+          "params": {
+            "dataset": "breast_cancer",
+            "scale": true
+          }
+        },
+        {
+          "run_id": "run_003",
+          "model": "random_forest",
+          "model_key": "random_forest_n=300",
+          "metric": 0.958041958041958,
+          "params": {
+            "dataset": "breast_cancer",
+            "n_estimators": 300
+          }
+        },
+        {
+          "run_id": "run_001",
+          "model": "logistic_regression",
+          "model_key": "logistic_regression",
+          "metric": 0.951048951048951,
+          "params": {
+            "dataset": "breast_cancer",
+            "scale": false
+          }
+        }
+      ],
+      "top_gap": 0.027972,
+      "needs_robustness_verification": true,
+      "reason": "Best observed model is based on a single split; verify top models before making a robust claim.",
+      "verification_action_key": "logistic_regression:logistic_regression_scaled:random_forest_n=300"
+    },
+    "summary": "Task=breast_cancer_accuracy; dataset=breast_cancer; primary_metric=accuracy. Goal: Maximize validation accuracy on sklearn breast_cancer under a small compute budget, while avoiding unsupported claims.\nNo experiments have been run yet. Dataset: sklearn breast_cancer. Primary metric: accuracy; secondary metrics: f1.\nrun_001: logistic_regression actual=0.951048951048951 status=success; prediction=accuracy around 0.90-0.97; recommendation=run; lesson=Prediction was broadly consistent with the real run.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_002: logistic_regression actual=0.986013986013986 status=success; prediction=accuracy around 0.95-0.98; recommendation=run; lesson=Run succeeded, but the prediction missed at least one quantitative detail.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_003: random_forest actual=0.958041958041958 status=success; prediction=accuracy around 0.90-0.98; recommendation=run; lesson=Prediction was broadly consistent with the real run.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_004: gradient_boosting actual=0.951048951048951 status=success; prediction=accuracy around 0.90-0.98; recommendation=run; lesson=Prediction was broadly consistent with the real run.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option."
   },
   "candidate_actions": [
     {
@@ -152,16 +178,6 @@
         "scale": true,
         "C": 2.0,
         "kernel": "rbf"
-      }
-    },
-    {
-      "action_id": "action_gradient_boosting",
-      "command": "python experiments/train_sklearn.py --dataset breast_cancer --model gradient_boosting --n-estimators 150 --learning-rate 0.05",
-      "model": "gradient_boosting",
-      "params": {
-        "dataset": "breast_cancer",
-        "n_estimators": 150,
-        "learning_rate": 0.05
       }
     }
   ],
@@ -190,76 +206,79 @@
         "claim_risk": "SVC should not be declared best without repeated-seed evidence."
       },
       "source": "heuristic_fallback"
-    },
-    {
-      "action": {
-        "action_id": "action_gradient_boosting",
-        "command": "python experiments/train_sklearn.py --dataset breast_cancer --model gradient_boosting --n-estimators 150 --learning-rate 0.05",
-        "model": "gradient_boosting",
-        "params": {
-          "dataset": "breast_cancer",
-          "n_estimators": 150,
-          "learning_rate": 0.05
-        }
-      },
-      "prediction": {
-        "expected_metric": "accuracy around 0.90-0.98",
-        "expected_runtime_seconds": "under 15",
-        "risks": [
-          "can overfit with too many estimators"
-        ],
-        "recommendation": "run",
-        "rationale": "Boosting is a useful late comparison when linear and bagged-tree baselines are known.",
-        "action_specific_signal": "Use boosting to test a staged-tree alternative under the remaining budget.",
-        "claim_risk": "Do not report a robust winner from one boosted run."
-      },
-      "source": "heuristic_fallback"
     }
   ],
   "selected_action": {
-    "action_id": "action_gradient_boosting",
-    "command": "python experiments/train_sklearn.py --dataset breast_cancer --model gradient_boosting --n-estimators 150 --learning-rate 0.05",
-    "model": "gradient_boosting",
+    "action_id": "action_svc",
+    "command": "python experiments/train_sklearn.py --dataset breast_cancer --model svc --scale --C 2.0",
+    "model": "svc",
     "params": {
       "dataset": "breast_cancer",
-      "n_estimators": 150,
-      "learning_rate": 0.05
+      "scale": true,
+      "C": 2.0,
+      "kernel": "rbf"
     }
   },
   "decision_trace": {
     "selected_action": {
-      "action_id": "action_gradient_boosting",
-      "command": "python experiments/train_sklearn.py --dataset breast_cancer --model gradient_boosting --n-estimators 150 --learning-rate 0.05",
-      "model": "gradient_boosting",
+      "action_id": "action_svc",
+      "command": "python experiments/train_sklearn.py --dataset breast_cancer --model svc --scale --C 2.0",
+      "model": "svc",
       "params": {
         "dataset": "breast_cancer",
-        "n_estimators": 150,
-        "learning_rate": 0.05
+        "scale": true,
+        "C": 2.0,
+        "kernel": "rbf"
       }
     },
     "world_model_signal_used": true,
-    "selector_policy_signal_used": true,
-    "causal_signal_type": "mixed",
-    "causal_reason": "Selected gradient_boosting because score=31; world model recommended run; ensemble baseline is useful as a late comparison; world model predicted overfitting risk. World model predicted accuracy around 0.90-0.98, runtime under 15, recommendation=run, risks=can overfit with too many estimators. Causal signal type: mixed.",
-    "rejected_candidates": [
-      {
-        "action": {
-          "action_id": "action_svc",
-          "command": "python experiments/train_sklearn.py --dataset breast_cancer --model svc --scale --C 2.0",
-          "model": "svc",
-          "params": {
-            "dataset": "breast_cancer",
-            "scale": true,
-            "C": 2.0,
-            "kernel": "rbf"
-          }
-        },
-        "reason": "score=30; world model recommended run"
-      }
-    ]
+    "selector_policy_signal_used": false,
+    "causal_signal_type": "world_model_prediction",
+    "causal_reason": "Selected svc because score=30; world model recommended run. World model predicted accuracy around 0.90-0.99, runtime under 10, recommendation=run, risks=sensitive to scaling and C. Causal signal type: world_model_prediction.",
+    "rejected_candidates": []
   },
   "claim_ledger_updates": [],
   "calibration_metrics": null,
+  "top_model_summary": {
+    "best_observed_model": "logistic_regression_scaled",
+    "best_observed_metric": 0.986013986013986,
+    "top_models": [
+      {
+        "run_id": "run_002",
+        "model": "logistic_regression",
+        "model_key": "logistic_regression_scaled",
+        "metric": 0.986013986013986,
+        "params": {
+          "dataset": "breast_cancer",
+          "scale": true
+        }
+      },
+      {
+        "run_id": "run_003",
+        "model": "random_forest",
+        "model_key": "random_forest_n=300",
+        "metric": 0.958041958041958,
+        "params": {
+          "dataset": "breast_cancer",
+          "n_estimators": 300
+        }
+      },
+      {
+        "run_id": "run_001",
+        "model": "logistic_regression",
+        "model_key": "logistic_regression",
+        "metric": 0.951048951048951,
+        "params": {
+          "dataset": "breast_cancer",
+          "scale": false
+        }
+      }
+    ],
+    "top_gap": 0.027972,
+    "needs_robustness_verification": true,
+    "reason": "Best observed model is based on a single split; verify top models before making a robust claim.",
+    "verification_action_key": "logistic_regression:logistic_regression_scaled:random_forest_n=300"
+  },
   "artifacts": {
     "task_id": "breast_cancer_accuracy",
     "trace_path": "runs/run_005.json",
