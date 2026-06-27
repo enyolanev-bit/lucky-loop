@@ -1,7 +1,7 @@
 {
   "run_id": "run_006",
   "goal": "Maximize validation accuracy on sklearn wine under a small compute budget, while avoiding unsupported claims.",
-  "hypothesis": "Selected top_model_verification because score=152.0; autoresearch agent preferred this catalog action; world model recommended run; top observed models need multi-seed verification before a robust best-model claim; world model predicted top-model robustness or claim risk. Agent hypothesis: The best observed single-run model may not be robust across matched seeds.. World model predicted accuracy around 0.97-1.0 for both logistic_regression_scaled_C=0.1 and random_forest_n=100 across seeds, runtime under 10, recommendation=run, risks=single-run best score may not justify a scientific claim, seed variance may exceed apparent model or hyperparameter effects, Top models are tied on single-split evidence; robust best-model claim requires multi-seed verification.. Causal signal type: mixed.",
+  "hypothesis": "Selected top_model_verification because score=152.0; autoresearch agent preferred this catalog action; world model recommended run; top observed models need multi-seed verification before a robust best-model claim; world model predicted top-model robustness or claim risk. Agent hypothesis: The best single-run model may not be robust across matched seeds.. World model predicted accuracy around 0.97-1.0 for both logistic_regression_scaled_C=0.1 and random_forest_n=100 across seeds, runtime under 10, recommendation=run, risks=single-run best score may not justify a scientific claim, seed variance may exceed apparent model or hyperparameter effects, Top models are tied on single-split evidence; robust best-model claim requires multi-seed verification.. Causal signal type: mixed.",
   "proposed_action": {
     "action_id": "action_verify_top_models",
     "command": "python experiments/compare_models_sklearn.py --dataset wine --models logistic_regression:scale=true,C=0.1 random_forest:n_estimators=100 logistic_regression --seeds 0 1 2 3 4",
@@ -21,7 +21,7 @@
           }
         },
         {
-          "run_id": "run_004",
+          "run_id": "run_005",
           "model": "random_forest",
           "model_key": "random_forest_n=100",
           "metric": 1.0,
@@ -62,16 +62,16 @@
       "Top models are tied on single-split evidence; robust best-model claim requires multi-seed verification."
     ],
     "recommendation": "run",
-    "rationale": "The proposed action is a top_model_verification to check robustness across 5 seeds for the tied top models (logistic_regression_scaled_C=0.1 and random_forest_n=100, both with 1.0 accuracy on single runs). Given the small dataset variance and tied single-split evidence, multi-seed verification is necessary to determine if the models are robustly separated or tied. The wine dataset is small and well-behaved, so we expect both models to maintain high accuracy (0.97-1.0) across seeds, but the verification will clarify if the tie is real or due to single-split overstatement.",
-    "action_specific_signal": "top_model_verification: expecting robust separation or tie between logistic_regression_scaled_C=0.1 and random_forest_n=100 across 5 seeds; label-noise sweeps would test claim robustness, not leaderboard performance",
+    "rationale": "The top models (logistic_regression_scaled_C=0.1 and random_forest_n=100) both achieved 1.0 accuracy in single-run evaluations, but robustness across seeds is needed to confirm the tie or identify a consistent winner. Multi-seed verification will clarify if the observed top model survives matched multi-seed verification or if seed variance explains the tie.",
+    "action_specific_signal": "top_model_verification: logistic_regression_scaled_C=0.1 and random_forest_n=100 are likely robustly separated or tied across seeds; expect accuracy variance within 0.97-1.0 range",
     "claim_risk": "Top models are tied on single-split evidence; robust best-model claim requires multi-seed verification."
   },
   "actual_result": {
     "status": "success",
     "accuracy": null,
     "f1": null,
-    "runtime_seconds": 39.8157,
-    "stdout_tail": " },\n    {\n      \"accuracy\": 0.9111111111111111,\n      \"config_key\": \"logistic_regression\",\n      \"f1\": 0.9110439432690072,\n      \"label\": \"logistic_regression\",\n      \"runtime_seconds\": 0.4634,\n      \"seed\": 1,\n      \"sweep_param\": \"model\",\n      \"value\": \"logistic_regression\"\n    },\n    {\n      \"accuracy\": 1.0,\n      \"config_key\": \"logistic_regression\",\n      \"f1\": 1.0,\n      \"label\": \"logistic_regression\",\n      \"runtime_seconds\": 0.5265,\n      \"seed\": 2,\n      \"sweep_param\": \"model\",\n      \"value\": \"logistic_regression\"\n    },\n    {\n      \"accuracy\": 0.9333333333333333,\n      \"config_key\": \"logistic_regression\",\n      \"f1\": 0.9328253968253967,\n      \"label\": \"logistic_regression\",\n      \"runtime_seconds\": 1.8729,\n      \"seed\": 3,\n      \"sweep_param\": \"model\",\n      \"value\": \"logistic_regression\"\n    },\n    {\n      \"accuracy\": 0.9777777777777777,\n      \"config_key\": \"logistic_regression\",\n      \"f1\": 0.9779047619047617,\n      \"label\": \"logistic_regression\",\n      \"runtime_seconds\": 0.5565,\n      \"seed\": 4,\n      \"sweep_param\": \"model\",\n      \"value\": \"logistic_regression\"\n    }\n  ],\n  \"runtime_seconds\": 39.8157,\n  \"seeds\": [\n    0,\n    1,\n    2,\n    3,\n    4\n  ],\n  \"status\": \"success\",\n  \"summary_by_value\": {\n    \"logistic_regression\": {\n      \"max_accuracy\": 1.0,\n      \"mean_accuracy\": 0.9511111111111111,\n      \"mean_f1\": 0.9509198997649124,\n      \"min_accuracy\": 0.9111111111111111,\n      \"n\": 5\n    },\n    \"logistic_regression_scaled_C=0.1\": {\n      \"max_accuracy\": 1.0,\n      \"mean_accuracy\": 0.9955555555555555,\n      \"mean_f1\": 0.9955637480798771,\n      \"min_accuracy\": 0.9777777777777777,\n      \"n\": 5\n    },\n    \"random_forest_n=100\": {\n      \"max_accuracy\": 1.0,\n      \"mean_accuracy\": 0.9955555555555555,\n      \"mean_f1\": 0.9955389872631253,\n      \"min_accuracy\": 0.9777777777777777,\n      \"n\": 5\n    }\n  },\n  \"type\": \"top_model_verification\",\n  \"verified_models\": [\n    \"logistic_regression_scaled_C=0.1\",\n    \"random_forest_n=100\",\n    \"logistic_regression\"\n  ]\n}\n",
+    "runtime_seconds": 44.2389,
+    "stdout_tail": "   },\n    {\n      \"accuracy\": 0.9111111111111111,\n      \"config_key\": \"logistic_regression\",\n      \"f1\": 0.9110439432690072,\n      \"label\": \"logistic_regression\",\n      \"runtime_seconds\": 0.593,\n      \"seed\": 1,\n      \"sweep_param\": \"model\",\n      \"value\": \"logistic_regression\"\n    },\n    {\n      \"accuracy\": 1.0,\n      \"config_key\": \"logistic_regression\",\n      \"f1\": 1.0,\n      \"label\": \"logistic_regression\",\n      \"runtime_seconds\": 0.7359,\n      \"seed\": 2,\n      \"sweep_param\": \"model\",\n      \"value\": \"logistic_regression\"\n    },\n    {\n      \"accuracy\": 0.9333333333333333,\n      \"config_key\": \"logistic_regression\",\n      \"f1\": 0.9328253968253967,\n      \"label\": \"logistic_regression\",\n      \"runtime_seconds\": 0.6244,\n      \"seed\": 3,\n      \"sweep_param\": \"model\",\n      \"value\": \"logistic_regression\"\n    },\n    {\n      \"accuracy\": 0.9777777777777777,\n      \"config_key\": \"logistic_regression\",\n      \"f1\": 0.9779047619047617,\n      \"label\": \"logistic_regression\",\n      \"runtime_seconds\": 0.768,\n      \"seed\": 4,\n      \"sweep_param\": \"model\",\n      \"value\": \"logistic_regression\"\n    }\n  ],\n  \"runtime_seconds\": 44.2389,\n  \"seeds\": [\n    0,\n    1,\n    2,\n    3,\n    4\n  ],\n  \"status\": \"success\",\n  \"summary_by_value\": {\n    \"logistic_regression\": {\n      \"max_accuracy\": 1.0,\n      \"mean_accuracy\": 0.9511111111111111,\n      \"mean_f1\": 0.9509198997649124,\n      \"min_accuracy\": 0.9111111111111111,\n      \"n\": 5\n    },\n    \"logistic_regression_scaled_C=0.1\": {\n      \"max_accuracy\": 1.0,\n      \"mean_accuracy\": 0.9955555555555555,\n      \"mean_f1\": 0.9955637480798771,\n      \"min_accuracy\": 0.9777777777777777,\n      \"n\": 5\n    },\n    \"random_forest_n=100\": {\n      \"max_accuracy\": 1.0,\n      \"mean_accuracy\": 0.9955555555555555,\n      \"mean_f1\": 0.9955389872631253,\n      \"min_accuracy\": 0.9777777777777777,\n      \"n\": 5\n    }\n  },\n  \"type\": \"top_model_verification\",\n  \"verified_models\": [\n    \"logistic_regression_scaled_C=0.1\",\n    \"random_forest_n=100\",\n    \"logistic_regression\"\n  ]\n}\n",
     "stderr_tail": "",
     "raw": {
       "best": {
@@ -104,7 +104,7 @@
           "config_key": "logistic_regression_scaled_C=0.1",
           "f1": 1.0,
           "label": "logistic_regression_scaled_C=0.1",
-          "runtime_seconds": 0.0461,
+          "runtime_seconds": 0.0114,
           "seed": 0,
           "sweep_param": "model",
           "value": "logistic_regression_scaled_C=0.1"
@@ -114,7 +114,7 @@
           "config_key": "logistic_regression_scaled_C=0.1",
           "f1": 0.9778187403993854,
           "label": "logistic_regression_scaled_C=0.1",
-          "runtime_seconds": 0.0146,
+          "runtime_seconds": 0.0586,
           "seed": 1,
           "sweep_param": "model",
           "value": "logistic_regression_scaled_C=0.1"
@@ -124,7 +124,7 @@
           "config_key": "logistic_regression_scaled_C=0.1",
           "f1": 1.0,
           "label": "logistic_regression_scaled_C=0.1",
-          "runtime_seconds": 0.0218,
+          "runtime_seconds": 0.0437,
           "seed": 2,
           "sweep_param": "model",
           "value": "logistic_regression_scaled_C=0.1"
@@ -134,7 +134,7 @@
           "config_key": "logistic_regression_scaled_C=0.1",
           "f1": 1.0,
           "label": "logistic_regression_scaled_C=0.1",
-          "runtime_seconds": 0.0125,
+          "runtime_seconds": 0.0187,
           "seed": 3,
           "sweep_param": "model",
           "value": "logistic_regression_scaled_C=0.1"
@@ -144,7 +144,7 @@
           "config_key": "logistic_regression_scaled_C=0.1",
           "f1": 1.0,
           "label": "logistic_regression_scaled_C=0.1",
-          "runtime_seconds": 0.0106,
+          "runtime_seconds": 0.0137,
           "seed": 4,
           "sweep_param": "model",
           "value": "logistic_regression_scaled_C=0.1"
@@ -154,7 +154,7 @@
           "config_key": "random_forest_n=100",
           "f1": 1.0,
           "label": "random_forest_n=100",
-          "runtime_seconds": 0.3298,
+          "runtime_seconds": 0.4886,
           "seed": 0,
           "sweep_param": "model",
           "value": "random_forest_n=100"
@@ -164,7 +164,7 @@
           "config_key": "random_forest_n=100",
           "f1": 1.0,
           "label": "random_forest_n=100",
-          "runtime_seconds": 0.3251,
+          "runtime_seconds": 0.3638,
           "seed": 1,
           "sweep_param": "model",
           "value": "random_forest_n=100"
@@ -174,7 +174,7 @@
           "config_key": "random_forest_n=100",
           "f1": 0.9776949363156261,
           "label": "random_forest_n=100",
-          "runtime_seconds": 0.3297,
+          "runtime_seconds": 0.4657,
           "seed": 2,
           "sweep_param": "model",
           "value": "random_forest_n=100"
@@ -184,7 +184,7 @@
           "config_key": "random_forest_n=100",
           "f1": 1.0,
           "label": "random_forest_n=100",
-          "runtime_seconds": 0.2895,
+          "runtime_seconds": 0.3433,
           "seed": 3,
           "sweep_param": "model",
           "value": "random_forest_n=100"
@@ -194,7 +194,7 @@
           "config_key": "random_forest_n=100",
           "f1": 1.0,
           "label": "random_forest_n=100",
-          "runtime_seconds": 0.3063,
+          "runtime_seconds": 0.3803,
           "seed": 4,
           "sweep_param": "model",
           "value": "random_forest_n=100"
@@ -204,7 +204,7 @@
           "config_key": "logistic_regression",
           "f1": 0.9328253968253967,
           "label": "logistic_regression",
-          "runtime_seconds": 0.5424,
+          "runtime_seconds": 0.7076,
           "seed": 0,
           "sweep_param": "model",
           "value": "logistic_regression"
@@ -214,7 +214,7 @@
           "config_key": "logistic_regression",
           "f1": 0.9110439432690072,
           "label": "logistic_regression",
-          "runtime_seconds": 0.4634,
+          "runtime_seconds": 0.593,
           "seed": 1,
           "sweep_param": "model",
           "value": "logistic_regression"
@@ -224,7 +224,7 @@
           "config_key": "logistic_regression",
           "f1": 1.0,
           "label": "logistic_regression",
-          "runtime_seconds": 0.5265,
+          "runtime_seconds": 0.7359,
           "seed": 2,
           "sweep_param": "model",
           "value": "logistic_regression"
@@ -234,7 +234,7 @@
           "config_key": "logistic_regression",
           "f1": 0.9328253968253967,
           "label": "logistic_regression",
-          "runtime_seconds": 1.8729,
+          "runtime_seconds": 0.6244,
           "seed": 3,
           "sweep_param": "model",
           "value": "logistic_regression"
@@ -244,13 +244,13 @@
           "config_key": "logistic_regression",
           "f1": 0.9779047619047617,
           "label": "logistic_regression",
-          "runtime_seconds": 0.5565,
+          "runtime_seconds": 0.768,
           "seed": 4,
           "sweep_param": "model",
           "value": "logistic_regression"
         }
       ],
-      "runtime_seconds": 39.8157,
+      "runtime_seconds": 44.2389,
       "seeds": [
         0,
         1,
@@ -294,7 +294,7 @@
     "metric_match": true,
     "runtime_match": false,
     "unexpected_events": [
-      "runtime 39.82s exceeded predicted 10s"
+      "runtime 44.24s exceeded predicted 10s"
     ],
     "lesson": "Run succeeded, but the prediction missed at least one quantitative detail."
   },
@@ -319,13 +319,13 @@
     "rationale": "Measured top-model effect is not larger than inter-seed noise. The report must not claim a robust best model."
   },
   "schema_version": "3.0",
-  "planner_mode": "agent_command",
-  "agent_backend": "generic_command",
-  "agent_model": "external-agent-command",
-  "agent_prompt_hash": "5ced16bcb953017e",
+  "planner_mode": "operator_driven",
+  "agent_backend": "codex_operator",
+  "agent_model": "agent-in-repo-operator",
+  "agent_prompt_hash": "f0984c2ca73eb75c",
   "agent_decision": {
     "research_question": "Maximize validation accuracy on sklearn wine under a small compute budget, while avoiding unsupported claims.",
-    "working_hypothesis": "The best observed single-run model may not be robust across matched seeds.",
+    "working_hypothesis": "The best single-run model may not be robust across matched seeds.",
     "candidate_action_ids": [
       "action_verify_top_models",
       "action_logistic_regression_C-1p0_scale-True",
@@ -335,9 +335,9 @@
       "action_logistic_regression_C-10p0_scale-False"
     ],
     "preferred_action_id": "action_verify_top_models",
-    "rationale": "Fake command backend selected action_verify_top_models from the safe catalog for state state_006.",
-    "expected_evidence_needed": "Run top-model verification before allowing a robust best-model claim.",
-    "claim_risk": "A single-split leaderboard can overstate model quality.",
+    "rationale": "Given state state_006 with budget_remaining=2, the planner chooses action_verify_top_models to collect the most decision-relevant evidence. Agent-in-repo operator mode follows the same catalog-only contract used by Codex, Claude Code, OpenClaw, or an API planner.",
+    "expected_evidence_needed": "Run matched multi-seed verification on the observed top models before allowing a robust winner claim.",
+    "claim_risk": "A single-split leaderboard can overstate a fragile best-model claim.",
     "stop_or_continue": "continue"
   },
   "safety_validation": {
@@ -349,7 +349,7 @@
       "agent preferred action_verify_top_models"
     ]
   },
-  "research_hypothesis": "The best observed single-run model may not be robust across matched seeds.",
+  "research_hypothesis": "The best single-run model may not be robust across matched seeds.",
   "state_before": {
     "state_id": "state_006",
     "goal": "Maximize validation accuracy on sklearn wine under a small compute budget, while avoiding unsupported claims.",
@@ -389,17 +389,6 @@
       },
       {
         "run_id": "run_004",
-        "model": "random_forest",
-        "accuracy": 1.0,
-        "f1": 1.0,
-        "params": {
-          "dataset": "wine",
-          "n_estimators": 100,
-          "max_depth": null
-        }
-      },
-      {
-        "run_id": "run_005",
         "model": "gradient_boosting",
         "accuracy": 0.9555555555555556,
         "f1": 0.955430886707184,
@@ -407,6 +396,17 @@
           "dataset": "wine",
           "n_estimators": 100,
           "learning_rate": 0.05,
+          "max_depth": null
+        }
+      },
+      {
+        "run_id": "run_005",
+        "model": "random_forest",
+        "accuracy": 1.0,
+        "f1": 1.0,
+        "params": {
+          "dataset": "wine",
+          "n_estimators": 100,
           "max_depth": null
         }
       }
@@ -441,7 +441,7 @@
           }
         },
         {
-          "run_id": "run_004",
+          "run_id": "run_005",
           "model": "random_forest",
           "model_key": "random_forest_n=100",
           "metric": 1.0,
@@ -467,7 +467,7 @@
       "reason": "Top models are tied on single-split evidence; robust best-model claim requires multi-seed verification.",
       "verification_action_key": "logistic_regression:logistic_regression_scaled_C=0.1:random_forest_n=100"
     },
-    "summary": "Task=wine_accuracy; dataset=wine; primary_metric=accuracy. Goal: Maximize validation accuracy on sklearn wine under a small compute budget, while avoiding unsupported claims.\nNo experiments have been run yet. Dataset: sklearn wine. Primary metric: accuracy; secondary metrics: f1.\nrun_001: logistic_regression actual=0.9777777777777777 status=success; prediction=accuracy around 0.85-0.90; recommendation=modify; lesson=Run succeeded, but the prediction missed at least one quantitative detail.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_002: logistic_regression actual=1.0 status=success; prediction=accuracy around 0.97-0.98; recommendation=run; lesson=Run succeeded, but the prediction missed at least one quantitative detail.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_003: svc actual=0.9777777777777777 status=success; prediction=accuracy around 0.96-0.98; recommendation=run; lesson=Prediction was broadly consistent with the real run.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_004: random_forest actual=1.0 status=success; prediction=accuracy around 0.96-0.98; recommendation=run; lesson=Run succeeded, but the prediction missed at least one quantitative detail.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_005: gradient_boosting actual=0.9555555555555556 status=success; prediction=accuracy around 0.96-0.98; recommendation=run; lesson=Run succeeded, but the prediction missed at least one quantitative detail.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option."
+    "summary": "Task=wine_accuracy; dataset=wine; primary_metric=accuracy. Goal: Maximize validation accuracy on sklearn wine under a small compute budget, while avoiding unsupported claims.\nNo experiments have been run yet. Dataset: sklearn wine. Primary metric: accuracy; secondary metrics: f1.\nrun_001: logistic_regression actual=0.9777777777777777 status=success; prediction=accuracy around 0.85-0.90; recommendation=modify; lesson=Run succeeded, but the prediction missed at least one quantitative detail.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_002: logistic_regression actual=1.0 status=success; prediction=accuracy around 0.97-0.98; recommendation=run; lesson=Run succeeded, but the prediction missed at least one quantitative detail.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_003: svc actual=0.9777777777777777 status=success; prediction=accuracy around 0.95-0.98; recommendation=run; lesson=Prediction was broadly consistent with the real run.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_004: gradient_boosting actual=0.9555555555555556 status=success; prediction=accuracy around 0.97-0.98; recommendation=run; lesson=Run succeeded, but the prediction missed at least one quantitative detail.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_005: random_forest actual=1.0 status=success; prediction=accuracy around 0.97-0.98; recommendation=run; lesson=Run succeeded, but the prediction missed at least one quantitative detail.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option."
   },
   "candidate_actions": [
     {
@@ -489,7 +489,7 @@
             }
           },
           {
-            "run_id": "run_004",
+            "run_id": "run_005",
             "model": "random_forest",
             "model_key": "random_forest_n=100",
             "metric": 1.0,
@@ -671,7 +671,7 @@
               }
             },
             {
-              "run_id": "run_004",
+              "run_id": "run_005",
               "model": "random_forest",
               "model_key": "random_forest_n=100",
               "metric": 1.0,
@@ -712,8 +712,8 @@
           "Top models are tied on single-split evidence; robust best-model claim requires multi-seed verification."
         ],
         "recommendation": "run",
-        "rationale": "The proposed action is a top_model_verification to check robustness across 5 seeds for the tied top models (logistic_regression_scaled_C=0.1 and random_forest_n=100, both with 1.0 accuracy on single runs). Given the small dataset variance and tied single-split evidence, multi-seed verification is necessary to determine if the models are robustly separated or tied. The wine dataset is small and well-behaved, so we expect both models to maintain high accuracy (0.97-1.0) across seeds, but the verification will clarify if the tie is real or due to single-split overstatement.",
-        "action_specific_signal": "top_model_verification: expecting robust separation or tie between logistic_regression_scaled_C=0.1 and random_forest_n=100 across 5 seeds; label-noise sweeps would test claim robustness, not leaderboard performance",
+        "rationale": "The top models (logistic_regression_scaled_C=0.1 and random_forest_n=100) both achieved 1.0 accuracy in single-run evaluations, but robustness across seeds is needed to confirm the tie or identify a consistent winner. Multi-seed verification will clarify if the observed top model survives matched multi-seed verification or if seed variance explains the tie.",
+        "action_specific_signal": "top_model_verification: logistic_regression_scaled_C=0.1 and random_forest_n=100 are likely robustly separated or tied across seeds; expect accuracy variance within 0.97-1.0 range",
         "claim_risk": "Top models are tied on single-split evidence; robust best-model claim requires multi-seed verification."
       },
       "source": "qwen_agentworld"
@@ -738,8 +738,8 @@
           "Top models are tied on single-split evidence; robust best-model claim requires multi-seed verification."
         ],
         "recommendation": "modify",
-        "rationale": "The proposed action tests logistic_regression with scale=True and C=1.0, but the top models (logistic_regression_scaled_C=0.1 and random_forest_n=100) are tied at 1.0 accuracy on single-split evidence. A robustness sweep across seeds is needed before claiming superiority of C=1.0 over C=0.1 or the random forest. Additionally, feature scaling is relevant for logistic regression, and the current sweep already includes label-noise testing for C values, which should be prioritized to test claim robustness rather than leaderboard performance.",
-        "action_specific_signal": "logistic regression with scaling is appropriate for the wine dataset, but C=1.0 has not been verified against seed variance or compared robustly to C=0.1 or random forest.",
+        "rationale": "The proposed action tests logistic_regression with scale=True and C=1.0, but the current top models (logistic_regression_scaled_C=0.1 and random_forest_n=100) both achieved 1.0 accuracy on single runs. Since top models are tied and robustness verification is needed, testing another C value without multi-seed sweeps does not address the open question of whether the 1.0 score is robust across seeds or perturbations.",
+        "action_specific_signal": "Feature scaling is relevant for logistic regression; C=1.0 is within the candidate space but the top observed score of 1.0 for logistic_regression_scaled_C=0.1 suggests C=0.1 may be optimal or that variance could explain the perfect score.",
         "claim_risk": "Top models are tied on single-split evidence; robust best-model claim requires multi-seed verification."
       },
       "source": "qwen_agentworld"
@@ -764,8 +764,8 @@
           "Top models are tied on single-split evidence; robust best-model claim requires multi-seed verification."
         ],
         "recommendation": "modify",
-        "rationale": "The proposed action tests logistic_regression with scale=True and C=10.0, but the top models (logistic_regression_scaled_C=0.1 and random_forest_n=100) are tied at 1.0 accuracy on single-run evidence. Feature scaling is relevant for logistic regression, and C=0.1 already achieved 1.0 accuracy. Testing C=10.0 is unlikely to improve upon the tied top performance and may overfit or show variance. A robustness sweep across seeds for the top models is needed before claiming superiority.",
-        "action_specific_signal": "logistic_regression with scale=True and C=10.0 is expected to yield accuracy around 0.97-0.98, similar to C=0.1 but potentially less stable due to higher C values increasing sensitivity to feature scaling and small-dataset variance.",
+        "rationale": "The proposed action tests logistic_regression with scale=True and C=10.0, but the top models (logistic_regression_scaled_C=0.1 and random_forest_n=100) are tied at 1.0 accuracy on single-split evidence. Feature scaling is relevant for logistic regression, and C=10.0 may risk overfitting or variance compared to C=0.1 which achieved 1.0. Before claiming improvement, robustness sweeps across seeds or label-noise should be performed to verify if the top single-run models are robustly separated or tied.",
+        "action_specific_signal": "logistic_regression with scale=True and C=10.0 is likely to achieve accuracy around 0.97-0.98, but may not surpass the tied top models and could exhibit variance or overfitting compared to C=0.1.",
         "claim_risk": "Top models are tied on single-split evidence; robust best-model claim requires multi-seed verification."
       },
       "source": "qwen_agentworld"
@@ -790,8 +790,8 @@
           "Top models are tied on single-split evidence; robust best-model claim requires multi-seed verification."
         ],
         "recommendation": "modify",
-        "rationale": "The proposed action tests logistic_regression with C=0.1 and scale=false. Previous runs show logistic_regression with scale=true and C=0.1 achieved 1.0 accuracy, while logistic_regression without scaling (run_001) achieved 0.9777. Feature scaling matters for linear models like logistic regression, so testing without scaling is likely to underperform the scaled variant. Additionally, the top models are currently tied on single-split evidence, and robustness verification across seeds is needed before making strong claims.",
-        "action_specific_signal": "Feature scaling is relevant for logistic regression; the unscaled variant is expected to perform worse than the scaled variant that achieved 1.0 accuracy.",
+        "rationale": "The proposed action tests logistic_regression with scale=false and C=0.1, but the state shows that scaling matters for linear models and the best observed score (1.0) came from logistic_regression with scale=true and C=0.1. The top models are tied on single-split evidence and require multi-seed verification to establish robustness. Testing an unscaled variant is unlikely to improve upon the scaled best and may underperform.",
+        "action_specific_signal": "Feature scaling is relevant for logistic regression; the unscaled variant is expected to perform worse or similarly to the scaled best (accuracy ~0.97-0.98), and top models are tied on single-split evidence requiring robustness verification.",
         "claim_risk": "Top models are tied on single-split evidence; robust best-model claim requires multi-seed verification."
       },
       "source": "qwen_agentworld"
@@ -816,8 +816,8 @@
           "Top models are tied on single-split evidence; robust best-model claim requires multi-seed verification."
         ],
         "recommendation": "modify",
-        "rationale": "The proposed action tests logistic_regression with scale=false and C=1.0, but the top models (logistic_regression_scaled_C=0.1 and random_forest_n=100) both achieved 1.0 accuracy on a single split and require robustness verification across seeds. Feature scaling is relevant for logistic regression, and the current sweep already includes scale=true with label noise. Before testing unscaled variants, the tied top models should be verified with multi-seed sweeps to ensure the 1.0 score is not a single-split artifact.",
-        "action_specific_signal": "logistic_regression without scaling on wine typically yields accuracy around 0.97-0.98, but the scaled version with C=0.1 achieved 1.0; unscaled variants may underperform or show similar variance.",
+        "rationale": "The proposed action tests logistic_regression with scale=false and C=1.0, but the top observed models (logistic_regression_scaled_C=0.1 and random_forest_n=100) both achieved 1.0 accuracy on a single split and require multi-seed robustness verification before claims can be made. Feature scaling is relevant for logistic regression, and the current candidate space includes scale=true for logistic regression with C=0.1, 1.0, 10.0. The existing sweep for logistic_regression already tests scale=true with C values including 1.0 across seeds 0-3 and label_noise=0.05, making this unscaled C=1.0 run redundant for robustness claims. To advance the goal, the next action should focus on robustness verification of the tied top models rather than exploring unscaled variants.",
+        "action_specific_signal": "logistic_regression without scaling on wine typically achieves ~0.97-0.98 accuracy, but scaled variants with C=0.1 have already reached 1.0 on single splits; unscaled C=1.0 is unlikely to surpass scaled top performers and does not address the need for multi-seed verification of tied top models.",
         "claim_risk": "Top models are tied on single-split evidence; robust best-model claim requires multi-seed verification."
       },
       "source": "qwen_agentworld"
@@ -842,8 +842,8 @@
           "Top models are tied on single-split evidence; robust best-model claim requires multi-seed verification."
         ],
         "recommendation": "modify",
-        "rationale": "The proposed action tests logistic_regression with scale=false and C=10.0, but the top models (logistic_regression_scaled_C=0.1 and random_forest_n=100) are tied at 1.0 accuracy on single-split evidence. Feature scaling is relevant for logistic regression, and the current sweep already includes scaled logistic regression with C=0.1, 1.0, 10.0 across seeds. Testing an unscaled variant with C=10.0 is unlikely to improve upon the best observed score and does not address the need for robustness verification across seeds or perturbations.",
-        "action_specific_signal": "logistic regression without scaling on wine dataset typically yields accuracy around 0.97-0.98, but scaling improves or stabilizes performance; top models require multi-seed verification before claiming superiority.",
+        "rationale": "The proposed action tests logistic regression with C=10.0 and scale=false. Previous runs show logistic regression with scale=true and C=0.1 achieved 1.0 accuracy, while logistic regression without scaling (run_001) achieved 0.9778. Feature scaling matters for linear models like logistic regression, so unscaled C=10.0 may underperform or overfit. Additionally, the top models are tied on single-split evidence and require multi-seed robustness verification before claiming superiority.",
+        "action_specific_signal": "logistic regression without scaling is unlikely to beat scaled variants; consider verifying top models across seeds instead of testing unscaled high-C logistic regression.",
         "claim_risk": "Top models are tied on single-split evidence; robust best-model claim requires multi-seed verification."
       },
       "source": "qwen_agentworld"
@@ -868,9 +868,9 @@
           "seed variance may exceed apparent model or hyperparameter effects",
           "Top models are tied on single-split evidence; robust best-model claim requires multi-seed verification."
         ],
-        "recommendation": "skip",
-        "rationale": "The proposed SVC with C=2.0 and rbf kernel is unlikely to surpass the already observed 1.0 accuracy of logistic_regression_scaled_C=0.1 and random_forest_n=100. Moreover, the top models are tied on single-split evidence and require multi-seed verification before making robust claims. Running another single split of SVC is not the highest priority given the budget and the need for robustness sweeps.",
-        "action_specific_signal": "SVC with rbf kernel and scaling is expected to perform similarly to run_003 (accuracy ~0.9778), but not exceed the perfect scores already seen.",
+        "recommendation": "modify",
+        "rationale": "The proposed SVC run with C=2.0 and rbf kernel is likely to achieve accuracy around 0.97-0.98, consistent with the previous SVC run (run_003) with C=0.5. However, the top models (logistic_regression_scaled_C=0.1 and random_forest_n=100) are tied at 1.0 accuracy on single-split evidence, and robustness verification is needed before making strong claims. Feature scaling is already applied for SVC, which is appropriate. Given the small dataset and potential for overfitting or variance, a robustness sweep across seeds is recommended before claiming superiority.",
+        "action_specific_signal": "SVC with rbf kernel and feature scaling typically achieves high accuracy on the wine dataset, but single-run results may not be robust across seeds.",
         "claim_risk": "Top models are tied on single-split evidence; robust best-model claim requires multi-seed verification."
       },
       "source": "qwen_agentworld"
@@ -896,8 +896,8 @@
           "Top models are tied on single-split evidence; robust best-model claim requires multi-seed verification."
         ],
         "recommendation": "skip",
-        "rationale": "The proposed SVC with C=5.0 and rbf kernel is unlikely to improve upon the already observed 1.0 accuracy from logistic_regression_scaled_C=0.1 and random_forest_n=100. Moreover, the top models are tied on single-split evidence, and robust best-model claim requires multi-seed verification. Running another single-run SVC experiment does not address the open question of robustness across seeds or perturbations.",
-        "action_specific_signal": "SVC with rbf kernel and feature scaling typically achieves high accuracy on the wine dataset, but single-run results may overstate model win due to small-dataset variance.",
+        "rationale": "The proposed SVC with C=5.0 and rbf kernel is unlikely to improve upon the already observed 1.0 accuracy of logistic_regression_scaled_C=0.1 and random_forest_n=100. Moreover, the top models are tied on single-split evidence, and robust best-model claim requires multi-seed verification. Running another single-run SVC experiment does not address the need for robustness verification across seeds or perturbations.",
+        "action_specific_signal": "SVC with rbf kernel and scaling is known to perform well on the wine dataset, but the current top models already achieve perfect accuracy on a single split. Feature scaling is relevant for SVC, but the current experiment does not add value given the tied top models and the need for robustness verification.",
         "claim_risk": "Top models are tied on single-split evidence; robust best-model claim requires multi-seed verification."
       },
       "source": "qwen_agentworld"
@@ -918,14 +918,14 @@
         "expected_metric": "accuracy around 0.95-0.97",
         "expected_runtime_seconds": "under 5",
         "risks": [
-          "small-dataset variance may overstate a model win on a single split",
-          "gradient boosting may overfit on small tabular datasets if not carefully tuned",
-          "single-run best score may not justify a scientific claim without multi-seed verification"
+          "single-run best score may not justify a scientific claim",
+          "seed variance may exceed apparent model or hyperparameter effects",
+          "Top models are tied on single-split evidence; robust best-model claim requires multi-seed verification."
         ],
-        "recommendation": "run",
-        "rationale": "The proposed gradient boosting configuration (n_estimators=100, learning_rate=0.1) is a reasonable next step given the existing gradient boosting run (run_005) achieved 0.9555 accuracy with learning_rate=0.05. Increasing learning_rate to 0.1 may improve performance slightly, but small-dataset variance means a single split could overstate any improvement. Multi-seed verification would be needed to confirm robustness.",
-        "action_specific_signal": "gradient_boosting with learning_rate=0.1 and n_estimators=100 is expected to achieve accuracy around 0.95-0.97, potentially matching or slightly improving over the previous gradient_boosting run with learning_rate=0.05.",
-        "claim_risk": "single-run best score may not justify a scientific claim; seed variance may exceed apparent hyperparameter effects"
+        "recommendation": "modify",
+        "rationale": "The proposed gradient boosting run with learning_rate=0.1 and n_estimators=100 is likely to yield accuracy around 0.95-0.97, similar to the previous gradient boosting run (run_004) which achieved 0.9555. However, the top models (logistic_regression_scaled_C=0.1 and random_forest_n=100) are tied at 1.0 accuracy on single-split evidence, and robustness verification is needed before making strong claims. The gradient boosting model is not currently the top performer, and increasing learning rate may not overcome the variance or overfitting risks associated with tree ensembles on this small dataset.",
+        "action_specific_signal": "gradient_boosting with learning_rate=0.1 and n_estimators=100 is expected to perform similarly to run_004 (accuracy ~0.955), but top models require multi-seed verification to confirm robust separation.",
+        "claim_risk": "Top models are tied on single-split evidence; robust best-model claim requires multi-seed verification."
       },
       "source": "qwen_agentworld"
     },
@@ -946,13 +946,13 @@
         "expected_runtime_seconds": "under 5",
         "risks": [
           "small-dataset variance may overstate a model win on a single split",
-          "gradient boosting may overfit on small datasets if not carefully regularized",
-          "single-run best score may not justify a scientific claim without multi-seed verification"
+          "gradient boosting may overfit or show variance on small datasets",
+          "top models are tied on single-split evidence; robust best-model claim requires multi-seed verification"
         ],
-        "recommendation": "run",
-        "rationale": "The proposed gradient boosting configuration (n_estimators=150, learning_rate=0.05) is a reasonable extension of the previously tested gradient boosting model (n_estimators=100, learning_rate=0.05) which achieved 0.9555 accuracy. Given the small dataset size and the fact that tree ensembles can show variance across splits, this run should be executed but results should be interpreted with caution regarding robustness. The current top models are tied at 1.0 accuracy, so this gradient boosting run is unlikely to surpass the current best but may provide useful comparative data.",
-        "action_specific_signal": "Gradient boosting with increased estimators may show slight improvement or similar performance to the previous gradient boosting run, but is unlikely to exceed the 1.0 accuracy achieved by logistic regression and random forest on this dataset.",
-        "claim_risk": "High risk of overclaiming if this single run shows marginal improvement without multi-seed verification, especially given the existing tied top models at 1.0 accuracy."
+        "recommendation": "modify",
+        "rationale": "The proposed gradient boosting run with n_estimators=150 and learning_rate=0.05 is likely to yield accuracy in the 0.95-0.97 range, similar to run_004 (0.9555). However, the current top models (logistic_regression_scaled_C=0.1 and random_forest_n=100) both achieved 1.0 on single splits, and the state indicates top models are tied on single-split evidence with a need for robustness verification. Before spending the remaining budget on another gradient boosting configuration, it is more scientific to perform multi-seed verification on the top models to confirm robust separation or ties.",
+        "action_specific_signal": "gradient boosting on wine with n_estimators=150, learning_rate=0.05 typically shows slight variance and may not surpass the 1.0 single-run scores of logistic regression or random forest; robustness sweeps across seeds are needed before claiming superiority.",
+        "claim_risk": "Top models are tied on single-split evidence; robust best-model claim requires multi-seed verification."
       },
       "source": "qwen_agentworld"
     },
@@ -973,13 +973,13 @@
         "expected_runtime_seconds": "under 5",
         "risks": [
           "small-dataset variance may overstate a model win on a single split",
-          "gradient boosting may overfit on small datasets if not carefully regularized",
-          "top models are tied on single-split evidence; robust best-model claim requires multi-seed verification"
+          "gradient boosting may overfit or show variance on small datasets",
+          "robustness sweeps needed before strong claims when a high single-run score exists"
         ],
         "recommendation": "run",
-        "rationale": "The proposed gradient boosting configuration (n_estimators=150, learning_rate=0.1) is a reasonable next step to explore the candidate space, but given the small dataset and existing tied top models (logistic_regression_scaled_C=0.1 and random_forest_n=100 both at 1.0 accuracy), single-run results should be interpreted with caution. Multi-seed verification is needed before claiming superiority.",
-        "action_specific_signal": "Gradient boosting with higher n_estimators and learning_rate may improve on the previous 0.955 score but risks overfitting or variance on the small wine dataset.",
-        "claim_risk": "Top models are tied on single-split evidence; robust best-model claim requires multi-seed verification."
+        "rationale": "The proposed gradient boosting configuration (n_estimators=150, learning_rate=0.1) is a reasonable extension of the previously tested gradient boosting model (n_estimators=100, learning_rate=0.05) which achieved 0.9555 accuracy. Given the wine dataset's small size and the model's sensitivity to hyperparameters, this run should be executed to explore the parameter space, but robustness verification across seeds will be necessary to confirm any improvements.",
+        "action_specific_signal": "Gradient boosting with increased estimators and learning rate may improve on the previous 0.9555 accuracy but risks overfitting on the small wine dataset",
+        "claim_risk": "single-run best score may not justify a scientific claim without multi-seed verification"
       },
       "source": "qwen_agentworld"
     },
@@ -1012,12 +1012,12 @@
         "expected_runtime_seconds": "under 15",
         "risks": [
           "label-noise sweeps test claim robustness, not leaderboard performance",
-          "small-dataset variance may cause single-run best scores to overstate model win",
-          "top models are tied on single-split evidence; robust best-model claim requires multi-seed verification"
+          "small-dataset variance may cause seed-to-seed fluctuations",
+          "single-run best score may not justify a scientific claim without multi-seed verification"
         ],
         "recommendation": "run",
-        "rationale": "The proposed action is a robustness sweep for logistic regression across C values and seeds with label noise, which directly addresses the open question of whether the best observed score (1.0 accuracy with logistic_regression_scaled_C=0.1) is robust across seeds or perturbations. Given the tied top models (logistic_regression_scaled_C=0.1 and random_forest_n=100 both at 1.0 accuracy), this sweep will help determine if the logistic regression model's performance is stable or if seed variance explains the perfect score. The label noise parameter tests claim robustness rather than leaderboard performance, which aligns with the goal of avoiding unsupported claims.",
-        "action_specific_signal": "sweep tests robustness of logistic_regression across C values and seeds with label noise; top models tied on single-split evidence require multi-seed verification",
+        "rationale": "The proposed action is a robustness sweep for logistic regression with feature scaling and label noise, targeting the top-performing model (logistic_regression_scaled_C=0.1) and comparing against random_forest_n=100 which also achieved 1.0 accuracy. Since top models are tied on single-split evidence and need multi-seed verification, this sweep is appropriate to assess robustness across seeds and C values. Feature scaling is relevant for logistic regression, and label noise tests claim robustness rather than leaderboard performance.",
+        "action_specific_signal": "verification_sweep for logistic_regression with scale=true, C in [0.1, 1.0, 10.0], seeds 0-3, and label_noise=0.05",
         "claim_risk": "Top models are tied on single-split evidence; robust best-model claim requires multi-seed verification."
       },
       "source": "qwen_agentworld"
@@ -1042,7 +1042,7 @@
           }
         },
         {
-          "run_id": "run_004",
+          "run_id": "run_005",
           "model": "random_forest",
           "model_key": "random_forest_n=100",
           "metric": 1.0,
@@ -1094,7 +1094,7 @@
             }
           },
           {
-            "run_id": "run_004",
+            "run_id": "run_005",
             "model": "random_forest",
             "model_key": "random_forest_n=100",
             "metric": 1.0,
@@ -1147,11 +1147,11 @@
     },
     "qwen_suggested_action": "action_verify_top_models",
     "catalog_validation": "accepted",
-    "agent_rationale": "Fake command backend selected action_verify_top_models from the safe catalog for state state_006.",
+    "agent_rationale": "Given state state_006 with budget_remaining=2, the planner chooses action_verify_top_models to collect the most decision-relevant evidence. Agent-in-repo operator mode follows the same catalog-only contract used by Codex, Claude Code, OpenClaw, or an API planner.",
     "preferred_action_id": "action_verify_top_models",
     "selection_overrode_agent": false,
     "override_reason": null,
-    "causal_reason": "Selected top_model_verification because score=152.0; autoresearch agent preferred this catalog action; world model recommended run; top observed models need multi-seed verification before a robust best-model claim; world model predicted top-model robustness or claim risk. Agent hypothesis: The best observed single-run model may not be robust across matched seeds.. World model predicted accuracy around 0.97-1.0 for both logistic_regression_scaled_C=0.1 and random_forest_n=100 across seeds, runtime under 10, recommendation=run, risks=single-run best score may not justify a scientific claim, seed variance may exceed apparent model or hyperparameter effects, Top models are tied on single-split evidence; robust best-model claim requires multi-seed verification.. Causal signal type: mixed.",
+    "causal_reason": "Selected top_model_verification because score=152.0; autoresearch agent preferred this catalog action; world model recommended run; top observed models need multi-seed verification before a robust best-model claim; world model predicted top-model robustness or claim risk. Agent hypothesis: The best single-run model may not be robust across matched seeds.. World model predicted accuracy around 0.97-1.0 for both logistic_regression_scaled_C=0.1 and random_forest_n=100 across seeds, runtime under 10, recommendation=run, risks=single-run best score may not justify a scientific claim, seed variance may exceed apparent model or hyperparameter effects, Top models are tied on single-split evidence; robust best-model claim requires multi-seed verification.. Causal signal type: mixed.",
     "rejected_candidates": [
       {
         "action": {
@@ -1240,48 +1240,23 @@
       },
       {
         "action": {
-          "action_id": "action_gradient_boosting_learning_rate-0p1_n_estimators-100",
-          "command": "python experiments/train_sklearn.py --dataset wine --model gradient_boosting --n-estimators 100 --learning-rate 0.1",
-          "model": "gradient_boosting",
+          "action_id": "action_svc_C-2p0_kernel-rbf_scale-True",
+          "command": "python experiments/train_sklearn.py --dataset wine --model svc --scale --C 2.0 --kernel rbf",
+          "model": "svc",
           "params": {
             "dataset": "wine",
-            "n_estimators": 100,
-            "learning_rate": 0.1,
-            "max_depth": null
+            "scale": true,
+            "C": 2.0,
+            "kernel": "rbf"
           }
         },
-        "reason": "score=11.0; world model recommended run; candidate is a variant of an already tested family; ensemble baseline is useful as a late comparison; world model predicted overfitting risk; high best score increases claim risk for additional single-run score chasing",
+        "reason": "score=28.0; world model recommended modification, so the action remains informative but lower priority; candidate is a variant of an already tested family; tree prediction missed, so a scaled margin model tests a different hypothesis; world model predicted overfitting risk; high best score increases claim risk for additional single-run score chasing",
         "score_breakdown": {
           "expected_gain": 0.0,
-          "uncertainty": 0.0,
-          "novelty": 5.0,
+          "uncertainty": 30.0,
+          "novelty": 0.0,
           "verification_value": 0.0,
-          "qwen_signal": 30.0,
-          "redundancy_penalty": -12.0,
-          "compute_cost_penalty": -4.0,
-          "unsupported_claim_risk": -8.0,
-          "agent_preference": 0.0
-        }
-      },
-      {
-        "action": {
-          "action_id": "action_gradient_boosting_learning_rate-0p05_n_estimators-150",
-          "command": "python experiments/train_sklearn.py --dataset wine --model gradient_boosting --n-estimators 150 --learning-rate 0.05",
-          "model": "gradient_boosting",
-          "params": {
-            "dataset": "wine",
-            "n_estimators": 150,
-            "learning_rate": 0.05,
-            "max_depth": null
-          }
-        },
-        "reason": "score=11.0; world model recommended run; candidate is a variant of an already tested family; ensemble baseline is useful as a late comparison; world model predicted overfitting risk; high best score increases claim risk for additional single-run score chasing",
-        "score_breakdown": {
-          "expected_gain": 0.0,
-          "uncertainty": 0.0,
-          "novelty": 5.0,
-          "verification_value": 0.0,
-          "qwen_signal": 30.0,
+          "qwen_signal": 22.0,
           "redundancy_penalty": -12.0,
           "compute_cost_penalty": -4.0,
           "unsupported_claim_risk": -8.0,
@@ -1372,7 +1347,7 @@
             "C": 10.0
           }
         },
-        "reason": "score=10.0; autoresearch agent included this action in its candidate shortlist; world model recommended modification, so the action remains informative but lower priority; candidate is a variant of an already tested family; high best score increases claim risk for additional single-run score chasing",
+        "reason": "score=6.0; autoresearch agent included this action in its candidate shortlist; world model recommended modification, so the action remains informative but lower priority; candidate is a variant of an already tested family; world model predicted overfitting risk; high best score increases claim risk for additional single-run score chasing",
         "score_breakdown": {
           "expected_gain": 0.0,
           "uncertainty": 0.0,
@@ -1380,32 +1355,57 @@
           "verification_value": 0.0,
           "qwen_signal": 22.0,
           "redundancy_penalty": -12.0,
-          "compute_cost_penalty": 0.0,
+          "compute_cost_penalty": -4.0,
           "unsupported_claim_risk": -8.0,
           "agent_preference": 8.0
         }
       },
       {
         "action": {
-          "action_id": "action_svc_C-2p0_kernel-rbf_scale-True",
-          "command": "python experiments/train_sklearn.py --dataset wine --model svc --scale --C 2.0 --kernel rbf",
-          "model": "svc",
+          "action_id": "action_gradient_boosting_learning_rate-0p1_n_estimators-100",
+          "command": "python experiments/train_sklearn.py --dataset wine --model gradient_boosting --n-estimators 100 --learning-rate 0.1",
+          "model": "gradient_boosting",
           "params": {
             "dataset": "wine",
-            "scale": true,
-            "C": 2.0,
-            "kernel": "rbf"
+            "n_estimators": 100,
+            "learning_rate": 0.1,
+            "max_depth": null
           }
         },
-        "reason": "score=-5.0; world model recommended skip; candidate is a variant of an already tested family; tree prediction missed, so a scaled margin model tests a different hypothesis; high best score increases claim risk for additional single-run score chasing",
+        "reason": "score=3.0; world model recommended modification, so the action remains informative but lower priority; candidate is a variant of an already tested family; ensemble baseline is useful as a late comparison; world model predicted overfitting risk; high best score increases claim risk for additional single-run score chasing",
         "score_breakdown": {
           "expected_gain": 0.0,
-          "uncertainty": 30.0,
-          "novelty": 0.0,
+          "uncertainty": 0.0,
+          "novelty": 5.0,
           "verification_value": 0.0,
-          "qwen_signal": -15.0,
+          "qwen_signal": 22.0,
           "redundancy_penalty": -12.0,
-          "compute_cost_penalty": 0.0,
+          "compute_cost_penalty": -4.0,
+          "unsupported_claim_risk": -8.0,
+          "agent_preference": 0.0
+        }
+      },
+      {
+        "action": {
+          "action_id": "action_gradient_boosting_learning_rate-0p05_n_estimators-150",
+          "command": "python experiments/train_sklearn.py --dataset wine --model gradient_boosting --n-estimators 150 --learning-rate 0.05",
+          "model": "gradient_boosting",
+          "params": {
+            "dataset": "wine",
+            "n_estimators": 150,
+            "learning_rate": 0.05,
+            "max_depth": null
+          }
+        },
+        "reason": "score=3.0; world model recommended modification, so the action remains informative but lower priority; candidate is a variant of an already tested family; ensemble baseline is useful as a late comparison; world model predicted overfitting risk; high best score increases claim risk for additional single-run score chasing",
+        "score_breakdown": {
+          "expected_gain": 0.0,
+          "uncertainty": 0.0,
+          "novelty": 5.0,
+          "verification_value": 0.0,
+          "qwen_signal": 22.0,
+          "redundancy_penalty": -12.0,
+          "compute_cost_penalty": -4.0,
           "unsupported_claim_risk": -8.0,
           "agent_preference": 0.0
         }
@@ -1473,7 +1473,7 @@
         }
       },
       {
-        "run_id": "run_004",
+        "run_id": "run_005",
         "model": "random_forest",
         "model_key": "random_forest_n=100",
         "metric": 1.0,

@@ -67,7 +67,7 @@ def test_override_keeps_valid_preferred_but_sanitizes_candidates():
     assert "ghost_action" not in out.candidate_action_ids
 
 
-def test_fake_agent_backend_produces_valid_response():
+def test_fake_agent_backend_produces_valid_response(tmp_path):
     """The reference backend must return a response that passes the safe-catalog validator."""
     cat = _catalog()
     request = {
@@ -76,8 +76,8 @@ def test_fake_agent_backend_produces_valid_response():
         "candidate_catalog": [c.model_dump() for c in cat],
         "prior_traces_summary": [],
     }
-    req_path = ROOT / "agent_io" / "_test" / "s0.request.json"
-    resp_path = ROOT / "agent_io" / "_test" / "s0.response.json"
+    req_path = tmp_path / "s0.request.json"
+    resp_path = tmp_path / "s0.response.json"
     req_path.parent.mkdir(parents=True, exist_ok=True)
     req_path.write_text(json.dumps(request), encoding="utf-8")
     proc = subprocess.run(

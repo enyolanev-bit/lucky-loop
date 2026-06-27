@@ -13,22 +13,23 @@
   },
   "world_model_prediction": {
     "expected_metric": "accuracy around 0.93-0.95",
-    "expected_runtime_seconds": "under 5",
+    "expected_runtime_seconds": "under 2",
     "risks": [
-      "logistic regression without feature scaling may underperform on breast_cancer",
-      "single-run score may overstate model performance without repeated seeds"
+      "logistic regression without feature scaling may underperform compared to scaled variants",
+      "single-run best score may not justify a scientific claim",
+      "small-dataset variance could overstate a model win on a single split"
     ],
     "recommendation": "modify",
-    "rationale": "The proposed action trains logistic regression without feature scaling (scale=false). For logistic regression on the breast_cancer dataset, feature scaling is typically important for optimal performance. Additionally, a single-run result should not be used to make robust claims without repeated seeds.",
-    "action_specific_signal": "logistic regression without scaling on breast_cancer typically yields lower accuracy compared to scaled versions",
+    "rationale": "The proposed action trains logistic regression without feature scaling (scale=false). For logistic regression on the breast_cancer dataset, feature scaling is relevant and typically improves or stabilizes performance. Additionally, a single-run result on a small dataset like breast_cancer should not be treated as a robust claim without repeated seeds or a robustness sweep.",
+    "action_specific_signal": "logistic regression without scaling on breast_cancer typically yields slightly lower or more variable accuracy than scaled logistic regression; consider setting scale=true and planning seed repetitions.",
     "claim_risk": "single-run best score may not justify a scientific claim"
   },
   "actual_result": {
     "status": "success",
     "accuracy": 0.951048951048951,
     "f1": 0.9504987920829505,
-    "runtime_seconds": 0.5049,
-    "stdout_tail": "{\n  \"accuracy\": 0.951048951048951,\n  \"dataset\": \"breast_cancer\",\n  \"f1\": 0.9504987920829505,\n  \"model\": \"logistic_regression\",\n  \"n_label_noise_flips\": 0,\n  \"n_test\": 143,\n  \"n_train\": 426,\n  \"params\": {\n    \"C\": 1.0,\n    \"dataset\": \"breast_cancer\",\n    \"kernel\": \"rbf\",\n    \"label_noise\": 0.0,\n    \"learning_rate\": 0.1,\n    \"max_depth\": null,\n    \"max_iter\": 1000,\n    \"model\": \"logistic_regression\",\n    \"n_estimators\": 200,\n    \"scale\": false,\n    \"seed\": 42,\n    \"test_size\": 0.25\n  },\n  \"runtime_seconds\": 0.5049,\n  \"status\": \"success\"\n}\n",
+    "runtime_seconds": 0.5446,
+    "stdout_tail": "{\n  \"accuracy\": 0.951048951048951,\n  \"dataset\": \"breast_cancer\",\n  \"f1\": 0.9504987920829505,\n  \"model\": \"logistic_regression\",\n  \"n_label_noise_flips\": 0,\n  \"n_test\": 143,\n  \"n_train\": 426,\n  \"params\": {\n    \"C\": 1.0,\n    \"dataset\": \"breast_cancer\",\n    \"kernel\": \"rbf\",\n    \"label_noise\": 0.0,\n    \"learning_rate\": 0.1,\n    \"max_depth\": null,\n    \"max_iter\": 1000,\n    \"model\": \"logistic_regression\",\n    \"n_estimators\": 200,\n    \"scale\": false,\n    \"seed\": 42,\n    \"test_size\": 0.25\n  },\n  \"runtime_seconds\": 0.5446,\n  \"status\": \"success\"\n}\n",
     "stderr_tail": "",
     "raw": {
       "accuracy": 0.951048951048951,
@@ -52,7 +53,7 @@
         "seed": 42,
         "test_size": 0.25
       },
-      "runtime_seconds": 0.5049,
+      "runtime_seconds": 0.5446,
       "status": "success"
     }
   },
@@ -67,9 +68,9 @@
   "next_decision": "Continue: regenerate candidates from the updated state and ask the world model to predict each option.",
   "verification": null,
   "schema_version": "3.0",
-  "planner_mode": "replay",
-  "agent_backend": "replay",
-  "agent_model": "replay-agent-v1",
+  "planner_mode": "operator_driven",
+  "agent_backend": "codex_operator",
+  "agent_model": "agent-in-repo-operator",
   "agent_prompt_hash": "8206126a6f451d25",
   "agent_decision": {
     "research_question": "Maximize validation accuracy on sklearn breast_cancer under a small compute budget, while avoiding unsupported claims.",
@@ -83,7 +84,7 @@
       "action_logistic_regression_C-1p0_scale-True"
     ],
     "preferred_action_id": "action_001",
-    "rationale": "Given state state_001 with budget_remaining=7, the planner chooses action_001 to collect the most decision-relevant evidence.",
+    "rationale": "Given state state_001 with budget_remaining=7, the planner chooses action_001 to collect the most decision-relevant evidence. Agent-in-repo operator mode follows the same catalog-only contract used by Codex, Claude Code, OpenClaw, or an API planner.",
     "expected_evidence_needed": "Establish baseline accuracy, runtime, and convergence behavior.",
     "claim_risk": "No best-model claim is allowed from a baseline-only run.",
     "stop_or_continue": "continue"
@@ -258,14 +259,15 @@
       },
       "prediction": {
         "expected_metric": "accuracy around 0.93-0.95",
-        "expected_runtime_seconds": "under 5",
+        "expected_runtime_seconds": "under 2",
         "risks": [
-          "logistic regression without feature scaling may underperform on breast_cancer",
-          "single-run score may overstate model performance without repeated seeds"
+          "logistic regression without feature scaling may underperform compared to scaled variants",
+          "single-run best score may not justify a scientific claim",
+          "small-dataset variance could overstate a model win on a single split"
         ],
         "recommendation": "modify",
-        "rationale": "The proposed action trains logistic regression without feature scaling (scale=false). For logistic regression on the breast_cancer dataset, feature scaling is typically important for optimal performance. Additionally, a single-run result should not be used to make robust claims without repeated seeds.",
-        "action_specific_signal": "logistic regression without scaling on breast_cancer typically yields lower accuracy compared to scaled versions",
+        "rationale": "The proposed action trains logistic regression without feature scaling (scale=false). For logistic regression on the breast_cancer dataset, feature scaling is relevant and typically improves or stabilizes performance. Additionally, a single-run result on a small dataset like breast_cancer should not be treated as a robust claim without repeated seeds or a robustness sweep.",
+        "action_specific_signal": "logistic regression without scaling on breast_cancer typically yields slightly lower or more variable accuracy than scaled logistic regression; consider setting scale=true and planning seed repetitions.",
         "claim_risk": "single-run best score may not justify a scientific claim"
       },
       "source": "qwen_agentworld"
@@ -283,15 +285,14 @@
       },
       "prediction": {
         "expected_metric": "accuracy around 0.93-0.95",
-        "expected_runtime_seconds": "under 5",
+        "expected_runtime_seconds": "under 2",
         "risks": [
-          "feature scaling is relevant for logistic regression and svc; unscaled features may reduce accuracy",
-          "small-dataset variance means a single split could overstate a model win",
-          "single-run best score may not justify a scientific claim"
+          "Logistic regression without feature scaling may underperform on unscaled medical tabular features.",
+          "Single-run best score may not justify a scientific claim without repeated seeds."
         ],
         "recommendation": "run",
-        "rationale": "The action tests logistic regression with C=0.1 and no scaling on the breast_cancer dataset. Given the dataset's small size and the lack of feature scaling, expect accuracy in the 0.93-0.95 range. A single split result should not be treated as a robust claim without repeated seeds or a robustness sweep.",
-        "action_specific_signal": "logistic regression without scaling on breast_cancer typically yields slightly lower accuracy than scaled variants; expect around 0.93-0.95 accuracy",
+        "rationale": "The action tests logistic regression with C=0.1 and scale=false on the breast_cancer dataset. Given the dataset's small size and the lack of scaling, accuracy is expected in the 0.93-0.95 range. A single split may overstate performance, so repeated seeds are needed for robust claims.",
+        "action_specific_signal": "Logistic regression without scaling on breast_cancer typically yields slightly lower accuracy compared to scaled variants, but remains a strong baseline.",
         "claim_risk": "single-run best score may not justify a scientific claim"
       },
       "source": "qwen_agentworld"
@@ -311,14 +312,14 @@
         "expected_metric": "accuracy around 0.93-0.95",
         "expected_runtime_seconds": "under 5",
         "risks": [
-          "logistic regression without feature scaling may underperform on unscaled tabular features",
+          "logistic regression without feature scaling may underperform compared to scaled variants",
           "single-run best score may not justify a scientific claim",
           "small-dataset variance could overstate a model win on a single split"
         ],
         "recommendation": "run",
-        "rationale": "The action tests logistic regression with C=1.0 and scale=false on the breast_cancer dataset. Since logistic regression and SVC are sensitive to feature scaling, unscaled features may lead to suboptimal accuracy compared to scaled variants. The breast_cancer dataset is small, so a single split could overstate performance; repeated seeds or a robustness sweep would be needed before making strong claims. This run is low-cost and provides a useful baseline for comparison with scaled logistic regression and other models.",
-        "action_specific_signal": "logistic regression without scaling on breast_cancer typically yields accuracy in the 0.93-0.95 range, lower than scaled variants or tree ensembles.",
-        "claim_risk": "single-run best score may not justify a scientific claim; unscaled logistic regression is unlikely to be the top performer compared to scaled logistic regression or tree ensembles."
+        "rationale": "The action tests logistic regression with C=1.0 and scale=false on the breast_cancer dataset. Since feature scaling is relevant for logistic regression and the proposed action sets scale=false, expect slightly lower accuracy than scaled variants. The dataset is small, so single-split results should be interpreted with caution and not form the basis of a robust claim without repeated seeds.",
+        "action_specific_signal": "logistic regression without scaling typically yields accuracy around 0.93-0.95 on breast_cancer; scaled variants usually achieve 0.95-0.97",
+        "claim_risk": "single-run best score may not justify a scientific claim"
       },
       "source": "qwen_agentworld"
     },
@@ -335,16 +336,16 @@
       },
       "prediction": {
         "expected_metric": "accuracy around 0.93-0.95",
-        "expected_runtime_seconds": "under 2",
+        "expected_runtime_seconds": "under 5",
         "risks": [
-          "logistic regression without feature scaling may underperform on unscaled tabular features",
+          "logistic regression without feature scaling may underperform on unscaled medical tabular features",
           "single-run best score may not justify a scientific claim",
-          "small-dataset variance on a single split could overstate a model win"
+          "small-dataset variance could overstate a model win on a single split"
         ],
         "recommendation": "run",
-        "rationale": "The action tests logistic regression with C=10.0 and scale=false on the breast_cancer dataset. Since feature scaling is relevant for logistic regression and the proposed action sets scale=false, expect a modest accuracy (around 0.93-0.95) compared to scaled variants. Because this is a single-run result on a small dataset, the observed score should not be treated as a robust claim without repeated seeds or a robustness sweep.",
-        "action_specific_signal": "logistic regression without scaling on breast_cancer typically yields slightly lower accuracy than scaled variants; expect accuracy around 0.93-0.95 with C=10.0",
-        "claim_risk": "single-run best score may not justify a scientific claim; small-dataset variance on a single split could overstate a model win"
+        "rationale": "The action tests logistic regression with C=10.0 and scale=false on the breast_cancer dataset. Since logistic regression and SVC are sensitive to feature scaling, unscaled features may lead to suboptimal accuracy compared to scaled variants. The breast_cancer dataset is small, so a single split could overstate performance; repeated seeds or a robustness sweep would be needed before making strong claims. Given the budget and the need to establish baselines, this run is a reasonable next step to observe the effect of unscaled features and high C.",
+        "action_specific_signal": "logistic regression without scaling on breast_cancer typically yields slightly lower accuracy than scaled variants; expect accuracy in the 0.93-0.95 range with C=10.0",
+        "claim_risk": "single-run best score may not justify a scientific claim without repeated seeds or robustness verification"
       },
       "source": "qwen_agentworld"
     },
@@ -360,16 +361,15 @@
         }
       },
       "prediction": {
-        "expected_metric": "accuracy around 0.95-0.97",
+        "expected_metric": "accuracy around 0.96-0.97",
         "expected_runtime_seconds": "under 5",
         "risks": [
           "single-run best score may not justify a scientific claim",
-          "logistic regression requires feature scaling for optimal performance",
-          "small-dataset variance could overstate a model win with a single split"
+          "logistic regression requires feature scaling for optimal performance"
         ],
         "recommendation": "run",
-        "rationale": "Logistic regression with scaling and C=0.1 is a strong baseline for the breast_cancer dataset. The expected accuracy is around 0.95-0.97. However, a single-run score should not be used to make robust claims without repeated seeds due to small-dataset variance.",
-        "action_specific_signal": "Logistic regression with feature scaling is appropriate for the breast_cancer dataset; ensure repeated seeds are used to verify robustness.",
+        "rationale": "Logistic regression with scaling and C=0.1 is a strong baseline for the breast_cancer dataset. The expected accuracy is high (0.96-0.97), but a single-run result should not be used to make robust claims without repeated seeds. Feature scaling is correctly applied, which is crucial for logistic regression.",
+        "action_specific_signal": "Logistic regression with scaling and C=0.1 is expected to perform well on the breast_cancer dataset, but single-run accuracy should be verified with repeated seeds to avoid overstatement.",
         "claim_risk": "single-run best score may not justify a scientific claim"
       },
       "source": "qwen_agentworld"
@@ -390,13 +390,12 @@
         "expected_runtime_seconds": "under 5",
         "risks": [
           "single-run best score may not justify a scientific claim",
-          "logistic regression requires feature scaling for optimal performance",
-          "small-dataset variance could overstate a model win with a single split"
+          "small-dataset variance could overstate a model win on a single split"
         ],
         "recommendation": "run",
-        "rationale": "The proposed action tests logistic regression with scaling and C=1.0 on the breast_cancer dataset, which is a strong baseline for this binary medical tabular classification task. Feature scaling is relevant and included. However, a single-run result should not be treated as a robust claim without repeated seeds or a robustness sweep, given the small-dataset variance risk.",
-        "action_specific_signal": "logistic regression with scaling is expected to perform competitively on breast_cancer, but single-split accuracy should not become a robust claim without repeated seeds.",
-        "claim_risk": "single-run best score may not justify a scientific claim"
+        "rationale": "Logistic regression with scaling and C=1.0 is a strong baseline for the breast_cancer dataset and should achieve high accuracy. However, a single-run result should not be treated as a robust claim without repeated seeds or a robustness sweep.",
+        "action_specific_signal": "feature scaling is relevant and applied for logistic regression",
+        "claim_risk": "single-run accuracy may overstate performance due to small-dataset variance; repeated seeds or a robustness sweep are needed before making strong claims"
       },
       "source": "qwen_agentworld"
     },
@@ -413,16 +412,16 @@
       },
       "prediction": {
         "expected_metric": "accuracy around 0.96-0.98",
-        "expected_runtime_seconds": "under 5",
+        "expected_runtime_seconds": "under 2",
         "risks": [
           "feature scaling is required for logistic regression and svc to perform well",
-          "small-dataset variance may cause a single split to overstate a model win",
-          "single-run best score may not justify a scientific claim without repeated seeds"
+          "small-dataset variance means a single split could overstate a model win",
+          "single-run best score may not justify a scientific claim"
         ],
         "recommendation": "run",
-        "rationale": "Logistic regression with scaling and C=10.0 is a strong baseline for the breast_cancer dataset and should achieve high accuracy. However, the dataset is small and a single split may overstate performance; robustness sweeps across seeds are needed before making strong claims.",
-        "action_specific_signal": "Logistic regression with scaling and C=10.0 is expected to perform well on breast_cancer, but single-run accuracy should be verified with repeated seeds to avoid overclaiming.",
-        "claim_risk": "single-run best score may not justify a scientific claim without repeated seeds"
+        "rationale": "Logistic regression with scaling and C=10.0 is a strong baseline for the breast_cancer dataset and should achieve high accuracy quickly. However, because this is a single-run evaluation on a small dataset, the observed accuracy may reflect split variance rather than a robust improvement. Repeated seeds or a robustness sweep should follow before making strong claims.",
+        "action_specific_signal": "Logistic regression with scaling and C=10.0 is expected to perform near the top of the candidate space for this dataset, but single-run accuracy should be verified across seeds before claiming superiority.",
+        "claim_risk": "single-run best score may not justify a scientific claim"
       },
       "source": "qwen_agentworld"
     },
@@ -443,11 +442,12 @@
         "expected_runtime_seconds": "under 5",
         "risks": [
           "single-run best score may not justify a scientific claim",
-          "small-dataset variance could overstate a model win on a single split"
+          "small-dataset variance on a single split could overstate a model win",
+          "SVC with RBF kernel can be sensitive to scaling and C parameter choice"
         ],
         "recommendation": "run",
-        "rationale": "The proposed SVC experiment with C=0.5, kernel=rbf, and scaling is a valid candidate within the candidate space for the breast_cancer dataset. Since scaling is enabled and SVC is sensitive to feature scales, this configuration is appropriate. However, as with any single-run evaluation on a small dataset like breast_cancer, the observed accuracy may be subject to small-dataset variance and should not be treated as a robust claim without repeated seeds or cross-validation sweeps.",
-        "action_specific_signal": "SVC with rbf kernel and scaling typically achieves high accuracy on breast_cancer, but single-run scores require verification for robustness.",
+        "rationale": "The proposed action evaluates an SVC model with C=0.5, RBF kernel, and scaling on the breast_cancer dataset. SVC is a strong candidate for this binary medical tabular classification task, and scaling is correctly applied. However, a single-run result should not be treated as a robust claim without repeated seeds or a robustness sweep, especially given the small dataset size and potential for variance.",
+        "action_specific_signal": "SVC with RBF kernel and scaling is expected to perform competitively on breast_cancer, but single-run accuracy claims require verification across seeds to ensure robustness.",
         "claim_risk": "single-run best score may not justify a scientific claim"
       },
       "source": "qwen_agentworld"
@@ -468,14 +468,13 @@
         "expected_metric": "accuracy around 0.96-0.98",
         "expected_runtime_seconds": "under 5",
         "risks": [
-          "SVC with RBF kernel may overfit on small tabular datasets if C is too high",
-          "Single-run best score may not justify a scientific claim without repeated seeds",
-          "Feature scaling is already applied for SVC, which is appropriate"
+          "single-run best score may not justify a scientific claim",
+          "small-dataset variance could overstate a model win on a single split"
         ],
         "recommendation": "run",
-        "rationale": "SVC with RBF kernel and scaled features is a strong candidate for the breast_cancer dataset. The expected accuracy is high (0.96-0.98), but a single-run result should not be used to make robust claims without repeated seeds. Feature scaling is appropriately applied for SVC.",
-        "action_specific_signal": "SVC with RBF kernel and scaled features is expected to perform well on the breast_cancer dataset, but overfitting risks exist if C is too high.",
-        "claim_risk": "single-run best score may not justify a scientific claim without repeated seeds"
+        "rationale": "The SVC with RBF kernel and scaled features is a strong candidate for the breast_cancer dataset, which is a small binary medical tabular classification problem. Scaling is correctly applied for SVC. However, a single-run result should not be treated as a robust claim without repeated seeds or a robustness sweep to confirm the observed accuracy is not due to small-dataset variance.",
+        "action_specific_signal": "SVC with RBF kernel and scaled features typically achieves high accuracy on breast_cancer, but single-split results may overstate performance due to small-dataset variance.",
+        "claim_risk": "single-run best score may not justify a scientific claim without repeated seeds or robustness verification"
       },
       "source": "qwen_agentworld"
     },
@@ -495,12 +494,12 @@
         "expected_metric": "accuracy around 0.96-0.98",
         "expected_runtime_seconds": "under 5",
         "risks": [
-          "single-run best score may not justify a scientific claim",
-          "small-dataset variance could overstate a model win on a single split"
+          "SVC with RBF kernel and feature scaling is appropriate for breast_cancer, but a single-run score may overstate performance without seed variance checks.",
+          "Small-dataset variance could cause a single split to overstate a model win; robustness sweeps across seeds are recommended before strong claims."
         ],
         "recommendation": "run",
-        "rationale": "The SVC with C=5.0, rbf kernel, and scaling is a strong candidate for the breast_cancer dataset, which is a small binary medical tabular classification task. Feature scaling is relevant and included. However, a single-run accuracy should not be treated as a robust claim without repeated seeds or a robustness sweep to confirm the result is not due to small-dataset variance.",
-        "action_specific_signal": "SVC with rbf kernel and scaling typically achieves high accuracy on breast_cancer, but single-split results may overstate performance without seed repetition.",
+        "rationale": "The proposed SVC configuration with scaling and C=5.0, kernel=rbf is well-suited for the breast_cancer dataset and aligns with the candidate space. Given the dataset's characteristics and the model's typical performance, an accuracy in the 0.96-0.98 range is expected. However, since this is the first experiment and no single-run best score has been established, the result should be treated as preliminary. A robustness sweep across seeds will be necessary to confirm the performance and avoid unsupported claims based on a single split.",
+        "action_specific_signal": "SVC with RBF kernel and feature scaling is appropriate for breast_cancer; expect high accuracy but verify across seeds to confirm robustness.",
         "claim_risk": "single-run best score may not justify a scientific claim"
       },
       "source": "qwen_agentworld"
@@ -517,17 +516,17 @@
         }
       },
       "prediction": {
-        "expected_metric": "accuracy around 0.93-0.96",
+        "expected_metric": "accuracy around 0.95-0.97",
         "expected_runtime_seconds": "under 5",
         "risks": [
           "single-run best score may not justify a scientific claim",
-          "tree ensembles can overfit or show variance on small datasets",
+          "tree ensembles can overfit on small datasets if not properly constrained",
           "small-dataset variance when a single split could overstate a model win"
         ],
         "recommendation": "run",
-        "rationale": "The proposed action runs a random forest with n_estimators=100 and max_depth=null on the breast_cancer dataset. Random forests typically achieve strong accuracy on this small binary medical tabular dataset, but a single split may overstate performance due to small-dataset variance. No feature scaling is needed for tree-based models. A robustness sweep across seeds should follow to verify the claim.",
-        "action_specific_signal": "Random forest with 100 estimators and no max depth is expected to yield high accuracy but may show variance across seeds on this small dataset.",
-        "claim_risk": "single-run best score may not justify a scientific claim without repeated seeds"
+        "rationale": "Random forest with 100 estimators and default max_depth is a strong baseline for the breast_cancer dataset and should achieve high accuracy. However, due to the small dataset size and single-run nature of this experiment, the observed accuracy may have variance and could overstate the model's true performance. A robustness sweep across seeds would be needed to confirm any leading performance.",
+        "action_specific_signal": "Random forest on breast_cancer typically yields high accuracy but may show variance across different train/test splits; consider verifying with multiple seeds before claiming superiority.",
+        "claim_risk": "single-run best score may not justify a scientific claim"
       },
       "source": "qwen_agentworld"
     },
@@ -543,16 +542,15 @@
         }
       },
       "prediction": {
-        "expected_metric": "accuracy around 0.95-0.97",
+        "expected_metric": "accuracy around 0.96-0.97",
         "expected_runtime_seconds": "under 5",
         "risks": [
           "single-run best score may not justify a scientific claim",
-          "tree ensembles can overfit on small datasets if not properly constrained",
-          "small-dataset variance when a single split could overstate a model win"
+          "tree ensembles can overfit on small datasets if not properly constrained"
         ],
         "recommendation": "run",
-        "rationale": "The random forest with n_estimators=100 and max_depth=4 is a reasonable configuration for the breast_cancer dataset, which is small and binary. However, since this is the first experiment and there are no prior results, a single-run score should not be treated as a robust claim without repeated seeds or robustness sweeps.",
-        "action_specific_signal": "random_forest with max_depth=4 and n_estimators=100 is expected to perform competitively but may show variance across different train/test splits due to the small dataset size.",
+        "rationale": "The proposed random forest configuration (n_estimators=100, max_depth=4) is a reasonable starting point for the breast_cancer dataset, which is small and binary. Random forests with limited depth are less prone to overfitting compared to deeper trees, and this setup should yield competitive accuracy. However, since no experiments have been run yet, a single-run result should not be used to make robust claims without repeated seeds or robustness verification.",
+        "action_specific_signal": "Random forest with max_depth=4 and n_estimators=100 is expected to perform well on the breast_cancer dataset, achieving accuracy in the 0.96-0.97 range, but single-run results require verification for robustness.",
         "claim_risk": "single-run best score may not justify a scientific claim"
       },
       "source": "qwen_agentworld"
@@ -598,11 +596,11 @@
     },
     "qwen_suggested_action": "action_001",
     "catalog_validation": "accepted",
-    "agent_rationale": "Given state state_001 with budget_remaining=7, the planner chooses action_001 to collect the most decision-relevant evidence.",
+    "agent_rationale": "Given state state_001 with budget_remaining=7, the planner chooses action_001 to collect the most decision-relevant evidence. Agent-in-repo operator mode follows the same catalog-only contract used by Codex, Claude Code, OpenClaw, or an API planner.",
     "preferred_action_id": "action_001",
     "selection_overrode_agent": false,
     "override_reason": null,
-    "causal_reason": "Selected logistic_regression because score=162.0; autoresearch agent preferred this catalog action; world model recommended modification, so the action remains informative but lower priority; new model family increases search coverage; first run should establish the unscaled baseline before interventions. Agent hypothesis: A simple unscaled linear baseline should anchor the search before interventions.. World model predicted accuracy around 0.93-0.95, runtime under 5, recommendation=modify, risks=logistic regression without feature scaling may underperform on breast_cancer, single-run score may overstate model performance without repeated seeds. Causal signal type: mixed.",
+    "causal_reason": "Selected logistic_regression because score=162.0; autoresearch agent preferred this catalog action; world model recommended modification, so the action remains informative but lower priority; new model family increases search coverage; first run should establish the unscaled baseline before interventions. Agent hypothesis: A simple unscaled linear baseline should anchor the search before interventions.. World model predicted accuracy around 0.93-0.95, runtime under 2, recommendation=modify, risks=logistic regression without feature scaling may underperform compared to scaled variants, single-run best score may not justify a scientific claim, small-dataset variance could overstate a model win on a single split. Causal signal type: mixed.",
     "rejected_candidates": [
       {
         "action": {
@@ -703,6 +701,31 @@
       },
       {
         "action": {
+          "action_id": "action_svc_C-2p0_kernel-rbf_scale-True",
+          "command": "python experiments/train_sklearn.py --dataset breast_cancer --model svc --scale --C 2.0 --kernel rbf",
+          "model": "svc",
+          "params": {
+            "dataset": "breast_cancer",
+            "scale": true,
+            "C": 2.0,
+            "kernel": "rbf"
+          }
+        },
+        "reason": "score=48.0; world model recommended run; new model family increases search coverage",
+        "score_breakdown": {
+          "expected_gain": 0.0,
+          "uncertainty": 0.0,
+          "novelty": 18.0,
+          "verification_value": 0.0,
+          "qwen_signal": 30.0,
+          "redundancy_penalty": 0.0,
+          "compute_cost_penalty": 0.0,
+          "unsupported_claim_risk": 0.0,
+          "agent_preference": 0.0
+        }
+      },
+      {
+        "action": {
           "action_id": "action_svc_C-5p0_kernel-rbf_scale-True",
           "command": "python experiments/train_sklearn.py --dataset breast_cancer --model svc --scale --C 5.0 --kernel rbf",
           "model": "svc",
@@ -722,31 +745,6 @@
           "qwen_signal": 30.0,
           "redundancy_penalty": 0.0,
           "compute_cost_penalty": 0.0,
-          "unsupported_claim_risk": 0.0,
-          "agent_preference": 0.0
-        }
-      },
-      {
-        "action": {
-          "action_id": "action_svc_C-2p0_kernel-rbf_scale-True",
-          "command": "python experiments/train_sklearn.py --dataset breast_cancer --model svc --scale --C 2.0 --kernel rbf",
-          "model": "svc",
-          "params": {
-            "dataset": "breast_cancer",
-            "scale": true,
-            "C": 2.0,
-            "kernel": "rbf"
-          }
-        },
-        "reason": "score=44.0; world model recommended run; new model family increases search coverage; world model predicted overfitting risk",
-        "score_breakdown": {
-          "expected_gain": 0.0,
-          "uncertainty": 0.0,
-          "novelty": 18.0,
-          "verification_value": 0.0,
-          "qwen_signal": 30.0,
-          "redundancy_penalty": 0.0,
-          "compute_cost_penalty": -4.0,
           "unsupported_claim_risk": 0.0,
           "agent_preference": 0.0
         }

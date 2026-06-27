@@ -1,0 +1,1034 @@
+{
+  "run_id": "run_005",
+  "goal": "Maximize validation accuracy on sklearn wine under a small compute budget, while avoiding unsupported claims.",
+  "hypothesis": "Selected random_forest because score=79.0; autoresearch agent included this action in its candidate shortlist; world model recommended run; new model family increases search coverage; strong linear baseline makes a different inductive bias useful; world model predicted overfitting risk; high best score increases claim risk for additional single-run score chasing. Agent hypothesis: A prediction miss should trigger exploration of a different inductive bias.. World model predicted accuracy around 0.96-0.98, runtime under 5, recommendation=run, risks=small-dataset variance for a single split could overstate a model win, tree ensembles like random forest may overfit or show variance on small datasets. Causal signal type: mixed.",
+  "proposed_action": {
+    "action_id": "action_random_forest_n_estimators-100",
+    "command": "python experiments/train_sklearn.py --dataset wine --model random_forest --n-estimators 100",
+    "model": "random_forest",
+    "params": {
+      "dataset": "wine",
+      "n_estimators": 100,
+      "max_depth": null
+    }
+  },
+  "world_model_prediction": {
+    "expected_metric": "accuracy around 0.96-0.98",
+    "expected_runtime_seconds": "under 5",
+    "risks": [
+      "small-dataset variance for a single split could overstate a model win",
+      "tree ensembles like random forest may overfit or show variance on small datasets"
+    ],
+    "recommendation": "run",
+    "rationale": "The random forest with n_estimators=100 and max_depth=null is a standard baseline for the wine dataset and is expected to achieve high accuracy (0.96-0.98). However, due to the small size of the wine dataset, a single split may overstate performance, and tree ensembles can exhibit variance or overfitting. A robustness sweep across seeds would be valuable before making strong claims.",
+    "action_specific_signal": "Random forest on wine typically achieves high accuracy but may show variance across seeds due to the small dataset size.",
+    "claim_risk": "single-run best score may not justify a scientific claim; seed variance may exceed apparent model or hyperparameter effects"
+  },
+  "actual_result": {
+    "status": "success",
+    "accuracy": 1.0,
+    "f1": 1.0,
+    "runtime_seconds": 0.2834,
+    "stdout_tail": "{\n  \"accuracy\": 1.0,\n  \"dataset\": \"wine\",\n  \"f1\": 1.0,\n  \"model\": \"random_forest\",\n  \"n_label_noise_flips\": 0,\n  \"n_test\": 45,\n  \"n_train\": 133,\n  \"params\": {\n    \"C\": 1.0,\n    \"dataset\": \"wine\",\n    \"kernel\": \"rbf\",\n    \"label_noise\": 0.0,\n    \"learning_rate\": 0.1,\n    \"max_depth\": null,\n    \"max_iter\": 1000,\n    \"model\": \"random_forest\",\n    \"n_estimators\": 100,\n    \"scale\": false,\n    \"seed\": 42,\n    \"test_size\": 0.25\n  },\n  \"runtime_seconds\": 0.2834,\n  \"status\": \"success\"\n}\n",
+    "stderr_tail": "",
+    "raw": {
+      "accuracy": 1.0,
+      "dataset": "wine",
+      "f1": 1.0,
+      "model": "random_forest",
+      "n_label_noise_flips": 0,
+      "n_test": 45,
+      "n_train": 133,
+      "params": {
+        "C": 1.0,
+        "dataset": "wine",
+        "kernel": "rbf",
+        "label_noise": 0.0,
+        "learning_rate": 0.1,
+        "max_depth": null,
+        "max_iter": 1000,
+        "model": "random_forest",
+        "n_estimators": 100,
+        "scale": false,
+        "seed": 42,
+        "test_size": 0.25
+      },
+      "runtime_seconds": 0.2834,
+      "status": "success"
+    }
+  },
+  "comparison": {
+    "metric_match": false,
+    "runtime_match": true,
+    "unexpected_events": [
+      "accuracy 1.0000 outside predicted range 0.96-0.98"
+    ],
+    "lesson": "Run succeeded, but the prediction missed at least one quantitative detail."
+  },
+  "next_decision": "Continue: regenerate candidates from the updated state and ask the world model to predict each option.",
+  "verification": null,
+  "schema_version": "3.0",
+  "planner_mode": "operator_driven",
+  "agent_backend": "codex_operator",
+  "agent_model": "agent-in-repo-operator",
+  "agent_prompt_hash": "807cf70414cf0133",
+  "agent_decision": {
+    "research_question": "Maximize validation accuracy on sklearn wine under a small compute budget, while avoiding unsupported claims.",
+    "working_hypothesis": "A prediction miss should trigger exploration of a different inductive bias.",
+    "candidate_action_ids": [
+      "action_svc_C-2p0_kernel-rbf_scale-True",
+      "action_logistic_regression_C-1p0_scale-True",
+      "action_logistic_regression_C-10p0_scale-True",
+      "action_logistic_regression_C-0p1_scale-False",
+      "action_logistic_regression_C-1p0_scale-False",
+      "action_logistic_regression_C-10p0_scale-False",
+      "action_random_forest_n_estimators-100"
+    ],
+    "preferred_action_id": "action_svc_C-2p0_kernel-rbf_scale-True",
+    "rationale": "Given state state_005 with budget_remaining=3, the planner chooses action_svc_C-2p0_kernel-rbf_scale-True to collect the most decision-relevant evidence. Agent-in-repo operator mode follows the same catalog-only contract used by Codex, Claude Code, OpenClaw, or an API planner.",
+    "expected_evidence_needed": "Run an untested model family and compare prediction error against actual metrics.",
+    "claim_risk": "Prediction misses must be logged, not hidden behind a better score.",
+    "stop_or_continue": "continue"
+  },
+  "safety_validation": {
+    "valid_agent_action": true,
+    "selected_action_id": "action_random_forest_n_estimators-100",
+    "selection_overrode_agent": true,
+    "override_reason": "safety selector chose a higher-scoring action after world-model and evidence-risk scoring",
+    "validation_notes": [
+      "agent preferred action_svc_C-2p0_kernel-rbf_scale-True",
+      "safety selector chose a higher-scoring action after world-model and evidence-risk scoring"
+    ]
+  },
+  "research_hypothesis": "A prediction miss should trigger exploration of a different inductive bias.",
+  "state_before": {
+    "state_id": "state_005",
+    "goal": "Maximize validation accuracy on sklearn wine under a small compute budget, while avoiding unsupported claims.",
+    "known_results": [
+      {
+        "run_id": "run_001",
+        "model": "logistic_regression",
+        "accuracy": 0.9777777777777777,
+        "f1": 0.9775949862906386,
+        "params": {
+          "dataset": "wine",
+          "scale": false
+        }
+      },
+      {
+        "run_id": "run_002",
+        "model": "logistic_regression",
+        "accuracy": 1.0,
+        "f1": 1.0,
+        "params": {
+          "dataset": "wine",
+          "scale": true,
+          "C": 0.1
+        }
+      },
+      {
+        "run_id": "run_003",
+        "model": "svc",
+        "accuracy": 0.9777777777777777,
+        "f1": 0.9775949862906386,
+        "params": {
+          "dataset": "wine",
+          "scale": true,
+          "C": 0.5,
+          "kernel": "rbf"
+        }
+      },
+      {
+        "run_id": "run_004",
+        "model": "gradient_boosting",
+        "accuracy": 0.9555555555555556,
+        "f1": 0.955430886707184,
+        "params": {
+          "dataset": "wine",
+          "n_estimators": 100,
+          "learning_rate": 0.05,
+          "max_depth": null
+        }
+      }
+    ],
+    "budget_remaining": 3,
+    "open_questions": [
+      "Which candidate should receive the next compute budget?",
+      "Is the best observed score robust across seeds or perturbations?",
+      "Do apparent improvements survive an effect-vs-noise verifier?",
+      "What did the world model miss, and should the next action test that failure mode?"
+    ],
+    "risks_to_check": [
+      "single-run best score may not justify a scientific claim",
+      "seed variance may exceed apparent model or hyperparameter effects",
+      "world-model predictions may miss quantitative details"
+    ],
+    "top_model_summary": {
+      "best_observed_model": null,
+      "best_observed_metric": null,
+      "top_models": [
+        {
+          "run_id": "run_002",
+          "model": "logistic_regression",
+          "model_key": "logistic_regression_scaled_C=0.1",
+          "metric": 1.0,
+          "params": {
+            "dataset": "wine",
+            "scale": true,
+            "C": 0.1
+          }
+        },
+        {
+          "run_id": "run_001",
+          "model": "logistic_regression",
+          "model_key": "logistic_regression",
+          "metric": 0.9777777777777777,
+          "params": {
+            "dataset": "wine",
+            "scale": false
+          }
+        },
+        {
+          "run_id": "run_003",
+          "model": "svc",
+          "model_key": "svc_scaled_C=0.5_kernel=rbf",
+          "metric": 0.9777777777777777,
+          "params": {
+            "dataset": "wine",
+            "scale": true,
+            "C": 0.5,
+            "kernel": "rbf"
+          }
+        },
+        {
+          "run_id": "run_004",
+          "model": "gradient_boosting",
+          "model_key": "gradient_boosting_n=100_lr=0.05",
+          "metric": 0.9555555555555556,
+          "params": {
+            "dataset": "wine",
+            "n_estimators": 100,
+            "learning_rate": 0.05,
+            "max_depth": null
+          }
+        }
+      ],
+      "top_gap": null,
+      "needs_robustness_verification": false,
+      "reason": "Need at least 5 single-run model results before top-model verification.",
+      "verification_action_key": null
+    },
+    "summary": "Task=wine_accuracy; dataset=wine; primary_metric=accuracy. Goal: Maximize validation accuracy on sklearn wine under a small compute budget, while avoiding unsupported claims.\nNo experiments have been run yet. Dataset: sklearn wine. Primary metric: accuracy; secondary metrics: f1.\nrun_001: logistic_regression actual=0.9777777777777777 status=success; prediction=accuracy around 0.85-0.90; recommendation=modify; lesson=Run succeeded, but the prediction missed at least one quantitative detail.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_002: logistic_regression actual=1.0 status=success; prediction=accuracy around 0.96-0.98; recommendation=run; lesson=Run succeeded, but the prediction missed at least one quantitative detail.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_003: svc actual=0.9777777777777777 status=success; prediction=accuracy around 0.96-0.98; recommendation=run; lesson=Prediction was broadly consistent with the real run.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_004: gradient_boosting actual=0.9555555555555556 status=success; prediction=accuracy around 0.97-0.98; recommendation=run; lesson=Run succeeded, but the prediction missed at least one quantitative detail.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option."
+  },
+  "candidate_actions": [
+    {
+      "action_id": "action_logistic_regression_C-1p0_scale-True",
+      "command": "python experiments/train_sklearn.py --dataset wine --model logistic_regression --scale",
+      "model": "logistic_regression",
+      "params": {
+        "dataset": "wine",
+        "scale": true,
+        "C": 1.0
+      }
+    },
+    {
+      "action_id": "action_logistic_regression_C-10p0_scale-True",
+      "command": "python experiments/train_sklearn.py --dataset wine --model logistic_regression --scale --C 10.0",
+      "model": "logistic_regression",
+      "params": {
+        "dataset": "wine",
+        "scale": true,
+        "C": 10.0
+      }
+    },
+    {
+      "action_id": "action_logistic_regression_C-0p1_scale-False",
+      "command": "python experiments/train_sklearn.py --dataset wine --model logistic_regression --C 0.1",
+      "model": "logistic_regression",
+      "params": {
+        "dataset": "wine",
+        "scale": false,
+        "C": 0.1
+      }
+    },
+    {
+      "action_id": "action_logistic_regression_C-1p0_scale-False",
+      "command": "python experiments/train_sklearn.py --dataset wine --model logistic_regression",
+      "model": "logistic_regression",
+      "params": {
+        "dataset": "wine",
+        "scale": false,
+        "C": 1.0
+      }
+    },
+    {
+      "action_id": "action_logistic_regression_C-10p0_scale-False",
+      "command": "python experiments/train_sklearn.py --dataset wine --model logistic_regression --C 10.0",
+      "model": "logistic_regression",
+      "params": {
+        "dataset": "wine",
+        "scale": false,
+        "C": 10.0
+      }
+    },
+    {
+      "action_id": "action_random_forest_n_estimators-100",
+      "command": "python experiments/train_sklearn.py --dataset wine --model random_forest --n-estimators 100",
+      "model": "random_forest",
+      "params": {
+        "dataset": "wine",
+        "n_estimators": 100,
+        "max_depth": null
+      }
+    },
+    {
+      "action_id": "action_random_forest_max_depth-4_n_estimators-100",
+      "command": "python experiments/train_sklearn.py --dataset wine --model random_forest --n-estimators 100 --max-depth 4",
+      "model": "random_forest",
+      "params": {
+        "dataset": "wine",
+        "n_estimators": 100,
+        "max_depth": 4
+      }
+    },
+    {
+      "action_id": "action_random_forest_max_depth-8_n_estimators-100",
+      "command": "python experiments/train_sklearn.py --dataset wine --model random_forest --n-estimators 100 --max-depth 8",
+      "model": "random_forest",
+      "params": {
+        "dataset": "wine",
+        "n_estimators": 100,
+        "max_depth": 8
+      }
+    },
+    {
+      "action_id": "action_random_forest_n_estimators-300",
+      "command": "python experiments/train_sklearn.py --dataset wine --model random_forest --n-estimators 300",
+      "model": "random_forest",
+      "params": {
+        "dataset": "wine",
+        "n_estimators": 300,
+        "max_depth": null
+      }
+    },
+    {
+      "action_id": "action_random_forest_max_depth-4_n_estimators-300",
+      "command": "python experiments/train_sklearn.py --dataset wine --model random_forest --n-estimators 300 --max-depth 4",
+      "model": "random_forest",
+      "params": {
+        "dataset": "wine",
+        "n_estimators": 300,
+        "max_depth": 4
+      }
+    },
+    {
+      "action_id": "action_random_forest_max_depth-8_n_estimators-300",
+      "command": "python experiments/train_sklearn.py --dataset wine --model random_forest --n-estimators 300 --max-depth 8",
+      "model": "random_forest",
+      "params": {
+        "dataset": "wine",
+        "n_estimators": 300,
+        "max_depth": 8
+      }
+    },
+    {
+      "action_id": "action_svc_C-2p0_kernel-rbf_scale-True",
+      "command": "python experiments/train_sklearn.py --dataset wine --model svc --scale --C 2.0 --kernel rbf",
+      "model": "svc",
+      "params": {
+        "dataset": "wine",
+        "scale": true,
+        "C": 2.0,
+        "kernel": "rbf"
+      }
+    }
+  ],
+  "candidate_predictions": [
+    {
+      "action": {
+        "action_id": "action_logistic_regression_C-1p0_scale-True",
+        "command": "python experiments/train_sklearn.py --dataset wine --model logistic_regression --scale",
+        "model": "logistic_regression",
+        "params": {
+          "dataset": "wine",
+          "scale": true,
+          "C": 1.0
+        }
+      },
+      "prediction": {
+        "expected_metric": "accuracy around 0.97-1.0",
+        "expected_runtime_seconds": "under 5",
+        "risks": [
+          "single-run best score may not justify a scientific claim",
+          "seed variance may exceed apparent model or hyperparameter effects",
+          "feature scaling is critical for logistic regression and must be verified across seeds"
+        ],
+        "recommendation": "run",
+        "rationale": "The proposed action tests logistic regression with scaling and C=1.0, which is a natural continuation from the best observed score (logistic_regression scaled C=0.1 with accuracy 1.0). Given the wine dataset's small size and the importance of feature scaling for linear models, this run should be executed but followed by a robustness sweep across seeds to confirm the 1.0 accuracy is not a single-split artifact.",
+        "action_specific_signal": "logistic regression with scaling on wine typically achieves high accuracy; C=1.0 is a standard default and should perform at least as well as C=0.1, but variance across seeds must be checked.",
+        "claim_risk": "high single-run score may overstate model win without seed robustness verification"
+      },
+      "source": "qwen_agentworld"
+    },
+    {
+      "action": {
+        "action_id": "action_logistic_regression_C-10p0_scale-True",
+        "command": "python experiments/train_sklearn.py --dataset wine --model logistic_regression --scale --C 10.0",
+        "model": "logistic_regression",
+        "params": {
+          "dataset": "wine",
+          "scale": true,
+          "C": 10.0
+        }
+      },
+      "prediction": {
+        "expected_metric": "accuracy around 0.97-1.0",
+        "expected_runtime_seconds": "under 5",
+        "risks": [
+          "single-run best score may not justify a scientific claim",
+          "seed variance may exceed apparent model or hyperparameter effects",
+          "feature scaling is required for logistic regression to perform well"
+        ],
+        "recommendation": "run",
+        "rationale": "The proposed action tests logistic regression with scaling and C=10.0, which is a natural continuation of the high-performing scaled logistic regression runs (run_002 achieved 1.0 with C=0.1). Given the small dataset and the fact that scaling is critical for logistic regression, this run should yield high accuracy. However, a single-run score of 1.0 or near-perfect accuracy should be treated with caution due to potential seed variance and the need for robustness verification across multiple seeds.",
+        "action_specific_signal": "logistic regression with scaling and C=10.0 is expected to perform well on the wine dataset, but single-run perfection may not be robust across seeds",
+        "claim_risk": "single-run best score may not justify a scientific claim without robustness verification across seeds"
+      },
+      "source": "qwen_agentworld"
+    },
+    {
+      "action": {
+        "action_id": "action_logistic_regression_C-0p1_scale-False",
+        "command": "python experiments/train_sklearn.py --dataset wine --model logistic_regression --C 0.1",
+        "model": "logistic_regression",
+        "params": {
+          "dataset": "wine",
+          "scale": false,
+          "C": 0.1
+        }
+      },
+      "prediction": {
+        "expected_metric": "accuracy around 0.97-0.98",
+        "expected_runtime_seconds": "under 5",
+        "risks": [
+          "single-run best score may not justify a scientific claim",
+          "seed variance may exceed apparent model or hyperparameter effects"
+        ],
+        "recommendation": "run",
+        "rationale": "The proposed action tests logistic regression with C=0.1 and scale=false. Previous runs show logistic regression with scale=true and C=0.1 achieves 1.0 accuracy, while logistic regression without scaling (run_001) achieves 0.9778. Feature scaling is relevant for logistic regression, so the unscaled variant may perform slightly worse but still competitive. Given the small dataset and single-split variance, robustness sweeps across seeds are needed before claiming superiority.",
+        "action_specific_signal": "logistic regression without scaling typically underperforms compared to scaled version on wine dataset due to feature magnitude differences",
+        "claim_risk": "single-run best score may not justify a scientific claim"
+      },
+      "source": "qwen_agentworld"
+    },
+    {
+      "action": {
+        "action_id": "action_logistic_regression_C-1p0_scale-False",
+        "command": "python experiments/train_sklearn.py --dataset wine --model logistic_regression",
+        "model": "logistic_regression",
+        "params": {
+          "dataset": "wine",
+          "scale": false,
+          "C": 1.0
+        }
+      },
+      "prediction": {
+        "expected_metric": "accuracy around 0.97-0.98",
+        "expected_runtime_seconds": "under 5",
+        "risks": [
+          "feature scaling matters for logistic regression",
+          "single-run best score may not justify a scientific claim",
+          "seed variance may exceed apparent model or hyperparameter effects"
+        ],
+        "recommendation": "run",
+        "rationale": "The proposed logistic regression run with C=1.0 and scale=false is a natural continuation of the existing logistic regression sweeps. Previous runs with scaling (run_002) achieved 1.0 accuracy, and without scaling (run_001) achieved 0.9778. With C=1.0 and no scaling, we expect performance between these two, likely around 0.97-0.98. However, feature scaling is relevant for logistic regression, and the single-run best score of 1.0 from run_002 should be verified for robustness across seeds before making strong claims.",
+        "action_specific_signal": "logistic regression without scaling typically performs slightly worse than with scaling on wine dataset due to feature magnitude differences",
+        "claim_risk": "single-run best score may not justify a scientific claim; seed variance may exceed apparent model or hyperparameter effects"
+      },
+      "source": "qwen_agentworld"
+    },
+    {
+      "action": {
+        "action_id": "action_logistic_regression_C-10p0_scale-False",
+        "command": "python experiments/train_sklearn.py --dataset wine --model logistic_regression --C 10.0",
+        "model": "logistic_regression",
+        "params": {
+          "dataset": "wine",
+          "scale": false,
+          "C": 10.0
+        }
+      },
+      "prediction": {
+        "expected_metric": "accuracy around 0.97-0.98",
+        "expected_runtime_seconds": "under 5",
+        "risks": [
+          "feature scaling matters for logistic regression",
+          "small-dataset variance may overstate a single-run win",
+          "label-noise sweeps test claim robustness, not leaderboard performance"
+        ],
+        "recommendation": "run",
+        "rationale": "The proposed logistic regression run with C=10.0 and no scaling is a natural extension of the existing logistic regression results (scale=false with 0.9777 accuracy and scale=true with C=0.1 achieving 1.0). Since feature scaling can matter for linear models, this unscaled high-C configuration should be evaluated, but small-dataset variance means a single run may overstate any win. A robustness sweep across seeds would be needed before strong claims.",
+        "action_specific_signal": "logistic regression without scaling at high C may approach the scaled C=0.1 performance but could exhibit sensitivity to feature scales; single-run 1.0 accuracy should be verified for seed robustness",
+        "claim_risk": "single-run best score may not justify a scientific claim; seed variance may exceed apparent hyperparameter effects"
+      },
+      "source": "qwen_agentworld"
+    },
+    {
+      "action": {
+        "action_id": "action_random_forest_n_estimators-100",
+        "command": "python experiments/train_sklearn.py --dataset wine --model random_forest --n-estimators 100",
+        "model": "random_forest",
+        "params": {
+          "dataset": "wine",
+          "n_estimators": 100,
+          "max_depth": null
+        }
+      },
+      "prediction": {
+        "expected_metric": "accuracy around 0.96-0.98",
+        "expected_runtime_seconds": "under 5",
+        "risks": [
+          "small-dataset variance for a single split could overstate a model win",
+          "tree ensembles like random forest may overfit or show variance on small datasets"
+        ],
+        "recommendation": "run",
+        "rationale": "The random forest with n_estimators=100 and max_depth=null is a standard baseline for the wine dataset and is expected to achieve high accuracy (0.96-0.98). However, due to the small size of the wine dataset, a single split may overstate performance, and tree ensembles can exhibit variance or overfitting. A robustness sweep across seeds would be valuable before making strong claims.",
+        "action_specific_signal": "Random forest on wine typically achieves high accuracy but may show variance across seeds due to the small dataset size.",
+        "claim_risk": "single-run best score may not justify a scientific claim; seed variance may exceed apparent model or hyperparameter effects"
+      },
+      "source": "qwen_agentworld"
+    },
+    {
+      "action": {
+        "action_id": "action_random_forest_max_depth-4_n_estimators-100",
+        "command": "python experiments/train_sklearn.py --dataset wine --model random_forest --n-estimators 100 --max-depth 4",
+        "model": "random_forest",
+        "params": {
+          "dataset": "wine",
+          "n_estimators": 100,
+          "max_depth": 4
+        }
+      },
+      "prediction": {
+        "expected_metric": "accuracy around 0.96-0.98",
+        "expected_runtime_seconds": "under 5",
+        "risks": [
+          "small-dataset variance may overstate a model win",
+          "tree ensembles may overfit on small datasets"
+        ],
+        "recommendation": "run",
+        "rationale": "Random forest with n_estimators=100 and max_depth=4 is a reasonable candidate to test against the current top logistic regression and SVC results. Given the small wine dataset, variance across splits or seeds could affect the observed accuracy, so a single run should be interpreted cautiously.",
+        "action_specific_signal": "Random forest on wine typically achieves high accuracy but may show slight variance due to tree depth and ensemble size; max_depth=4 with 100 estimators is a conservative setting that should avoid severe overfitting.",
+        "claim_risk": "single-run best score may not justify a scientific claim"
+      },
+      "source": "qwen_agentworld"
+    },
+    {
+      "action": {
+        "action_id": "action_random_forest_max_depth-8_n_estimators-100",
+        "command": "python experiments/train_sklearn.py --dataset wine --model random_forest --n-estimators 100 --max-depth 8",
+        "model": "random_forest",
+        "params": {
+          "dataset": "wine",
+          "n_estimators": 100,
+          "max_depth": 8
+        }
+      },
+      "prediction": {
+        "expected_metric": "accuracy around 0.96-0.98",
+        "expected_runtime_seconds": "under 5",
+        "risks": [
+          "small-dataset variance may cause single-run scores to overstate model win",
+          "tree ensembles can overfit on small datasets like wine",
+          "robustness sweeps needed before claiming superiority over logistic regression or svc"
+        ],
+        "recommendation": "run",
+        "rationale": "Random forest with n_estimators=100 and max_depth=8 is a reasonable candidate to test against the current best logistic regression (scale=true, C=0.1) and SVC results. However, given the small size of the wine dataset, single-run accuracy may not be robust across seeds, and tree ensembles can exhibit overfitting or high variance. A robustness sweep across seeds is recommended before making strong claims about performance relative to linear or margin-based models.",
+        "action_specific_signal": "Random forest on wine with max_depth=8 and 100 estimators typically achieves high accuracy but may show variance across splits; feature scaling is not applicable for tree-based models.",
+        "claim_risk": "single-run best score may not justify a scientific claim; seed variance may exceed apparent model or hyperparameter effects"
+      },
+      "source": "qwen_agentworld"
+    },
+    {
+      "action": {
+        "action_id": "action_random_forest_n_estimators-300",
+        "command": "python experiments/train_sklearn.py --dataset wine --model random_forest --n-estimators 300",
+        "model": "random_forest",
+        "params": {
+          "dataset": "wine",
+          "n_estimators": 300,
+          "max_depth": null
+        }
+      },
+      "prediction": {
+        "expected_metric": "accuracy around 0.97-0.98",
+        "expected_runtime_seconds": "under 5",
+        "risks": [
+          "small-dataset variance may overstate a model win on a single split",
+          "tree ensembles can overfit or show variance on small datasets like wine"
+        ],
+        "recommendation": "run",
+        "rationale": "The random forest with 300 estimators and no max depth is a strong candidate for the wine dataset, which is small and tabular. Previous linear and margin models achieved 0.977-1.0 accuracy, and tree ensembles typically perform competitively here. However, small-dataset variance and potential overfitting should be monitored, and robustness sweeps across seeds are recommended before making strong claims.",
+        "action_specific_signal": "random_forest with n_estimators=300 and max_depth=null is expected to achieve high accuracy on the wine dataset, but single-run results may be inflated by small-dataset variance.",
+        "claim_risk": "single-run best score may not justify a scientific claim; seed variance may exceed apparent model or hyperparameter effects"
+      },
+      "source": "qwen_agentworld"
+    },
+    {
+      "action": {
+        "action_id": "action_random_forest_max_depth-4_n_estimators-300",
+        "command": "python experiments/train_sklearn.py --dataset wine --model random_forest --n-estimators 300 --max-depth 4",
+        "model": "random_forest",
+        "params": {
+          "dataset": "wine",
+          "n_estimators": 300,
+          "max_depth": 4
+        }
+      },
+      "prediction": {
+        "expected_metric": "accuracy around 0.97-0.99",
+        "expected_runtime_seconds": "under 5",
+        "risks": [
+          "small-dataset variance for a single split may overstate a model win",
+          "tree ensembles can overfit on small tabular datasets if not carefully regularized",
+          "robustness sweeps needed before strong claims when a high single-run score exists"
+        ],
+        "recommendation": "run",
+        "rationale": "Random forest with n_estimators=300 and max_depth=4 is a reasonable candidate to test on the wine dataset. Given the high scores already observed for logistic regression and SVC (up to 1.0 and 0.977), a well-tuned random forest should be competitive. However, due to the small size of the wine dataset, single-run results may exhibit variance, and tree ensembles can sometimes overfit if not properly constrained. A max_depth of 4 provides regularization, but robustness across seeds should be verified before making strong claims.",
+        "action_specific_signal": "random_forest with max_depth=4 and n_estimators=300 is expected to achieve high accuracy but may show variance across splits; feature scaling is not applicable for tree-based models",
+        "claim_risk": "single-run best score may not justify a scientific claim without seed variance checks"
+      },
+      "source": "qwen_agentworld"
+    },
+    {
+      "action": {
+        "action_id": "action_random_forest_max_depth-8_n_estimators-300",
+        "command": "python experiments/train_sklearn.py --dataset wine --model random_forest --n-estimators 300 --max-depth 8",
+        "model": "random_forest",
+        "params": {
+          "dataset": "wine",
+          "n_estimators": 300,
+          "max_depth": 8
+        }
+      },
+      "prediction": {
+        "expected_metric": "accuracy around 0.96-0.98",
+        "expected_runtime_seconds": "under 5",
+        "risks": [
+          "small-dataset variance may overstate a model win",
+          "tree ensembles can overfit on small tabular datasets",
+          "single-run best score may not justify a scientific claim"
+        ],
+        "recommendation": "run",
+        "rationale": "Random forest with n_estimators=300 and max_depth=8 is a strong candidate for the wine dataset, which is small and well-separated. However, small-dataset variance and potential overfitting for tree ensembles mean the single-run score should be interpreted cautiously and verified across seeds before claiming superiority.",
+        "action_specific_signal": "Random forest on wine with max_depth=8 and 300 estimators typically achieves high accuracy but may show slight variance across splits; feature scaling is not applicable for tree-based models.",
+        "claim_risk": "single-run best score may not justify a scientific claim; seed variance may exceed apparent model or hyperparameter effects"
+      },
+      "source": "qwen_agentworld"
+    },
+    {
+      "action": {
+        "action_id": "action_svc_C-2p0_kernel-rbf_scale-True",
+        "command": "python experiments/train_sklearn.py --dataset wine --model svc --scale --C 2.0 --kernel rbf",
+        "model": "svc",
+        "params": {
+          "dataset": "wine",
+          "scale": true,
+          "C": 2.0,
+          "kernel": "rbf"
+        }
+      },
+      "prediction": {
+        "expected_metric": "accuracy around 0.97-0.98",
+        "expected_runtime_seconds": "under 5",
+        "risks": [
+          "single-run best score may not justify a scientific claim",
+          "seed variance may exceed apparent model or hyperparameter effects"
+        ],
+        "recommendation": "run",
+        "rationale": "The proposed SVC configuration with C=2.0 and rbf kernel is a logical continuation of the successful SVC run with C=0.5 which achieved 0.9777 accuracy. Feature scaling is appropriately applied for SVC. However, with only 3 budget runs remaining and the current top model being logistic regression with scale=true and C=0.1 achieving 1.0 accuracy, this SVC run should be evaluated for robustness across seeds before making strong claims.",
+        "action_specific_signal": "SVC with rbf kernel and feature scaling typically achieves high accuracy on wine dataset, but single-run results may not justify scientific claims without seed variance analysis",
+        "claim_risk": "single-run best score may not justify a scientific claim"
+      },
+      "source": "qwen_agentworld"
+    }
+  ],
+  "selected_action": {
+    "action_id": "action_random_forest_n_estimators-100",
+    "command": "python experiments/train_sklearn.py --dataset wine --model random_forest --n-estimators 100",
+    "model": "random_forest",
+    "params": {
+      "dataset": "wine",
+      "n_estimators": 100,
+      "max_depth": null
+    }
+  },
+  "decision_trace": {
+    "selected_action": {
+      "action_id": "action_random_forest_n_estimators-100",
+      "command": "python experiments/train_sklearn.py --dataset wine --model random_forest --n-estimators 100",
+      "model": "random_forest",
+      "params": {
+        "dataset": "wine",
+        "n_estimators": 100,
+        "max_depth": null
+      }
+    },
+    "agent_signal_used": false,
+    "world_model_signal_used": true,
+    "selector_policy_signal_used": true,
+    "causal_signal_type": "mixed",
+    "observed_state_signal": "Need at least 5 single-run model results before top-model verification.",
+    "world_model_signal": "prediction contained an action-specific research signal; world model predicted overfitting risk",
+    "selector_policy_signal": "new model family increases search coverage; strong linear baseline makes a different inductive bias useful",
+    "selected_score": 79.0,
+    "score_breakdown": {
+      "expected_gain": 0.0,
+      "uncertainty": 0.0,
+      "novelty": 53.0,
+      "verification_value": 0.0,
+      "qwen_signal": 30.0,
+      "redundancy_penalty": 0.0,
+      "compute_cost_penalty": -4.0,
+      "unsupported_claim_risk": -8.0,
+      "agent_preference": 8.0
+    },
+    "qwen_suggested_action": "action_random_forest_n_estimators-100",
+    "catalog_validation": "accepted",
+    "agent_rationale": "Given state state_005 with budget_remaining=3, the planner chooses action_svc_C-2p0_kernel-rbf_scale-True to collect the most decision-relevant evidence. Agent-in-repo operator mode follows the same catalog-only contract used by Codex, Claude Code, OpenClaw, or an API planner.",
+    "preferred_action_id": "action_svc_C-2p0_kernel-rbf_scale-True",
+    "selection_overrode_agent": true,
+    "override_reason": "safety selector chose a higher-scoring action after world-model and evidence-risk scoring",
+    "causal_reason": "Selected random_forest because score=79.0; autoresearch agent included this action in its candidate shortlist; world model recommended run; new model family increases search coverage; strong linear baseline makes a different inductive bias useful; world model predicted overfitting risk; high best score increases claim risk for additional single-run score chasing. Agent hypothesis: A prediction miss should trigger exploration of a different inductive bias.. World model predicted accuracy around 0.96-0.98, runtime under 5, recommendation=run, risks=small-dataset variance for a single split could overstate a model win, tree ensembles like random forest may overfit or show variance on small datasets. Causal signal type: mixed.",
+    "rejected_candidates": [
+      {
+        "action": {
+          "action_id": "action_random_forest_max_depth-4_n_estimators-100",
+          "command": "python experiments/train_sklearn.py --dataset wine --model random_forest --n-estimators 100 --max-depth 4",
+          "model": "random_forest",
+          "params": {
+            "dataset": "wine",
+            "n_estimators": 100,
+            "max_depth": 4
+          }
+        },
+        "reason": "score=71.0; world model recommended run; new model family increases search coverage; strong linear baseline makes a different inductive bias useful; world model predicted overfitting risk; high best score increases claim risk for additional single-run score chasing",
+        "score_breakdown": {
+          "expected_gain": 0.0,
+          "uncertainty": 0.0,
+          "novelty": 53.0,
+          "verification_value": 0.0,
+          "qwen_signal": 30.0,
+          "redundancy_penalty": 0.0,
+          "compute_cost_penalty": -4.0,
+          "unsupported_claim_risk": -8.0,
+          "agent_preference": 0.0
+        }
+      },
+      {
+        "action": {
+          "action_id": "action_random_forest_max_depth-8_n_estimators-100",
+          "command": "python experiments/train_sklearn.py --dataset wine --model random_forest --n-estimators 100 --max-depth 8",
+          "model": "random_forest",
+          "params": {
+            "dataset": "wine",
+            "n_estimators": 100,
+            "max_depth": 8
+          }
+        },
+        "reason": "score=71.0; world model recommended run; new model family increases search coverage; strong linear baseline makes a different inductive bias useful; world model predicted overfitting risk; high best score increases claim risk for additional single-run score chasing",
+        "score_breakdown": {
+          "expected_gain": 0.0,
+          "uncertainty": 0.0,
+          "novelty": 53.0,
+          "verification_value": 0.0,
+          "qwen_signal": 30.0,
+          "redundancy_penalty": 0.0,
+          "compute_cost_penalty": -4.0,
+          "unsupported_claim_risk": -8.0,
+          "agent_preference": 0.0
+        }
+      },
+      {
+        "action": {
+          "action_id": "action_random_forest_n_estimators-300",
+          "command": "python experiments/train_sklearn.py --dataset wine --model random_forest --n-estimators 300",
+          "model": "random_forest",
+          "params": {
+            "dataset": "wine",
+            "n_estimators": 300,
+            "max_depth": null
+          }
+        },
+        "reason": "score=71.0; world model recommended run; new model family increases search coverage; strong linear baseline makes a different inductive bias useful; world model predicted overfitting risk; high best score increases claim risk for additional single-run score chasing",
+        "score_breakdown": {
+          "expected_gain": 0.0,
+          "uncertainty": 0.0,
+          "novelty": 53.0,
+          "verification_value": 0.0,
+          "qwen_signal": 30.0,
+          "redundancy_penalty": 0.0,
+          "compute_cost_penalty": -4.0,
+          "unsupported_claim_risk": -8.0,
+          "agent_preference": 0.0
+        }
+      },
+      {
+        "action": {
+          "action_id": "action_random_forest_max_depth-4_n_estimators-300",
+          "command": "python experiments/train_sklearn.py --dataset wine --model random_forest --n-estimators 300 --max-depth 4",
+          "model": "random_forest",
+          "params": {
+            "dataset": "wine",
+            "n_estimators": 300,
+            "max_depth": 4
+          }
+        },
+        "reason": "score=71.0; world model recommended run; new model family increases search coverage; strong linear baseline makes a different inductive bias useful; world model predicted overfitting risk; high best score increases claim risk for additional single-run score chasing",
+        "score_breakdown": {
+          "expected_gain": 0.0,
+          "uncertainty": 0.0,
+          "novelty": 53.0,
+          "verification_value": 0.0,
+          "qwen_signal": 30.0,
+          "redundancy_penalty": 0.0,
+          "compute_cost_penalty": -4.0,
+          "unsupported_claim_risk": -8.0,
+          "agent_preference": 0.0
+        }
+      },
+      {
+        "action": {
+          "action_id": "action_random_forest_max_depth-8_n_estimators-300",
+          "command": "python experiments/train_sklearn.py --dataset wine --model random_forest --n-estimators 300 --max-depth 8",
+          "model": "random_forest",
+          "params": {
+            "dataset": "wine",
+            "n_estimators": 300,
+            "max_depth": 8
+          }
+        },
+        "reason": "score=71.0; world model recommended run; new model family increases search coverage; strong linear baseline makes a different inductive bias useful; world model predicted overfitting risk; high best score increases claim risk for additional single-run score chasing",
+        "score_breakdown": {
+          "expected_gain": 0.0,
+          "uncertainty": 0.0,
+          "novelty": 53.0,
+          "verification_value": 0.0,
+          "qwen_signal": 30.0,
+          "redundancy_penalty": 0.0,
+          "compute_cost_penalty": -4.0,
+          "unsupported_claim_risk": -8.0,
+          "agent_preference": 0.0
+        }
+      },
+      {
+        "action": {
+          "action_id": "action_logistic_regression_C-1p0_scale-True",
+          "command": "python experiments/train_sklearn.py --dataset wine --model logistic_regression --scale",
+          "model": "logistic_regression",
+          "params": {
+            "dataset": "wine",
+            "scale": true,
+            "C": 1.0
+          }
+        },
+        "reason": "score=63.0; autoresearch agent included this action in its candidate shortlist; world model recommended run; candidate is a variant of an already tested family; after an unscaled logistic baseline, scaling is the direct world-model intervention to test; high best score increases claim risk for additional single-run score chasing",
+        "score_breakdown": {
+          "expected_gain": 45.0,
+          "uncertainty": 0.0,
+          "novelty": 0.0,
+          "verification_value": 0.0,
+          "qwen_signal": 30.0,
+          "redundancy_penalty": -12.0,
+          "compute_cost_penalty": 0.0,
+          "unsupported_claim_risk": -8.0,
+          "agent_preference": 8.0
+        }
+      },
+      {
+        "action": {
+          "action_id": "action_logistic_regression_C-10p0_scale-True",
+          "command": "python experiments/train_sklearn.py --dataset wine --model logistic_regression --scale --C 10.0",
+          "model": "logistic_regression",
+          "params": {
+            "dataset": "wine",
+            "scale": true,
+            "C": 10.0
+          }
+        },
+        "reason": "score=63.0; autoresearch agent included this action in its candidate shortlist; world model recommended run; candidate is a variant of an already tested family; after an unscaled logistic baseline, scaling is the direct world-model intervention to test; high best score increases claim risk for additional single-run score chasing",
+        "score_breakdown": {
+          "expected_gain": 45.0,
+          "uncertainty": 0.0,
+          "novelty": 0.0,
+          "verification_value": 0.0,
+          "qwen_signal": 30.0,
+          "redundancy_penalty": -12.0,
+          "compute_cost_penalty": 0.0,
+          "unsupported_claim_risk": -8.0,
+          "agent_preference": 8.0
+        }
+      },
+      {
+        "action": {
+          "action_id": "action_svc_C-2p0_kernel-rbf_scale-True",
+          "command": "python experiments/train_sklearn.py --dataset wine --model svc --scale --C 2.0 --kernel rbf",
+          "model": "svc",
+          "params": {
+            "dataset": "wine",
+            "scale": true,
+            "C": 2.0,
+            "kernel": "rbf"
+          }
+        },
+        "reason": "score=52.0; autoresearch agent preferred this catalog action; world model recommended run; candidate is a variant of an already tested family; high best score increases claim risk for additional single-run score chasing",
+        "score_breakdown": {
+          "expected_gain": 0.0,
+          "uncertainty": 0.0,
+          "novelty": 0.0,
+          "verification_value": 0.0,
+          "qwen_signal": 30.0,
+          "redundancy_penalty": -12.0,
+          "compute_cost_penalty": 0.0,
+          "unsupported_claim_risk": -8.0,
+          "agent_preference": 42.0
+        }
+      },
+      {
+        "action": {
+          "action_id": "action_logistic_regression_C-0p1_scale-False",
+          "command": "python experiments/train_sklearn.py --dataset wine --model logistic_regression --C 0.1",
+          "model": "logistic_regression",
+          "params": {
+            "dataset": "wine",
+            "scale": false,
+            "C": 0.1
+          }
+        },
+        "reason": "score=18.0; autoresearch agent included this action in its candidate shortlist; world model recommended run; candidate is a variant of an already tested family; high best score increases claim risk for additional single-run score chasing",
+        "score_breakdown": {
+          "expected_gain": 0.0,
+          "uncertainty": 0.0,
+          "novelty": 0.0,
+          "verification_value": 0.0,
+          "qwen_signal": 30.0,
+          "redundancy_penalty": -12.0,
+          "compute_cost_penalty": 0.0,
+          "unsupported_claim_risk": -8.0,
+          "agent_preference": 8.0
+        }
+      },
+      {
+        "action": {
+          "action_id": "action_logistic_regression_C-1p0_scale-False",
+          "command": "python experiments/train_sklearn.py --dataset wine --model logistic_regression",
+          "model": "logistic_regression",
+          "params": {
+            "dataset": "wine",
+            "scale": false,
+            "C": 1.0
+          }
+        },
+        "reason": "score=18.0; autoresearch agent included this action in its candidate shortlist; world model recommended run; candidate is a variant of an already tested family; high best score increases claim risk for additional single-run score chasing",
+        "score_breakdown": {
+          "expected_gain": 0.0,
+          "uncertainty": 0.0,
+          "novelty": 0.0,
+          "verification_value": 0.0,
+          "qwen_signal": 30.0,
+          "redundancy_penalty": -12.0,
+          "compute_cost_penalty": 0.0,
+          "unsupported_claim_risk": -8.0,
+          "agent_preference": 8.0
+        }
+      },
+      {
+        "action": {
+          "action_id": "action_logistic_regression_C-10p0_scale-False",
+          "command": "python experiments/train_sklearn.py --dataset wine --model logistic_regression --C 10.0",
+          "model": "logistic_regression",
+          "params": {
+            "dataset": "wine",
+            "scale": false,
+            "C": 10.0
+          }
+        },
+        "reason": "score=18.0; autoresearch agent included this action in its candidate shortlist; world model recommended run; candidate is a variant of an already tested family; high best score increases claim risk for additional single-run score chasing",
+        "score_breakdown": {
+          "expected_gain": 0.0,
+          "uncertainty": 0.0,
+          "novelty": 0.0,
+          "verification_value": 0.0,
+          "qwen_signal": 30.0,
+          "redundancy_penalty": -12.0,
+          "compute_cost_penalty": 0.0,
+          "unsupported_claim_risk": -8.0,
+          "agent_preference": 8.0
+        }
+      }
+    ]
+  },
+  "claim_ledger_updates": [],
+  "calibration_metrics": null,
+  "top_model_summary": {
+    "best_observed_model": null,
+    "best_observed_metric": null,
+    "top_models": [
+      {
+        "run_id": "run_002",
+        "model": "logistic_regression",
+        "model_key": "logistic_regression_scaled_C=0.1",
+        "metric": 1.0,
+        "params": {
+          "dataset": "wine",
+          "scale": true,
+          "C": 0.1
+        }
+      },
+      {
+        "run_id": "run_001",
+        "model": "logistic_regression",
+        "model_key": "logistic_regression",
+        "metric": 0.9777777777777777,
+        "params": {
+          "dataset": "wine",
+          "scale": false
+        }
+      },
+      {
+        "run_id": "run_003",
+        "model": "svc",
+        "model_key": "svc_scaled_C=0.5_kernel=rbf",
+        "metric": 0.9777777777777777,
+        "params": {
+          "dataset": "wine",
+          "scale": true,
+          "C": 0.5,
+          "kernel": "rbf"
+        }
+      },
+      {
+        "run_id": "run_004",
+        "model": "gradient_boosting",
+        "model_key": "gradient_boosting_n=100_lr=0.05",
+        "metric": 0.9555555555555556,
+        "params": {
+          "dataset": "wine",
+          "n_estimators": 100,
+          "learning_rate": 0.05,
+          "max_depth": null
+        }
+      }
+    ],
+    "top_gap": null,
+    "needs_robustness_verification": false,
+    "reason": "Need at least 5 single-run model results before top-model verification.",
+    "verification_action_key": null
+  },
+  "artifacts": {
+    "task_id": "wine_accuracy",
+    "trace_path": "runs/ablations/lucky_loop_full/wine_accuracy/run_005.json",
+    "report_path": "reports/ablations/lucky_loop_full/wine_accuracy/final_report.md",
+    "claim_ledger_path": "reports/ablations/lucky_loop_full/wine_accuracy/claim_ledger.json"
+  }
+}

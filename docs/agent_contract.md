@@ -69,7 +69,7 @@ export LUCKYLOOP_AGENT_COMMAND="your-agent {request_path} {response_path}"
 PYTHONPATH=src python -m luckyloop.loop \
   --task configs/tasks/breast_cancer_accuracy.json \
   --planner-mode agent_command \
-  --agent-backend generic_command
+  --agent-backend custom_cli_agent
 ```
 
 For local testing:
@@ -90,3 +90,16 @@ PYTHONPATH=src python -m luckyloop.loop \
 ```
 
 Lucky Loop waits for the response file. The external agent writes it, then Lucky Loop continues.
+
+## Agent-In-Repo Mode
+
+For Codex, Claude Code, OpenClaw, Hermes, or another coding agent that is already operating in the repository, use `program.md` as the runbook and keep the backend trace label explicit:
+
+```bash
+PYTHONPATH=src python -m luckyloop.loop \
+  --task configs/tasks/breast_cancer_accuracy.json \
+  --planner-mode operator_driven \
+  --agent-backend codex_operator
+```
+
+This mode uses the same catalog-only contract and trace schema as the API and handoff modes. It is the credential-free path for showing the backend without pretending that the Python process can call the currently attached coding agent as a private API.

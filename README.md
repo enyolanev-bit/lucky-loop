@@ -43,6 +43,7 @@ The important distinction:
 Operating mode:
 
 - **Product path:** the autoresearch agent is an OpenAI-compatible planner API. It proposes hypotheses and chooses action IDs from a safe catalog.
+- **Agent-in-repo path:** `--planner-mode operator_driven` represents Codex, Claude Code, OpenClaw, Hermes, or another coding agent operating from `program.md` against the same backend protocol.
 - **No-key agent path:** `--planner-mode agent_handoff` lets Codex, Claude Code, OpenClaw, or another external agent read a request JSON and write an `AgentDecision` response.
 - **Automatic agent path:** `--planner-mode agent_command` calls any CLI adapter through `LUCKYLOOP_AGENT_COMMAND`.
 - **Test path:** `--planner-mode replay` uses a local fixture-like planner for smoke tests only.
@@ -56,14 +57,14 @@ Qwen-AgentWorld is never treated as the research agent or verifier. It is the wo
 - OpenAI-compatible endpoint: `http://134.199.205.222:8000/v1`.
 - `src/luckyloop/` contains the runnable task-agnostic ML research loop:
   - task specs for sklearn benchmarks
-  - API-first and external-agent autoresearch planner interface
+  - API-first, agent-in-repo, and external-agent planner interfaces
   - adaptive candidate generation from dataset/model/search-space config
   - world-model prediction
   - real experiment execution
   - prediction-vs-actual comparison
   - automatic top-model detection
   - matched multi-seed top-model verification
-  - policy ablation against fixed-order and score-chaser baselines
+  - real ablation against classic autoresearch and classic verified baselines
   - JSON evidence traces
   - Markdown report
 - Benchmark tasks exist for real sklearn datasets:
@@ -93,7 +94,10 @@ export LUCKYWORLD_SIMULATOR_BASE_URL=http://134.199.205.222:8000/v1
 export LUCKYWORLD_SIMULATOR_MODEL=Qwen/Qwen-AgentWorld-35B-A3B
 export LUCKYWORLD_SIMULATOR_API_KEY=dummy
 
-python3 -m luckyloop.loop --task configs/tasks/breast_cancer_accuracy.json --planner-mode replay
+python3 -m luckyloop.loop \
+  --task configs/tasks/breast_cancer_accuracy.json \
+  --planner-mode operator_driven \
+  --agent-backend codex_operator
 ```
 
 If the simulator endpoint is unavailable, Lucky Loop keeps a deterministic heuristic fallback for local smoke tests. The live presentation path uses Qwen-AgentWorld.
@@ -110,7 +114,7 @@ PYTHONPATH=src python3 -m luckyloop.loop \
   --planner-mode llm
 ```
 
-Use Codex/Claude Code/OpenClaw as the planner without an API key:
+Use Codex/Claude Code/OpenClaw as an interactive handoff planner without an API key:
 
 ```bash
 PYTHONPATH=src python3 -m luckyloop.loop \
@@ -122,20 +126,34 @@ PYTHONPATH=src python3 -m luckyloop.loop \
 Lucky Loop writes `agent_io/<task_id>/<state_id>.request.json` and waits for `*.response.json`.
 The response contract is documented in `docs/agent_contract.md`.
 
-Use a CLI-backed agent:
+Custom CLI-backed agents are supported through the same contract:
 
 ```bash
 export LUCKYLOOP_AGENT_COMMAND="your-agent {request_path} {response_path}"
 PYTHONPATH=src python3 -m luckyloop.loop \
   --task configs/tasks/breast_cancer_accuracy.json \
   --planner-mode agent_command \
-  --agent-backend generic_command
+  --agent-backend custom_cli_agent
 ```
 
 Run all real benchmark tasks:
 
 ```bash
-PYTHONPATH=src python3 scripts/run_benchmark_suite.py --planner-mode replay
+PYTHONPATH=src python3 scripts/run_benchmark_suite.py \
+  --planner-mode operator_driven \
+  --agent-backend codex_operator
+```
+
+Run the backend ablation suite:
+
+```bash
+PYTHONPATH=src python3 scripts/run_ablation_suite.py --world-model auto
+```
+
+Validate presentation artifacts:
+
+```bash
+PYTHONPATH=src python3 scripts/validate_artifacts.py --check-ablations --require-qwen
 ```
 
 ## Artifacts
@@ -147,7 +165,9 @@ reports/<task_id>/demo_summary.md
 reports/<task_id>/world_model_calibration.md
 reports/<task_id>/claim_ledger.json
 reports/benchmark_summary.md
-reports/policy_ablation.md
+reports/ablations/world_model_ablation.md
+reports/ablations/classic_vs_lucky_loop.md
+reports/pitch_backend_summary.md
 app/streamlit_app.py
 ```
 

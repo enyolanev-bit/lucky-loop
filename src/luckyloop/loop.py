@@ -204,13 +204,15 @@ def run(
         print(
             f"{run_id}: {action.model} acc={actual.accuracy} "
             f"predicted='{prediction.expected_metric}' rec={prediction.recommendation} "
-            f"match={comparison.metric_match}"
+            f"match={comparison.metric_match}",
+            flush=True,
         )
         if verification:
             print(
                 f"{run_id}: verifier status={verification.status} "
                 f"effect={verification.effect_size} seed_noise={verification.seed_noise} "
-                f"trustworthy={verification.trustworthy}"
+                f"trustworthy={verification.trustworthy}",
+                flush=True,
             )
         if i >= max_experiments:
             break
@@ -227,7 +229,11 @@ def main() -> None:
     ap.add_argument("--max-experiments", type=int, default=None)
     ap.add_argument("--task", default=None, help="Path to a TaskSpec JSON file.")
     ap.add_argument("--output-namespace", default=None, help="Optional subdirectory under runs/ and reports/.")
-    ap.add_argument("--planner-mode", choices=["llm", "agent_handoff", "agent_command", "replay", "selector"], default="replay")
+    ap.add_argument(
+        "--planner-mode",
+        choices=["llm", "agent_handoff", "agent_command", "operator_driven", "replay", "selector"],
+        default="replay",
+    )
     ap.add_argument("--agent-backend", default=None, help="Backend label stored in traces, e.g. codex_handoff or openai_compatible.")
     ap.add_argument("--agent-io-dir", default="agent_io", help="Directory for agent request/response handoff files.")
     ap.add_argument("--agent-timeout-seconds", type=int, default=900)

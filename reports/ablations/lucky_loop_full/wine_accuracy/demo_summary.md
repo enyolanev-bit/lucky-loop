@@ -1,0 +1,15 @@
+# Lucky Loop Demo Summary
+
+Goal: Maximize validation accuracy on sklearn wine under a small compute budget, while avoiding unsupported claims.
+
+All rows are real sklearn executions or real multi-seed sweeps. The table summarizes the auditable loop: agent proposes, world model predicts, Lucky Loop runs, verifier gates claims.
+
+| Run | Agent hypothesis | Qwen predicted | Action run | Reality showed | Claim verdict |
+|---|---|---|---|---|---|
+| run_001 | A simple unscaled linear baseline should anchor the search before interventions. | logistic regression without scaling on wine dataset typically yields lower accuracy compared to scaled variants | ran logistic_regression; signal=mixed | accuracy 0.9778 | prediction miss logged; no robust claim |
+| run_002 | Feature scaling should improve or stabilize scale-sensitive linear classification. | logistic regression with scaling on wine typically achieves high accuracy; ensure robustness verification before claiming improvement over un-scaled baseline | ran logistic_regression; signal=mixed | accuracy 1.0000 | prediction miss logged; no robust claim |
+| run_003 | A prediction miss should trigger exploration of a different inductive bias. | SVC with RBF kernel and feature scaling typically achieves high accuracy on the wine dataset, but small-dataset variance should be monitored. | ran svc; signal=mixed | accuracy 0.9778 | observation only; no robust claim |
+| run_004 | A prediction miss should trigger exploration of a different inductive bias. | Gradient boosting with low learning rate and moderate tree count typically avoids severe overfitting on small datasets like wine, but may not significantly outperform well-tuned linear or margin-based models on this specific task. | ran gradient_boosting; signal=mixed | accuracy 0.9556 | prediction miss logged; no robust claim |
+| run_005 | A prediction miss should trigger exploration of a different inductive bias. | Random forest on wine typically achieves high accuracy but may show variance across seeds due to the small dataset size. | ran random_forest; signal=mixed | accuracy 1.0000 | prediction miss logged; no robust claim |
+| run_006 | The best single-run model may not be robust across matched seeds. | Top models are tied on single-split evidence; robust best-model claim requires multi-seed verification. | verified top models: logistic_regression_scaled_C=0.1, random_forest_n=100, logistic_regression; signal=mixed | best mean accuracy 0.9956 | blocked: logistic_regression_scaled_C=0.1 had the best multi-seed mean accuracy, but the effect was smaller than seed noise; no robust best-model claim is allowed. |
+| run_007 | A prediction miss should trigger exploration of a different inductive bias. | label-noise sweeps test claim robustness, not leaderboard performance; small-dataset variance may cause single-run best score to overstate a model win | ran multi-seed logistic_regression C sweep; signal=mixed | best mean accuracy 0.9667 | blocked: C=0.1 had the best mean accuracy, but the effect was smaller than seed noise. |

@@ -1,0 +1,15 @@
+# Lucky Loop Demo Summary
+
+Goal: Maximize validation accuracy on sklearn digits under a small compute budget, while avoiding unsupported claims.
+
+All rows are real sklearn executions or real multi-seed sweeps. The table summarizes the auditable loop: agent proposes, world model predicts, Lucky Loop runs, verifier gates claims.
+
+| Run | Agent hypothesis | Qwen predicted | Action run | Reality showed | Claim verdict |
+|---|---|---|---|---|---|
+| run_001 | Classic autoresearch should verify the top observed models before a robust winner claim. | none | ran logistic_regression; signal=selector_policy | accuracy 0.9622 | prediction miss logged; no robust claim |
+| run_002 | Classic autoresearch should verify the top observed models before a robust winner claim. | none | ran logistic_regression; signal=selector_policy | accuracy 0.9711 | prediction miss logged; no robust claim |
+| run_003 | Classic autoresearch should verify the top observed models before a robust winner claim. | none | ran logistic_regression; signal=selector_policy | accuracy 0.9778 | prediction miss logged; no robust claim |
+| run_004 | Classic autoresearch should verify the top observed models before a robust winner claim. | none | ran logistic_regression; signal=selector_policy | accuracy 0.9644 | prediction miss logged; no robust claim |
+| run_005 | Classic autoresearch should verify the top observed models before a robust winner claim. | none | ran svc; signal=selector_policy | accuracy 0.9778 | prediction miss logged; no robust claim |
+| run_006 | Classic autoresearch should verify the top observed models before a robust winner claim. | none | verified top models: logistic_regression_scaled_C=1.0, svc_scaled_C=0.5_kernel=rbf, logistic_regression_scaled_C=0.1; signal=selector_policy | best mean accuracy 0.9764 | blocked: svc_scaled_C=0.5_kernel=rbf had the best multi-seed mean accuracy, but the effect was smaller than seed noise; no robust best-model claim is allowed. |
+| run_007 | Classic autoresearch should verify the top observed models before a robust winner claim. | none | ran random_forest; signal=selector_policy | accuracy 0.9600 | prediction miss logged; no robust claim |

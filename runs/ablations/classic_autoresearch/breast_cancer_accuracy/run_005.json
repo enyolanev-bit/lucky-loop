@@ -1,0 +1,931 @@
+{
+  "run_id": "run_005",
+  "goal": "Maximize validation accuracy on sklearn breast_cancer under a small compute budget, while avoiding unsupported claims.",
+  "hypothesis": "Score-chasing autoresearch should spend budget on the next promising model family.",
+  "proposed_action": {
+    "action_id": "action_svc_C-0p5_kernel-rbf_scale-True",
+    "command": "python experiments/train_sklearn.py --dataset breast_cancer --model svc --scale --C 0.5 --kernel rbf",
+    "model": "svc",
+    "params": {
+      "dataset": "breast_cancer",
+      "scale": true,
+      "C": 0.5,
+      "kernel": "rbf"
+    }
+  },
+  "world_model_prediction": {
+    "expected_metric": "no pre-compute world-model prediction",
+    "expected_runtime_seconds": "not predicted",
+    "risks": [
+      "classic autoresearch baseline does not simulate this action before compute"
+    ],
+    "recommendation": "run",
+    "rationale": "This baseline chooses experiments from observed state and policy rules without Qwen-AgentWorld.",
+    "action_specific_signal": "none",
+    "claim_risk": "Without prospective simulation, claim risk is only discovered after execution or verification."
+  },
+  "actual_result": {
+    "status": "success",
+    "accuracy": 0.972027972027972,
+    "f1": 0.9719127026819333,
+    "runtime_seconds": 0.0179,
+    "stdout_tail": "{\n  \"accuracy\": 0.972027972027972,\n  \"dataset\": \"breast_cancer\",\n  \"f1\": 0.9719127026819333,\n  \"model\": \"svc\",\n  \"n_label_noise_flips\": 0,\n  \"n_test\": 143,\n  \"n_train\": 426,\n  \"params\": {\n    \"C\": 0.5,\n    \"dataset\": \"breast_cancer\",\n    \"kernel\": \"rbf\",\n    \"label_noise\": 0.0,\n    \"learning_rate\": 0.1,\n    \"max_depth\": null,\n    \"max_iter\": 1000,\n    \"model\": \"svc\",\n    \"n_estimators\": 200,\n    \"scale\": true,\n    \"seed\": 42,\n    \"test_size\": 0.25\n  },\n  \"runtime_seconds\": 0.0179,\n  \"status\": \"success\"\n}\n",
+    "stderr_tail": "",
+    "raw": {
+      "accuracy": 0.972027972027972,
+      "dataset": "breast_cancer",
+      "f1": 0.9719127026819333,
+      "model": "svc",
+      "n_label_noise_flips": 0,
+      "n_test": 143,
+      "n_train": 426,
+      "params": {
+        "C": 0.5,
+        "dataset": "breast_cancer",
+        "kernel": "rbf",
+        "label_noise": 0.0,
+        "learning_rate": 0.1,
+        "max_depth": null,
+        "max_iter": 1000,
+        "model": "svc",
+        "n_estimators": 200,
+        "scale": true,
+        "seed": 42,
+        "test_size": 0.25
+      },
+      "runtime_seconds": 0.0179,
+      "status": "success"
+    }
+  },
+  "comparison": {
+    "metric_match": false,
+    "runtime_match": false,
+    "unexpected_events": [
+      "no world-model prediction was made before compute"
+    ],
+    "lesson": "Classic baseline has no prediction-vs-reality evidence for this action."
+  },
+  "next_decision": "Continue with the baseline policy; no world-model prediction is available.",
+  "verification": null,
+  "schema_version": "3.0",
+  "planner_mode": "classic_autoresearch",
+  "agent_backend": "classic_autoresearch",
+  "agent_model": "classic-autoresearch-baseline",
+  "agent_prompt_hash": "e108391da391346e",
+  "agent_decision": {
+    "research_question": "Maximize validation accuracy on sklearn breast_cancer under a small compute budget, while avoiding unsupported claims.",
+    "working_hypothesis": "Score-chasing autoresearch should spend budget on the next promising model family.",
+    "candidate_action_ids": [
+      "action_logistic_regression_C-0p1_scale-False",
+      "action_logistic_regression_C-1p0_scale-False",
+      "action_logistic_regression_C-10p0_scale-False",
+      "action_svc_C-0p5_kernel-rbf_scale-True",
+      "action_svc_C-2p0_kernel-rbf_scale-True",
+      "action_svc_C-5p0_kernel-rbf_scale-True"
+    ],
+    "preferred_action_id": "action_svc_C-0p5_kernel-rbf_scale-True",
+    "rationale": "classic_autoresearch selected action_svc_C-0p5_kernel-rbf_scale-True from state state_005.",
+    "expected_evidence_needed": "Collect single-run metrics and report the best observed score.",
+    "claim_risk": "A best single-run claim can be unsupported if top models are close.",
+    "stop_or_continue": "continue"
+  },
+  "safety_validation": {
+    "valid_agent_action": true,
+    "selected_action_id": "action_svc_C-0p5_kernel-rbf_scale-True",
+    "selection_overrode_agent": false,
+    "override_reason": null,
+    "validation_notes": [
+      "catalog action selected by deterministic baseline policy"
+    ]
+  },
+  "research_hypothesis": "Score-chasing autoresearch should spend budget on the next promising model family.",
+  "state_before": {
+    "state_id": "state_005",
+    "goal": "Maximize validation accuracy on sklearn breast_cancer under a small compute budget, while avoiding unsupported claims.",
+    "known_results": [
+      {
+        "run_id": "run_001",
+        "model": "logistic_regression",
+        "accuracy": 0.951048951048951,
+        "f1": 0.9504987920829505,
+        "params": {
+          "dataset": "breast_cancer",
+          "scale": false
+        }
+      },
+      {
+        "run_id": "run_002",
+        "model": "logistic_regression",
+        "accuracy": 0.9790209790209791,
+        "f1": 0.9789790320177061,
+        "params": {
+          "dataset": "breast_cancer",
+          "scale": true,
+          "C": 0.1
+        }
+      },
+      {
+        "run_id": "run_003",
+        "model": "logistic_regression",
+        "accuracy": 0.986013986013986,
+        "f1": 0.986013986013986,
+        "params": {
+          "dataset": "breast_cancer",
+          "scale": true,
+          "C": 1.0
+        }
+      },
+      {
+        "run_id": "run_004",
+        "model": "logistic_regression",
+        "accuracy": 0.972027972027972,
+        "f1": 0.9719127026819333,
+        "params": {
+          "dataset": "breast_cancer",
+          "scale": true,
+          "C": 10.0
+        }
+      }
+    ],
+    "budget_remaining": 3,
+    "open_questions": [
+      "Which candidate should receive the next compute budget?",
+      "Is the best observed score robust across seeds or perturbations?",
+      "Do apparent improvements survive an effect-vs-noise verifier?",
+      "What did the world model miss, and should the next action test that failure mode?"
+    ],
+    "risks_to_check": [
+      "single-run best score may not justify a scientific claim",
+      "seed variance may exceed apparent model or hyperparameter effects",
+      "world-model predictions may miss quantitative details"
+    ],
+    "top_model_summary": {
+      "best_observed_model": null,
+      "best_observed_metric": null,
+      "top_models": [
+        {
+          "run_id": "run_003",
+          "model": "logistic_regression",
+          "model_key": "logistic_regression_scaled_C=1.0",
+          "metric": 0.986013986013986,
+          "params": {
+            "dataset": "breast_cancer",
+            "scale": true,
+            "C": 1.0
+          }
+        },
+        {
+          "run_id": "run_002",
+          "model": "logistic_regression",
+          "model_key": "logistic_regression_scaled_C=0.1",
+          "metric": 0.9790209790209791,
+          "params": {
+            "dataset": "breast_cancer",
+            "scale": true,
+            "C": 0.1
+          }
+        },
+        {
+          "run_id": "run_004",
+          "model": "logistic_regression",
+          "model_key": "logistic_regression_scaled_C=10.0",
+          "metric": 0.972027972027972,
+          "params": {
+            "dataset": "breast_cancer",
+            "scale": true,
+            "C": 10.0
+          }
+        },
+        {
+          "run_id": "run_001",
+          "model": "logistic_regression",
+          "model_key": "logistic_regression",
+          "metric": 0.951048951048951,
+          "params": {
+            "dataset": "breast_cancer",
+            "scale": false
+          }
+        }
+      ],
+      "top_gap": null,
+      "needs_robustness_verification": false,
+      "reason": "Need at least 5 single-run model results before top-model verification.",
+      "verification_action_key": null
+    },
+    "summary": "Task=breast_cancer_accuracy; dataset=breast_cancer; primary_metric=accuracy. Goal: Maximize validation accuracy on sklearn breast_cancer under a small compute budget, while avoiding unsupported claims.\nClassic baseline on sklearn breast_cancer; no world-model prediction before compute.\nrun_001: logistic_regression actual=0.951048951048951 status=success\nrun_002: logistic_regression actual=0.9790209790209791 status=success\nrun_003: logistic_regression actual=0.986013986013986 status=success\nrun_004: logistic_regression actual=0.972027972027972 status=success"
+  },
+  "candidate_actions": [
+    {
+      "action_id": "action_logistic_regression_C-0p1_scale-False",
+      "command": "python experiments/train_sklearn.py --dataset breast_cancer --model logistic_regression --C 0.1",
+      "model": "logistic_regression",
+      "params": {
+        "dataset": "breast_cancer",
+        "scale": false,
+        "C": 0.1
+      }
+    },
+    {
+      "action_id": "action_logistic_regression_C-1p0_scale-False",
+      "command": "python experiments/train_sklearn.py --dataset breast_cancer --model logistic_regression",
+      "model": "logistic_regression",
+      "params": {
+        "dataset": "breast_cancer",
+        "scale": false,
+        "C": 1.0
+      }
+    },
+    {
+      "action_id": "action_logistic_regression_C-10p0_scale-False",
+      "command": "python experiments/train_sklearn.py --dataset breast_cancer --model logistic_regression --C 10.0",
+      "model": "logistic_regression",
+      "params": {
+        "dataset": "breast_cancer",
+        "scale": false,
+        "C": 10.0
+      }
+    },
+    {
+      "action_id": "action_svc_C-0p5_kernel-rbf_scale-True",
+      "command": "python experiments/train_sklearn.py --dataset breast_cancer --model svc --scale --C 0.5 --kernel rbf",
+      "model": "svc",
+      "params": {
+        "dataset": "breast_cancer",
+        "scale": true,
+        "C": 0.5,
+        "kernel": "rbf"
+      }
+    },
+    {
+      "action_id": "action_svc_C-2p0_kernel-rbf_scale-True",
+      "command": "python experiments/train_sklearn.py --dataset breast_cancer --model svc --scale --C 2.0 --kernel rbf",
+      "model": "svc",
+      "params": {
+        "dataset": "breast_cancer",
+        "scale": true,
+        "C": 2.0,
+        "kernel": "rbf"
+      }
+    },
+    {
+      "action_id": "action_svc_C-5p0_kernel-rbf_scale-True",
+      "command": "python experiments/train_sklearn.py --dataset breast_cancer --model svc --scale --C 5.0 --kernel rbf",
+      "model": "svc",
+      "params": {
+        "dataset": "breast_cancer",
+        "scale": true,
+        "C": 5.0,
+        "kernel": "rbf"
+      }
+    },
+    {
+      "action_id": "action_random_forest_n_estimators-100",
+      "command": "python experiments/train_sklearn.py --dataset breast_cancer --model random_forest --n-estimators 100",
+      "model": "random_forest",
+      "params": {
+        "dataset": "breast_cancer",
+        "n_estimators": 100,
+        "max_depth": null
+      }
+    },
+    {
+      "action_id": "action_random_forest_max_depth-4_n_estimators-100",
+      "command": "python experiments/train_sklearn.py --dataset breast_cancer --model random_forest --n-estimators 100 --max-depth 4",
+      "model": "random_forest",
+      "params": {
+        "dataset": "breast_cancer",
+        "n_estimators": 100,
+        "max_depth": 4
+      }
+    },
+    {
+      "action_id": "action_random_forest_max_depth-8_n_estimators-100",
+      "command": "python experiments/train_sklearn.py --dataset breast_cancer --model random_forest --n-estimators 100 --max-depth 8",
+      "model": "random_forest",
+      "params": {
+        "dataset": "breast_cancer",
+        "n_estimators": 100,
+        "max_depth": 8
+      }
+    },
+    {
+      "action_id": "action_random_forest_n_estimators-300",
+      "command": "python experiments/train_sklearn.py --dataset breast_cancer --model random_forest --n-estimators 300",
+      "model": "random_forest",
+      "params": {
+        "dataset": "breast_cancer",
+        "n_estimators": 300,
+        "max_depth": null
+      }
+    },
+    {
+      "action_id": "action_random_forest_max_depth-4_n_estimators-300",
+      "command": "python experiments/train_sklearn.py --dataset breast_cancer --model random_forest --n-estimators 300 --max-depth 4",
+      "model": "random_forest",
+      "params": {
+        "dataset": "breast_cancer",
+        "n_estimators": 300,
+        "max_depth": 4
+      }
+    },
+    {
+      "action_id": "action_random_forest_max_depth-8_n_estimators-300",
+      "command": "python experiments/train_sklearn.py --dataset breast_cancer --model random_forest --n-estimators 300 --max-depth 8",
+      "model": "random_forest",
+      "params": {
+        "dataset": "breast_cancer",
+        "n_estimators": 300,
+        "max_depth": 8
+      }
+    }
+  ],
+  "candidate_predictions": [
+    {
+      "action": {
+        "action_id": "action_logistic_regression_C-0p1_scale-False",
+        "command": "python experiments/train_sklearn.py --dataset breast_cancer --model logistic_regression --C 0.1",
+        "model": "logistic_regression",
+        "params": {
+          "dataset": "breast_cancer",
+          "scale": false,
+          "C": 0.1
+        }
+      },
+      "prediction": {
+        "expected_metric": "no pre-compute world-model prediction",
+        "expected_runtime_seconds": "not predicted",
+        "risks": [
+          "classic autoresearch baseline does not simulate this action before compute"
+        ],
+        "recommendation": "run",
+        "rationale": "This baseline chooses experiments from observed state and policy rules without Qwen-AgentWorld.",
+        "action_specific_signal": "none",
+        "claim_risk": "Without prospective simulation, claim risk is only discovered after execution or verification."
+      },
+      "source": "unknown"
+    },
+    {
+      "action": {
+        "action_id": "action_logistic_regression_C-1p0_scale-False",
+        "command": "python experiments/train_sklearn.py --dataset breast_cancer --model logistic_regression",
+        "model": "logistic_regression",
+        "params": {
+          "dataset": "breast_cancer",
+          "scale": false,
+          "C": 1.0
+        }
+      },
+      "prediction": {
+        "expected_metric": "no pre-compute world-model prediction",
+        "expected_runtime_seconds": "not predicted",
+        "risks": [
+          "classic autoresearch baseline does not simulate this action before compute"
+        ],
+        "recommendation": "run",
+        "rationale": "This baseline chooses experiments from observed state and policy rules without Qwen-AgentWorld.",
+        "action_specific_signal": "none",
+        "claim_risk": "Without prospective simulation, claim risk is only discovered after execution or verification."
+      },
+      "source": "unknown"
+    },
+    {
+      "action": {
+        "action_id": "action_logistic_regression_C-10p0_scale-False",
+        "command": "python experiments/train_sklearn.py --dataset breast_cancer --model logistic_regression --C 10.0",
+        "model": "logistic_regression",
+        "params": {
+          "dataset": "breast_cancer",
+          "scale": false,
+          "C": 10.0
+        }
+      },
+      "prediction": {
+        "expected_metric": "no pre-compute world-model prediction",
+        "expected_runtime_seconds": "not predicted",
+        "risks": [
+          "classic autoresearch baseline does not simulate this action before compute"
+        ],
+        "recommendation": "run",
+        "rationale": "This baseline chooses experiments from observed state and policy rules without Qwen-AgentWorld.",
+        "action_specific_signal": "none",
+        "claim_risk": "Without prospective simulation, claim risk is only discovered after execution or verification."
+      },
+      "source": "unknown"
+    },
+    {
+      "action": {
+        "action_id": "action_svc_C-0p5_kernel-rbf_scale-True",
+        "command": "python experiments/train_sklearn.py --dataset breast_cancer --model svc --scale --C 0.5 --kernel rbf",
+        "model": "svc",
+        "params": {
+          "dataset": "breast_cancer",
+          "scale": true,
+          "C": 0.5,
+          "kernel": "rbf"
+        }
+      },
+      "prediction": {
+        "expected_metric": "no pre-compute world-model prediction",
+        "expected_runtime_seconds": "not predicted",
+        "risks": [
+          "classic autoresearch baseline does not simulate this action before compute"
+        ],
+        "recommendation": "run",
+        "rationale": "This baseline chooses experiments from observed state and policy rules without Qwen-AgentWorld.",
+        "action_specific_signal": "none",
+        "claim_risk": "Without prospective simulation, claim risk is only discovered after execution or verification."
+      },
+      "source": "unknown"
+    },
+    {
+      "action": {
+        "action_id": "action_svc_C-2p0_kernel-rbf_scale-True",
+        "command": "python experiments/train_sklearn.py --dataset breast_cancer --model svc --scale --C 2.0 --kernel rbf",
+        "model": "svc",
+        "params": {
+          "dataset": "breast_cancer",
+          "scale": true,
+          "C": 2.0,
+          "kernel": "rbf"
+        }
+      },
+      "prediction": {
+        "expected_metric": "no pre-compute world-model prediction",
+        "expected_runtime_seconds": "not predicted",
+        "risks": [
+          "classic autoresearch baseline does not simulate this action before compute"
+        ],
+        "recommendation": "run",
+        "rationale": "This baseline chooses experiments from observed state and policy rules without Qwen-AgentWorld.",
+        "action_specific_signal": "none",
+        "claim_risk": "Without prospective simulation, claim risk is only discovered after execution or verification."
+      },
+      "source": "unknown"
+    },
+    {
+      "action": {
+        "action_id": "action_svc_C-5p0_kernel-rbf_scale-True",
+        "command": "python experiments/train_sklearn.py --dataset breast_cancer --model svc --scale --C 5.0 --kernel rbf",
+        "model": "svc",
+        "params": {
+          "dataset": "breast_cancer",
+          "scale": true,
+          "C": 5.0,
+          "kernel": "rbf"
+        }
+      },
+      "prediction": {
+        "expected_metric": "no pre-compute world-model prediction",
+        "expected_runtime_seconds": "not predicted",
+        "risks": [
+          "classic autoresearch baseline does not simulate this action before compute"
+        ],
+        "recommendation": "run",
+        "rationale": "This baseline chooses experiments from observed state and policy rules without Qwen-AgentWorld.",
+        "action_specific_signal": "none",
+        "claim_risk": "Without prospective simulation, claim risk is only discovered after execution or verification."
+      },
+      "source": "unknown"
+    },
+    {
+      "action": {
+        "action_id": "action_random_forest_n_estimators-100",
+        "command": "python experiments/train_sklearn.py --dataset breast_cancer --model random_forest --n-estimators 100",
+        "model": "random_forest",
+        "params": {
+          "dataset": "breast_cancer",
+          "n_estimators": 100,
+          "max_depth": null
+        }
+      },
+      "prediction": {
+        "expected_metric": "no pre-compute world-model prediction",
+        "expected_runtime_seconds": "not predicted",
+        "risks": [
+          "classic autoresearch baseline does not simulate this action before compute"
+        ],
+        "recommendation": "run",
+        "rationale": "This baseline chooses experiments from observed state and policy rules without Qwen-AgentWorld.",
+        "action_specific_signal": "none",
+        "claim_risk": "Without prospective simulation, claim risk is only discovered after execution or verification."
+      },
+      "source": "unknown"
+    },
+    {
+      "action": {
+        "action_id": "action_random_forest_max_depth-4_n_estimators-100",
+        "command": "python experiments/train_sklearn.py --dataset breast_cancer --model random_forest --n-estimators 100 --max-depth 4",
+        "model": "random_forest",
+        "params": {
+          "dataset": "breast_cancer",
+          "n_estimators": 100,
+          "max_depth": 4
+        }
+      },
+      "prediction": {
+        "expected_metric": "no pre-compute world-model prediction",
+        "expected_runtime_seconds": "not predicted",
+        "risks": [
+          "classic autoresearch baseline does not simulate this action before compute"
+        ],
+        "recommendation": "run",
+        "rationale": "This baseline chooses experiments from observed state and policy rules without Qwen-AgentWorld.",
+        "action_specific_signal": "none",
+        "claim_risk": "Without prospective simulation, claim risk is only discovered after execution or verification."
+      },
+      "source": "unknown"
+    },
+    {
+      "action": {
+        "action_id": "action_random_forest_max_depth-8_n_estimators-100",
+        "command": "python experiments/train_sklearn.py --dataset breast_cancer --model random_forest --n-estimators 100 --max-depth 8",
+        "model": "random_forest",
+        "params": {
+          "dataset": "breast_cancer",
+          "n_estimators": 100,
+          "max_depth": 8
+        }
+      },
+      "prediction": {
+        "expected_metric": "no pre-compute world-model prediction",
+        "expected_runtime_seconds": "not predicted",
+        "risks": [
+          "classic autoresearch baseline does not simulate this action before compute"
+        ],
+        "recommendation": "run",
+        "rationale": "This baseline chooses experiments from observed state and policy rules without Qwen-AgentWorld.",
+        "action_specific_signal": "none",
+        "claim_risk": "Without prospective simulation, claim risk is only discovered after execution or verification."
+      },
+      "source": "unknown"
+    },
+    {
+      "action": {
+        "action_id": "action_random_forest_n_estimators-300",
+        "command": "python experiments/train_sklearn.py --dataset breast_cancer --model random_forest --n-estimators 300",
+        "model": "random_forest",
+        "params": {
+          "dataset": "breast_cancer",
+          "n_estimators": 300,
+          "max_depth": null
+        }
+      },
+      "prediction": {
+        "expected_metric": "no pre-compute world-model prediction",
+        "expected_runtime_seconds": "not predicted",
+        "risks": [
+          "classic autoresearch baseline does not simulate this action before compute"
+        ],
+        "recommendation": "run",
+        "rationale": "This baseline chooses experiments from observed state and policy rules without Qwen-AgentWorld.",
+        "action_specific_signal": "none",
+        "claim_risk": "Without prospective simulation, claim risk is only discovered after execution or verification."
+      },
+      "source": "unknown"
+    },
+    {
+      "action": {
+        "action_id": "action_random_forest_max_depth-4_n_estimators-300",
+        "command": "python experiments/train_sklearn.py --dataset breast_cancer --model random_forest --n-estimators 300 --max-depth 4",
+        "model": "random_forest",
+        "params": {
+          "dataset": "breast_cancer",
+          "n_estimators": 300,
+          "max_depth": 4
+        }
+      },
+      "prediction": {
+        "expected_metric": "no pre-compute world-model prediction",
+        "expected_runtime_seconds": "not predicted",
+        "risks": [
+          "classic autoresearch baseline does not simulate this action before compute"
+        ],
+        "recommendation": "run",
+        "rationale": "This baseline chooses experiments from observed state and policy rules without Qwen-AgentWorld.",
+        "action_specific_signal": "none",
+        "claim_risk": "Without prospective simulation, claim risk is only discovered after execution or verification."
+      },
+      "source": "unknown"
+    },
+    {
+      "action": {
+        "action_id": "action_random_forest_max_depth-8_n_estimators-300",
+        "command": "python experiments/train_sklearn.py --dataset breast_cancer --model random_forest --n-estimators 300 --max-depth 8",
+        "model": "random_forest",
+        "params": {
+          "dataset": "breast_cancer",
+          "n_estimators": 300,
+          "max_depth": 8
+        }
+      },
+      "prediction": {
+        "expected_metric": "no pre-compute world-model prediction",
+        "expected_runtime_seconds": "not predicted",
+        "risks": [
+          "classic autoresearch baseline does not simulate this action before compute"
+        ],
+        "recommendation": "run",
+        "rationale": "This baseline chooses experiments from observed state and policy rules without Qwen-AgentWorld.",
+        "action_specific_signal": "none",
+        "claim_risk": "Without prospective simulation, claim risk is only discovered after execution or verification."
+      },
+      "source": "unknown"
+    }
+  ],
+  "selected_action": {
+    "action_id": "action_svc_C-0p5_kernel-rbf_scale-True",
+    "command": "python experiments/train_sklearn.py --dataset breast_cancer --model svc --scale --C 0.5 --kernel rbf",
+    "model": "svc",
+    "params": {
+      "dataset": "breast_cancer",
+      "scale": true,
+      "C": 0.5,
+      "kernel": "rbf"
+    }
+  },
+  "decision_trace": {
+    "selected_action": {
+      "action_id": "action_svc_C-0p5_kernel-rbf_scale-True",
+      "command": "python experiments/train_sklearn.py --dataset breast_cancer --model svc --scale --C 0.5 --kernel rbf",
+      "model": "svc",
+      "params": {
+        "dataset": "breast_cancer",
+        "scale": true,
+        "C": 0.5,
+        "kernel": "rbf"
+      }
+    },
+    "agent_signal_used": true,
+    "world_model_signal_used": false,
+    "selector_policy_signal_used": true,
+    "causal_signal_type": "selector_policy",
+    "observed_state_signal": "score_chasing_policy",
+    "world_model_signal": "",
+    "selector_policy_signal": "score_chasing_policy",
+    "selected_score": null,
+    "score_breakdown": {
+      "agent_preference": 1.0,
+      "qwen_signal": 0.0
+    },
+    "qwen_suggested_action": null,
+    "catalog_validation": "accepted",
+    "agent_rationale": "classic_autoresearch selected action_svc_C-0p5_kernel-rbf_scale-True from state state_005.",
+    "preferred_action_id": "action_svc_C-0p5_kernel-rbf_scale-True",
+    "selection_overrode_agent": false,
+    "override_reason": null,
+    "causal_reason": "classic_autoresearch selected svc without pre-compute world-model simulation. This is the baseline Lucky Loop is compared against.",
+    "rejected_candidates": [
+      {
+        "action": {
+          "action_id": "action_logistic_regression_C-0p1_scale-False",
+          "command": "python experiments/train_sklearn.py --dataset breast_cancer --model logistic_regression --C 0.1",
+          "model": "logistic_regression",
+          "params": {
+            "dataset": "breast_cancer",
+            "scale": false,
+            "C": 0.1
+          }
+        },
+        "reason": "classic_autoresearch deferred this catalog action; no world-model score was available.",
+        "score_breakdown": {
+          "agent_preference": 0.0,
+          "qwen_signal": 0.0
+        }
+      },
+      {
+        "action": {
+          "action_id": "action_logistic_regression_C-1p0_scale-False",
+          "command": "python experiments/train_sklearn.py --dataset breast_cancer --model logistic_regression",
+          "model": "logistic_regression",
+          "params": {
+            "dataset": "breast_cancer",
+            "scale": false,
+            "C": 1.0
+          }
+        },
+        "reason": "classic_autoresearch deferred this catalog action; no world-model score was available.",
+        "score_breakdown": {
+          "agent_preference": 0.0,
+          "qwen_signal": 0.0
+        }
+      },
+      {
+        "action": {
+          "action_id": "action_logistic_regression_C-10p0_scale-False",
+          "command": "python experiments/train_sklearn.py --dataset breast_cancer --model logistic_regression --C 10.0",
+          "model": "logistic_regression",
+          "params": {
+            "dataset": "breast_cancer",
+            "scale": false,
+            "C": 10.0
+          }
+        },
+        "reason": "classic_autoresearch deferred this catalog action; no world-model score was available.",
+        "score_breakdown": {
+          "agent_preference": 0.0,
+          "qwen_signal": 0.0
+        }
+      },
+      {
+        "action": {
+          "action_id": "action_svc_C-2p0_kernel-rbf_scale-True",
+          "command": "python experiments/train_sklearn.py --dataset breast_cancer --model svc --scale --C 2.0 --kernel rbf",
+          "model": "svc",
+          "params": {
+            "dataset": "breast_cancer",
+            "scale": true,
+            "C": 2.0,
+            "kernel": "rbf"
+          }
+        },
+        "reason": "classic_autoresearch deferred this catalog action; no world-model score was available.",
+        "score_breakdown": {
+          "agent_preference": 0.0,
+          "qwen_signal": 0.0
+        }
+      },
+      {
+        "action": {
+          "action_id": "action_svc_C-5p0_kernel-rbf_scale-True",
+          "command": "python experiments/train_sklearn.py --dataset breast_cancer --model svc --scale --C 5.0 --kernel rbf",
+          "model": "svc",
+          "params": {
+            "dataset": "breast_cancer",
+            "scale": true,
+            "C": 5.0,
+            "kernel": "rbf"
+          }
+        },
+        "reason": "classic_autoresearch deferred this catalog action; no world-model score was available.",
+        "score_breakdown": {
+          "agent_preference": 0.0,
+          "qwen_signal": 0.0
+        }
+      },
+      {
+        "action": {
+          "action_id": "action_random_forest_n_estimators-100",
+          "command": "python experiments/train_sklearn.py --dataset breast_cancer --model random_forest --n-estimators 100",
+          "model": "random_forest",
+          "params": {
+            "dataset": "breast_cancer",
+            "n_estimators": 100,
+            "max_depth": null
+          }
+        },
+        "reason": "classic_autoresearch deferred this catalog action; no world-model score was available.",
+        "score_breakdown": {
+          "agent_preference": 0.0,
+          "qwen_signal": 0.0
+        }
+      },
+      {
+        "action": {
+          "action_id": "action_random_forest_max_depth-4_n_estimators-100",
+          "command": "python experiments/train_sklearn.py --dataset breast_cancer --model random_forest --n-estimators 100 --max-depth 4",
+          "model": "random_forest",
+          "params": {
+            "dataset": "breast_cancer",
+            "n_estimators": 100,
+            "max_depth": 4
+          }
+        },
+        "reason": "classic_autoresearch deferred this catalog action; no world-model score was available.",
+        "score_breakdown": {
+          "agent_preference": 0.0,
+          "qwen_signal": 0.0
+        }
+      },
+      {
+        "action": {
+          "action_id": "action_random_forest_max_depth-8_n_estimators-100",
+          "command": "python experiments/train_sklearn.py --dataset breast_cancer --model random_forest --n-estimators 100 --max-depth 8",
+          "model": "random_forest",
+          "params": {
+            "dataset": "breast_cancer",
+            "n_estimators": 100,
+            "max_depth": 8
+          }
+        },
+        "reason": "classic_autoresearch deferred this catalog action; no world-model score was available.",
+        "score_breakdown": {
+          "agent_preference": 0.0,
+          "qwen_signal": 0.0
+        }
+      },
+      {
+        "action": {
+          "action_id": "action_random_forest_n_estimators-300",
+          "command": "python experiments/train_sklearn.py --dataset breast_cancer --model random_forest --n-estimators 300",
+          "model": "random_forest",
+          "params": {
+            "dataset": "breast_cancer",
+            "n_estimators": 300,
+            "max_depth": null
+          }
+        },
+        "reason": "classic_autoresearch deferred this catalog action; no world-model score was available.",
+        "score_breakdown": {
+          "agent_preference": 0.0,
+          "qwen_signal": 0.0
+        }
+      },
+      {
+        "action": {
+          "action_id": "action_random_forest_max_depth-4_n_estimators-300",
+          "command": "python experiments/train_sklearn.py --dataset breast_cancer --model random_forest --n-estimators 300 --max-depth 4",
+          "model": "random_forest",
+          "params": {
+            "dataset": "breast_cancer",
+            "n_estimators": 300,
+            "max_depth": 4
+          }
+        },
+        "reason": "classic_autoresearch deferred this catalog action; no world-model score was available.",
+        "score_breakdown": {
+          "agent_preference": 0.0,
+          "qwen_signal": 0.0
+        }
+      },
+      {
+        "action": {
+          "action_id": "action_random_forest_max_depth-8_n_estimators-300",
+          "command": "python experiments/train_sklearn.py --dataset breast_cancer --model random_forest --n-estimators 300 --max-depth 8",
+          "model": "random_forest",
+          "params": {
+            "dataset": "breast_cancer",
+            "n_estimators": 300,
+            "max_depth": 8
+          }
+        },
+        "reason": "classic_autoresearch deferred this catalog action; no world-model score was available.",
+        "score_breakdown": {
+          "agent_preference": 0.0,
+          "qwen_signal": 0.0
+        }
+      }
+    ]
+  },
+  "claim_ledger_updates": [],
+  "calibration_metrics": null,
+  "top_model_summary": {
+    "best_observed_model": null,
+    "best_observed_metric": null,
+    "top_models": [
+      {
+        "run_id": "run_003",
+        "model": "logistic_regression",
+        "model_key": "logistic_regression_scaled_C=1.0",
+        "metric": 0.986013986013986,
+        "params": {
+          "dataset": "breast_cancer",
+          "scale": true,
+          "C": 1.0
+        }
+      },
+      {
+        "run_id": "run_002",
+        "model": "logistic_regression",
+        "model_key": "logistic_regression_scaled_C=0.1",
+        "metric": 0.9790209790209791,
+        "params": {
+          "dataset": "breast_cancer",
+          "scale": true,
+          "C": 0.1
+        }
+      },
+      {
+        "run_id": "run_004",
+        "model": "logistic_regression",
+        "model_key": "logistic_regression_scaled_C=10.0",
+        "metric": 0.972027972027972,
+        "params": {
+          "dataset": "breast_cancer",
+          "scale": true,
+          "C": 10.0
+        }
+      },
+      {
+        "run_id": "run_001",
+        "model": "logistic_regression",
+        "model_key": "logistic_regression",
+        "metric": 0.951048951048951,
+        "params": {
+          "dataset": "breast_cancer",
+          "scale": false
+        }
+      }
+    ],
+    "top_gap": null,
+    "needs_robustness_verification": false,
+    "reason": "Need at least 5 single-run model results before top-model verification.",
+    "verification_action_key": null
+  },
+  "artifacts": {
+    "task_id": "breast_cancer_accuracy",
+    "policy": "classic_autoresearch",
+    "trace_path": "runs/ablations/classic_autoresearch/breast_cancer_accuracy/run_005.json",
+    "report_path": "reports/ablations/classic_autoresearch/breast_cancer_accuracy/final_report.md",
+    "claim_ledger_path": "reports/ablations/classic_autoresearch/breast_cancer_accuracy/claim_ledger.json"
+  }
+}

@@ -322,6 +322,40 @@ class ReplayResearchAgent:
         return validate_agent_decision(decision, candidate_catalog), prompt
 
 
+@dataclass
+class OperatorDrivenResearchAgent:
+    """Agent-in-repo mode for Codex/Claude/OpenClaw style operators.
+
+    The Python package cannot call the currently attached coding agent directly as
+    an internal API. This mode keeps the same strict agent contract and trace
+    fields while using the repo's deterministic operator policy for local,
+    credential-free backend runs. API and handoff modes use the same schema.
+    """
+
+    backend: str = "codex_operator"
+    model_name: str | None = "agent-in-repo-operator"
+
+    def propose_next_step(
+        self,
+        task: TaskSpec,
+        state: ResearchState,
+        candidate_catalog: list[ProposedAction],
+        prior_traces: list[ExperimentTrace],
+    ) -> tuple[AgentDecision, str]:
+        prompt = build_agent_prompt(task, state, candidate_catalog, prior_traces)
+        decision = _replay_decision(task, state, candidate_catalog, prior_traces)
+        decision = decision.model_copy(
+            update={
+                "rationale": (
+                    decision.rationale
+                    + " Agent-in-repo operator mode follows the same catalog-only contract "
+                    "used by Codex, Claude Code, OpenClaw, or an API planner."
+                )
+            }
+        )
+        return validate_agent_decision(decision, candidate_catalog), prompt
+
+
 def _choose(candidates: list[ProposedAction], predicate) -> ProposedAction:
     for candidate in candidates:
         if predicate(candidate):
@@ -434,6 +468,8 @@ def make_research_agent(
             io_dir=ROOT / agent_io_dir,
             timeout_seconds=agent_timeout_seconds,
         )
+    if planner_mode == "operator_driven":
+        return OperatorDrivenResearchAgent(backend=agent_backend or "codex_operator")
     if planner_mode == "replay":
         return ReplayResearchAgent()
     if planner_mode == "selector":

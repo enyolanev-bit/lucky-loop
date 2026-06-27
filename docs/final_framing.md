@@ -43,7 +43,7 @@ Claim ledger / reporter / UI
     expose les preuves et n'écrit que les claims autorisés
 ```
 
-## Mode API-first
+## Modes backend
 
 ```text
 Product path:
@@ -51,13 +51,18 @@ Product path:
     World model = Qwen-AgentWorld
     Safety selector / Executor / Comparator / Verifier = code Python dans le repo
 
-Development path:
-    Autoresearch agent = replay mode au même schema, uniquement pour tester sans clé API
+Agent-in-repo path:
+    Autoresearch agent = Codex / Claude Code / OpenClaw / Hermes opérant depuis program.md
+    Backend trace = planner_mode=operator_driven, agent_backend=<agent_name>_operator
+    World model = Qwen-AgentWorld
+
+Development smoke path:
+    Autoresearch agent = replay mode au même schema, uniquement pour tester sans clé API ni agent
     World model = Qwen-AgentWorld
     Executor / Comparator / Verifier = mêmes modules Python
 ```
 
-Le point important: l'agent autoresearch est distinct de Qwen-AgentWorld. L'agent propose et décide; Qwen-AgentWorld prédit. Le replay mode n'est qu'un test double pour valider les traces et les rapports avant d'avoir une clé API planner.
+Le point important: l'agent autoresearch est distinct de Qwen-AgentWorld. L'agent propose et décide; Qwen-AgentWorld prédit. Le mode `operator_driven` garde le chemin agent-in-repo propre pour le hackathon; le mode API peut ensuite remplacer la décision agent sans changer executor, comparator, verifier, claim ledger ou reports.
 
 ## Boucle cible
 
@@ -75,6 +80,23 @@ research question
 -> honest report and demo UI
 -> updated state s_t+1
 ```
+
+## Ablation attendue
+
+Pour prouver l'apport réel du world model, le backend doit comparer trois politiques:
+
+1. `classic_autoresearch`: agent classique qui explore et peut reporter le meilleur score single-run.
+2. `classic_verified`: même agent classique, mais avec verification déterministe des top models.
+3. `lucky_loop_full`: agent + Qwen-AgentWorld avant compute + comparator + verifier + claim ledger.
+
+La comparaison ne doit pas seulement regarder le best score. Elle doit mesurer:
+
+- nombre de prédictions Qwen pré-compute
+- prediction misses loggées
+- top-model verification lancée ou non
+- claims unsupported restants
+- claims bloqués / supportés
+- preuves JSON disponibles par run
 
 ## Ce qu'il faut marteler
 

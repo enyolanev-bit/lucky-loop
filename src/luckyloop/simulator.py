@@ -86,10 +86,11 @@ def predict(action: ProposedAction, state: str) -> Prediction:
     base_url = os.getenv("LUCKYWORLD_SIMULATOR_BASE_URL")
     model = os.getenv("LUCKYWORLD_SIMULATOR_MODEL")
     api_key = os.getenv("LUCKYWORLD_SIMULATOR_API_KEY", "dummy")
+    timeout_seconds = float(os.getenv("LUCKYWORLD_SIMULATOR_TIMEOUT_SECONDS", "45"))
     if not base_url or not model:
         return heuristic_prediction(action, state)
     try:
-        client = OpenAI(base_url=base_url, api_key=api_key)
+        client = OpenAI(base_url=base_url, api_key=api_key, timeout=timeout_seconds, max_retries=0)
         resp = client.chat.completions.create(
             model=model,
             messages=[

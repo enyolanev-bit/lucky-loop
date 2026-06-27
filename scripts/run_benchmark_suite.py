@@ -26,7 +26,11 @@ def _actual_metric(trace):
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--planner-mode", choices=["llm", "agent_handoff", "agent_command", "replay", "selector"], default="replay")
+    parser.add_argument(
+        "--planner-mode",
+        choices=["llm", "agent_handoff", "agent_command", "operator_driven", "replay", "selector"],
+        default="replay",
+    )
     parser.add_argument("--agent-backend", default=None)
     parser.add_argument("--agent-io-dir", default="agent_io")
     parser.add_argument("--agent-timeout-seconds", type=int, default=900)

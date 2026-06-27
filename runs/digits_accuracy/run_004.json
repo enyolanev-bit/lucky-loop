@@ -1,41 +1,42 @@
 {
   "run_id": "run_004",
   "goal": "Maximize validation accuracy on sklearn digits under a small compute budget, while avoiding unsupported claims.",
-  "hypothesis": "Selected random_forest because score=86.0; autoresearch agent preferred this catalog action; world model recommended run; new model family increases search coverage; world model predicted overfitting risk. Agent hypothesis: A new model family tests whether the current evidence depends on inductive bias.. World model predicted accuracy around 0.97-0.98, runtime under 5, recommendation=run, risks=small-dataset variance for a single split could overstate a model win, tree ensembles may show overfitting or variance on small splits. Causal signal type: mixed.",
+  "hypothesis": "Selected logistic_regression because score=71.0; autoresearch agent included this action in its candidate shortlist; world model recommended run; candidate is a variant of an already tested family; after an unscaled logistic baseline, scaling is the direct world-model intervention to test. Agent hypothesis: A prediction miss should trigger exploration of a different inductive bias.. World model predicted accuracy around 0.97-0.98, runtime under 5, recommendation=run, risks=single-run best score may not justify a scientific claim, small-dataset variance could overstate a model win, robustness sweeps required before strong claims. Causal signal type: mixed.",
   "proposed_action": {
-    "action_id": "action_random_forest_n_estimators-100",
-    "command": "python experiments/train_sklearn.py --dataset digits --model random_forest --n-estimators 100",
-    "model": "random_forest",
+    "action_id": "action_logistic_regression_C-1p0_scale-True",
+    "command": "python experiments/train_sklearn.py --dataset digits --model logistic_regression --scale",
+    "model": "logistic_regression",
     "params": {
       "dataset": "digits",
-      "n_estimators": 100,
-      "max_depth": null
+      "scale": true,
+      "C": 1.0
     }
   },
   "world_model_prediction": {
     "expected_metric": "accuracy around 0.97-0.98",
     "expected_runtime_seconds": "under 5",
     "risks": [
-      "small-dataset variance for a single split could overstate a model win",
-      "tree ensembles may show overfitting or variance on small splits"
+      "single-run best score may not justify a scientific claim",
+      "small-dataset variance could overstate a model win",
+      "robustness sweeps required before strong claims"
     ],
     "recommendation": "run",
-    "rationale": "Random forest with 100 estimators and no max depth is a strong baseline for the digits dataset and should achieve high accuracy near the current top SVC result. However, a single split may overstate performance due to small-dataset variance, and tree ensembles can exhibit overfitting or variance on small splits, so robustness sweeps or repeated seeds are advisable before strong claims.",
-    "action_specific_signal": "Random forest with n_estimators=100 and max_depth=null is expected to be competitive with SVC and logistic regression on digits, but single-run scores should be verified across seeds to confirm robustness.",
-    "claim_risk": "single-run best score may not justify a scientific claim without repeated seeds or robustness verification"
+    "rationale": "The proposed action tests logistic regression with scaling and C=1.0, which is a natural continuation after observing strong results with scaled logistic regression at C=0.1 (0.9711) and SVC at C=0.5 (0.9778). Given the digits dataset's nature and the candidate space, logistic regression with scaling and C=1.0 is expected to perform competitively, likely in the 0.97-0.98 accuracy range. However, a single-run score may not justify a scientific claim, and small-dataset variance could overstate a model win. Robustness sweeps across seeds are required before making strong claims.",
+    "action_specific_signal": "logistic regression with scaling and C=1.0 is expected to be competitive with the current top SVC model, but robustness verification across seeds is needed to confirm any improvement.",
+    "claim_risk": "single-run best score may not justify a scientific claim"
   },
   "actual_result": {
     "status": "success",
-    "accuracy": 0.96,
-    "f1": 0.9597281558755765,
-    "runtime_seconds": 0.4693,
-    "stdout_tail": "{\n  \"accuracy\": 0.96,\n  \"dataset\": \"digits\",\n  \"f1\": 0.9597281558755765,\n  \"model\": \"random_forest\",\n  \"n_label_noise_flips\": 0,\n  \"n_test\": 450,\n  \"n_train\": 1347,\n  \"params\": {\n    \"C\": 1.0,\n    \"dataset\": \"digits\",\n    \"kernel\": \"rbf\",\n    \"label_noise\": 0.0,\n    \"learning_rate\": 0.1,\n    \"max_depth\": null,\n    \"max_iter\": 1000,\n    \"model\": \"random_forest\",\n    \"n_estimators\": 100,\n    \"scale\": false,\n    \"seed\": 42,\n    \"test_size\": 0.25\n  },\n  \"runtime_seconds\": 0.4693,\n  \"status\": \"success\"\n}\n",
+    "accuracy": 0.9777777777777777,
+    "f1": 0.9778294499565325,
+    "runtime_seconds": 0.6175,
+    "stdout_tail": "{\n  \"accuracy\": 0.9777777777777777,\n  \"dataset\": \"digits\",\n  \"f1\": 0.9778294499565325,\n  \"model\": \"logistic_regression\",\n  \"n_label_noise_flips\": 0,\n  \"n_test\": 450,\n  \"n_train\": 1347,\n  \"params\": {\n    \"C\": 1.0,\n    \"dataset\": \"digits\",\n    \"kernel\": \"rbf\",\n    \"label_noise\": 0.0,\n    \"learning_rate\": 0.1,\n    \"max_depth\": null,\n    \"max_iter\": 1000,\n    \"model\": \"logistic_regression\",\n    \"n_estimators\": 200,\n    \"scale\": true,\n    \"seed\": 42,\n    \"test_size\": 0.25\n  },\n  \"runtime_seconds\": 0.6175,\n  \"status\": \"success\"\n}\n",
     "stderr_tail": "",
     "raw": {
-      "accuracy": 0.96,
+      "accuracy": 0.9777777777777777,
       "dataset": "digits",
-      "f1": 0.9597281558755765,
-      "model": "random_forest",
+      "f1": 0.9778294499565325,
+      "model": "logistic_regression",
       "n_label_noise_flips": 0,
       "n_test": 450,
       "n_train": 1347,
@@ -47,34 +48,32 @@
         "learning_rate": 0.1,
         "max_depth": null,
         "max_iter": 1000,
-        "model": "random_forest",
-        "n_estimators": 100,
-        "scale": false,
+        "model": "logistic_regression",
+        "n_estimators": 200,
+        "scale": true,
         "seed": 42,
         "test_size": 0.25
       },
-      "runtime_seconds": 0.4693,
+      "runtime_seconds": 0.6175,
       "status": "success"
     }
   },
   "comparison": {
-    "metric_match": false,
+    "metric_match": true,
     "runtime_match": true,
-    "unexpected_events": [
-      "accuracy 0.9600 outside predicted range 0.97-0.98"
-    ],
-    "lesson": "Run succeeded, but the prediction missed at least one quantitative detail."
+    "unexpected_events": [],
+    "lesson": "Prediction was broadly consistent with the real run."
   },
   "next_decision": "Continue: regenerate candidates from the updated state and ask the world model to predict each option.",
   "verification": null,
   "schema_version": "3.0",
-  "planner_mode": "agent_command",
-  "agent_backend": "generic_command",
-  "agent_model": "external-agent-command",
-  "agent_prompt_hash": "3e8378d00a99d6b4",
+  "planner_mode": "operator_driven",
+  "agent_backend": "codex_operator",
+  "agent_model": "agent-in-repo-operator",
+  "agent_prompt_hash": "0c11edcf54c37bdc",
   "agent_decision": {
     "research_question": "Maximize validation accuracy on sklearn digits under a small compute budget, while avoiding unsupported claims.",
-    "working_hypothesis": "A new model family tests whether the current evidence depends on inductive bias.",
+    "working_hypothesis": "A prediction miss should trigger exploration of a different inductive bias.",
     "candidate_action_ids": [
       "action_logistic_regression_C-1p0_scale-True",
       "action_logistic_regression_C-10p0_scale-True",
@@ -83,22 +82,23 @@
       "action_random_forest_n_estimators-100",
       "action_random_forest_max_depth-4_n_estimators-100"
     ],
-    "preferred_action_id": "action_random_forest_n_estimators-100",
-    "rationale": "Fake command backend selected action_random_forest_n_estimators-100 from the safe catalog for state state_004.",
-    "expected_evidence_needed": "Run a real experiment from an untested model family.",
-    "claim_risk": "Do not report a robust winner from a single split.",
+    "preferred_action_id": "action_svc_C-2p0_kernel-rbf_scale-True",
+    "rationale": "Given state state_004 with budget_remaining=4, the planner chooses action_svc_C-2p0_kernel-rbf_scale-True to collect the most decision-relevant evidence. Agent-in-repo operator mode follows the same catalog-only contract used by Codex, Claude Code, OpenClaw, or an API planner.",
+    "expected_evidence_needed": "Run an untested model family and compare prediction error against actual metrics.",
+    "claim_risk": "Prediction misses must be logged, not hidden behind a better score.",
     "stop_or_continue": "continue"
   },
   "safety_validation": {
     "valid_agent_action": true,
-    "selected_action_id": "action_random_forest_n_estimators-100",
-    "selection_overrode_agent": false,
-    "override_reason": null,
+    "selected_action_id": "action_logistic_regression_C-1p0_scale-True",
+    "selection_overrode_agent": true,
+    "override_reason": "safety selector chose a higher-scoring action after world-model and evidence-risk scoring",
     "validation_notes": [
-      "agent preferred action_random_forest_n_estimators-100"
+      "agent preferred action_svc_C-2p0_kernel-rbf_scale-True",
+      "safety selector chose a higher-scoring action after world-model and evidence-risk scoring"
     ]
   },
-  "research_hypothesis": "A new model family tests whether the current evidence depends on inductive bias.",
+  "research_hypothesis": "A prediction miss should trigger exploration of a different inductive bias.",
   "state_before": {
     "state_id": "state_004",
     "goal": "Maximize validation accuracy on sklearn digits under a small compute budget, while avoiding unsupported claims.",
@@ -190,7 +190,7 @@
       "reason": "Need at least 5 single-run model results before top-model verification.",
       "verification_action_key": null
     },
-    "summary": "Task=digits_accuracy; dataset=digits; primary_metric=accuracy. Goal: Maximize validation accuracy on sklearn digits under a small compute budget, while avoiding unsupported claims.\nNo experiments have been run yet. Dataset: sklearn digits. Primary metric: accuracy; secondary metrics: f1.\nrun_001: logistic_regression actual=0.9622222222222222 status=success; prediction=accuracy around 0.92-0.95; recommendation=modify; lesson=Run succeeded, but the prediction missed at least one quantitative detail.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_002: logistic_regression actual=0.9711111111111111 status=success; prediction=accuracy around 0.96-0.97; recommendation=run; lesson=Run succeeded, but the prediction missed at least one quantitative detail.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_003: svc actual=0.9777777777777777 status=success; prediction=accuracy around 0.96-0.98; recommendation=run; lesson=Prediction was broadly consistent with the real run.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option."
+    "summary": "Task=digits_accuracy; dataset=digits; primary_metric=accuracy. Goal: Maximize validation accuracy on sklearn digits under a small compute budget, while avoiding unsupported claims.\nNo experiments have been run yet. Dataset: sklearn digits. Primary metric: accuracy; secondary metrics: f1.\nrun_001: logistic_regression actual=0.9622222222222222 status=success; prediction=accuracy around 0.92-0.95; recommendation=modify; lesson=Run succeeded, but the prediction missed at least one quantitative detail.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_002: logistic_regression actual=0.9711111111111111 status=success; prediction=accuracy around 0.96-0.97; recommendation=run; lesson=Run succeeded, but the prediction missed at least one quantitative detail.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_003: svc actual=0.9777777777777777 status=success; prediction=accuracy around 0.96-0.97; recommendation=run; lesson=Run succeeded, but the prediction missed at least one quantitative detail.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option."
   },
   "candidate_actions": [
     {
@@ -335,12 +335,12 @@
         "expected_runtime_seconds": "under 5",
         "risks": [
           "single-run best score may not justify a scientific claim",
-          "feature scaling is required for logistic regression to achieve competitive performance",
-          "small-dataset variance could overstate a model win without repeated seeds"
+          "small-dataset variance could overstate a model win",
+          "robustness sweeps required before strong claims"
         ],
         "recommendation": "run",
-        "rationale": "The proposed action tests logistic regression with scaling and C=1.0, which is a natural continuation after observing strong results with scaled logistic regression at C=0.1 and SVC at C=0.5. Given the digits dataset's nature and prior results, scaling is critical for logistic regression, and C=1.0 is a reasonable midpoint to test. However, a single run may not robustly confirm superiority over SVC or scaled logistic regression at C=0.1, so repeated seeds or a robustness sweep would be needed for strong claims.",
-        "action_specific_signal": "logistic regression with scaling and C=1.0 is expected to perform competitively, likely within 0.97-0.98 accuracy, but variance across seeds should be checked before claiming superiority.",
+        "rationale": "The proposed action tests logistic regression with scaling and C=1.0, which is a natural continuation after observing strong results with scaled logistic regression at C=0.1 (0.9711) and SVC at C=0.5 (0.9778). Given the digits dataset's nature and the candidate space, logistic regression with scaling and C=1.0 is expected to perform competitively, likely in the 0.97-0.98 accuracy range. However, a single-run score may not justify a scientific claim, and small-dataset variance could overstate a model win. Robustness sweeps across seeds are required before making strong claims.",
+        "action_specific_signal": "logistic regression with scaling and C=1.0 is expected to be competitive with the current top SVC model, but robustness verification across seeds is needed to confirm any improvement.",
         "claim_risk": "single-run best score may not justify a scientific claim"
       },
       "source": "qwen_agentworld"
@@ -361,13 +361,12 @@
         "expected_runtime_seconds": "under 5",
         "risks": [
           "single-run best score may not justify a scientific claim",
-          "small-dataset variance could overstate a model win",
-          "label-noise sweeps test claim robustness, not leaderboard performance"
+          "small-dataset variance could overstate a model win"
         ],
         "recommendation": "run",
-        "rationale": "The proposed logistic regression with scaling and C=10.0 is a natural extension of the previously tested scaled logistic regression models (C=0.1 achieved 0.9711). Given the digits dataset's nature and the competitive performance of scaled logistic regression and SVC, this configuration is likely to yield high accuracy. However, single-run results on small datasets like digits can exhibit variance, and robustness verification across seeds is recommended before making strong claims about superiority.",
-        "action_specific_signal": "logistic regression with scaling and higher C value is expected to perform similarly to or slightly better than the previously tested scaled logistic regression with C=0.1",
-        "claim_risk": "single-run best score may not justify a scientific claim without robustness verification across multiple seeds"
+        "rationale": "The proposed logistic regression with scaling and C=10.0 is a reasonable continuation of the parameter sweep after observing strong results with scaled logistic regression at C=0.1 and SVC at C=0.5. Given the digits dataset's nature and previous results, this configuration should perform competitively, though single-run results may not be robust without repeated seeds.",
+        "action_specific_signal": "feature scaling is relevant for logistic regression and should be applied; small-dataset variance may affect single-run accuracy claims",
+        "claim_risk": "single-run best score may not justify a scientific claim"
       },
       "source": "qwen_agentworld"
     },
@@ -388,12 +387,12 @@
         "expected_runtime_seconds": "under 5",
         "risks": [
           "single-run best score may not justify a scientific claim",
-          "SVC performance can vary with C and scaling; robustness requires repeated seeds"
+          "SVC performance can vary with C and requires robustness sweeps before strong claims"
         ],
         "recommendation": "run",
-        "rationale": "The proposed action tests SVC with C=2.0 and RBF kernel on scaled digits data, which is a logical continuation of the sweep over C values (0.5, 1.0, 2.0) and aligns with the current top-performing SVC model (C=0.5, accuracy 0.9778). Given the small dataset and single-run nature, the score may overstate model win; robustness sweeps across seeds are needed before strong claims.",
-        "action_specific_signal": "SVC with RBF kernel and scaling is competitive on digits; C=2.0 may yield similar or slightly lower accuracy than C=0.5 but should remain in the 0.975-0.98 range.",
-        "claim_risk": "single-run best score may not justify a scientific claim"
+        "rationale": "The proposed SVC with C=2.0 and rbf kernel is a logical continuation of the sweep on C values (0.5, 1.0, 2.0) and builds on the strong single-run result of SVC with C=0.5 (accuracy 0.9778). However, since this is a single-run evaluation, the result should be interpreted cautiously and followed by robustness sweeps across seeds to confirm the improvement is not due to variance.",
+        "action_specific_signal": "SVC with rbf kernel and scaling is expected to remain competitive; C=2.0 may yield similar or slightly better accuracy than C=0.5, but variance across seeds should be checked.",
+        "claim_risk": "single-run best score may not justify a scientific claim without repeated seeds"
       },
       "source": "qwen_agentworld"
     },
@@ -418,9 +417,9 @@
           "robustness sweeps required before strong claims"
         ],
         "recommendation": "run",
-        "rationale": "The proposed SVC with C=5.0 and rbf kernel is a natural continuation of the sweep over C values (0.5, 2.0, 5.0) and aligns with the current top-performing SVC at C=0.5 (accuracy 0.9778). Feature scaling is correctly applied. However, a single-run score may not justify a scientific claim without robustness verification across seeds.",
-        "action_specific_signal": "SVC with RBF kernel and scaling is competitive on digits; C=5.0 may slightly degrade or match C=0.5 performance due to overfitting risk on small dataset.",
-        "claim_risk": "single-run best score may not justify a scientific claim without repeated seeds or effect-vs-noise verification"
+        "rationale": "The proposed SVC with C=5.0 and RBF kernel on scaled digits data is expected to yield high accuracy near the current best (0.9778). However, a single-run score may not justify a scientific claim without robustness verification across seeds, and small-dataset variance could overstate any marginal win.",
+        "action_specific_signal": "SVC with RBF kernel and feature scaling is competitive on digits; C=5.0 may slightly improve or match C=0.5 performance, but variance across seeds should be checked.",
+        "claim_risk": "single-run best score may not justify a scientific claim"
       },
       "source": "qwen_agentworld"
     },
@@ -436,16 +435,16 @@
         }
       },
       "prediction": {
-        "expected_metric": "accuracy around 0.97-0.98",
+        "expected_metric": "accuracy around 0.96-0.97",
         "expected_runtime_seconds": "under 5",
         "risks": [
           "small-dataset variance for a single split could overstate a model win",
-          "tree ensembles may show overfitting or variance on small splits"
+          "tree ensembles may overfit or show variance on small datasets"
         ],
         "recommendation": "run",
-        "rationale": "Random forest with 100 estimators and no max depth is a strong baseline for the digits dataset and should achieve high accuracy near the current top SVC result. However, a single split may overstate performance due to small-dataset variance, and tree ensembles can exhibit overfitting or variance on small splits, so robustness sweeps or repeated seeds are advisable before strong claims.",
-        "action_specific_signal": "Random forest with n_estimators=100 and max_depth=null is expected to be competitive with SVC and logistic regression on digits, but single-run scores should be verified across seeds to confirm robustness.",
-        "claim_risk": "single-run best score may not justify a scientific claim without repeated seeds or robustness verification"
+        "rationale": "Random forest with n_estimators=100 and max_depth=null is a standard baseline on digits; expect accuracy near 0.96-0.97. Because this is a single split run, small-dataset variance could overstate a win versus the current top SVC (0.9778). A robustness sweep across seeds is recommended before making strong comparative claims.",
+        "action_specific_signal": "random_forest on digits typically yields ~0.96-0.97 accuracy with n_estimators=100 and no depth limit; variance across seeds should be checked.",
+        "claim_risk": "single-run best score may not justify a scientific claim; robustness sweeps across seeds are needed before claiming superiority over svc."
       },
       "source": "qwen_agentworld"
     },
@@ -461,16 +460,16 @@
         }
       },
       "prediction": {
-        "expected_metric": "accuracy around 0.96-0.98",
+        "expected_metric": "accuracy around 0.96-0.97",
         "expected_runtime_seconds": "under 5",
         "risks": [
-          "small-dataset variance for a single split may overstate a model win",
-          "tree ensembles can overfit or show variance on small datasets"
+          "small-dataset variance with a single split could overstate a model win",
+          "tree ensembles may overfit or show variance on small datasets"
         ],
         "recommendation": "run",
-        "rationale": "The random forest with n_estimators=100 and max_depth=4 is a reasonable candidate to test against the current best SVC (0.9778). Given the digits dataset's 64 numeric pixel features and the small compute budget, a single-run result should be interpreted cautiously; robustness sweeps across seeds are recommended before claiming superiority. Feature scaling is not required for tree-based models.",
-        "action_specific_signal": "Random forest with max_depth=4 and 100 estimators is expected to achieve high accuracy but may show variance across seeds; label-noise sweeps would test claim robustness rather than leaderboard performance.",
-        "claim_risk": "single-run best score may not justify a scientific claim without repeated seeds"
+        "rationale": "The random forest with n_estimators=100 and max_depth=4 is a reasonable candidate to test against the current best SVC (accuracy ~0.9778). Given the digits dataset's small size and the model's ensemble nature, expect accuracy in the 0.96-0.97 range, but be aware of small-dataset variance and potential overfitting or variance typical of tree ensembles.",
+        "action_specific_signal": "Random forest with max_depth=4 and 100 estimators is expected to be competitive but may not surpass the SVC's 0.9778 accuracy; robustness sweeps across seeds are recommended before claiming superiority.",
+        "claim_risk": "single-run best score may not justify a scientific claim"
       },
       "source": "qwen_agentworld"
     },
@@ -486,16 +485,16 @@
         }
       },
       "prediction": {
-        "expected_metric": "accuracy around 0.96-0.98",
+        "expected_metric": "accuracy around 0.97-0.98",
         "expected_runtime_seconds": "under 5",
         "risks": [
           "small-dataset variance for a single split may overstate a model win",
-          "tree ensembles can overfit on small datasets, leading to variance across seeds"
+          "tree ensembles can overfit on pixel features if not properly constrained"
         ],
         "recommendation": "run",
-        "rationale": "The random forest with n_estimators=100 and max_depth=8 is a reasonable candidate to test after logistic regression and SVC results. Given the digits dataset's small size and the tree ensemble's tendency for variance, a single run should be followed by robustness sweeps before claiming superiority over SVC or logistic regression.",
-        "action_specific_signal": "Random forest with max_depth=8 and 100 estimators is expected to achieve high accuracy but may show variance across seeds; feature scaling is not applicable for tree-based models.",
-        "claim_risk": "Single-run best score may not justify a scientific claim without repeated seeds to confirm robustness."
+        "rationale": "The random forest with n_estimators=100 and max_depth=8 is a reasonable candidate to test against the current best SVC (0.9778). Given the digits dataset's 64 numeric pixel features, tree ensembles can achieve high accuracy but may exhibit variance across splits; a single run should be followed by robustness checks before claiming superiority.",
+        "action_specific_signal": "random_forest with max_depth=8 on digits typically reaches 0.97-0.98 accuracy in a single split, but variance across seeds/splits should be verified.",
+        "claim_risk": "single-run best score may not justify a scientific claim without repeated seeds or robustness sweeps"
       },
       "source": "qwen_agentworld"
     },
@@ -514,13 +513,13 @@
         "expected_metric": "accuracy around 0.97-0.98",
         "expected_runtime_seconds": "under 5",
         "risks": [
-          "small-dataset variance for a single split could overstate a model win",
-          "tree ensembles may show slight overfitting or variance across seeds"
+          "small-dataset variance for a single split may overstate a model win",
+          "tree ensembles can overfit on pixel features if not constrained"
         ],
         "recommendation": "run",
-        "rationale": "The random forest with 300 estimators and no max depth is expected to perform competitively on the digits dataset, likely achieving accuracy in the 0.97-0.98 range. However, due to the small dataset and single split, variance could overstate its performance relative to SVC or logistic regression. A robustness sweep across seeds would be needed before making strong claims.",
-        "action_specific_signal": "Random forest with 300 estimators and no max depth typically captures non-linear patterns well on image-feature data like digits, but may exhibit slight overfitting or seed variance.",
-        "claim_risk": "single-run best score may not justify a scientific claim without robustness verification across seeds"
+        "rationale": "Random forest with 300 estimators and no max depth is a strong baseline for the digits dataset and should achieve high accuracy, but a single split may overstate its win over SVC and logistic regression. A robustness sweep across seeds is advisable before claiming superiority.",
+        "action_specific_signal": "Random forest on digits typically yields high accuracy with 300 trees, but variance across seeds should be checked to confirm the gain over SVC (0.9778) is robust.",
+        "claim_risk": "single-run best score may not justify a scientific claim"
       },
       "source": "qwen_agentworld"
     },
@@ -537,15 +536,15 @@
       },
       "prediction": {
         "expected_metric": "accuracy around 0.97-0.98",
-        "expected_runtime_seconds": "under 5",
+        "expected_runtime_seconds": "under 10",
         "risks": [
-          "small-dataset variance for a single split could overstate a model win",
-          "tree ensembles may show overfitting or variance on small datasets"
+          "small-dataset variance for a single split may overstate a model win",
+          "tree ensembles can overfit on pixel features if depth is not constrained"
         ],
         "recommendation": "run",
-        "rationale": "The random forest with n_estimators=300 and max_depth=4 is expected to perform competitively on the digits dataset, likely achieving accuracy in the 0.97-0.98 range. However, due to the small dataset size and single split, there is a risk that the observed improvement may not be robust across different seeds or splits. A robustness sweep would be needed before making strong claims about its performance relative to SVC or logistic regression.",
-        "action_specific_signal": "Random forest with max_depth=4 and 300 estimators should capture non-linear patterns effectively but may exhibit variance on the digits dataset due to its small size.",
-        "claim_risk": "single-run best score may not justify a scientific claim without robustness verification across seeds"
+        "rationale": "Random forest with n_estimators=300 and max_depth=4 is a reasonable candidate to test against the current best SVC (0.9778). Given the digits dataset's 64 pixel features and the small size, a single split may show variance, so the result should be interpreted with caution and followed by a robustness sweep if it appears competitive.",
+        "action_specific_signal": "Random forest with max_depth=4 and 300 trees should capture non-linear pixel interactions without excessive overfitting, but may not surpass the RBF-SVC's margin on this dataset.",
+        "claim_risk": "single-run best score may not justify a scientific claim"
       },
       "source": "qwen_agentworld"
     },
@@ -564,13 +563,13 @@
         "expected_metric": "accuracy around 0.97-0.98",
         "expected_runtime_seconds": "under 5",
         "risks": [
-          "small-dataset variance for a single split could overstate a model win",
+          "small-dataset variance with a single split could overstate a model win",
           "tree ensembles may show overfitting or variance on small datasets"
         ],
         "recommendation": "run",
-        "rationale": "Random forest with n_estimators=300 and max_depth=8 is a strong candidate on the digits dataset and should achieve high accuracy. However, single-run results on a small dataset like digits can have variance, so robustness sweeps across seeds are advisable before making strong claims.",
-        "action_specific_signal": "Tree ensemble on digits typically yields high accuracy but may exhibit variance across splits; consider verifying robustness with repeated seeds.",
-        "claim_risk": "single-run best score may not justify a scientific claim without robustness verification"
+        "rationale": "Random forest with n_estimators=300 and max_depth=8 is a strong candidate for the digits dataset and should achieve high accuracy, but single-run results may be inflated by variance; a robustness sweep or multiple seeds would be needed before claiming superiority over the current top SVC result.",
+        "action_specific_signal": "Random forest ensembles on digits typically reach 0.97+ accuracy with sufficient estimators and moderate depth, but small-dataset variance means a single split may overstate the win over SVC.",
+        "claim_risk": "single-run best score may not justify a scientific claim"
       },
       "source": "qwen_agentworld"
     },
@@ -590,14 +589,14 @@
         "expected_metric": "accuracy around 0.97-0.98",
         "expected_runtime_seconds": "under 5",
         "risks": [
-          "hist_gradient_boosting may overfit on small splits if not properly constrained",
           "single-run best score may not justify a scientific claim",
-          "world-model predictions may miss quantitative details"
+          "hist_gradient_boosting may overfit or show variance on small splits",
+          "robustness sweeps needed before strong claims when a high single-run score exists"
         ],
         "recommendation": "run",
-        "rationale": "The hist_gradient_boosting model with n_estimators=100 and learning_rate=0.05 is a reasonable candidate to test against the current best SVC (0.9778). Tree ensembles like HGB can achieve high accuracy on the digits dataset, but may show variance across seeds. Given the small dataset and the goal to maximize validation accuracy, this run is worth executing to see if HGB can match or exceed the SVC performance. However, robustness verification across seeds will be needed before making strong claims.",
-        "action_specific_signal": "hist_gradient_boosting with learning_rate=0.05 and n_estimators=100 typically achieves strong performance on digits, but may require max_depth constraints to avoid overfitting; single-run score should be verified across seeds.",
-        "claim_risk": "single-run best score may not justify a scientific claim"
+        "rationale": "The hist_gradient_boosting model with n_estimators=100 and learning_rate=0.05 is a strong candidate for high accuracy on the digits dataset. Given the current top model (svc with C=0.5) achieved 0.9777, hist_gradient_boosting is likely to achieve similar or slightly better accuracy. However, tree ensembles can show variance or overfitting on small splits, so a single-run score should be verified with robustness sweeps before making strong claims.",
+        "action_specific_signal": "hist_gradient_boosting with learning_rate=0.05 and n_estimators=100 is expected to perform competitively with svc and logistic_regression on the digits dataset, but may require multiple seeds to confirm robustness.",
+        "claim_risk": "high single-run score may not be robustly separated across seeds; label-noise sweeps would test claim robustness, not leaderboard performance."
       },
       "source": "qwen_agentworld"
     },
@@ -617,90 +616,66 @@
         "expected_metric": "accuracy around 0.97-0.98",
         "expected_runtime_seconds": "under 5",
         "risks": [
-          "tree ensemble may overfit or show variance on small splits",
+          "hist_gradient_boosting may overfit or show variance on small splits",
           "single-run best score may not justify a scientific claim",
           "robustness sweeps needed before strong claims"
         ],
         "recommendation": "run",
-        "rationale": "The hist_gradient_boosting model with learning_rate=0.05 and max_depth=8 is a strong candidate for the digits dataset, expected to achieve accuracy around 0.97-0.98. However, tree ensembles can show variance or overfitting on small splits, and a single-run best score may not justify a scientific claim without robustness verification across seeds.",
-        "action_specific_signal": "hist_gradient_boosting with learning_rate=0.05 and max_depth=8 is likely to be competitive with svc and logistic_regression on digits, but variance across seeds should be checked.",
+        "rationale": "The hist_gradient_boosting model with learning_rate=0.05, max_depth=8, n_estimators=100 is a strong candidate for the digits dataset. Given the current top model (svc with accuracy 0.9777) and the competitive nature of tree ensembles on this dataset, we expect hist_gradient_boosting to achieve similar or slightly higher accuracy. However, due to the small dataset and potential for variance, robustness verification across seeds is recommended before making strong claims.",
+        "action_specific_signal": "hist_gradient_boosting with learning_rate=0.05 and max_depth=8 is likely to achieve high accuracy but may require seed sweeps to confirm robustness",
         "claim_risk": "single-run best score may not justify a scientific claim"
       },
       "source": "qwen_agentworld"
     }
   ],
   "selected_action": {
-    "action_id": "action_random_forest_n_estimators-100",
-    "command": "python experiments/train_sklearn.py --dataset digits --model random_forest --n-estimators 100",
-    "model": "random_forest",
+    "action_id": "action_logistic_regression_C-1p0_scale-True",
+    "command": "python experiments/train_sklearn.py --dataset digits --model logistic_regression --scale",
+    "model": "logistic_regression",
     "params": {
       "dataset": "digits",
-      "n_estimators": 100,
-      "max_depth": null
+      "scale": true,
+      "C": 1.0
     }
   },
   "decision_trace": {
     "selected_action": {
-      "action_id": "action_random_forest_n_estimators-100",
-      "command": "python experiments/train_sklearn.py --dataset digits --model random_forest --n-estimators 100",
-      "model": "random_forest",
+      "action_id": "action_logistic_regression_C-1p0_scale-True",
+      "command": "python experiments/train_sklearn.py --dataset digits --model logistic_regression --scale",
+      "model": "logistic_regression",
       "params": {
         "dataset": "digits",
-        "n_estimators": 100,
-        "max_depth": null
+        "scale": true,
+        "C": 1.0
       }
     },
-    "agent_signal_used": true,
+    "agent_signal_used": false,
     "world_model_signal_used": true,
     "selector_policy_signal_used": true,
     "causal_signal_type": "mixed",
     "observed_state_signal": "Need at least 5 single-run model results before top-model verification.",
-    "world_model_signal": "prediction contained an action-specific research signal; world model predicted overfitting risk",
-    "selector_policy_signal": "agent preferred action accepted into safety scoring; new model family increases search coverage",
-    "selected_score": 86.0,
+    "world_model_signal": "prediction contained an action-specific research signal",
+    "selector_policy_signal": "after an unscaled logistic baseline, scaling is the direct intervention to test",
+    "selected_score": 71.0,
     "score_breakdown": {
-      "expected_gain": 0.0,
+      "expected_gain": 45.0,
       "uncertainty": 0.0,
-      "novelty": 18.0,
+      "novelty": 0.0,
       "verification_value": 0.0,
       "qwen_signal": 30.0,
-      "redundancy_penalty": 0.0,
-      "compute_cost_penalty": -4.0,
+      "redundancy_penalty": -12.0,
+      "compute_cost_penalty": 0.0,
       "unsupported_claim_risk": 0.0,
-      "agent_preference": 42.0
+      "agent_preference": 8.0
     },
-    "qwen_suggested_action": "action_random_forest_n_estimators-100",
+    "qwen_suggested_action": "action_logistic_regression_C-1p0_scale-True",
     "catalog_validation": "accepted",
-    "agent_rationale": "Fake command backend selected action_random_forest_n_estimators-100 from the safe catalog for state state_004.",
-    "preferred_action_id": "action_random_forest_n_estimators-100",
-    "selection_overrode_agent": false,
-    "override_reason": null,
-    "causal_reason": "Selected random_forest because score=86.0; autoresearch agent preferred this catalog action; world model recommended run; new model family increases search coverage; world model predicted overfitting risk. Agent hypothesis: A new model family tests whether the current evidence depends on inductive bias.. World model predicted accuracy around 0.97-0.98, runtime under 5, recommendation=run, risks=small-dataset variance for a single split could overstate a model win, tree ensembles may show overfitting or variance on small splits. Causal signal type: mixed.",
+    "agent_rationale": "Given state state_004 with budget_remaining=4, the planner chooses action_svc_C-2p0_kernel-rbf_scale-True to collect the most decision-relevant evidence. Agent-in-repo operator mode follows the same catalog-only contract used by Codex, Claude Code, OpenClaw, or an API planner.",
+    "preferred_action_id": "action_svc_C-2p0_kernel-rbf_scale-True",
+    "selection_overrode_agent": true,
+    "override_reason": "safety selector chose a higher-scoring action after world-model and evidence-risk scoring",
+    "causal_reason": "Selected logistic_regression because score=71.0; autoresearch agent included this action in its candidate shortlist; world model recommended run; candidate is a variant of an already tested family; after an unscaled logistic baseline, scaling is the direct world-model intervention to test. Agent hypothesis: A prediction miss should trigger exploration of a different inductive bias.. World model predicted accuracy around 0.97-0.98, runtime under 5, recommendation=run, risks=single-run best score may not justify a scientific claim, small-dataset variance could overstate a model win, robustness sweeps required before strong claims. Causal signal type: mixed.",
     "rejected_candidates": [
-      {
-        "action": {
-          "action_id": "action_logistic_regression_C-1p0_scale-True",
-          "command": "python experiments/train_sklearn.py --dataset digits --model logistic_regression --scale",
-          "model": "logistic_regression",
-          "params": {
-            "dataset": "digits",
-            "scale": true,
-            "C": 1.0
-          }
-        },
-        "reason": "score=71.0; autoresearch agent included this action in its candidate shortlist; world model recommended run; candidate is a variant of an already tested family; after an unscaled logistic baseline, scaling is the direct world-model intervention to test",
-        "score_breakdown": {
-          "expected_gain": 45.0,
-          "uncertainty": 0.0,
-          "novelty": 0.0,
-          "verification_value": 0.0,
-          "qwen_signal": 30.0,
-          "redundancy_penalty": -12.0,
-          "compute_cost_penalty": 0.0,
-          "unsupported_claim_risk": 0.0,
-          "agent_preference": 8.0
-        }
-      },
       {
         "action": {
           "action_id": "action_logistic_regression_C-10p0_scale-True",
@@ -721,6 +696,55 @@
           "qwen_signal": 30.0,
           "redundancy_penalty": -12.0,
           "compute_cost_penalty": 0.0,
+          "unsupported_claim_risk": 0.0,
+          "agent_preference": 8.0
+        }
+      },
+      {
+        "action": {
+          "action_id": "action_svc_C-2p0_kernel-rbf_scale-True",
+          "command": "python experiments/train_sklearn.py --dataset digits --model svc --scale --C 2.0 --kernel rbf",
+          "model": "svc",
+          "params": {
+            "dataset": "digits",
+            "scale": true,
+            "C": 2.0,
+            "kernel": "rbf"
+          }
+        },
+        "reason": "score=60.0; autoresearch agent preferred this catalog action; world model recommended run; candidate is a variant of an already tested family",
+        "score_breakdown": {
+          "expected_gain": 0.0,
+          "uncertainty": 0.0,
+          "novelty": 0.0,
+          "verification_value": 0.0,
+          "qwen_signal": 30.0,
+          "redundancy_penalty": -12.0,
+          "compute_cost_penalty": 0.0,
+          "unsupported_claim_risk": 0.0,
+          "agent_preference": 42.0
+        }
+      },
+      {
+        "action": {
+          "action_id": "action_random_forest_n_estimators-100",
+          "command": "python experiments/train_sklearn.py --dataset digits --model random_forest --n-estimators 100",
+          "model": "random_forest",
+          "params": {
+            "dataset": "digits",
+            "n_estimators": 100,
+            "max_depth": null
+          }
+        },
+        "reason": "score=52.0; autoresearch agent included this action in its candidate shortlist; world model recommended run; new model family increases search coverage; world model predicted overfitting risk",
+        "score_breakdown": {
+          "expected_gain": 0.0,
+          "uncertainty": 0.0,
+          "novelty": 18.0,
+          "verification_value": 0.0,
+          "qwen_signal": 30.0,
+          "redundancy_penalty": 0.0,
+          "compute_cost_penalty": -4.0,
           "unsupported_claim_risk": 0.0,
           "agent_preference": 8.0
         }
@@ -893,31 +917,6 @@
           "compute_cost_penalty": -4.0,
           "unsupported_claim_risk": 0.0,
           "agent_preference": 0.0
-        }
-      },
-      {
-        "action": {
-          "action_id": "action_svc_C-2p0_kernel-rbf_scale-True",
-          "command": "python experiments/train_sklearn.py --dataset digits --model svc --scale --C 2.0 --kernel rbf",
-          "model": "svc",
-          "params": {
-            "dataset": "digits",
-            "scale": true,
-            "C": 2.0,
-            "kernel": "rbf"
-          }
-        },
-        "reason": "score=26.0; autoresearch agent included this action in its candidate shortlist; world model recommended run; candidate is a variant of an already tested family",
-        "score_breakdown": {
-          "expected_gain": 0.0,
-          "uncertainty": 0.0,
-          "novelty": 0.0,
-          "verification_value": 0.0,
-          "qwen_signal": 30.0,
-          "redundancy_penalty": -12.0,
-          "compute_cost_penalty": 0.0,
-          "unsupported_claim_risk": 0.0,
-          "agent_preference": 8.0
         }
       },
       {

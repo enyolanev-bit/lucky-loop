@@ -2,7 +2,7 @@
 
 Lucky Loop can use Claude Code through the same file contract as Codex.
 
-Recommended generic command shape, if a CLI wrapper is available:
+Recommended command shape, if a CLI wrapper is available:
 
 ```bash
 export LUCKYLOOP_AGENT_COMMAND="claude-code-agent {request_path} {response_path}"
