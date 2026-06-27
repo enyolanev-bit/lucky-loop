@@ -29,13 +29,14 @@ Autonomous research agents promise to automate the full loop from literature rev
 1. **Literature** — retrieves relevant prior work (arXiv). *[TODO: real crawl]*
 2. **Planner** — turns the question into an executable experiment plan (which hyperparameter, values, seeds).
 3. **Experimenter** — runs **real** code in a sandbox; returns measured numbers only.
-4. **Verifier** ⭐ — *the contribution*. Deterministic checks on the real results:
-   - `effect_size = max(acc) − min(acc)` across hyperparameter values;
-   - `seed_noise = max−min` across seeds for the best config;
-   - a finding is **trustworthy iff effect_size > seed_noise**; else flagged "inconclusive (within noise)".
+4. **Verifier** ⭐ — *the contribution*. A deterministic statistical test on the real results:
+   - rank methods by mean accuracy; take **best vs 2nd**;
+   - compute **per-seed paired differences** `acc_best,i − acc_2nd,i`;
+   - a **95% Student-t confidence interval** on the mean paired difference;
+   - a finding is **trustworthy iff the CI lower bound > 0**; else flagged "inconclusive (within noise)".
 5. **Writer** — produces a report containing only verified findings + an explicit "not confirmed" section.
 
-**Why deterministic verification?** An LLM verifier can be talked into agreeing. A numeric effect-vs-noise gate cannot. The truth comes from the logged numbers, not the model.
+**Why deterministic verification?** An LLM verifier can be talked into agreeing. A paired-CI significance gate cannot — the truth comes from the logged numbers, not the model. We deliberately use a *paired* test (same seeds/splits for both methods) and gate on the CI lower bound to control for runner-up variance and the winner's-curse of selecting the best post-hoc.
 
 ## 4. Experimental Setup
 - **Sandbox**: small MLP (1 hidden layer) on `sklearn digits` (10 classes), trained on the team's AMD MI300X. Fast, reproducible (fixed seeds). *[TODO P2: extend to more tasks/hyperparams + matplotlib figure.]*
@@ -45,25 +46,27 @@ Autonomous research agents promise to automate the full loop from literature rev
 ## 5. Results
 **Headline experiment (proven, `experiments/noise_sweep.py`):** 4 methods (logreg-scaled, random-forest,
 SVC-rbf, hist-GB) on `breast_cancer`, across label-noise levels {0, 0.1, 0.2, 0.4}, 4 seeds.
-The Verifier verdict per level (effect = best−2nd vs inter-seed noise):
+Verifier verdict per level (best−2nd paired difference, 95% Student-t CI):
 
-| Noise | best vs 2nd (effect) | inter-seed noise | Verifier verdict |
-|---|---|---|---|
-| 0.0 | 0.0035 | 0.0280 | ❌ inconclusive (within noise) |
-| 0.1 | 0.0174 | 0.0279 | ❌ inconclusive |
-| 0.2 | 0.0244 | 0.0419 | ❌ inconclusive |
-| 0.4 | 0.1066 | 0.0979 | ✅ svc_rbf is a reliable winner |
+| Noise | best − 2nd | 95% CI margin | CI lower bound | Verifier verdict |
+|---|---|---|---|---|
+| 0.0 | 0.0035 | 0.0232 | −0.0197 | ❌ inconclusive (CI crosses 0) |
+| 0.1 | 0.0174 | 0.0264 | −0.0090 | ❌ inconclusive |
+| 0.2 | 0.0244 | 0.0485 | −0.0240 | ❌ inconclusive |
+| 0.4 | 0.1066 | 0.0858 | **+0.0208** | ✅ svc_rbf is a significant winner |
 
-**Naive agent: 4 winners claimed. Verifier: 1. → 3 false winners avoided.**
+**Naive agent: 4 winners claimed. Verifier (paired CI): 1 confirmed. → 3 unsupported winner claims avoided.**
 
 The counter-intuitive finding: even on **clean** labels, the four methods are statistically tied
-(gap 0.0035 ≪ seed noise 0.028) — a naive agent that "picks the best" reports noise as signal.
-The Verifier abstains, and only at heavy noise (0.4) does a genuine, noise-exceeding gap appear.
-*(Figure: `reports/noise_sweep.png` — accuracy vs noise per method with inter-seed error bars + the abstention line.)*
+(paired CI [−0.0197, +0.0267] crosses 0) — a naive agent that "picks the best" reports noise as signal.
+The Verifier abstains, and only at heavy noise (0.4) does the CI clear zero (a genuine winner).
+Result holds under the rigorous gate (independently reviewed, see `CODEX-REVIEW.md`).
+*(Figure: `reports/noise_sweep.png`.)*
 
 ## 6. Limitations
-- Sandbox is a toy task; the calibration principle generalizes but absolute numbers don't. *[honnêteté assumée]*
-- Verifier uses a simple effect-vs-noise gate; richer statistics (CIs, significance tests) are future work.
+- **Scope of the claim**: our contribution is a *calibration mechanism*, not a general empirical proof that autoresearch agents are unreliable. Evidence is one small `sklearn` benchmark, 4 seeds, accuracy only.
+- "Unsupported winner claims avoided" ≠ proven false positives; the gate can still be fooled by biased protocols, non-independent seeds, post-hoc benchmark selection, or config p-hacking.
+- The paired-CI gate handles best-vs-2nd; multiple-comparison correction across all methods is future work.
 - Literature agent coverage is shallow in 48h.
 
 ## 7. Conclusion

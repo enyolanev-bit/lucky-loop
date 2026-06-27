@@ -46,9 +46,9 @@
         "best_acc": 0.9702,
         "second_method": "svc_rbf",
         "effect_size": 0.0035,
-        "seed_noise": 0.028,
+        "seed_noise": 0.0232,
         "trustworthy": false,
-        "statement": "AUCUN gagnant fiable : \u00e9cart best-2e 0.0035 \u2264 bruit inter-seed 0.0280 \u2192 inconclusive (within noise)."
+        "statement": "AUCUN gagnant fiable : \u00e9cart best-2e 0.0035, marge IC95 appari\u00e9 0.0232 (borne basse -0.0197) \u2192 inconclusive (within noise)."
       }
     },
     {
@@ -84,9 +84,9 @@
         "best_acc": 0.9615,
         "second_method": "hist_gb",
         "effect_size": 0.0174,
-        "seed_noise": 0.0279,
+        "seed_noise": 0.0264,
         "trustworthy": false,
-        "statement": "AUCUN gagnant fiable : \u00e9cart best-2e 0.0174 \u2264 bruit inter-seed 0.0279 \u2192 inconclusive (within noise)."
+        "statement": "AUCUN gagnant fiable : \u00e9cart best-2e 0.0174, marge IC95 appari\u00e9 0.0264 (borne basse -0.0090) \u2192 inconclusive (within noise)."
       }
     },
     {
@@ -122,9 +122,9 @@
         "best_acc": 0.958,
         "second_method": "random_forest",
         "effect_size": 0.0244,
-        "seed_noise": 0.0419,
+        "seed_noise": 0.0485,
         "trustworthy": false,
-        "statement": "AUCUN gagnant fiable : \u00e9cart best-2e 0.0244 \u2264 bruit inter-seed 0.0419 \u2192 inconclusive (within noise)."
+        "statement": "AUCUN gagnant fiable : \u00e9cart best-2e 0.0244, marge IC95 appari\u00e9 0.0485 (borne basse -0.0240) \u2192 inconclusive (within noise)."
       }
     },
     {
@@ -160,9 +160,9 @@
         "best_acc": 0.8741,
         "second_method": "logreg_scaled",
         "effect_size": 0.1066,
-        "seed_noise": 0.0979,
+        "seed_noise": 0.0858,
         "trustworthy": true,
-        "statement": "'svc_rbf' est le meilleur (\u00e9cart 0.1066 > bruit 0.0979) \u2014 finding fiable."
+        "statement": "'svc_rbf' est le meilleur : \u00e9cart 0.1066, IC95 appari\u00e9 [0.0208, 0.1924] \u2014 finding fiable."
       }
     }
   ],
