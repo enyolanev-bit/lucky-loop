@@ -1,239 +1,66 @@
 {
   "run_id": "run_005",
   "goal": "Maximize validation accuracy on sklearn breast cancer dataset in five experiments.",
-  "hypothesis": "Run a controlled noisy-label multi-seed sweep so the deterministic Verifier can decide whether an apparent improvement is larger than seed noise.",
+  "hypothesis": "Selected gradient_boosting because score=31; world model recommended run; ensemble baseline is useful as a late comparison; world model predicted overfitting risk. World model predicted accuracy around 0.94-0.98, runtime under 15, recommendation=run, risks=can overfit with too many estimators.",
   "proposed_action": {
-    "action_id": null,
-    "command": "python experiments/sweep_sklearn.py --dataset breast_cancer --model logistic_regression --scale --sweep-param C --values 0.1 1.0 10.0 --seeds 0 1 2 3 --label-noise 0.08",
-    "model": "verification_sweep",
+    "action_id": "action_gradient_boosting",
+    "command": "python experiments/train_sklearn.py --dataset breast_cancer --model gradient_boosting --n-estimators 150 --learning-rate 0.05",
+    "model": "gradient_boosting",
     "params": {
-      "base_model": "logistic_regression",
-      "scale": true,
-      "sweep_param": "C",
-      "values": [
-        0.1,
-        1.0,
-        10.0
-      ],
-      "seeds": [
-        0,
-        1,
-        2,
-        3
-      ],
-      "label_noise": 0.08
+      "n_estimators": 150,
+      "learning_rate": 0.05
     }
   },
   "world_model_prediction": {
     "expected_metric": "accuracy around 0.94-0.98",
-    "expected_runtime_seconds": "under 25",
+    "expected_runtime_seconds": "under 15",
     "risks": [
-      "label noise can make small hyperparameter differences non-robust",
-      "seed variance may exceed apparent gains"
+      "can overfit with too many estimators"
     ],
     "recommendation": "run",
-    "rationale": "A multi-seed sweep is useful for the deterministic verifier: it tests whether an apparent gain survives effect-vs-noise scrutiny."
+    "rationale": "Boosting often performs well but needs tuning."
   },
   "actual_result": {
     "status": "success",
-    "accuracy": null,
-    "f1": null,
-    "runtime_seconds": 48.6546,
-    "stdout_tail": "19127026819333,\n      \"label\": \"C=1.0\",\n      \"runtime_seconds\": 0.0806,\n      \"seed\": 2,\n      \"sweep_param\": \"C\",\n      \"value\": \"1.0\"\n    },\n    {\n      \"accuracy\": 0.972027972027972,\n      \"config_key\": \"C=1.0\",\n      \"f1\": 0.9719127026819333,\n      \"label\": \"C=1.0\",\n      \"runtime_seconds\": 0.115,\n      \"seed\": 3,\n      \"sweep_param\": \"C\",\n      \"value\": \"1.0\"\n    },\n    {\n      \"accuracy\": 0.9300699300699301,\n      \"config_key\": \"C=10.0\",\n      \"f1\": 0.9294588616839257,\n      \"label\": \"C=10.0\",\n      \"runtime_seconds\": 0.1957,\n      \"seed\": 0,\n      \"sweep_param\": \"C\",\n      \"value\": \"10.0\"\n    },\n    {\n      \"accuracy\": 0.9370629370629371,\n      \"config_key\": \"C=10.0\",\n      \"f1\": 0.935641677909719,\n      \"label\": \"C=10.0\",\n      \"runtime_seconds\": 0.1288,\n      \"seed\": 1,\n      \"sweep_param\": \"C\",\n      \"value\": \"10.0\"\n    },\n    {\n      \"accuracy\": 0.9370629370629371,\n      \"config_key\": \"C=10.0\",\n      \"f1\": 0.9366622554590086,\n      \"label\": \"C=10.0\",\n      \"runtime_seconds\": 0.0518,\n      \"seed\": 2,\n      \"sweep_param\": \"C\",\n      \"value\": \"10.0\"\n    },\n    {\n      \"accuracy\": 0.958041958041958,\n      \"config_key\": \"C=10.0\",\n      \"f1\": 0.9578690540229003,\n      \"label\": \"C=10.0\",\n      \"runtime_seconds\": 0.0567,\n      \"seed\": 3,\n      \"sweep_param\": \"C\",\n      \"value\": \"10.0\"\n    }\n  ],\n  \"runtime_seconds\": 48.6546,\n  \"seeds\": [\n    0,\n    1,\n    2,\n    3\n  ],\n  \"status\": \"success\",\n  \"summary_by_value\": {\n    \"0.1\": {\n      \"max_accuracy\": 0.9790209790209791,\n      \"mean_accuracy\": 0.9615384615384616,\n      \"min_accuracy\": 0.951048951048951,\n      \"n\": 4\n    },\n    \"1.0\": {\n      \"max_accuracy\": 0.972027972027972,\n      \"mean_accuracy\": 0.9527972027972028,\n      \"min_accuracy\": 0.9300699300699301,\n      \"n\": 4\n    },\n    \"10.0\": {\n      \"max_accuracy\": 0.958041958041958,\n      \"mean_accuracy\": 0.9405594405594406,\n      \"min_accuracy\": 0.9300699300699301,\n      \"n\": 4\n    }\n  },\n  \"sweep_param\": \"C\",\n  \"values\": [\n    \"0.1\",\n    \"1.0\",\n    \"10.0\"\n  ]\n}\n",
+    "accuracy": 0.951048951048951,
+    "f1": 0.9507373098014511,
+    "runtime_seconds": 0.7815,
+    "stdout_tail": "{\n  \"accuracy\": 0.951048951048951,\n  \"dataset\": \"breast_cancer\",\n  \"f1\": 0.9507373098014511,\n  \"model\": \"gradient_boosting\",\n  \"n_label_noise_flips\": 0,\n  \"n_test\": 143,\n  \"n_train\": 426,\n  \"params\": {\n    \"C\": 1.0,\n    \"dataset\": \"breast_cancer\",\n    \"kernel\": \"rbf\",\n    \"label_noise\": 0.0,\n    \"learning_rate\": 0.05,\n    \"max_depth\": null,\n    \"max_iter\": 1000,\n    \"model\": \"gradient_boosting\",\n    \"n_estimators\": 150,\n    \"scale\": false,\n    \"seed\": 42,\n    \"test_size\": 0.25\n  },\n  \"runtime_seconds\": 0.7815,\n  \"status\": \"success\"\n}\n",
     "stderr_tail": "",
     "raw": {
-      "best": {
-        "max_accuracy": 0.9790209790209791,
-        "mean_accuracy": 0.9615384615384616,
-        "min_accuracy": 0.951048951048951,
-        "n": 4,
-        "value": "0.1"
-      },
+      "accuracy": 0.951048951048951,
       "dataset": "breast_cancer",
-      "failures": [],
-      "label_noise": 0.08,
-      "metric": "accuracy",
-      "model": "logistic_regression",
-      "runs": [
-        {
-          "accuracy": 0.951048951048951,
-          "config_key": "C=0.1",
-          "f1": 0.9502345545126294,
-          "label": "C=0.1",
-          "runtime_seconds": 0.0445,
-          "seed": 0,
-          "sweep_param": "C",
-          "value": "0.1"
-        },
-        {
-          "accuracy": 0.951048951048951,
-          "config_key": "C=0.1",
-          "f1": 0.9502345545126294,
-          "label": "C=0.1",
-          "runtime_seconds": 0.0758,
-          "seed": 1,
-          "sweep_param": "C",
-          "value": "0.1"
-        },
-        {
-          "accuracy": 0.9790209790209791,
-          "config_key": "C=0.1",
-          "f1": 0.9788874184863361,
-          "label": "C=0.1",
-          "runtime_seconds": 0.1052,
-          "seed": 2,
-          "sweep_param": "C",
-          "value": "0.1"
-        },
-        {
-          "accuracy": 0.965034965034965,
-          "config_key": "C=0.1",
-          "f1": 0.9648123641438936,
-          "label": "C=0.1",
-          "runtime_seconds": 0.0689,
-          "seed": 3,
-          "sweep_param": "C",
-          "value": "0.1"
-        },
-        {
-          "accuracy": 0.9300699300699301,
-          "config_key": "C=1.0",
-          "f1": 0.9290999323257388,
-          "label": "C=1.0",
-          "runtime_seconds": 0.3092,
-          "seed": 0,
-          "sweep_param": "C",
-          "value": "1.0"
-        },
-        {
-          "accuracy": 0.9370629370629371,
-          "config_key": "C=1.0",
-          "f1": 0.935641677909719,
-          "label": "C=1.0",
-          "runtime_seconds": 0.0681,
-          "seed": 1,
-          "sweep_param": "C",
-          "value": "1.0"
-        },
-        {
-          "accuracy": 0.972027972027972,
-          "config_key": "C=1.0",
-          "f1": 0.9719127026819333,
-          "label": "C=1.0",
-          "runtime_seconds": 0.0806,
-          "seed": 2,
-          "sweep_param": "C",
-          "value": "1.0"
-        },
-        {
-          "accuracy": 0.972027972027972,
-          "config_key": "C=1.0",
-          "f1": 0.9719127026819333,
-          "label": "C=1.0",
-          "runtime_seconds": 0.115,
-          "seed": 3,
-          "sweep_param": "C",
-          "value": "1.0"
-        },
-        {
-          "accuracy": 0.9300699300699301,
-          "config_key": "C=10.0",
-          "f1": 0.9294588616839257,
-          "label": "C=10.0",
-          "runtime_seconds": 0.1957,
-          "seed": 0,
-          "sweep_param": "C",
-          "value": "10.0"
-        },
-        {
-          "accuracy": 0.9370629370629371,
-          "config_key": "C=10.0",
-          "f1": 0.935641677909719,
-          "label": "C=10.0",
-          "runtime_seconds": 0.1288,
-          "seed": 1,
-          "sweep_param": "C",
-          "value": "10.0"
-        },
-        {
-          "accuracy": 0.9370629370629371,
-          "config_key": "C=10.0",
-          "f1": 0.9366622554590086,
-          "label": "C=10.0",
-          "runtime_seconds": 0.0518,
-          "seed": 2,
-          "sweep_param": "C",
-          "value": "10.0"
-        },
-        {
-          "accuracy": 0.958041958041958,
-          "config_key": "C=10.0",
-          "f1": 0.9578690540229003,
-          "label": "C=10.0",
-          "runtime_seconds": 0.0567,
-          "seed": 3,
-          "sweep_param": "C",
-          "value": "10.0"
-        }
-      ],
-      "runtime_seconds": 48.6546,
-      "seeds": [
-        0,
-        1,
-        2,
-        3
-      ],
-      "status": "success",
-      "summary_by_value": {
-        "0.1": {
-          "max_accuracy": 0.9790209790209791,
-          "mean_accuracy": 0.9615384615384616,
-          "min_accuracy": 0.951048951048951,
-          "n": 4
-        },
-        "1.0": {
-          "max_accuracy": 0.972027972027972,
-          "mean_accuracy": 0.9527972027972028,
-          "min_accuracy": 0.9300699300699301,
-          "n": 4
-        },
-        "10.0": {
-          "max_accuracy": 0.958041958041958,
-          "mean_accuracy": 0.9405594405594406,
-          "min_accuracy": 0.9300699300699301,
-          "n": 4
-        }
+      "f1": 0.9507373098014511,
+      "model": "gradient_boosting",
+      "n_label_noise_flips": 0,
+      "n_test": 143,
+      "n_train": 426,
+      "params": {
+        "C": 1.0,
+        "dataset": "breast_cancer",
+        "kernel": "rbf",
+        "label_noise": 0.0,
+        "learning_rate": 0.05,
+        "max_depth": null,
+        "max_iter": 1000,
+        "model": "gradient_boosting",
+        "n_estimators": 150,
+        "scale": false,
+        "seed": 42,
+        "test_size": 0.25
       },
-      "sweep_param": "C",
-      "values": [
-        "0.1",
-        "1.0",
-        "10.0"
-      ]
+      "runtime_seconds": 0.7815,
+      "status": "success"
     }
   },
   "comparison": {
-    "metric_match": false,
-    "runtime_match": false,
-    "unexpected_events": [
-      "runtime 48.65s exceeded predicted 25s"
-    ],
-    "lesson": "Run succeeded, but the prediction missed at least one quantitative detail."
+    "metric_match": true,
+    "runtime_match": true,
+    "unexpected_events": [],
+    "lesson": "Prediction was broadly consistent with the real run."
   },
-  "next_decision": "Next selected by world-model-guided policy: Try conservative gradient boosting as a final ensemble baseline and compare prediction accuracy against actual metrics.",
-  "verification": {
-    "status": "inconclusive",
-    "metric": "accuracy",
-    "effect_size": 0.020979,
-    "seed_noise": 0.027972,
-    "trustworthy": false,
-    "best_config": "C=0.1",
-    "supported_claims": [],
-    "inconclusive_findings": [
-      "Best config 'C=0.1' improves over 'C=10.0' by 0.0210 accuracy, but best-config seed noise is 0.0280."
-    ],
-    "rationale": "Measured effect is not larger than inter-seed noise. The report must not oversell this as a robust discovery."
-  },
+  "next_decision": "Continue: regenerate candidates from the updated state and ask the world model to predict each option.",
+  "verification": null,
   "schema_version": "2.0",
   "state_before": {
     "state_id": "state_005",
@@ -268,69 +95,14 @@
       },
       {
         "run_id": "run_004",
-        "model": "svc",
-        "accuracy": 0.986013986013986,
-        "f1": 0.986013986013986,
-        "params": {
-          "scale": true,
-          "C": 2.0,
-          "kernel": "rbf"
-        }
-      }
-    ],
-    "budget_remaining": 2,
-    "open_questions": [
-      "Which candidate should receive the next compute budget?",
-      "Is the best observed score robust across seeds or perturbations?",
-      "Do apparent improvements survive an effect-vs-noise verifier?",
-      "What did the world model miss, and should the next action test that failure mode?"
-    ],
-    "risks_to_check": [
-      "single-run best score may not justify a scientific claim",
-      "seed variance may exceed apparent model or hyperparameter effects",
-      "world-model predictions may miss quantitative details"
-    ],
-    "summary": "Goal: Maximize validation accuracy on sklearn breast cancer dataset in five experiments.\nNo experiments have been run yet. Dataset: sklearn breast_cancer. Metric: validation accuracy and weighted F1.\nrun_001: logistic_regression actual=0.951048951048951 status=success; prediction=accuracy around 0.92-0.96; recommendation=run; lesson=Prediction was broadly consistent with the real run.; next=Next selected by world-model-guided policy: World model warned that unscaled logistic regression may underperform; rerun the same baseline with feature scaling.\nrun_002: logistic_regression actual=0.986013986013986 status=success; prediction=accuracy around 0.95-0.98; recommendation=run; lesson=Run succeeded, but the prediction missed at least one quantitative detail.; next=Next selected by world-model-guided policy: The current linear baseline is already strong; test a different inductive bias for robustness rather than only chasing accuracy.\nrun_003: random_forest actual=0.958041958041958 status=success; prediction=accuracy around 0.94-0.98; recommendation=run; lesson=Prediction was broadly consistent with the real run.; next=Next selected by world-model-guided policy: Try a scaled RBF SVC because Qwen-AgentWorld expects scaling-sensitive models to be competitive on small tabular data.\nrun_004: svc actual=0.986013986013986 status=success; prediction=accuracy around 0.94-0.98; recommendation=run; lesson=Run succeeded, but the prediction missed at least one quantitative detail.; next=Next selected by world-model-guided policy: Run a controlled noisy-label multi-seed sweep so the deterministic Verifier can decide whether an apparent improvement is larger than seed noise."
-  },
-  "candidate_actions": [
-    {
-      "action_id": "action_selected",
-      "command": "python experiments/sweep_sklearn.py --dataset breast_cancer --model logistic_regression --scale --sweep-param C --values 0.1 1.0 10.0 --seeds 0 1 2 3 --label-noise 0.08",
-      "model": "verification_sweep",
-      "params": {
-        "base_model": "logistic_regression",
-        "scale": true,
-        "sweep_param": "C",
-        "values": [
-          0.1,
-          1.0,
-          10.0
-        ],
-        "seeds": [
-          0,
-          1,
-          2,
-          3
-        ],
-        "label_noise": 0.08
-      }
-    },
-    {
-      "action_id": "action_next_candidate",
-      "command": "python experiments/train_sklearn.py --dataset breast_cancer --model gradient_boosting --n-estimators 150 --learning-rate 0.05",
-      "model": "gradient_boosting",
-      "params": {
-        "n_estimators": 150,
-        "learning_rate": 0.05
-      }
-    }
-  ],
-  "candidate_predictions": [
-    {
-      "action": {
-        "action_id": "action_selected",
-        "command": "python experiments/sweep_sklearn.py --dataset breast_cancer --model logistic_regression --scale --sweep-param C --values 0.1 1.0 10.0 --seeds 0 1 2 3 --label-noise 0.08",
         "model": "verification_sweep",
+        "best": {
+          "max_accuracy": 0.9790209790209791,
+          "mean_accuracy": 0.9615384615384616,
+          "min_accuracy": 0.951048951048951,
+          "n": 4,
+          "value": "0.1"
+        },
         "params": {
           "base_model": "logistic_regression",
           "scale": true,
@@ -348,98 +120,125 @@
           ],
           "label_noise": 0.08
         }
+      }
+    ],
+    "budget_remaining": 2,
+    "open_questions": [
+      "Which candidate should receive the next compute budget?",
+      "Is the best observed score robust across seeds or perturbations?",
+      "What did the world model miss, and should the next action test that failure mode?"
+    ],
+    "risks_to_check": [
+      "single-run best score may not justify a scientific claim",
+      "seed variance may exceed apparent model or hyperparameter effects",
+      "world-model predictions may miss quantitative details"
+    ],
+    "summary": "Goal: Maximize validation accuracy on sklearn breast cancer dataset in five experiments.\nNo experiments have been run yet. Dataset: sklearn breast_cancer. Metric: validation accuracy and weighted F1.\nrun_001: logistic_regression actual=0.951048951048951 status=success; prediction=accuracy around 0.92-0.96; recommendation=run; lesson=Prediction was broadly consistent with the real run.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_002: logistic_regression actual=0.986013986013986 status=success; prediction=accuracy around 0.95-0.98; recommendation=run; lesson=Run succeeded, but the prediction missed at least one quantitative detail.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_003: random_forest actual=0.958041958041958 status=success; prediction=accuracy around 0.94-0.98; recommendation=run; lesson=Prediction was broadly consistent with the real run.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_004: verification_sweep actual=None status=success; prediction=accuracy around 0.94-0.98; recommendation=run; lesson=Run succeeded, but the prediction missed at least one quantitative detail.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option."
+  },
+  "candidate_actions": [
+    {
+      "action_id": "action_svc_scaled",
+      "command": "python experiments/train_sklearn.py --dataset breast_cancer --model svc --scale --C 2.0",
+      "model": "svc",
+      "params": {
+        "scale": true,
+        "C": 2.0,
+        "kernel": "rbf"
+      }
+    },
+    {
+      "action_id": "action_gradient_boosting",
+      "command": "python experiments/train_sklearn.py --dataset breast_cancer --model gradient_boosting --n-estimators 150 --learning-rate 0.05",
+      "model": "gradient_boosting",
+      "params": {
+        "n_estimators": 150,
+        "learning_rate": 0.05
+      }
+    }
+  ],
+  "candidate_predictions": [
+    {
+      "action": {
+        "action_id": "action_svc_scaled",
+        "command": "python experiments/train_sklearn.py --dataset breast_cancer --model svc --scale --C 2.0",
+        "model": "svc",
+        "params": {
+          "scale": true,
+          "C": 2.0,
+          "kernel": "rbf"
+        }
       },
       "prediction": {
         "expected_metric": "accuracy around 0.94-0.98",
-        "expected_runtime_seconds": "under 25",
+        "expected_runtime_seconds": "under 10",
         "risks": [
-          "label noise can make small hyperparameter differences non-robust",
-          "seed variance may exceed apparent gains"
+          "sensitive to scaling and C"
         ],
         "recommendation": "run",
-        "rationale": "A multi-seed sweep is useful for the deterministic verifier: it tests whether an apparent gain survives effect-vs-noise scrutiny."
+        "rationale": "Scaled RBF SVC is strong on small tabular datasets."
+      },
+      "source": "heuristic_fallback"
+    },
+    {
+      "action": {
+        "action_id": "action_gradient_boosting",
+        "command": "python experiments/train_sklearn.py --dataset breast_cancer --model gradient_boosting --n-estimators 150 --learning-rate 0.05",
+        "model": "gradient_boosting",
+        "params": {
+          "n_estimators": 150,
+          "learning_rate": 0.05
+        }
+      },
+      "prediction": {
+        "expected_metric": "accuracy around 0.94-0.98",
+        "expected_runtime_seconds": "under 15",
+        "risks": [
+          "can overfit with too many estimators"
+        ],
+        "recommendation": "run",
+        "rationale": "Boosting often performs well but needs tuning."
       },
       "source": "heuristic_fallback"
     }
   ],
   "selected_action": {
-    "action_id": "action_selected",
-    "command": "python experiments/sweep_sklearn.py --dataset breast_cancer --model logistic_regression --scale --sweep-param C --values 0.1 1.0 10.0 --seeds 0 1 2 3 --label-noise 0.08",
-    "model": "verification_sweep",
+    "action_id": "action_gradient_boosting",
+    "command": "python experiments/train_sklearn.py --dataset breast_cancer --model gradient_boosting --n-estimators 150 --learning-rate 0.05",
+    "model": "gradient_boosting",
     "params": {
-      "base_model": "logistic_regression",
-      "scale": true,
-      "sweep_param": "C",
-      "values": [
-        0.1,
-        1.0,
-        10.0
-      ],
-      "seeds": [
-        0,
-        1,
-        2,
-        3
-      ],
-      "label_noise": 0.08
+      "n_estimators": 150,
+      "learning_rate": 0.05
     }
   },
   "decision_trace": {
     "selected_action": {
-      "action_id": "action_selected",
-      "command": "python experiments/sweep_sklearn.py --dataset breast_cancer --model logistic_regression --scale --sweep-param C --values 0.1 1.0 10.0 --seeds 0 1 2 3 --label-noise 0.08",
-      "model": "verification_sweep",
+      "action_id": "action_gradient_boosting",
+      "command": "python experiments/train_sklearn.py --dataset breast_cancer --model gradient_boosting --n-estimators 150 --learning-rate 0.05",
+      "model": "gradient_boosting",
       "params": {
-        "base_model": "logistic_regression",
-        "scale": true,
-        "sweep_param": "C",
-        "values": [
-          0.1,
-          1.0,
-          10.0
-        ],
-        "seeds": [
-          0,
-          1,
-          2,
-          3
-        ],
-        "label_noise": 0.08
+        "n_estimators": 150,
+        "learning_rate": 0.05
       }
     },
     "world_model_signal_used": true,
-    "causal_reason": "Executed the selected action after the world model predicted accuracy around 0.94-0.98, runtime under 25, recommendation=run, risks=label noise can make small hyperparameter differences non-robust, seed variance may exceed apparent gains. Next decision: Next selected by world-model-guided policy: Try conservative gradient boosting as a final ensemble baseline and compare prediction accuracy against actual metrics.",
+    "causal_reason": "Selected gradient_boosting because score=31; world model recommended run; ensemble baseline is useful as a late comparison; world model predicted overfitting risk. World model predicted accuracy around 0.94-0.98, runtime under 15, recommendation=run, risks=can overfit with too many estimators.",
     "rejected_candidates": [
       {
         "action": {
-          "action_id": "action_next_candidate",
-          "command": "python experiments/train_sklearn.py --dataset breast_cancer --model gradient_boosting --n-estimators 150 --learning-rate 0.05",
-          "model": "gradient_boosting",
+          "action_id": "action_svc_scaled",
+          "command": "python experiments/train_sklearn.py --dataset breast_cancer --model svc --scale --C 2.0",
+          "model": "svc",
           "params": {
-            "n_estimators": 150,
-            "learning_rate": 0.05
+            "scale": true,
+            "C": 2.0,
+            "kernel": "rbf"
           }
         },
-        "reason": "Not executed in this step; it is the queued candidate for the next research iteration."
+        "reason": "score=30; world model recommended run"
       }
     ]
   },
-  "claim_ledger_updates": [
-    {
-      "claim_id": "run_005_claim_001",
-      "claim": "Best config 'C=0.1' improves over 'C=10.0' by 0.0210 accuracy, but best-config seed noise is 0.0280.",
-      "status": "blocked",
-      "evidence_run_ids": [
-        "run_005"
-      ],
-      "blocked_reason": "Measured effect is not larger than inter-seed noise. The report must not oversell this as a robust discovery.",
-      "allowed_rewrite": "Best config 'C=0.1' improves over 'C=10.0' by 0.0210 accuracy, but best-config seed noise is 0.0280.",
-      "metrics": {
-        "effect_size": 0.020979,
-        "seed_noise": 0.027972
-      }
-    }
-  ],
+  "claim_ledger_updates": [],
   "calibration_metrics": null,
   "artifacts": {
     "trace_path": "runs/run_005.json",

@@ -3,7 +3,7 @@
   "goal": "Maximize validation accuracy on sklearn breast cancer dataset in five experiments.",
   "hypothesis": "Establish a simple linear baseline before spending search budget.",
   "proposed_action": {
-    "action_id": null,
+    "action_id": "action_001",
     "command": "python experiments/train_sklearn.py --dataset breast_cancer --model logistic_regression",
     "model": "logistic_regression",
     "params": {
@@ -23,8 +23,8 @@
     "status": "success",
     "accuracy": 0.951048951048951,
     "f1": 0.9504987920829505,
-    "runtime_seconds": 1.006,
-    "stdout_tail": "{\n  \"accuracy\": 0.951048951048951,\n  \"dataset\": \"breast_cancer\",\n  \"f1\": 0.9504987920829505,\n  \"model\": \"logistic_regression\",\n  \"n_label_noise_flips\": 0,\n  \"n_test\": 143,\n  \"n_train\": 426,\n  \"params\": {\n    \"C\": 1.0,\n    \"dataset\": \"breast_cancer\",\n    \"kernel\": \"rbf\",\n    \"label_noise\": 0.0,\n    \"learning_rate\": 0.1,\n    \"max_depth\": null,\n    \"max_iter\": 1000,\n    \"model\": \"logistic_regression\",\n    \"n_estimators\": 200,\n    \"scale\": false,\n    \"seed\": 42,\n    \"test_size\": 0.25\n  },\n  \"runtime_seconds\": 1.006,\n  \"status\": \"success\"\n}\n",
+    "runtime_seconds": 0.4496,
+    "stdout_tail": "{\n  \"accuracy\": 0.951048951048951,\n  \"dataset\": \"breast_cancer\",\n  \"f1\": 0.9504987920829505,\n  \"model\": \"logistic_regression\",\n  \"n_label_noise_flips\": 0,\n  \"n_test\": 143,\n  \"n_train\": 426,\n  \"params\": {\n    \"C\": 1.0,\n    \"dataset\": \"breast_cancer\",\n    \"kernel\": \"rbf\",\n    \"label_noise\": 0.0,\n    \"learning_rate\": 0.1,\n    \"max_depth\": null,\n    \"max_iter\": 1000,\n    \"model\": \"logistic_regression\",\n    \"n_estimators\": 200,\n    \"scale\": false,\n    \"seed\": 42,\n    \"test_size\": 0.25\n  },\n  \"runtime_seconds\": 0.4496,\n  \"status\": \"success\"\n}\n",
     "stderr_tail": "",
     "raw": {
       "accuracy": 0.951048951048951,
@@ -48,7 +48,7 @@
         "seed": 42,
         "test_size": 0.25
       },
-      "runtime_seconds": 1.006,
+      "runtime_seconds": 0.4496,
       "status": "success"
     }
   },
@@ -58,7 +58,7 @@
     "unexpected_events": [],
     "lesson": "Prediction was broadly consistent with the real run."
   },
-  "next_decision": "Next selected by world-model-guided policy: World model warned that unscaled logistic regression may underperform; rerun the same baseline with feature scaling.",
+  "next_decision": "Continue: regenerate candidates from the updated state and ask the world model to predict each option.",
   "verification": null,
   "schema_version": "2.0",
   "state_before": {
@@ -77,7 +77,7 @@
   },
   "candidate_actions": [
     {
-      "action_id": "action_selected",
+      "action_id": "action_001",
       "command": "python experiments/train_sklearn.py --dataset breast_cancer --model logistic_regression",
       "model": "logistic_regression",
       "params": {
@@ -85,18 +85,58 @@
       }
     },
     {
-      "action_id": "action_next_candidate",
+      "action_id": "action_scaled_logreg",
       "command": "python experiments/train_sklearn.py --dataset breast_cancer --model logistic_regression --scale",
       "model": "logistic_regression",
       "params": {
         "scale": true
+      }
+    },
+    {
+      "action_id": "action_random_forest",
+      "command": "python experiments/train_sklearn.py --dataset breast_cancer --model random_forest --n-estimators 300",
+      "model": "random_forest",
+      "params": {
+        "n_estimators": 300
+      }
+    },
+    {
+      "action_id": "action_svc_scaled",
+      "command": "python experiments/train_sklearn.py --dataset breast_cancer --model svc --scale --C 2.0",
+      "model": "svc",
+      "params": {
+        "scale": true,
+        "C": 2.0,
+        "kernel": "rbf"
+      }
+    },
+    {
+      "action_id": "action_noisy_sweep",
+      "command": "python experiments/sweep_sklearn.py --dataset breast_cancer --model logistic_regression --scale --sweep-param C --values 0.1 1.0 10.0 --seeds 0 1 2 3 --label-noise 0.08",
+      "model": "verification_sweep",
+      "params": {
+        "base_model": "logistic_regression",
+        "scale": true,
+        "sweep_param": "C",
+        "values": [
+          0.1,
+          1.0,
+          10.0
+        ],
+        "seeds": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "label_noise": 0.08
       }
     }
   ],
   "candidate_predictions": [
     {
       "action": {
-        "action_id": "action_selected",
+        "action_id": "action_001",
         "command": "python experiments/train_sklearn.py --dataset breast_cancer --model logistic_regression",
         "model": "logistic_regression",
         "params": {
@@ -113,10 +153,107 @@
         "rationale": "Good baseline for breast cancer dataset."
       },
       "source": "heuristic_fallback"
+    },
+    {
+      "action": {
+        "action_id": "action_scaled_logreg",
+        "command": "python experiments/train_sklearn.py --dataset breast_cancer --model logistic_regression --scale",
+        "model": "logistic_regression",
+        "params": {
+          "scale": true
+        }
+      },
+      "prediction": {
+        "expected_metric": "accuracy around 0.95-0.98",
+        "expected_runtime_seconds": "under 5",
+        "risks": [
+          "minor convergence warning possible"
+        ],
+        "recommendation": "run",
+        "rationale": "Scaling usually helps logistic regression on tabular medical data."
+      },
+      "source": "heuristic_fallback"
+    },
+    {
+      "action": {
+        "action_id": "action_random_forest",
+        "command": "python experiments/train_sklearn.py --dataset breast_cancer --model random_forest --n-estimators 300",
+        "model": "random_forest",
+        "params": {
+          "n_estimators": 300
+        }
+      },
+      "prediction": {
+        "expected_metric": "accuracy around 0.94-0.98",
+        "expected_runtime_seconds": "under 10",
+        "risks": [
+          "overfitting if max_depth is unconstrained"
+        ],
+        "recommendation": "run",
+        "rationale": "Tree ensembles are strong baselines and robust to scaling."
+      },
+      "source": "heuristic_fallback"
+    },
+    {
+      "action": {
+        "action_id": "action_svc_scaled",
+        "command": "python experiments/train_sklearn.py --dataset breast_cancer --model svc --scale --C 2.0",
+        "model": "svc",
+        "params": {
+          "scale": true,
+          "C": 2.0,
+          "kernel": "rbf"
+        }
+      },
+      "prediction": {
+        "expected_metric": "accuracy around 0.94-0.98",
+        "expected_runtime_seconds": "under 10",
+        "risks": [
+          "sensitive to scaling and C"
+        ],
+        "recommendation": "run",
+        "rationale": "Scaled RBF SVC is strong on small tabular datasets."
+      },
+      "source": "heuristic_fallback"
+    },
+    {
+      "action": {
+        "action_id": "action_noisy_sweep",
+        "command": "python experiments/sweep_sklearn.py --dataset breast_cancer --model logistic_regression --scale --sweep-param C --values 0.1 1.0 10.0 --seeds 0 1 2 3 --label-noise 0.08",
+        "model": "verification_sweep",
+        "params": {
+          "base_model": "logistic_regression",
+          "scale": true,
+          "sweep_param": "C",
+          "values": [
+            0.1,
+            1.0,
+            10.0
+          ],
+          "seeds": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "label_noise": 0.08
+        }
+      },
+      "prediction": {
+        "expected_metric": "accuracy around 0.94-0.98",
+        "expected_runtime_seconds": "under 25",
+        "risks": [
+          "label noise can make small hyperparameter differences non-robust",
+          "seed variance may exceed apparent gains"
+        ],
+        "recommendation": "run",
+        "rationale": "A multi-seed sweep is useful for the deterministic verifier: it tests whether an apparent gain survives effect-vs-noise scrutiny."
+      },
+      "source": "heuristic_fallback"
     }
   ],
   "selected_action": {
-    "action_id": "action_selected",
+    "action_id": "action_001",
     "command": "python experiments/train_sklearn.py --dataset breast_cancer --model logistic_regression",
     "model": "logistic_regression",
     "params": {
@@ -125,7 +262,7 @@
   },
   "decision_trace": {
     "selected_action": {
-      "action_id": "action_selected",
+      "action_id": "action_001",
       "command": "python experiments/train_sklearn.py --dataset breast_cancer --model logistic_regression",
       "model": "logistic_regression",
       "params": {
@@ -133,18 +270,67 @@
       }
     },
     "world_model_signal_used": true,
-    "causal_reason": "Executed the selected action after the world model predicted accuracy around 0.92-0.96, runtime under 5, recommendation=run, risks=unscaled features can slow convergence. Next decision: Next selected by world-model-guided policy: World model warned that unscaled logistic regression may underperform; rerun the same baseline with feature scaling.",
+    "causal_reason": "Selected logistic_regression because score=110; world model recommended run; first run should establish the unscaled baseline before interventions. World model predicted accuracy around 0.92-0.96, runtime under 5, recommendation=run, risks=unscaled features can slow convergence.",
     "rejected_candidates": [
       {
         "action": {
-          "action_id": "action_next_candidate",
+          "action_id": "action_svc_scaled",
+          "command": "python experiments/train_sklearn.py --dataset breast_cancer --model svc --scale --C 2.0",
+          "model": "svc",
+          "params": {
+            "scale": true,
+            "C": 2.0,
+            "kernel": "rbf"
+          }
+        },
+        "reason": "score=30; world model recommended run"
+      },
+      {
+        "action": {
+          "action_id": "action_random_forest",
+          "command": "python experiments/train_sklearn.py --dataset breast_cancer --model random_forest --n-estimators 300",
+          "model": "random_forest",
+          "params": {
+            "n_estimators": 300
+          }
+        },
+        "reason": "score=26; world model recommended run; world model predicted overfitting risk"
+      },
+      {
+        "action": {
+          "action_id": "action_noisy_sweep",
+          "command": "python experiments/sweep_sklearn.py --dataset breast_cancer --model logistic_regression --scale --sweep-param C --values 0.1 1.0 10.0 --seeds 0 1 2 3 --label-noise 0.08",
+          "model": "verification_sweep",
+          "params": {
+            "base_model": "logistic_regression",
+            "scale": true,
+            "sweep_param": "C",
+            "values": [
+              0.1,
+              1.0,
+              10.0
+            ],
+            "seeds": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "label_noise": 0.08
+          }
+        },
+        "reason": "score=25; world model recommended run; world model predicted robustness or seed-variance risk; defer verifier sweep until several single-model baselines exist"
+      },
+      {
+        "action": {
+          "action_id": "action_scaled_logreg",
           "command": "python experiments/train_sklearn.py --dataset breast_cancer --model logistic_regression --scale",
           "model": "logistic_regression",
           "params": {
             "scale": true
           }
         },
-        "reason": "Not executed in this step; it is the queued candidate for the next research iteration."
+        "reason": "score=-10; world model recommended run; scaled baseline is deferred until after an unscaled control"
       }
     ]
   },
