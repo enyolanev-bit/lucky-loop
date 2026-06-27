@@ -26,6 +26,8 @@ def heuristic_prediction(action: ProposedAction, state: str) -> Prediction:
         return Prediction(expected_metric="accuracy around 0.94-0.98", expected_runtime_seconds="under 15", risks=["can overfit with too many estimators"], recommendation="run", rationale="Boosting often performs well but needs tuning.")
     if m == "svc":
         return Prediction(expected_metric="accuracy around 0.94-0.98", expected_runtime_seconds="under 10", risks=["sensitive to scaling and C"], recommendation="run", rationale="Scaled RBF SVC is strong on small tabular datasets.")
+    if m == "verification_sweep":
+        return Prediction(expected_metric="accuracy around 0.94-0.98", expected_runtime_seconds="under 25", risks=["label noise can make small hyperparameter differences non-robust", "seed variance may exceed apparent gains"], recommendation="run", rationale="A multi-seed sweep is useful for the deterministic verifier: it tests whether an apparent gain survives effect-vs-noise scrutiny.")
     return Prediction(expected_metric="unknown", expected_runtime_seconds="unknown", risks=["no calibrated prior"], recommendation="run", rationale="Fallback prediction.")
 
 

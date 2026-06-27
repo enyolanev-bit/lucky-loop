@@ -9,6 +9,7 @@ from .executor import execute
 from .reporter import generate_report
 from .schemas import ExperimentTrace, ProposedAction
 from .simulator import predict
+from .verifier import verify_sweep
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -109,6 +110,17 @@ def choose_next(traces: list[ExperimentTrace], seen: set[str]) -> tuple[str, Pro
 
     candidates.append(
         (
+            "Run a controlled noisy-label multi-seed sweep so the deterministic Verifier can decide whether an apparent improvement is larger than seed noise.",
+            ProposedAction(
+                command="python experiments/sweep_sklearn.py --dataset breast_cancer --model logistic_regression --scale --sweep-param C --values 0.1 1.0 10.0 --seeds 0 1 2 3 --label-noise 0.08",
+                model="verification_sweep",
+                params={"base_model": "logistic_regression", "scale": True, "sweep_param": "C", "values": [0.1, 1.0, 10.0], "seeds": [0, 1, 2, 3], "label_noise": 0.08},
+            ),
+        )
+    )
+
+    candidates.append(
+        (
             "Try conservative gradient boosting as a final ensemble baseline and compare prediction accuracy against actual metrics.",
             ProposedAction(
                 command="python experiments/train_sklearn.py --dataset breast_cancer --model gradient_boosting --n-estimators 150 --learning-rate 0.05",
@@ -143,6 +155,7 @@ def run(goal: str, max_experiments: int = 5) -> list[ExperimentTrace]:
         prediction = predict(action, state)
         actual = execute(action.command, cwd=ROOT)
         comparison = compare(prediction, actual)
+        verification = verify_sweep(actual.raw) if actual.raw.get("runs") else None
 
         provisional = ExperimentTrace(
             run_id=run_id,
@@ -153,6 +166,7 @@ def run(goal: str, max_experiments: int = 5) -> list[ExperimentTrace]:
             actual_result=actual,
             comparison=comparison,
             next_decision="pending",
+            verification=verification,
         )
         next_choice = choose_next(traces + [provisional], seen)
         if i >= max_experiments or next_choice is None:
@@ -171,6 +185,7 @@ def run(goal: str, max_experiments: int = 5) -> list[ExperimentTrace]:
             actual_result=actual,
             comparison=comparison,
             next_decision=next_decision,
+            verification=verification,
         )
         traces.append(trace)
         (runs_dir / f"{run_id}.json").write_text(trace.model_dump_json(indent=2), encoding="utf-8")
@@ -185,6 +200,12 @@ def run(goal: str, max_experiments: int = 5) -> list[ExperimentTrace]:
             f"predicted='{prediction.expected_metric}' rec={prediction.recommendation} "
             f"match={comparison.metric_match}"
         )
+        if verification:
+            print(
+                f"{run_id}: verifier status={verification.status} "
+                f"effect={verification.effect_size} seed_noise={verification.seed_noise} "
+                f"trustworthy={verification.trustworthy}"
+            )
         if i >= max_experiments or next_choice is None:
             break
         hypothesis, action = next_choice

@@ -34,6 +34,18 @@ class Comparison(BaseModel):
     lesson: str
 
 
+class Verification(BaseModel):
+    status: Literal["supported", "inconclusive", "missing_data"] = "missing_data"
+    metric: str = "accuracy"
+    effect_size: float | None = None
+    seed_noise: float | None = None
+    trustworthy: bool = False
+    best_config: str | None = None
+    supported_claims: list[str] = Field(default_factory=list)
+    inconclusive_findings: list[str] = Field(default_factory=list)
+    rationale: str = ""
+
+
 class ExperimentTrace(BaseModel):
     run_id: str
     goal: str
@@ -43,3 +55,4 @@ class ExperimentTrace(BaseModel):
     actual_result: ActualResult
     comparison: Comparison
     next_decision: str
+    verification: Verification | None = None
