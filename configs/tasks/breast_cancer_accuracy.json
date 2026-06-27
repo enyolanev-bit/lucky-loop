@@ -1,0 +1,24 @@
+{
+  "task_id": "breast_cancer_accuracy",
+  "dataset": "breast_cancer",
+  "problem_type": "classification",
+  "primary_metric": "accuracy",
+  "secondary_metrics": ["f1"],
+  "budget_runs": 6,
+  "models": ["logistic_regression", "random_forest", "svc", "gradient_boosting"],
+  "sweeps": [
+    {
+      "model": "logistic_regression",
+      "param": "C",
+      "values": [0.1, 1.0, 10.0],
+      "seeds": [0, 1, 2, 3],
+      "scale": true,
+      "label_noise": 0.08
+    }
+  ],
+  "goal": "Maximize validation accuracy on sklearn breast_cancer under a small compute budget, while avoiding unsupported claims.",
+  "notes": [
+    "Binary medical tabular classification.",
+    "Logistic regression is a strong baseline, but single-split accuracy should not become a robust claim without repeated seeds."
+  ]
+}

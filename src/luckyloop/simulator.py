@@ -3,40 +3,43 @@ import json, os, re
 from openai import OpenAI
 from .schemas import Prediction, ProposedAction
 
-SYSTEM = """You are a language world model simulating a research coding environment.
-Given the current research state and a proposed ML experiment, predict likely metric range, runtime, failure modes, and whether to run it.
+SYSTEM = """You are a language world model simulating a real ML research environment.
+Given a TaskSpec, the current research state, and one proposed sklearn experiment, predict the next experimental observation before any compute is spent.
+
+Be specific to the action and dataset. Prefer concrete scientific signals over generic cautions.
+For sklearn tabular classification:
+- mention feature scaling when the action is logistic regression or SVC and scaling is relevant
+- mention small-dataset variance when a single split could overstate a model win
+- mention overfitting or variance for tree ensembles when appropriate
+- mention robustness sweeps before strong claims when a high single-run score exists
+- mention that label-noise sweeps test claim robustness, not leaderboard performance
+
 Return strict JSON only, with exactly these keys:
 - expected_metric: string, e.g. "accuracy around 0.94-0.97"
 - expected_runtime_seconds: string, e.g. "under 5"
 - risks: array of strings
 - recommendation: one of "run", "skip", "modify"
 - rationale: string
+- action_specific_signal: string
+- claim_risk: string
 Do not use markdown. Do not claim actual execution. Predict only."""
 
 
 def heuristic_prediction(action: ProposedAction, state: str) -> Prediction:
     m = action.model
     if m == "logistic_regression" and action.params.get("scale"):
-        return Prediction(expected_metric="accuracy around 0.95-0.98", expected_runtime_seconds="under 5", risks=["minor convergence warning possible"], recommendation="run", rationale="Scaling usually helps logistic regression on tabular medical data.")
+        return Prediction(expected_metric="accuracy around 0.95-0.98", expected_runtime_seconds="under 5", risks=["minor convergence warning possible"], recommendation="run", rationale="Scaling usually helps logistic regression on tabular numeric features.", action_specific_signal="Feature scaling is the direct intervention for a linear model after an unscaled baseline.", claim_risk="Single-run best score should not be claimed as robust without repeated seeds.")
     if m == "logistic_regression":
-        return Prediction(expected_metric="accuracy around 0.92-0.96", expected_runtime_seconds="under 5", risks=["unscaled features can slow convergence"], recommendation="run", rationale="Good baseline for breast cancer dataset.")
+        return Prediction(expected_metric="accuracy around 0.90-0.97", expected_runtime_seconds="under 5", risks=["unscaled features can slow convergence or underperform when feature scales differ"], recommendation="run", rationale="A simple linear baseline is cheap and informative for sklearn tabular classification.", action_specific_signal="Establish a baseline before testing scaling, nonlinear models, or sweeps.", claim_risk="Baseline-only evidence cannot support a best-model claim.")
     if m == "random_forest":
-        return Prediction(expected_metric="accuracy around 0.94-0.98", expected_runtime_seconds="under 10", risks=["overfitting if max_depth is unconstrained"], recommendation="run", rationale="Tree ensembles are strong baselines and robust to scaling.")
+        return Prediction(expected_metric="accuracy around 0.90-0.98", expected_runtime_seconds="under 10", risks=["overfitting or split variance if depth is unconstrained"], recommendation="run", rationale="Tree ensembles test a different inductive bias, but may not beat a strong scaled linear model on small tabular datasets.", action_specific_signal="Use random forest to test whether nonlinear interactions improve over the linear baseline.", claim_risk="A single tree-ensemble score should be treated as observation until checked across seeds.")
     if "boost" in m:
-        return Prediction(expected_metric="accuracy around 0.94-0.98", expected_runtime_seconds="under 15", risks=["can overfit with too many estimators"], recommendation="run", rationale="Boosting often performs well but needs tuning.")
+        return Prediction(expected_metric="accuracy around 0.90-0.98", expected_runtime_seconds="under 15", risks=["can overfit with too many estimators"], recommendation="run", rationale="Boosting is a useful late comparison when linear and bagged-tree baselines are known.", action_specific_signal="Use boosting to test a staged-tree alternative under the remaining budget.", claim_risk="Do not report a robust winner from one boosted run.")
     if m == "svc":
-        return Prediction(expected_metric="accuracy around 0.94-0.98", expected_runtime_seconds="under 10", risks=["sensitive to scaling and C"], recommendation="run", rationale="Scaled RBF SVC is strong on small tabular datasets.")
+        return Prediction(expected_metric="accuracy around 0.90-0.99", expected_runtime_seconds="under 10", risks=["sensitive to scaling and C"], recommendation="run", rationale="Scaled SVC can be strong on small numeric classification tasks but needs careful comparison.", action_specific_signal="SVC tests a margin-based nonlinear hypothesis after linear/tree baselines.", claim_risk="SVC should not be declared best without repeated-seed evidence.")
     if m == "verification_sweep":
-        return Prediction(expected_metric="accuracy around 0.94-0.98", expected_runtime_seconds="under 25", risks=["label noise can make small hyperparameter differences non-robust", "seed variance may exceed apparent gains"], recommendation="run", rationale="A multi-seed sweep is useful for the deterministic verifier: it tests whether an apparent gain survives effect-vs-noise scrutiny.")
-    if m == "weak_effect":
-        return Prediction(expected_metric="accuracy around 0.94-0.99", expected_runtime_seconds="under 5", risks=["effect may be smaller than seed noise", "claim should likely be weak or blocked"], recommendation="run", rationale="A weak-effect scenario tests whether the verifier refuses to overclaim a small apparent improvement.")
-    if m == "real_effect":
-        return Prediction(expected_metric="accuracy around 0.76-0.88", expected_runtime_seconds="under 5", risks=["large effect should be checked against seed noise"], recommendation="run", rationale="A real-effect scenario should produce a supported claim when the effect/noise ratio is high.")
-    if m == "data_leakage_trap":
-        return Prediction(expected_metric="accuracy around 0.95-1.00", expected_runtime_seconds="under 5", risks=["suspiciously high accuracy may indicate data leakage", "protocol warning should block a strong claim"], recommendation="run", rationale="A leakage trap tests whether the system blocks claims from invalid protocols even when metrics look excellent.")
-    if m == "metric_misuse":
-        return Prediction(expected_metric="balanced_accuracy around 0.50-0.73", expected_runtime_seconds="under 5", risks=["accuracy may be misleading under class imbalance", "balanced accuracy or F1 should be preferred"], recommendation="run", rationale="Metric misuse tests whether the report avoids accuracy-only claims on an imbalanced setting.")
-    return Prediction(expected_metric="unknown", expected_runtime_seconds="unknown", risks=["no calibrated prior"], recommendation="run", rationale="Fallback prediction.")
+        return Prediction(expected_metric="accuracy around 0.85-0.98", expected_runtime_seconds="under 35", risks=["label noise can make small hyperparameter differences non-robust", "seed variance may exceed apparent gains"], recommendation="run", rationale="A multi-seed sweep is useful for the deterministic verifier: it tests whether an apparent gain survives effect-vs-noise scrutiny.", action_specific_signal="Run a robustness sweep before allowing a best-hyperparameter claim.", claim_risk="The apparent winner may be blocked if effect size is smaller than seed noise.")
+    return Prediction(expected_metric="unknown", expected_runtime_seconds="unknown", risks=["no calibrated prior"], recommendation="run", rationale="Fallback prediction.", action_specific_signal="No action-specific prior available.", claim_risk="No claim should be made from this prediction alone.")
 
 
 def _json_from_text(text: str) -> dict:
@@ -71,6 +74,8 @@ def _normalize_prediction(data: dict) -> dict:
     if isinstance(data["risks"], str):
         data["risks"] = [data["risks"]]
     data.setdefault("rationale", "")
+    data.setdefault("action_specific_signal", "")
+    data.setdefault("claim_risk", "")
     return data
 
 

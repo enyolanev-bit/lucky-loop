@@ -28,8 +28,8 @@
     "status": "success",
     "accuracy": 0.986013986013986,
     "f1": 0.986013986013986,
-    "runtime_seconds": 0.0177,
-    "stdout_tail": "{\n  \"accuracy\": 0.986013986013986,\n  \"dataset\": \"breast_cancer\",\n  \"f1\": 0.986013986013986,\n  \"model\": \"svc\",\n  \"n_label_noise_flips\": 0,\n  \"n_test\": 143,\n  \"n_train\": 426,\n  \"params\": {\n    \"C\": 2.0,\n    \"dataset\": \"breast_cancer\",\n    \"kernel\": \"rbf\",\n    \"label_noise\": 0.0,\n    \"learning_rate\": 0.1,\n    \"max_depth\": null,\n    \"max_iter\": 1000,\n    \"model\": \"svc\",\n    \"n_estimators\": 200,\n    \"scale\": true,\n    \"seed\": 42,\n    \"test_size\": 0.25\n  },\n  \"runtime_seconds\": 0.0177,\n  \"status\": \"success\"\n}\n",
+    "runtime_seconds": 0.0209,
+    "stdout_tail": "{\n  \"accuracy\": 0.986013986013986,\n  \"dataset\": \"breast_cancer\",\n  \"f1\": 0.986013986013986,\n  \"model\": \"svc\",\n  \"n_label_noise_flips\": 0,\n  \"n_test\": 143,\n  \"n_train\": 426,\n  \"params\": {\n    \"C\": 2.0,\n    \"dataset\": \"breast_cancer\",\n    \"kernel\": \"rbf\",\n    \"label_noise\": 0.0,\n    \"learning_rate\": 0.1,\n    \"max_depth\": null,\n    \"max_iter\": 1000,\n    \"model\": \"svc\",\n    \"n_estimators\": 200,\n    \"scale\": true,\n    \"seed\": 42,\n    \"test_size\": 0.25\n  },\n  \"runtime_seconds\": 0.0209,\n  \"status\": \"success\"\n}\n",
     "stderr_tail": "",
     "raw": {
       "accuracy": 0.986013986013986,
@@ -53,7 +53,7 @@
         "seed": 42,
         "test_size": 0.25
       },
-      "runtime_seconds": 0.0177,
+      "runtime_seconds": 0.0209,
       "status": "success"
     }
   },
@@ -227,8 +227,8 @@
   "calibration_metrics": null,
   "artifacts": {
     "task_id": "breast_cancer_accuracy",
-    "trace_path": "runs/run_006.json",
-    "report_path": "reports/final_report.md",
-    "claim_ledger_path": "reports/claim_ledger.json"
+    "trace_path": "runs/breast_cancer_accuracy/run_006.json",
+    "report_path": "reports/breast_cancer_accuracy/final_report.md",
+    "claim_ledger_path": "reports/breast_cancer_accuracy/claim_ledger.json"
   }
 }

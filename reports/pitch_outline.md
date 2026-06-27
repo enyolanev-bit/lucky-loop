@@ -23,19 +23,26 @@ Lucky Loop inserts Qwen-AgentWorld between planning and execution:
 6. produce JSON evidence traces and a final report
 
 ## Demo flow
-Goal: maximize validation accuracy on sklearn breast cancer in five experiments.
+Goal: run world-model-guided autoresearch on real sklearn benchmark tasks, then block unsupported claims.
 
 Observed loop:
 
 | Step | What happened |
 |---|---|
-| 1 | Unscaled logistic regression baseline was predicted around 0.93-0.96 accuracy and actually scored 0.9510. |
-| 2 | Qwen-AgentWorld warned about scaling, so the policy selected scaled logistic regression next. It scored 0.9860. |
-| 3 | Since the linear baseline was strong, the policy tested random forest for a different inductive bias. It scored 0.9580. |
-| 4 | Because the tree prediction was overestimated, the policy tried a scaled RBF SVC. It also scored 0.9860. |
-| 5 | Final conservative gradient boosting scored 0.9510. |
+| 1 | A TaskSpec declares dataset, metric, candidate models, search space, and compute budget. |
+| 2 | The planner generates candidate actions from the spec, not from a hardcoded breast_cancer script. |
+| 3 | Qwen-AgentWorld predicts each candidate's metric range, runtime, risks, and claim risk before compute. |
+| 4 | The selector records whether the decision came from a world-model signal, selector policy, or both. |
+| 5 | The executor runs real sklearn training or a real multi-seed sweep. |
+| 6 | The comparator logs prediction hits and misses. The verifier blocks unsupported sweep claims. |
 
-Best observed model: scaled logistic regression, accuracy 0.9860.
+Current benchmark suite:
+
+| Task | Runs | Best model | Best metric |
+|---|---:|---|---:|
+| breast_cancer_accuracy | 6 | logistic_regression | 0.9860 |
+| wine_accuracy | 6 | logistic_regression | 1.0000 |
+| digits_accuracy | 6 | svc | 0.9800 |
 
 ## Why this is not just AutoML
 AutoML searches configurations. Lucky Loop records a scientific loop:
@@ -47,7 +54,7 @@ AutoML searches configurations. Lucky Loop records a scientific loop:
 - lesson
 - next decision
 
-Every run is saved as JSON evidence under `runs/`, and the final report is generated at `reports/final_report.md`.
+Every run is saved as JSON evidence under `runs/<task_id>/`, and each task gets a report, calibration file, demo summary, and claim ledger under `reports/<task_id>/`.
 
 ## Why it matters
 Research agents need more than tool calls. They need a predictive model of the environment, so they can anticipate failures, choose better experiments, and produce auditable evidence.
@@ -57,9 +64,10 @@ User goal -> Planner -> Qwen-AgentWorld simulator -> real executor -> comparator
 
 ## Current working artifact
 - Qwen-AgentWorld-35B-A3B served through vLLM on Team Pegasus MI300X, endpoint `http://134.199.205.222:8000/v1`.
-- CLI loop verified with five real experiments.
+- CLI benchmark suite verified on three real sklearn datasets.
 - Streamlit UI verified locally at `http://127.0.0.1:8501`.
 - Evidence files:
-  - `runs/run_001.json` ... `runs/run_005.json`
-  - `reports/final_report.md`
+  - `runs/<task_id>/run_001.json` ...
+  - `reports/<task_id>/final_report.md`
+  - `reports/benchmark_summary.md`
   - `reports/pitch_outline.md`

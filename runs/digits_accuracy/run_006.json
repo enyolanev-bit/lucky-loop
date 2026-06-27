@@ -1,0 +1,230 @@
+{
+  "run_id": "run_006",
+  "goal": "Maximize validation accuracy on sklearn digits under a small compute budget, while avoiding unsupported claims.",
+  "hypothesis": "Selected hist_gradient_boosting because score=26; world model recommended run; world model predicted overfitting risk. World model predicted accuracy around 0.90-0.98, runtime under 15, recommendation=run, risks=can overfit with too many estimators. Causal signal type: world_model_prediction.",
+  "proposed_action": {
+    "action_id": "action_hist_gradient_boosting",
+    "command": "python experiments/train_sklearn.py --dataset digits --model hist_gradient_boosting --n-estimators 150 --learning-rate 0.08",
+    "model": "hist_gradient_boosting",
+    "params": {
+      "dataset": "digits",
+      "n_estimators": 150,
+      "learning_rate": 0.08
+    }
+  },
+  "world_model_prediction": {
+    "expected_metric": "accuracy around 0.90-0.98",
+    "expected_runtime_seconds": "under 15",
+    "risks": [
+      "can overfit with too many estimators"
+    ],
+    "recommendation": "run",
+    "rationale": "Boosting is a useful late comparison when linear and bagged-tree baselines are known.",
+    "action_specific_signal": "Use boosting to test a staged-tree alternative under the remaining budget.",
+    "claim_risk": "Do not report a robust winner from one boosted run."
+  },
+  "actual_result": {
+    "status": "success",
+    "accuracy": 0.96,
+    "f1": 0.959623544739232,
+    "runtime_seconds": 5.455,
+    "stdout_tail": "{\n  \"accuracy\": 0.96,\n  \"dataset\": \"digits\",\n  \"f1\": 0.959623544739232,\n  \"model\": \"hist_gradient_boosting\",\n  \"n_label_noise_flips\": 0,\n  \"n_test\": 450,\n  \"n_train\": 1347,\n  \"params\": {\n    \"C\": 1.0,\n    \"dataset\": \"digits\",\n    \"kernel\": \"rbf\",\n    \"label_noise\": 0.0,\n    \"learning_rate\": 0.08,\n    \"max_depth\": null,\n    \"max_iter\": 1000,\n    \"model\": \"hist_gradient_boosting\",\n    \"n_estimators\": 150,\n    \"scale\": false,\n    \"seed\": 42,\n    \"test_size\": 0.25\n  },\n  \"runtime_seconds\": 5.455,\n  \"status\": \"success\"\n}\n",
+    "stderr_tail": "",
+    "raw": {
+      "accuracy": 0.96,
+      "dataset": "digits",
+      "f1": 0.959623544739232,
+      "model": "hist_gradient_boosting",
+      "n_label_noise_flips": 0,
+      "n_test": 450,
+      "n_train": 1347,
+      "params": {
+        "C": 1.0,
+        "dataset": "digits",
+        "kernel": "rbf",
+        "label_noise": 0.0,
+        "learning_rate": 0.08,
+        "max_depth": null,
+        "max_iter": 1000,
+        "model": "hist_gradient_boosting",
+        "n_estimators": 150,
+        "scale": false,
+        "seed": 42,
+        "test_size": 0.25
+      },
+      "runtime_seconds": 5.455,
+      "status": "success"
+    }
+  },
+  "comparison": {
+    "metric_match": true,
+    "runtime_match": true,
+    "unexpected_events": [],
+    "lesson": "Prediction was broadly consistent with the real run."
+  },
+  "next_decision": "Stop and report the best observed model.",
+  "verification": null,
+  "schema_version": "2.0",
+  "state_before": {
+    "state_id": "state_006",
+    "goal": "Maximize validation accuracy on sklearn digits under a small compute budget, while avoiding unsupported claims.",
+    "known_results": [
+      {
+        "run_id": "run_001",
+        "model": "logistic_regression",
+        "accuracy": 0.9622222222222222,
+        "f1": 0.9622547774599621,
+        "params": {
+          "dataset": "digits",
+          "scale": false
+        }
+      },
+      {
+        "run_id": "run_002",
+        "model": "logistic_regression",
+        "accuracy": 0.9777777777777777,
+        "f1": 0.9778294499565325,
+        "params": {
+          "dataset": "digits",
+          "scale": true
+        }
+      },
+      {
+        "run_id": "run_003",
+        "model": "svc",
+        "accuracy": 0.98,
+        "f1": 0.9799633772681454,
+        "params": {
+          "dataset": "digits",
+          "scale": true,
+          "C": 2.0,
+          "kernel": "rbf"
+        }
+      },
+      {
+        "run_id": "run_004",
+        "model": "random_forest",
+        "accuracy": 0.9688888888888889,
+        "f1": 0.9685889650389191,
+        "params": {
+          "dataset": "digits",
+          "n_estimators": 300
+        }
+      },
+      {
+        "run_id": "run_005",
+        "model": "verification_sweep",
+        "best": {
+          "max_accuracy": 0.9866666666666667,
+          "mean_accuracy": 0.9805555555555555,
+          "min_accuracy": 0.9755555555555555,
+          "n": 4,
+          "value": "2.0"
+        },
+        "params": {
+          "dataset": "digits",
+          "base_model": "svc",
+          "scale": true,
+          "sweep_param": "C",
+          "values": [
+            0.5,
+            1.0,
+            2.0
+          ],
+          "seeds": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "label_noise": 0.03
+        }
+      }
+    ],
+    "budget_remaining": 1,
+    "open_questions": [
+      "Which candidate should receive the next compute budget?",
+      "Is the best observed score robust across seeds or perturbations?",
+      "What did the world model miss, and should the next action test that failure mode?"
+    ],
+    "risks_to_check": [
+      "single-run best score may not justify a scientific claim",
+      "seed variance may exceed apparent model or hyperparameter effects",
+      "world-model predictions may miss quantitative details"
+    ],
+    "summary": "Task=digits_accuracy; dataset=digits; primary_metric=accuracy. Goal: Maximize validation accuracy on sklearn digits under a small compute budget, while avoiding unsupported claims.\nNo experiments have been run yet. Dataset: sklearn digits. Primary metric: accuracy; secondary metrics: f1.\nrun_001: logistic_regression actual=0.9622222222222222 status=success; prediction=accuracy around 0.90-0.97; recommendation=run; lesson=Prediction was broadly consistent with the real run.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_002: logistic_regression actual=0.9777777777777777 status=success; prediction=accuracy around 0.95-0.98; recommendation=run; lesson=Prediction was broadly consistent with the real run.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_003: svc actual=0.98 status=success; prediction=accuracy around 0.90-0.99; recommendation=run; lesson=Prediction was broadly consistent with the real run.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_004: random_forest actual=0.9688888888888889 status=success; prediction=accuracy around 0.90-0.98; recommendation=run; lesson=Prediction was broadly consistent with the real run.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_005: verification_sweep actual=None status=success; prediction=accuracy around 0.85-0.98; recommendation=run; lesson=Run succeeded, but the prediction missed at least one quantitative detail.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option."
+  },
+  "candidate_actions": [
+    {
+      "action_id": "action_hist_gradient_boosting",
+      "command": "python experiments/train_sklearn.py --dataset digits --model hist_gradient_boosting --n-estimators 150 --learning-rate 0.08",
+      "model": "hist_gradient_boosting",
+      "params": {
+        "dataset": "digits",
+        "n_estimators": 150,
+        "learning_rate": 0.08
+      }
+    }
+  ],
+  "candidate_predictions": [
+    {
+      "action": {
+        "action_id": "action_hist_gradient_boosting",
+        "command": "python experiments/train_sklearn.py --dataset digits --model hist_gradient_boosting --n-estimators 150 --learning-rate 0.08",
+        "model": "hist_gradient_boosting",
+        "params": {
+          "dataset": "digits",
+          "n_estimators": 150,
+          "learning_rate": 0.08
+        }
+      },
+      "prediction": {
+        "expected_metric": "accuracy around 0.90-0.98",
+        "expected_runtime_seconds": "under 15",
+        "risks": [
+          "can overfit with too many estimators"
+        ],
+        "recommendation": "run",
+        "rationale": "Boosting is a useful late comparison when linear and bagged-tree baselines are known.",
+        "action_specific_signal": "Use boosting to test a staged-tree alternative under the remaining budget.",
+        "claim_risk": "Do not report a robust winner from one boosted run."
+      },
+      "source": "heuristic_fallback"
+    }
+  ],
+  "selected_action": {
+    "action_id": "action_hist_gradient_boosting",
+    "command": "python experiments/train_sklearn.py --dataset digits --model hist_gradient_boosting --n-estimators 150 --learning-rate 0.08",
+    "model": "hist_gradient_boosting",
+    "params": {
+      "dataset": "digits",
+      "n_estimators": 150,
+      "learning_rate": 0.08
+    }
+  },
+  "decision_trace": {
+    "selected_action": {
+      "action_id": "action_hist_gradient_boosting",
+      "command": "python experiments/train_sklearn.py --dataset digits --model hist_gradient_boosting --n-estimators 150 --learning-rate 0.08",
+      "model": "hist_gradient_boosting",
+      "params": {
+        "dataset": "digits",
+        "n_estimators": 150,
+        "learning_rate": 0.08
+      }
+    },
+    "world_model_signal_used": true,
+    "selector_policy_signal_used": false,
+    "causal_signal_type": "world_model_prediction",
+    "causal_reason": "Selected hist_gradient_boosting because score=26; world model recommended run; world model predicted overfitting risk. World model predicted accuracy around 0.90-0.98, runtime under 15, recommendation=run, risks=can overfit with too many estimators. Causal signal type: world_model_prediction.",
+    "rejected_candidates": []
+  },
+  "claim_ledger_updates": [],
+  "calibration_metrics": null,
+  "artifacts": {
+    "task_id": "digits_accuracy",
+    "trace_path": "runs/digits_accuracy/run_006.json",
+    "report_path": "reports/digits_accuracy/final_report.md",
+    "claim_ledger_path": "reports/digits_accuracy/claim_ledger.json"
+  }
+}

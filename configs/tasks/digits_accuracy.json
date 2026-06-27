@@ -1,0 +1,24 @@
+{
+  "task_id": "digits_accuracy",
+  "dataset": "digits",
+  "problem_type": "classification",
+  "primary_metric": "accuracy",
+  "secondary_metrics": ["f1"],
+  "budget_runs": 6,
+  "models": ["logistic_regression", "random_forest", "svc", "hist_gradient_boosting"],
+  "sweeps": [
+    {
+      "model": "svc",
+      "param": "C",
+      "values": [0.5, 1.0, 2.0],
+      "seeds": [0, 1, 2, 3],
+      "scale": true,
+      "label_noise": 0.03
+    }
+  ],
+  "goal": "Maximize validation accuracy on sklearn digits under a small compute budget, while avoiding unsupported claims.",
+  "notes": [
+    "Multiclass image-feature classification with 64 numeric pixel features.",
+    "SVC and logistic regression can be competitive; robustness still requires repeated seeds."
+  ]
+}

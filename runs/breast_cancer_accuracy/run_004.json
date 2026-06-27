@@ -41,8 +41,8 @@
     "status": "success",
     "accuracy": null,
     "f1": null,
-    "runtime_seconds": 29.1854,
-    "stdout_tail": "9127026819333,\n      \"label\": \"C=1.0\",\n      \"runtime_seconds\": 0.0479,\n      \"seed\": 2,\n      \"sweep_param\": \"C\",\n      \"value\": \"1.0\"\n    },\n    {\n      \"accuracy\": 0.972027972027972,\n      \"config_key\": \"C=1.0\",\n      \"f1\": 0.9719127026819333,\n      \"label\": \"C=1.0\",\n      \"runtime_seconds\": 0.0445,\n      \"seed\": 3,\n      \"sweep_param\": \"C\",\n      \"value\": \"1.0\"\n    },\n    {\n      \"accuracy\": 0.9300699300699301,\n      \"config_key\": \"C=10.0\",\n      \"f1\": 0.9294588616839257,\n      \"label\": \"C=10.0\",\n      \"runtime_seconds\": 0.0468,\n      \"seed\": 0,\n      \"sweep_param\": \"C\",\n      \"value\": \"10.0\"\n    },\n    {\n      \"accuracy\": 0.9370629370629371,\n      \"config_key\": \"C=10.0\",\n      \"f1\": 0.935641677909719,\n      \"label\": \"C=10.0\",\n      \"runtime_seconds\": 0.0873,\n      \"seed\": 1,\n      \"sweep_param\": \"C\",\n      \"value\": \"10.0\"\n    },\n    {\n      \"accuracy\": 0.9370629370629371,\n      \"config_key\": \"C=10.0\",\n      \"f1\": 0.9366622554590086,\n      \"label\": \"C=10.0\",\n      \"runtime_seconds\": 0.0351,\n      \"seed\": 2,\n      \"sweep_param\": \"C\",\n      \"value\": \"10.0\"\n    },\n    {\n      \"accuracy\": 0.958041958041958,\n      \"config_key\": \"C=10.0\",\n      \"f1\": 0.9578690540229003,\n      \"label\": \"C=10.0\",\n      \"runtime_seconds\": 0.0518,\n      \"seed\": 3,\n      \"sweep_param\": \"C\",\n      \"value\": \"10.0\"\n    }\n  ],\n  \"runtime_seconds\": 29.1854,\n  \"seeds\": [\n    0,\n    1,\n    2,\n    3\n  ],\n  \"status\": \"success\",\n  \"summary_by_value\": {\n    \"0.1\": {\n      \"max_accuracy\": 0.9790209790209791,\n      \"mean_accuracy\": 0.9615384615384616,\n      \"min_accuracy\": 0.951048951048951,\n      \"n\": 4\n    },\n    \"1.0\": {\n      \"max_accuracy\": 0.972027972027972,\n      \"mean_accuracy\": 0.9527972027972028,\n      \"min_accuracy\": 0.9300699300699301,\n      \"n\": 4\n    },\n    \"10.0\": {\n      \"max_accuracy\": 0.958041958041958,\n      \"mean_accuracy\": 0.9405594405594406,\n      \"min_accuracy\": 0.9300699300699301,\n      \"n\": 4\n    }\n  },\n  \"sweep_param\": \"C\",\n  \"values\": [\n    \"0.1\",\n    \"1.0\",\n    \"10.0\"\n  ]\n}\n",
+    "runtime_seconds": 28.5417,
+    "stdout_tail": "9127026819333,\n      \"label\": \"C=1.0\",\n      \"runtime_seconds\": 0.0761,\n      \"seed\": 2,\n      \"sweep_param\": \"C\",\n      \"value\": \"1.0\"\n    },\n    {\n      \"accuracy\": 0.972027972027972,\n      \"config_key\": \"C=1.0\",\n      \"f1\": 0.9719127026819333,\n      \"label\": \"C=1.0\",\n      \"runtime_seconds\": 0.0327,\n      \"seed\": 3,\n      \"sweep_param\": \"C\",\n      \"value\": \"1.0\"\n    },\n    {\n      \"accuracy\": 0.9300699300699301,\n      \"config_key\": \"C=10.0\",\n      \"f1\": 0.9294588616839257,\n      \"label\": \"C=10.0\",\n      \"runtime_seconds\": 0.0375,\n      \"seed\": 0,\n      \"sweep_param\": \"C\",\n      \"value\": \"10.0\"\n    },\n    {\n      \"accuracy\": 0.9370629370629371,\n      \"config_key\": \"C=10.0\",\n      \"f1\": 0.935641677909719,\n      \"label\": \"C=10.0\",\n      \"runtime_seconds\": 0.0437,\n      \"seed\": 1,\n      \"sweep_param\": \"C\",\n      \"value\": \"10.0\"\n    },\n    {\n      \"accuracy\": 0.9370629370629371,\n      \"config_key\": \"C=10.0\",\n      \"f1\": 0.9366622554590086,\n      \"label\": \"C=10.0\",\n      \"runtime_seconds\": 0.0399,\n      \"seed\": 2,\n      \"sweep_param\": \"C\",\n      \"value\": \"10.0\"\n    },\n    {\n      \"accuracy\": 0.958041958041958,\n      \"config_key\": \"C=10.0\",\n      \"f1\": 0.9578690540229003,\n      \"label\": \"C=10.0\",\n      \"runtime_seconds\": 0.0521,\n      \"seed\": 3,\n      \"sweep_param\": \"C\",\n      \"value\": \"10.0\"\n    }\n  ],\n  \"runtime_seconds\": 28.5417,\n  \"seeds\": [\n    0,\n    1,\n    2,\n    3\n  ],\n  \"status\": \"success\",\n  \"summary_by_value\": {\n    \"0.1\": {\n      \"max_accuracy\": 0.9790209790209791,\n      \"mean_accuracy\": 0.9615384615384616,\n      \"min_accuracy\": 0.951048951048951,\n      \"n\": 4\n    },\n    \"1.0\": {\n      \"max_accuracy\": 0.972027972027972,\n      \"mean_accuracy\": 0.9527972027972028,\n      \"min_accuracy\": 0.9300699300699301,\n      \"n\": 4\n    },\n    \"10.0\": {\n      \"max_accuracy\": 0.958041958041958,\n      \"mean_accuracy\": 0.9405594405594406,\n      \"min_accuracy\": 0.9300699300699301,\n      \"n\": 4\n    }\n  },\n  \"sweep_param\": \"C\",\n  \"values\": [\n    \"0.1\",\n    \"1.0\",\n    \"10.0\"\n  ]\n}\n",
     "stderr_tail": "",
     "raw": {
       "best": {
@@ -63,7 +63,7 @@
           "config_key": "C=0.1",
           "f1": 0.9502345545126294,
           "label": "C=0.1",
-          "runtime_seconds": 0.0285,
+          "runtime_seconds": 0.0442,
           "seed": 0,
           "sweep_param": "C",
           "value": "0.1"
@@ -73,7 +73,7 @@
           "config_key": "C=0.1",
           "f1": 0.9502345545126294,
           "label": "C=0.1",
-          "runtime_seconds": 0.0293,
+          "runtime_seconds": 0.0243,
           "seed": 1,
           "sweep_param": "C",
           "value": "0.1"
@@ -83,7 +83,7 @@
           "config_key": "C=0.1",
           "f1": 0.9788874184863361,
           "label": "C=0.1",
-          "runtime_seconds": 0.0518,
+          "runtime_seconds": 0.021,
           "seed": 2,
           "sweep_param": "C",
           "value": "0.1"
@@ -93,7 +93,7 @@
           "config_key": "C=0.1",
           "f1": 0.9648123641438936,
           "label": "C=0.1",
-          "runtime_seconds": 0.0376,
+          "runtime_seconds": 0.023,
           "seed": 3,
           "sweep_param": "C",
           "value": "0.1"
@@ -103,7 +103,7 @@
           "config_key": "C=1.0",
           "f1": 0.9290999323257388,
           "label": "C=1.0",
-          "runtime_seconds": 0.2663,
+          "runtime_seconds": 0.029,
           "seed": 0,
           "sweep_param": "C",
           "value": "1.0"
@@ -113,7 +113,7 @@
           "config_key": "C=1.0",
           "f1": 0.935641677909719,
           "label": "C=1.0",
-          "runtime_seconds": 0.03,
+          "runtime_seconds": 0.0366,
           "seed": 1,
           "sweep_param": "C",
           "value": "1.0"
@@ -123,7 +123,7 @@
           "config_key": "C=1.0",
           "f1": 0.9719127026819333,
           "label": "C=1.0",
-          "runtime_seconds": 0.0479,
+          "runtime_seconds": 0.0761,
           "seed": 2,
           "sweep_param": "C",
           "value": "1.0"
@@ -133,7 +133,7 @@
           "config_key": "C=1.0",
           "f1": 0.9719127026819333,
           "label": "C=1.0",
-          "runtime_seconds": 0.0445,
+          "runtime_seconds": 0.0327,
           "seed": 3,
           "sweep_param": "C",
           "value": "1.0"
@@ -143,7 +143,7 @@
           "config_key": "C=10.0",
           "f1": 0.9294588616839257,
           "label": "C=10.0",
-          "runtime_seconds": 0.0468,
+          "runtime_seconds": 0.0375,
           "seed": 0,
           "sweep_param": "C",
           "value": "10.0"
@@ -153,7 +153,7 @@
           "config_key": "C=10.0",
           "f1": 0.935641677909719,
           "label": "C=10.0",
-          "runtime_seconds": 0.0873,
+          "runtime_seconds": 0.0437,
           "seed": 1,
           "sweep_param": "C",
           "value": "10.0"
@@ -163,7 +163,7 @@
           "config_key": "C=10.0",
           "f1": 0.9366622554590086,
           "label": "C=10.0",
-          "runtime_seconds": 0.0351,
+          "runtime_seconds": 0.0399,
           "seed": 2,
           "sweep_param": "C",
           "value": "10.0"
@@ -173,13 +173,13 @@
           "config_key": "C=10.0",
           "f1": 0.9578690540229003,
           "label": "C=10.0",
-          "runtime_seconds": 0.0518,
+          "runtime_seconds": 0.0521,
           "seed": 3,
           "sweep_param": "C",
           "value": "10.0"
         }
       ],
-      "runtime_seconds": 29.1854,
+      "runtime_seconds": 28.5417,
       "seeds": [
         0,
         1,
@@ -529,8 +529,8 @@
   "calibration_metrics": null,
   "artifacts": {
     "task_id": "breast_cancer_accuracy",
-    "trace_path": "runs/run_004.json",
-    "report_path": "reports/final_report.md",
-    "claim_ledger_path": "reports/claim_ledger.json"
+    "trace_path": "runs/breast_cancer_accuracy/run_004.json",
+    "report_path": "reports/breast_cancer_accuracy/final_report.md",
+    "claim_ledger_path": "reports/breast_cancer_accuracy/claim_ledger.json"
   }
 }

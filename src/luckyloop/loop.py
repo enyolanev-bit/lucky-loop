@@ -10,7 +10,8 @@ from .comparator import compare
 from .executor import execute
 from .planner import action_key, generate_candidates, initial_hypothesis, predict_candidates, select_candidate
 from .reporter import generate_report
-from .schemas import ExperimentTrace, ResearchState
+from .schemas import ExperimentTrace, ResearchState, TaskSpec
+from .tasks import load_task
 from .verifier import verify_sweep
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -65,15 +66,15 @@ def risks_for(traces: list[ExperimentTrace]) -> list[str]:
     return risks
 
 
-def build_state(goal: str, traces: list[ExperimentTrace], run_index: int, max_experiments: int, summary: str) -> ResearchState:
+def build_state(task: TaskSpec, traces: list[ExperimentTrace], run_index: int, max_experiments: int, summary: str) -> ResearchState:
     return ResearchState(
         state_id=f"state_{run_index:03d}",
-        goal=goal,
+        goal=task.goal,
         known_results=best_accuracy_results(traces),
         budget_remaining=max(max_experiments - run_index + 1, 0),
         open_questions=open_questions_for(traces),
         risks_to_check=risks_for(traces),
-        summary=summary,
+        summary=f"Task={task.task_id}; dataset={task.dataset}; primary_metric={task.primary_metric}. {summary}",
     )
 
 
@@ -81,25 +82,38 @@ def claim_updates_for(run_id: str, verification) -> list:
     return entries_from_verification(run_id, verification)
 
 
-def run(goal: str, max_experiments: int = 5) -> list[ExperimentTrace]:
-    runs_dir = ROOT / "runs"
-    reports_dir = ROOT / "reports"
+def run(
+    goal: str | None = None,
+    max_experiments: int | None = None,
+    task: TaskSpec | None = None,
+    output_namespace: str | None = None,
+) -> list[ExperimentTrace]:
+    task = task or load_task(None)
+    goal = goal or task.goal
+    max_experiments = max_experiments or task.budget_runs
+    if output_namespace:
+        runs_dir = ROOT / "runs" / output_namespace
+        reports_dir = ROOT / "reports" / output_namespace
+    else:
+        runs_dir = ROOT / "runs"
+        reports_dir = ROOT / "reports"
     runs_dir.mkdir(exist_ok=True)
+    reports_dir.mkdir(exist_ok=True)
     traces: list[ExperimentTrace] = []
     seen: set[str] = set()
     state = (
         f"Goal: {goal}\n"
-        "No experiments have been run yet. Dataset: sklearn breast_cancer. "
-        "Metric: validation accuracy and weighted F1."
+        f"No experiments have been run yet. Dataset: sklearn {task.dataset}. "
+        f"Primary metric: {task.primary_metric}; secondary metrics: {', '.join(task.secondary_metrics)}."
     )
 
     for i in range(1, max_experiments + 1):
         run_id = f"run_{i:03d}"
-        state_before = build_state(goal, traces, i, max_experiments, state)
-        candidates = generate_candidates(state_before, traces, seen)
+        state_before = build_state(task, traces, i, max_experiments, state)
+        candidates = generate_candidates(task, state_before, traces, seen)
         if not candidates:
             break
-        candidate_predictions = predict_candidates(state_before, candidates, simulator_configured())
+        candidate_predictions = predict_candidates(task, state_before, candidates, simulator_configured())
         selected_candidate, decision_trace = select_candidate(state_before, candidate_predictions, traces)
         action = selected_candidate.action
         prediction = selected_candidate.prediction
@@ -134,9 +148,10 @@ def run(goal: str, max_experiments: int = 5) -> list[ExperimentTrace]:
             decision_trace=decision_trace,
             claim_ledger_updates=claim_updates_for(run_id, verification),
             artifacts={
-                "trace_path": f"runs/{run_id}.json",
-                "report_path": "reports/final_report.md",
-                "claim_ledger_path": "reports/claim_ledger.json",
+                "task_id": task.task_id,
+                "trace_path": f"{runs_dir.relative_to(ROOT)}/{run_id}.json",
+                "report_path": f"{reports_dir.relative_to(ROOT)}/final_report.md",
+                "claim_ledger_path": f"{reports_dir.relative_to(ROOT)}/claim_ledger.json",
             },
         )
         traces.append(trace)
@@ -169,13 +184,23 @@ def run(goal: str, max_experiments: int = 5) -> list[ExperimentTrace]:
 
 def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--goal", default="Maximize validation accuracy on sklearn breast cancer dataset in five experiments.")
-    ap.add_argument("--max-experiments", type=int, default=5)
+    ap.add_argument("--goal", default=None)
+    ap.add_argument("--max-experiments", type=int, default=None)
+    ap.add_argument("--task", default=None, help="Path to a TaskSpec JSON file.")
+    ap.add_argument("--output-namespace", default=None, help="Optional subdirectory under runs/ and reports/.")
     args = ap.parse_args()
-    traces = run(args.goal, args.max_experiments)
+    task = load_task(args.task)
+    traces = run(args.goal, args.max_experiments, task=task, output_namespace=args.output_namespace)
     successful = [t for t in traces if t.actual_result.accuracy is not None]
     best = max(successful, key=lambda t: t.actual_result.accuracy or -1, default=None)
-    print("Wrote", len(traces), "traces to runs/ and report to reports/final_report.md")
+    if args.output_namespace:
+        print(
+            "Wrote",
+            len(traces),
+            f"traces to runs/{args.output_namespace}/ and report to reports/{args.output_namespace}/final_report.md",
+        )
+    else:
+        print("Wrote", len(traces), "traces to runs/ and report to reports/final_report.md")
     if best:
         print(f"Best: {best.run_id} {best.proposed_action.model} accuracy={best.actual_result.accuracy:.4f}")
 

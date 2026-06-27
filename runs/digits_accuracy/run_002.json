@@ -1,13 +1,13 @@
 {
   "run_id": "run_002",
-  "goal": "Maximize validation accuracy on sklearn breast_cancer under a small compute budget, while avoiding unsupported claims.",
+  "goal": "Maximize validation accuracy on sklearn digits under a small compute budget, while avoiding unsupported claims.",
   "hypothesis": "Selected logistic_regression because score=75; world model recommended run; after an unscaled logistic baseline, scaling is the direct world-model intervention to test. World model predicted accuracy around 0.95-0.98, runtime under 5, recommendation=run, risks=minor convergence warning possible. Causal signal type: mixed.",
   "proposed_action": {
     "action_id": "action_logistic_regression",
-    "command": "python experiments/train_sklearn.py --dataset breast_cancer --model logistic_regression --scale",
+    "command": "python experiments/train_sklearn.py --dataset digits --model logistic_regression --scale",
     "model": "logistic_regression",
     "params": {
-      "dataset": "breast_cancer",
+      "dataset": "digits",
       "scale": true
     }
   },
@@ -24,22 +24,22 @@
   },
   "actual_result": {
     "status": "success",
-    "accuracy": 0.986013986013986,
-    "f1": 0.986013986013986,
-    "runtime_seconds": 0.027,
-    "stdout_tail": "{\n  \"accuracy\": 0.986013986013986,\n  \"dataset\": \"breast_cancer\",\n  \"f1\": 0.986013986013986,\n  \"model\": \"logistic_regression\",\n  \"n_label_noise_flips\": 0,\n  \"n_test\": 143,\n  \"n_train\": 426,\n  \"params\": {\n    \"C\": 1.0,\n    \"dataset\": \"breast_cancer\",\n    \"kernel\": \"rbf\",\n    \"label_noise\": 0.0,\n    \"learning_rate\": 0.1,\n    \"max_depth\": null,\n    \"max_iter\": 1000,\n    \"model\": \"logistic_regression\",\n    \"n_estimators\": 200,\n    \"scale\": true,\n    \"seed\": 42,\n    \"test_size\": 0.25\n  },\n  \"runtime_seconds\": 0.027,\n  \"status\": \"success\"\n}\n",
+    "accuracy": 0.9777777777777777,
+    "f1": 0.9778294499565325,
+    "runtime_seconds": 0.475,
+    "stdout_tail": "{\n  \"accuracy\": 0.9777777777777777,\n  \"dataset\": \"digits\",\n  \"f1\": 0.9778294499565325,\n  \"model\": \"logistic_regression\",\n  \"n_label_noise_flips\": 0,\n  \"n_test\": 450,\n  \"n_train\": 1347,\n  \"params\": {\n    \"C\": 1.0,\n    \"dataset\": \"digits\",\n    \"kernel\": \"rbf\",\n    \"label_noise\": 0.0,\n    \"learning_rate\": 0.1,\n    \"max_depth\": null,\n    \"max_iter\": 1000,\n    \"model\": \"logistic_regression\",\n    \"n_estimators\": 200,\n    \"scale\": true,\n    \"seed\": 42,\n    \"test_size\": 0.25\n  },\n  \"runtime_seconds\": 0.475,\n  \"status\": \"success\"\n}\n",
     "stderr_tail": "",
     "raw": {
-      "accuracy": 0.986013986013986,
-      "dataset": "breast_cancer",
-      "f1": 0.986013986013986,
+      "accuracy": 0.9777777777777777,
+      "dataset": "digits",
+      "f1": 0.9778294499565325,
       "model": "logistic_regression",
       "n_label_noise_flips": 0,
-      "n_test": 143,
-      "n_train": 426,
+      "n_test": 450,
+      "n_train": 1347,
       "params": {
         "C": 1.0,
-        "dataset": "breast_cancer",
+        "dataset": "digits",
         "kernel": "rbf",
         "label_noise": 0.0,
         "learning_rate": 0.1,
@@ -51,32 +51,30 @@
         "seed": 42,
         "test_size": 0.25
       },
-      "runtime_seconds": 0.027,
+      "runtime_seconds": 0.475,
       "status": "success"
     }
   },
   "comparison": {
-    "metric_match": false,
+    "metric_match": true,
     "runtime_match": true,
-    "unexpected_events": [
-      "accuracy 0.9860 outside predicted range 0.95-0.98"
-    ],
-    "lesson": "Run succeeded, but the prediction missed at least one quantitative detail."
+    "unexpected_events": [],
+    "lesson": "Prediction was broadly consistent with the real run."
   },
   "next_decision": "Continue: regenerate candidates from the updated state and ask the world model to predict each option.",
   "verification": null,
   "schema_version": "2.0",
   "state_before": {
     "state_id": "state_002",
-    "goal": "Maximize validation accuracy on sklearn breast_cancer under a small compute budget, while avoiding unsupported claims.",
+    "goal": "Maximize validation accuracy on sklearn digits under a small compute budget, while avoiding unsupported claims.",
     "known_results": [
       {
         "run_id": "run_001",
         "model": "logistic_regression",
-        "accuracy": 0.951048951048951,
-        "f1": 0.9504987920829505,
+        "accuracy": 0.9622222222222222,
+        "f1": 0.9622547774599621,
         "params": {
-          "dataset": "breast_cancer",
+          "dataset": "digits",
           "scale": false
         }
       }
@@ -89,61 +87,61 @@
     "risks_to_check": [
       "single-run best score may not justify a scientific claim"
     ],
-    "summary": "Task=breast_cancer_accuracy; dataset=breast_cancer; primary_metric=accuracy. Goal: Maximize validation accuracy on sklearn breast_cancer under a small compute budget, while avoiding unsupported claims.\nNo experiments have been run yet. Dataset: sklearn breast_cancer. Primary metric: accuracy; secondary metrics: f1.\nrun_001: logistic_regression actual=0.951048951048951 status=success; prediction=accuracy around 0.90-0.97; recommendation=run; lesson=Prediction was broadly consistent with the real run.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option."
+    "summary": "Task=digits_accuracy; dataset=digits; primary_metric=accuracy. Goal: Maximize validation accuracy on sklearn digits under a small compute budget, while avoiding unsupported claims.\nNo experiments have been run yet. Dataset: sklearn digits. Primary metric: accuracy; secondary metrics: f1.\nrun_001: logistic_regression actual=0.9622222222222222 status=success; prediction=accuracy around 0.90-0.97; recommendation=run; lesson=Prediction was broadly consistent with the real run.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option."
   },
   "candidate_actions": [
     {
       "action_id": "action_logistic_regression",
-      "command": "python experiments/train_sklearn.py --dataset breast_cancer --model logistic_regression --scale",
+      "command": "python experiments/train_sklearn.py --dataset digits --model logistic_regression --scale",
       "model": "logistic_regression",
       "params": {
-        "dataset": "breast_cancer",
+        "dataset": "digits",
         "scale": true
       }
     },
     {
       "action_id": "action_random_forest",
-      "command": "python experiments/train_sklearn.py --dataset breast_cancer --model random_forest --n-estimators 300",
+      "command": "python experiments/train_sklearn.py --dataset digits --model random_forest --n-estimators 300",
       "model": "random_forest",
       "params": {
-        "dataset": "breast_cancer",
+        "dataset": "digits",
         "n_estimators": 300
       }
     },
     {
       "action_id": "action_svc",
-      "command": "python experiments/train_sklearn.py --dataset breast_cancer --model svc --scale --C 2.0",
+      "command": "python experiments/train_sklearn.py --dataset digits --model svc --scale --C 2.0",
       "model": "svc",
       "params": {
-        "dataset": "breast_cancer",
+        "dataset": "digits",
         "scale": true,
         "C": 2.0,
         "kernel": "rbf"
       }
     },
     {
-      "action_id": "action_gradient_boosting",
-      "command": "python experiments/train_sklearn.py --dataset breast_cancer --model gradient_boosting --n-estimators 150 --learning-rate 0.05",
-      "model": "gradient_boosting",
+      "action_id": "action_hist_gradient_boosting",
+      "command": "python experiments/train_sklearn.py --dataset digits --model hist_gradient_boosting --n-estimators 150 --learning-rate 0.08",
+      "model": "hist_gradient_boosting",
       "params": {
-        "dataset": "breast_cancer",
+        "dataset": "digits",
         "n_estimators": 150,
-        "learning_rate": 0.05
+        "learning_rate": 0.08
       }
     },
     {
-      "action_id": "action_sweep_1_logistic_regression_C",
-      "command": "python experiments/sweep_sklearn.py --dataset breast_cancer --model logistic_regression --sweep-param C --values 0.1 1.0 10.0 --seeds 0 1 2 3 --scale --label-noise 0.08",
+      "action_id": "action_sweep_1_svc_C",
+      "command": "python experiments/sweep_sklearn.py --dataset digits --model svc --sweep-param C --values 0.5 1.0 2.0 --seeds 0 1 2 3 --scale --label-noise 0.03",
       "model": "verification_sweep",
       "params": {
-        "dataset": "breast_cancer",
-        "base_model": "logistic_regression",
+        "dataset": "digits",
+        "base_model": "svc",
         "scale": true,
         "sweep_param": "C",
         "values": [
-          0.1,
+          0.5,
           1.0,
-          10.0
+          2.0
         ],
         "seeds": [
           0,
@@ -151,7 +149,7 @@
           2,
           3
         ],
-        "label_noise": 0.08
+        "label_noise": 0.03
       }
     }
   ],
@@ -159,10 +157,10 @@
     {
       "action": {
         "action_id": "action_logistic_regression",
-        "command": "python experiments/train_sklearn.py --dataset breast_cancer --model logistic_regression --scale",
+        "command": "python experiments/train_sklearn.py --dataset digits --model logistic_regression --scale",
         "model": "logistic_regression",
         "params": {
-          "dataset": "breast_cancer",
+          "dataset": "digits",
           "scale": true
         }
       },
@@ -182,10 +180,10 @@
     {
       "action": {
         "action_id": "action_random_forest",
-        "command": "python experiments/train_sklearn.py --dataset breast_cancer --model random_forest --n-estimators 300",
+        "command": "python experiments/train_sklearn.py --dataset digits --model random_forest --n-estimators 300",
         "model": "random_forest",
         "params": {
-          "dataset": "breast_cancer",
+          "dataset": "digits",
           "n_estimators": 300
         }
       },
@@ -205,10 +203,10 @@
     {
       "action": {
         "action_id": "action_svc",
-        "command": "python experiments/train_sklearn.py --dataset breast_cancer --model svc --scale --C 2.0",
+        "command": "python experiments/train_sklearn.py --dataset digits --model svc --scale --C 2.0",
         "model": "svc",
         "params": {
-          "dataset": "breast_cancer",
+          "dataset": "digits",
           "scale": true,
           "C": 2.0,
           "kernel": "rbf"
@@ -229,13 +227,13 @@
     },
     {
       "action": {
-        "action_id": "action_gradient_boosting",
-        "command": "python experiments/train_sklearn.py --dataset breast_cancer --model gradient_boosting --n-estimators 150 --learning-rate 0.05",
-        "model": "gradient_boosting",
+        "action_id": "action_hist_gradient_boosting",
+        "command": "python experiments/train_sklearn.py --dataset digits --model hist_gradient_boosting --n-estimators 150 --learning-rate 0.08",
+        "model": "hist_gradient_boosting",
         "params": {
-          "dataset": "breast_cancer",
+          "dataset": "digits",
           "n_estimators": 150,
-          "learning_rate": 0.05
+          "learning_rate": 0.08
         }
       },
       "prediction": {
@@ -253,18 +251,18 @@
     },
     {
       "action": {
-        "action_id": "action_sweep_1_logistic_regression_C",
-        "command": "python experiments/sweep_sklearn.py --dataset breast_cancer --model logistic_regression --sweep-param C --values 0.1 1.0 10.0 --seeds 0 1 2 3 --scale --label-noise 0.08",
+        "action_id": "action_sweep_1_svc_C",
+        "command": "python experiments/sweep_sklearn.py --dataset digits --model svc --sweep-param C --values 0.5 1.0 2.0 --seeds 0 1 2 3 --scale --label-noise 0.03",
         "model": "verification_sweep",
         "params": {
-          "dataset": "breast_cancer",
-          "base_model": "logistic_regression",
+          "dataset": "digits",
+          "base_model": "svc",
           "scale": true,
           "sweep_param": "C",
           "values": [
-            0.1,
+            0.5,
             1.0,
-            10.0
+            2.0
           ],
           "seeds": [
             0,
@@ -272,7 +270,7 @@
             2,
             3
           ],
-          "label_noise": 0.08
+          "label_noise": 0.03
         }
       },
       "prediction": {
@@ -292,20 +290,20 @@
   ],
   "selected_action": {
     "action_id": "action_logistic_regression",
-    "command": "python experiments/train_sklearn.py --dataset breast_cancer --model logistic_regression --scale",
+    "command": "python experiments/train_sklearn.py --dataset digits --model logistic_regression --scale",
     "model": "logistic_regression",
     "params": {
-      "dataset": "breast_cancer",
+      "dataset": "digits",
       "scale": true
     }
   },
   "decision_trace": {
     "selected_action": {
       "action_id": "action_logistic_regression",
-      "command": "python experiments/train_sklearn.py --dataset breast_cancer --model logistic_regression --scale",
+      "command": "python experiments/train_sklearn.py --dataset digits --model logistic_regression --scale",
       "model": "logistic_regression",
       "params": {
-        "dataset": "breast_cancer",
+        "dataset": "digits",
         "scale": true
       }
     },
@@ -316,24 +314,11 @@
     "rejected_candidates": [
       {
         "action": {
-          "action_id": "action_gradient_boosting",
-          "command": "python experiments/train_sklearn.py --dataset breast_cancer --model gradient_boosting --n-estimators 150 --learning-rate 0.05",
-          "model": "gradient_boosting",
-          "params": {
-            "dataset": "breast_cancer",
-            "n_estimators": 150,
-            "learning_rate": 0.05
-          }
-        },
-        "reason": "score=31; world model recommended run; ensemble baseline is useful as a late comparison; world model predicted overfitting risk"
-      },
-      {
-        "action": {
           "action_id": "action_svc",
-          "command": "python experiments/train_sklearn.py --dataset breast_cancer --model svc --scale --C 2.0",
+          "command": "python experiments/train_sklearn.py --dataset digits --model svc --scale --C 2.0",
           "model": "svc",
           "params": {
-            "dataset": "breast_cancer",
+            "dataset": "digits",
             "scale": true,
             "C": 2.0,
             "kernel": "rbf"
@@ -344,10 +329,10 @@
       {
         "action": {
           "action_id": "action_random_forest",
-          "command": "python experiments/train_sklearn.py --dataset breast_cancer --model random_forest --n-estimators 300",
+          "command": "python experiments/train_sklearn.py --dataset digits --model random_forest --n-estimators 300",
           "model": "random_forest",
           "params": {
-            "dataset": "breast_cancer",
+            "dataset": "digits",
             "n_estimators": 300
           }
         },
@@ -355,18 +340,31 @@
       },
       {
         "action": {
-          "action_id": "action_sweep_1_logistic_regression_C",
-          "command": "python experiments/sweep_sklearn.py --dataset breast_cancer --model logistic_regression --sweep-param C --values 0.1 1.0 10.0 --seeds 0 1 2 3 --scale --label-noise 0.08",
+          "action_id": "action_hist_gradient_boosting",
+          "command": "python experiments/train_sklearn.py --dataset digits --model hist_gradient_boosting --n-estimators 150 --learning-rate 0.08",
+          "model": "hist_gradient_boosting",
+          "params": {
+            "dataset": "digits",
+            "n_estimators": 150,
+            "learning_rate": 0.08
+          }
+        },
+        "reason": "score=26; world model recommended run; world model predicted overfitting risk"
+      },
+      {
+        "action": {
+          "action_id": "action_sweep_1_svc_C",
+          "command": "python experiments/sweep_sklearn.py --dataset digits --model svc --sweep-param C --values 0.5 1.0 2.0 --seeds 0 1 2 3 --scale --label-noise 0.03",
           "model": "verification_sweep",
           "params": {
-            "dataset": "breast_cancer",
-            "base_model": "logistic_regression",
+            "dataset": "digits",
+            "base_model": "svc",
             "scale": true,
             "sweep_param": "C",
             "values": [
-              0.1,
+              0.5,
               1.0,
-              10.0
+              2.0
             ],
             "seeds": [
               0,
@@ -374,7 +372,7 @@
               2,
               3
             ],
-            "label_noise": 0.08
+            "label_noise": 0.03
           }
         },
         "reason": "score=25; world model recommended run; world model predicted robustness or seed-variance risk; defer verifier sweep until several single-model baselines exist"
@@ -384,9 +382,9 @@
   "claim_ledger_updates": [],
   "calibration_metrics": null,
   "artifacts": {
-    "task_id": "breast_cancer_accuracy",
-    "trace_path": "runs/run_002.json",
-    "report_path": "reports/final_report.md",
-    "claim_ledger_path": "reports/claim_ledger.json"
+    "task_id": "digits_accuracy",
+    "trace_path": "runs/digits_accuracy/run_002.json",
+    "report_path": "reports/digits_accuracy/final_report.md",
+    "claim_ledger_path": "reports/digits_accuracy/claim_ledger.json"
   }
 }

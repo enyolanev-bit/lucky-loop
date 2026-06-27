@@ -101,7 +101,7 @@ This separation is central to the design. Qwen-AgentWorld is not the research ag
 
 ## 5. Experiments
 
-Current experiments use sklearn tabular datasets, including `breast_cancer`, with fast classifiers such as logistic regression, random forest, SVC, and gradient boosting. The loop already contains real runs with:
+Current experiments use sklearn tabular benchmarks declared as task specs: `breast_cancer`, `wine`, and `digits`. Each task specifies its dataset, metric, candidate models, budget, and robustness sweep. The loop contains real runs with:
 
 - unscaled and scaled logistic regression
 - random forest
@@ -109,7 +109,7 @@ Current experiments use sklearn tabular datasets, including `breast_cancer`, wit
 - gradient boosting
 - noisy-label multi-seed sweep
 
-The key demonstrated verifier case is a noisy-label C sweep:
+The key demonstrated verifier cases are noisy-label multi-seed sweeps run on real sklearn datasets. For example, the `breast_cancer_accuracy` C sweep produced:
 
 ```text
 best mean: C=0.1

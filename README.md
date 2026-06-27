@@ -51,17 +51,19 @@ Qwen-AgentWorld is never treated as the research agent or verifier. It is the wo
 
 - Qwen-AgentWorld-35B-A3B is served through vLLM on Team Pegasus MI300X.
 - OpenAI-compatible endpoint: `http://134.199.205.222:8000/v1`.
-- `src/luckyloop/` contains the runnable research loop:
+- `src/luckyloop/` contains the runnable task-agnostic ML research loop:
+  - task specs for sklearn benchmarks
+  - candidate generation from dataset/model/search-space config
   - world-model prediction
   - real experiment execution
   - prediction-vs-actual comparison
   - JSON evidence traces
   - Markdown report
-- Six real runs exist under `runs/`.
-- The current verifier already blocks an overclaim in `run_005`:
-  - `effect_size = 0.020979`
-  - `seed_noise = 0.027972`
-  - verdict: `inconclusive`
+- Benchmark tasks exist for real sklearn datasets:
+  - `breast_cancer_accuracy`
+  - `wine_accuracy`
+  - `digits_accuracy`
+- Each benchmark uses real sklearn training commands and real multi-seed sweeps. The legacy controlled probes are not the primary demo path.
 
 ## Demo Message
 
@@ -84,24 +86,27 @@ export LUCKYWORLD_SIMULATOR_BASE_URL=http://134.199.205.222:8000/v1
 export LUCKYWORLD_SIMULATOR_MODEL=Qwen/Qwen-AgentWorld-35B-A3B
 export LUCKYWORLD_SIMULATOR_API_KEY=dummy
 
-python3 -m luckyloop.loop --max-experiments 6
+python3 -m luckyloop.loop --task configs/tasks/breast_cancer_accuracy.json
 ```
 
 If the simulator endpoint is unavailable, Lucky Loop keeps a deterministic heuristic fallback for local smoke tests. The live presentation path uses Qwen-AgentWorld.
 
+Run all real benchmark tasks:
+
+```bash
+PYTHONPATH=src python3 scripts/run_benchmark_suite.py
+```
+
 ## Artifacts
 
 ```text
-runs/run_001.json ... run_006.json
-reports/final_report.md
+runs/<task_id>/run_001.json ...
+reports/<task_id>/final_report.md
+reports/<task_id>/demo_summary.md
+reports/<task_id>/world_model_calibration.md
+reports/<task_id>/claim_ledger.json
+reports/benchmark_summary.md
 app/streamlit_app.py
 ```
 
-Next build targets:
-
-- trace schema v2 with explicit state, candidates, predictions, decision trace, and claim ledger updates
-- multi-candidate world-model prediction before selection
-- world-model calibration report
-- trust ladder verifier
-- claim ledger
-- judge-ready Streamlit timeline
+The root `runs/` and `reports/` directories may also contain the latest single-task local run.

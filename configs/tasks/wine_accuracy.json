@@ -1,0 +1,24 @@
+{
+  "task_id": "wine_accuracy",
+  "dataset": "wine",
+  "problem_type": "classification",
+  "primary_metric": "accuracy",
+  "secondary_metrics": ["f1"],
+  "budget_runs": 6,
+  "models": ["logistic_regression", "random_forest", "svc", "gradient_boosting"],
+  "sweeps": [
+    {
+      "model": "logistic_regression",
+      "param": "C",
+      "values": [0.1, 1.0, 10.0],
+      "seeds": [0, 1, 2, 3],
+      "scale": true,
+      "label_noise": 0.05
+    }
+  ],
+  "goal": "Maximize validation accuracy on sklearn wine under a small compute budget, while avoiding unsupported claims.",
+  "notes": [
+    "Multiclass tabular classification.",
+    "Feature scaling can matter for linear and margin models."
+  ]
+}

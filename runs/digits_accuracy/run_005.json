@@ -1,0 +1,498 @@
+{
+  "run_id": "run_005",
+  "goal": "Maximize validation accuracy on sklearn digits under a small compute budget, while avoiding unsupported claims.",
+  "hypothesis": "Selected verification_sweep because score=90; world model recommended run; high single-run score needs robustness verification before a strong claim; world model predicted robustness or seed-variance risk. World model predicted accuracy around 0.85-0.98, runtime under 35, recommendation=run, risks=label noise can make small hyperparameter differences non-robust, seed variance may exceed apparent gains. Causal signal type: mixed.",
+  "proposed_action": {
+    "action_id": "action_sweep_1_svc_C",
+    "command": "python experiments/sweep_sklearn.py --dataset digits --model svc --sweep-param C --values 0.5 1.0 2.0 --seeds 0 1 2 3 --scale --label-noise 0.03",
+    "model": "verification_sweep",
+    "params": {
+      "dataset": "digits",
+      "base_model": "svc",
+      "scale": true,
+      "sweep_param": "C",
+      "values": [
+        0.5,
+        1.0,
+        2.0
+      ],
+      "seeds": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "label_noise": 0.03
+    }
+  },
+  "world_model_prediction": {
+    "expected_metric": "accuracy around 0.85-0.98",
+    "expected_runtime_seconds": "under 35",
+    "risks": [
+      "label noise can make small hyperparameter differences non-robust",
+      "seed variance may exceed apparent gains"
+    ],
+    "recommendation": "run",
+    "rationale": "A multi-seed sweep is useful for the deterministic verifier: it tests whether an apparent gain survives effect-vs-noise scrutiny.",
+    "action_specific_signal": "Run a robustness sweep before allowing a best-hyperparameter claim.",
+    "claim_risk": "The apparent winner may be blocked if effect size is smaller than seed noise."
+  },
+  "actual_result": {
+    "status": "success",
+    "accuracy": null,
+    "f1": null,
+    "runtime_seconds": 30.3795,
+    "stdout_tail": "fig_key\": \"C=1.0\",\n      \"f1\": 0.9777837214041123,\n      \"label\": \"C=1.0\",\n      \"runtime_seconds\": 0.1322,\n      \"seed\": 2,\n      \"sweep_param\": \"C\",\n      \"value\": \"1.0\"\n    },\n    {\n      \"accuracy\": 0.98,\n      \"config_key\": \"C=1.0\",\n      \"f1\": 0.9800434278291725,\n      \"label\": \"C=1.0\",\n      \"runtime_seconds\": 0.1236,\n      \"seed\": 3,\n      \"sweep_param\": \"C\",\n      \"value\": \"1.0\"\n    },\n    {\n      \"accuracy\": 0.9777777777777777,\n      \"config_key\": \"C=2.0\",\n      \"f1\": 0.9777849670089088,\n      \"label\": \"C=2.0\",\n      \"runtime_seconds\": 0.1228,\n      \"seed\": 0,\n      \"sweep_param\": \"C\",\n      \"value\": \"2.0\"\n    },\n    {\n      \"accuracy\": 0.9866666666666667,\n      \"config_key\": \"C=2.0\",\n      \"f1\": 0.9866610379376337,\n      \"label\": \"C=2.0\",\n      \"runtime_seconds\": 0.1173,\n      \"seed\": 1,\n      \"sweep_param\": \"C\",\n      \"value\": \"2.0\"\n    },\n    {\n      \"accuracy\": 0.9755555555555555,\n      \"config_key\": \"C=2.0\",\n      \"f1\": 0.9755528765963621,\n      \"label\": \"C=2.0\",\n      \"runtime_seconds\": 0.1211,\n      \"seed\": 2,\n      \"sweep_param\": \"C\",\n      \"value\": \"2.0\"\n    },\n    {\n      \"accuracy\": 0.9822222222222222,\n      \"config_key\": \"C=2.0\",\n      \"f1\": 0.9822420352793677,\n      \"label\": \"C=2.0\",\n      \"runtime_seconds\": 0.1228,\n      \"seed\": 3,\n      \"sweep_param\": \"C\",\n      \"value\": \"2.0\"\n    }\n  ],\n  \"runtime_seconds\": 30.3795,\n  \"seeds\": [\n    0,\n    1,\n    2,\n    3\n  ],\n  \"status\": \"success\",\n  \"summary_by_value\": {\n    \"0.5\": {\n      \"max_accuracy\": 0.9777777777777777,\n      \"mean_accuracy\": 0.9733333333333334,\n      \"min_accuracy\": 0.9688888888888889,\n      \"n\": 4\n    },\n    \"1.0\": {\n      \"max_accuracy\": 0.9844444444444445,\n      \"mean_accuracy\": 0.98,\n      \"min_accuracy\": 0.9777777777777777,\n      \"n\": 4\n    },\n    \"2.0\": {\n      \"max_accuracy\": 0.9866666666666667,\n      \"mean_accuracy\": 0.9805555555555555,\n      \"min_accuracy\": 0.9755555555555555,\n      \"n\": 4\n    }\n  },\n  \"sweep_param\": \"C\",\n  \"values\": [\n    \"0.5\",\n    \"1.0\",\n    \"2.0\"\n  ]\n}\n",
+    "stderr_tail": "",
+    "raw": {
+      "best": {
+        "max_accuracy": 0.9866666666666667,
+        "mean_accuracy": 0.9805555555555555,
+        "min_accuracy": 0.9755555555555555,
+        "n": 4,
+        "value": "2.0"
+      },
+      "dataset": "digits",
+      "failures": [],
+      "label_noise": 0.03,
+      "metric": "accuracy",
+      "model": "svc",
+      "runs": [
+        {
+          "accuracy": 0.9711111111111111,
+          "config_key": "C=0.5",
+          "f1": 0.9712828463454455,
+          "label": "C=0.5",
+          "runtime_seconds": 0.151,
+          "seed": 0,
+          "sweep_param": "C",
+          "value": "0.5"
+        },
+        {
+          "accuracy": 0.9777777777777777,
+          "config_key": "C=0.5",
+          "f1": 0.977911034965001,
+          "label": "C=0.5",
+          "runtime_seconds": 0.1484,
+          "seed": 1,
+          "sweep_param": "C",
+          "value": "0.5"
+        },
+        {
+          "accuracy": 0.9688888888888889,
+          "config_key": "C=0.5",
+          "f1": 0.9689130089025306,
+          "label": "C=0.5",
+          "runtime_seconds": 0.1509,
+          "seed": 2,
+          "sweep_param": "C",
+          "value": "0.5"
+        },
+        {
+          "accuracy": 0.9755555555555555,
+          "config_key": "C=0.5",
+          "f1": 0.9757406108469939,
+          "label": "C=0.5",
+          "runtime_seconds": 0.1308,
+          "seed": 3,
+          "sweep_param": "C",
+          "value": "0.5"
+        },
+        {
+          "accuracy": 0.9777777777777777,
+          "config_key": "C=1.0",
+          "f1": 0.9777921209419378,
+          "label": "C=1.0",
+          "runtime_seconds": 0.1209,
+          "seed": 0,
+          "sweep_param": "C",
+          "value": "1.0"
+        },
+        {
+          "accuracy": 0.9844444444444445,
+          "config_key": "C=1.0",
+          "f1": 0.9844372048257977,
+          "label": "C=1.0",
+          "runtime_seconds": 0.1341,
+          "seed": 1,
+          "sweep_param": "C",
+          "value": "1.0"
+        },
+        {
+          "accuracy": 0.9777777777777777,
+          "config_key": "C=1.0",
+          "f1": 0.9777837214041123,
+          "label": "C=1.0",
+          "runtime_seconds": 0.1322,
+          "seed": 2,
+          "sweep_param": "C",
+          "value": "1.0"
+        },
+        {
+          "accuracy": 0.98,
+          "config_key": "C=1.0",
+          "f1": 0.9800434278291725,
+          "label": "C=1.0",
+          "runtime_seconds": 0.1236,
+          "seed": 3,
+          "sweep_param": "C",
+          "value": "1.0"
+        },
+        {
+          "accuracy": 0.9777777777777777,
+          "config_key": "C=2.0",
+          "f1": 0.9777849670089088,
+          "label": "C=2.0",
+          "runtime_seconds": 0.1228,
+          "seed": 0,
+          "sweep_param": "C",
+          "value": "2.0"
+        },
+        {
+          "accuracy": 0.9866666666666667,
+          "config_key": "C=2.0",
+          "f1": 0.9866610379376337,
+          "label": "C=2.0",
+          "runtime_seconds": 0.1173,
+          "seed": 1,
+          "sweep_param": "C",
+          "value": "2.0"
+        },
+        {
+          "accuracy": 0.9755555555555555,
+          "config_key": "C=2.0",
+          "f1": 0.9755528765963621,
+          "label": "C=2.0",
+          "runtime_seconds": 0.1211,
+          "seed": 2,
+          "sweep_param": "C",
+          "value": "2.0"
+        },
+        {
+          "accuracy": 0.9822222222222222,
+          "config_key": "C=2.0",
+          "f1": 0.9822420352793677,
+          "label": "C=2.0",
+          "runtime_seconds": 0.1228,
+          "seed": 3,
+          "sweep_param": "C",
+          "value": "2.0"
+        }
+      ],
+      "runtime_seconds": 30.3795,
+      "seeds": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "status": "success",
+      "summary_by_value": {
+        "0.5": {
+          "max_accuracy": 0.9777777777777777,
+          "mean_accuracy": 0.9733333333333334,
+          "min_accuracy": 0.9688888888888889,
+          "n": 4
+        },
+        "1.0": {
+          "max_accuracy": 0.9844444444444445,
+          "mean_accuracy": 0.98,
+          "min_accuracy": 0.9777777777777777,
+          "n": 4
+        },
+        "2.0": {
+          "max_accuracy": 0.9866666666666667,
+          "mean_accuracy": 0.9805555555555555,
+          "min_accuracy": 0.9755555555555555,
+          "n": 4
+        }
+      },
+      "sweep_param": "C",
+      "values": [
+        "0.5",
+        "1.0",
+        "2.0"
+      ]
+    }
+  },
+  "comparison": {
+    "metric_match": false,
+    "runtime_match": true,
+    "unexpected_events": [
+      "accuracy 0.9806 outside predicted range 0.85-0.98"
+    ],
+    "lesson": "Run succeeded, but the prediction missed at least one quantitative detail."
+  },
+  "next_decision": "Continue: regenerate candidates from the updated state and ask the world model to predict each option.",
+  "verification": {
+    "status": "inconclusive",
+    "metric": "accuracy",
+    "effect_size": 0.007222,
+    "seed_noise": 0.011111,
+    "effect_to_noise_ratio": 0.649986,
+    "min_seed_count": 4,
+    "low_n_warning": false,
+    "trustworthy": false,
+    "best_config": "C=2.0",
+    "worst_config": "C=0.5",
+    "blocked_claim": "C=2.0 is robustly better than C=0.5.",
+    "allowed_claim": "C=2.0 had the best mean accuracy, but the effect was smaller than seed noise.",
+    "supported_claims": [],
+    "inconclusive_findings": [
+      "Best config 'C=2.0' improves over 'C=0.5' by 0.0072 accuracy, but best-config seed noise is 0.0111."
+    ],
+    "rationale": "Measured effect is not larger than inter-seed noise. The report must not oversell this as a robust discovery."
+  },
+  "schema_version": "2.0",
+  "state_before": {
+    "state_id": "state_005",
+    "goal": "Maximize validation accuracy on sklearn digits under a small compute budget, while avoiding unsupported claims.",
+    "known_results": [
+      {
+        "run_id": "run_001",
+        "model": "logistic_regression",
+        "accuracy": 0.9622222222222222,
+        "f1": 0.9622547774599621,
+        "params": {
+          "dataset": "digits",
+          "scale": false
+        }
+      },
+      {
+        "run_id": "run_002",
+        "model": "logistic_regression",
+        "accuracy": 0.9777777777777777,
+        "f1": 0.9778294499565325,
+        "params": {
+          "dataset": "digits",
+          "scale": true
+        }
+      },
+      {
+        "run_id": "run_003",
+        "model": "svc",
+        "accuracy": 0.98,
+        "f1": 0.9799633772681454,
+        "params": {
+          "dataset": "digits",
+          "scale": true,
+          "C": 2.0,
+          "kernel": "rbf"
+        }
+      },
+      {
+        "run_id": "run_004",
+        "model": "random_forest",
+        "accuracy": 0.9688888888888889,
+        "f1": 0.9685889650389191,
+        "params": {
+          "dataset": "digits",
+          "n_estimators": 300
+        }
+      }
+    ],
+    "budget_remaining": 2,
+    "open_questions": [
+      "Which candidate should receive the next compute budget?",
+      "Is the best observed score robust across seeds or perturbations?",
+      "Do apparent improvements survive an effect-vs-noise verifier?"
+    ],
+    "risks_to_check": [
+      "single-run best score may not justify a scientific claim",
+      "seed variance may exceed apparent model or hyperparameter effects"
+    ],
+    "summary": "Task=digits_accuracy; dataset=digits; primary_metric=accuracy. Goal: Maximize validation accuracy on sklearn digits under a small compute budget, while avoiding unsupported claims.\nNo experiments have been run yet. Dataset: sklearn digits. Primary metric: accuracy; secondary metrics: f1.\nrun_001: logistic_regression actual=0.9622222222222222 status=success; prediction=accuracy around 0.90-0.97; recommendation=run; lesson=Prediction was broadly consistent with the real run.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_002: logistic_regression actual=0.9777777777777777 status=success; prediction=accuracy around 0.95-0.98; recommendation=run; lesson=Prediction was broadly consistent with the real run.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_003: svc actual=0.98 status=success; prediction=accuracy around 0.90-0.99; recommendation=run; lesson=Prediction was broadly consistent with the real run.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_004: random_forest actual=0.9688888888888889 status=success; prediction=accuracy around 0.90-0.98; recommendation=run; lesson=Prediction was broadly consistent with the real run.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option."
+  },
+  "candidate_actions": [
+    {
+      "action_id": "action_hist_gradient_boosting",
+      "command": "python experiments/train_sklearn.py --dataset digits --model hist_gradient_boosting --n-estimators 150 --learning-rate 0.08",
+      "model": "hist_gradient_boosting",
+      "params": {
+        "dataset": "digits",
+        "n_estimators": 150,
+        "learning_rate": 0.08
+      }
+    },
+    {
+      "action_id": "action_sweep_1_svc_C",
+      "command": "python experiments/sweep_sklearn.py --dataset digits --model svc --sweep-param C --values 0.5 1.0 2.0 --seeds 0 1 2 3 --scale --label-noise 0.03",
+      "model": "verification_sweep",
+      "params": {
+        "dataset": "digits",
+        "base_model": "svc",
+        "scale": true,
+        "sweep_param": "C",
+        "values": [
+          0.5,
+          1.0,
+          2.0
+        ],
+        "seeds": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "label_noise": 0.03
+      }
+    }
+  ],
+  "candidate_predictions": [
+    {
+      "action": {
+        "action_id": "action_hist_gradient_boosting",
+        "command": "python experiments/train_sklearn.py --dataset digits --model hist_gradient_boosting --n-estimators 150 --learning-rate 0.08",
+        "model": "hist_gradient_boosting",
+        "params": {
+          "dataset": "digits",
+          "n_estimators": 150,
+          "learning_rate": 0.08
+        }
+      },
+      "prediction": {
+        "expected_metric": "accuracy around 0.90-0.98",
+        "expected_runtime_seconds": "under 15",
+        "risks": [
+          "can overfit with too many estimators"
+        ],
+        "recommendation": "run",
+        "rationale": "Boosting is a useful late comparison when linear and bagged-tree baselines are known.",
+        "action_specific_signal": "Use boosting to test a staged-tree alternative under the remaining budget.",
+        "claim_risk": "Do not report a robust winner from one boosted run."
+      },
+      "source": "heuristic_fallback"
+    },
+    {
+      "action": {
+        "action_id": "action_sweep_1_svc_C",
+        "command": "python experiments/sweep_sklearn.py --dataset digits --model svc --sweep-param C --values 0.5 1.0 2.0 --seeds 0 1 2 3 --scale --label-noise 0.03",
+        "model": "verification_sweep",
+        "params": {
+          "dataset": "digits",
+          "base_model": "svc",
+          "scale": true,
+          "sweep_param": "C",
+          "values": [
+            0.5,
+            1.0,
+            2.0
+          ],
+          "seeds": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "label_noise": 0.03
+        }
+      },
+      "prediction": {
+        "expected_metric": "accuracy around 0.85-0.98",
+        "expected_runtime_seconds": "under 35",
+        "risks": [
+          "label noise can make small hyperparameter differences non-robust",
+          "seed variance may exceed apparent gains"
+        ],
+        "recommendation": "run",
+        "rationale": "A multi-seed sweep is useful for the deterministic verifier: it tests whether an apparent gain survives effect-vs-noise scrutiny.",
+        "action_specific_signal": "Run a robustness sweep before allowing a best-hyperparameter claim.",
+        "claim_risk": "The apparent winner may be blocked if effect size is smaller than seed noise."
+      },
+      "source": "heuristic_fallback"
+    }
+  ],
+  "selected_action": {
+    "action_id": "action_sweep_1_svc_C",
+    "command": "python experiments/sweep_sklearn.py --dataset digits --model svc --sweep-param C --values 0.5 1.0 2.0 --seeds 0 1 2 3 --scale --label-noise 0.03",
+    "model": "verification_sweep",
+    "params": {
+      "dataset": "digits",
+      "base_model": "svc",
+      "scale": true,
+      "sweep_param": "C",
+      "values": [
+        0.5,
+        1.0,
+        2.0
+      ],
+      "seeds": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "label_noise": 0.03
+    }
+  },
+  "decision_trace": {
+    "selected_action": {
+      "action_id": "action_sweep_1_svc_C",
+      "command": "python experiments/sweep_sklearn.py --dataset digits --model svc --sweep-param C --values 0.5 1.0 2.0 --seeds 0 1 2 3 --scale --label-noise 0.03",
+      "model": "verification_sweep",
+      "params": {
+        "dataset": "digits",
+        "base_model": "svc",
+        "scale": true,
+        "sweep_param": "C",
+        "values": [
+          0.5,
+          1.0,
+          2.0
+        ],
+        "seeds": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "label_noise": 0.03
+      }
+    },
+    "world_model_signal_used": true,
+    "selector_policy_signal_used": true,
+    "causal_signal_type": "mixed",
+    "causal_reason": "Selected verification_sweep because score=90; world model recommended run; high single-run score needs robustness verification before a strong claim; world model predicted robustness or seed-variance risk. World model predicted accuracy around 0.85-0.98, runtime under 35, recommendation=run, risks=label noise can make small hyperparameter differences non-robust, seed variance may exceed apparent gains. Causal signal type: mixed.",
+    "rejected_candidates": [
+      {
+        "action": {
+          "action_id": "action_hist_gradient_boosting",
+          "command": "python experiments/train_sklearn.py --dataset digits --model hist_gradient_boosting --n-estimators 150 --learning-rate 0.08",
+          "model": "hist_gradient_boosting",
+          "params": {
+            "dataset": "digits",
+            "n_estimators": 150,
+            "learning_rate": 0.08
+          }
+        },
+        "reason": "score=26; world model recommended run; world model predicted overfitting risk"
+      }
+    ]
+  },
+  "claim_ledger_updates": [
+    {
+      "claim_id": "run_005_claim_001",
+      "claim": "C=2.0 is robustly better than C=0.5.",
+      "status": "blocked",
+      "evidence_run_ids": [
+        "run_005"
+      ],
+      "blocked_reason": "Measured effect is not larger than inter-seed noise. The report must not oversell this as a robust discovery.",
+      "allowed_rewrite": "C=2.0 had the best mean accuracy, but the effect was smaller than seed noise.",
+      "metrics": {
+        "effect_size": 0.007222,
+        "seed_noise": 0.011111,
+        "effect_to_noise_ratio": 0.649986,
+        "min_seed_count": 4,
+        "low_n_warning": false
+      }
+    }
+  ],
+  "calibration_metrics": null,
+  "artifacts": {
+    "task_id": "digits_accuracy",
+    "trace_path": "runs/digits_accuracy/run_005.json",
+    "report_path": "reports/digits_accuracy/final_report.md",
+    "claim_ledger_path": "reports/digits_accuracy/claim_ledger.json"
+  }
+}

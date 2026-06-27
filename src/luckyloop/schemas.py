@@ -10,12 +10,36 @@ class ProposedAction(BaseModel):
     params: dict[str, Any] = Field(default_factory=dict)
 
 
+class SweepSpec(BaseModel):
+    model: str
+    param: str
+    values: list[Any]
+    seeds: list[int] = Field(default_factory=lambda: [0, 1, 2, 3])
+    scale: bool = False
+    label_noise: float = 0.0
+
+
+class TaskSpec(BaseModel):
+    task_id: str
+    dataset: str
+    problem_type: Literal["classification"] = "classification"
+    primary_metric: str = "accuracy"
+    secondary_metrics: list[str] = Field(default_factory=lambda: ["f1"])
+    budget_runs: int = 6
+    models: list[str] = Field(default_factory=list)
+    sweeps: list[SweepSpec] = Field(default_factory=list)
+    goal: str = ""
+    notes: list[str] = Field(default_factory=list)
+
+
 class Prediction(BaseModel):
     expected_metric: str
     expected_runtime_seconds: str
     risks: list[str] = Field(default_factory=list)
     recommendation: Literal["run", "skip", "modify"] = "run"
     rationale: str = ""
+    action_specific_signal: str = ""
+    claim_risk: str = ""
 
 
 class ActualResult(BaseModel):
@@ -77,6 +101,14 @@ class RejectedCandidate(BaseModel):
 class DecisionTrace(BaseModel):
     selected_action: ProposedAction
     world_model_signal_used: bool = False
+    selector_policy_signal_used: bool = False
+    causal_signal_type: Literal[
+        "world_model_prediction",
+        "selector_policy",
+        "mixed",
+        "demo_policy",
+        "unknown",
+    ] = "unknown"
     causal_reason: str
     rejected_candidates: list[RejectedCandidate] = Field(default_factory=list)
 

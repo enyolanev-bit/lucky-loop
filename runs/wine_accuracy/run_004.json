@@ -1,0 +1,330 @@
+{
+  "run_id": "run_004",
+  "goal": "Maximize validation accuracy on sklearn wine under a small compute budget, while avoiding unsupported claims.",
+  "hypothesis": "Selected svc because score=60; world model recommended run; tree prediction missed, so a scaled margin model tests a different hypothesis. World model predicted accuracy around 0.90-0.99, runtime under 10, recommendation=run, risks=sensitive to scaling and C. Causal signal type: mixed.",
+  "proposed_action": {
+    "action_id": "action_svc",
+    "command": "python experiments/train_sklearn.py --dataset wine --model svc --scale --C 2.0",
+    "model": "svc",
+    "params": {
+      "dataset": "wine",
+      "scale": true,
+      "C": 2.0,
+      "kernel": "rbf"
+    }
+  },
+  "world_model_prediction": {
+    "expected_metric": "accuracy around 0.90-0.99",
+    "expected_runtime_seconds": "under 10",
+    "risks": [
+      "sensitive to scaling and C"
+    ],
+    "recommendation": "run",
+    "rationale": "Scaled SVC can be strong on small numeric classification tasks but needs careful comparison.",
+    "action_specific_signal": "SVC tests a margin-based nonlinear hypothesis after linear/tree baselines.",
+    "claim_risk": "SVC should not be declared best without repeated-seed evidence."
+  },
+  "actual_result": {
+    "status": "success",
+    "accuracy": 0.9777777777777777,
+    "f1": 0.9775949862906386,
+    "runtime_seconds": 0.0102,
+    "stdout_tail": "{\n  \"accuracy\": 0.9777777777777777,\n  \"dataset\": \"wine\",\n  \"f1\": 0.9775949862906386,\n  \"model\": \"svc\",\n  \"n_label_noise_flips\": 0,\n  \"n_test\": 45,\n  \"n_train\": 133,\n  \"params\": {\n    \"C\": 2.0,\n    \"dataset\": \"wine\",\n    \"kernel\": \"rbf\",\n    \"label_noise\": 0.0,\n    \"learning_rate\": 0.1,\n    \"max_depth\": null,\n    \"max_iter\": 1000,\n    \"model\": \"svc\",\n    \"n_estimators\": 200,\n    \"scale\": true,\n    \"seed\": 42,\n    \"test_size\": 0.25\n  },\n  \"runtime_seconds\": 0.0102,\n  \"status\": \"success\"\n}\n",
+    "stderr_tail": "",
+    "raw": {
+      "accuracy": 0.9777777777777777,
+      "dataset": "wine",
+      "f1": 0.9775949862906386,
+      "model": "svc",
+      "n_label_noise_flips": 0,
+      "n_test": 45,
+      "n_train": 133,
+      "params": {
+        "C": 2.0,
+        "dataset": "wine",
+        "kernel": "rbf",
+        "label_noise": 0.0,
+        "learning_rate": 0.1,
+        "max_depth": null,
+        "max_iter": 1000,
+        "model": "svc",
+        "n_estimators": 200,
+        "scale": true,
+        "seed": 42,
+        "test_size": 0.25
+      },
+      "runtime_seconds": 0.0102,
+      "status": "success"
+    }
+  },
+  "comparison": {
+    "metric_match": true,
+    "runtime_match": true,
+    "unexpected_events": [],
+    "lesson": "Prediction was broadly consistent with the real run."
+  },
+  "next_decision": "Continue: regenerate candidates from the updated state and ask the world model to predict each option.",
+  "verification": null,
+  "schema_version": "2.0",
+  "state_before": {
+    "state_id": "state_004",
+    "goal": "Maximize validation accuracy on sklearn wine under a small compute budget, while avoiding unsupported claims.",
+    "known_results": [
+      {
+        "run_id": "run_001",
+        "model": "logistic_regression",
+        "accuracy": 0.9777777777777777,
+        "f1": 0.9775949862906386,
+        "params": {
+          "dataset": "wine",
+          "scale": false
+        }
+      },
+      {
+        "run_id": "run_002",
+        "model": "logistic_regression",
+        "accuracy": 1.0,
+        "f1": 1.0,
+        "params": {
+          "dataset": "wine",
+          "scale": true
+        }
+      },
+      {
+        "run_id": "run_003",
+        "model": "random_forest",
+        "accuracy": 1.0,
+        "f1": 1.0,
+        "params": {
+          "dataset": "wine",
+          "n_estimators": 300
+        }
+      }
+    ],
+    "budget_remaining": 3,
+    "open_questions": [
+      "Which candidate should receive the next compute budget?",
+      "Is the best observed score robust across seeds or perturbations?",
+      "Do apparent improvements survive an effect-vs-noise verifier?",
+      "What did the world model miss, and should the next action test that failure mode?"
+    ],
+    "risks_to_check": [
+      "single-run best score may not justify a scientific claim",
+      "seed variance may exceed apparent model or hyperparameter effects",
+      "world-model predictions may miss quantitative details"
+    ],
+    "summary": "Task=wine_accuracy; dataset=wine; primary_metric=accuracy. Goal: Maximize validation accuracy on sklearn wine under a small compute budget, while avoiding unsupported claims.\nNo experiments have been run yet. Dataset: sklearn wine. Primary metric: accuracy; secondary metrics: f1.\nrun_001: logistic_regression actual=0.9777777777777777 status=success; prediction=accuracy around 0.90-0.97; recommendation=run; lesson=Run succeeded, but the prediction missed at least one quantitative detail.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_002: logistic_regression actual=1.0 status=success; prediction=accuracy around 0.95-0.98; recommendation=run; lesson=Run succeeded, but the prediction missed at least one quantitative detail.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option.\nrun_003: random_forest actual=1.0 status=success; prediction=accuracy around 0.90-0.98; recommendation=run; lesson=Run succeeded, but the prediction missed at least one quantitative detail.; next=Continue: regenerate candidates from the updated state and ask the world model to predict each option."
+  },
+  "candidate_actions": [
+    {
+      "action_id": "action_svc",
+      "command": "python experiments/train_sklearn.py --dataset wine --model svc --scale --C 2.0",
+      "model": "svc",
+      "params": {
+        "dataset": "wine",
+        "scale": true,
+        "C": 2.0,
+        "kernel": "rbf"
+      }
+    },
+    {
+      "action_id": "action_gradient_boosting",
+      "command": "python experiments/train_sklearn.py --dataset wine --model gradient_boosting --n-estimators 150 --learning-rate 0.05",
+      "model": "gradient_boosting",
+      "params": {
+        "dataset": "wine",
+        "n_estimators": 150,
+        "learning_rate": 0.05
+      }
+    },
+    {
+      "action_id": "action_sweep_1_logistic_regression_C",
+      "command": "python experiments/sweep_sklearn.py --dataset wine --model logistic_regression --sweep-param C --values 0.1 1.0 10.0 --seeds 0 1 2 3 --scale --label-noise 0.05",
+      "model": "verification_sweep",
+      "params": {
+        "dataset": "wine",
+        "base_model": "logistic_regression",
+        "scale": true,
+        "sweep_param": "C",
+        "values": [
+          0.1,
+          1.0,
+          10.0
+        ],
+        "seeds": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "label_noise": 0.05
+      }
+    }
+  ],
+  "candidate_predictions": [
+    {
+      "action": {
+        "action_id": "action_svc",
+        "command": "python experiments/train_sklearn.py --dataset wine --model svc --scale --C 2.0",
+        "model": "svc",
+        "params": {
+          "dataset": "wine",
+          "scale": true,
+          "C": 2.0,
+          "kernel": "rbf"
+        }
+      },
+      "prediction": {
+        "expected_metric": "accuracy around 0.90-0.99",
+        "expected_runtime_seconds": "under 10",
+        "risks": [
+          "sensitive to scaling and C"
+        ],
+        "recommendation": "run",
+        "rationale": "Scaled SVC can be strong on small numeric classification tasks but needs careful comparison.",
+        "action_specific_signal": "SVC tests a margin-based nonlinear hypothesis after linear/tree baselines.",
+        "claim_risk": "SVC should not be declared best without repeated-seed evidence."
+      },
+      "source": "heuristic_fallback"
+    },
+    {
+      "action": {
+        "action_id": "action_gradient_boosting",
+        "command": "python experiments/train_sklearn.py --dataset wine --model gradient_boosting --n-estimators 150 --learning-rate 0.05",
+        "model": "gradient_boosting",
+        "params": {
+          "dataset": "wine",
+          "n_estimators": 150,
+          "learning_rate": 0.05
+        }
+      },
+      "prediction": {
+        "expected_metric": "accuracy around 0.90-0.98",
+        "expected_runtime_seconds": "under 15",
+        "risks": [
+          "can overfit with too many estimators"
+        ],
+        "recommendation": "run",
+        "rationale": "Boosting is a useful late comparison when linear and bagged-tree baselines are known.",
+        "action_specific_signal": "Use boosting to test a staged-tree alternative under the remaining budget.",
+        "claim_risk": "Do not report a robust winner from one boosted run."
+      },
+      "source": "heuristic_fallback"
+    },
+    {
+      "action": {
+        "action_id": "action_sweep_1_logistic_regression_C",
+        "command": "python experiments/sweep_sklearn.py --dataset wine --model logistic_regression --sweep-param C --values 0.1 1.0 10.0 --seeds 0 1 2 3 --scale --label-noise 0.05",
+        "model": "verification_sweep",
+        "params": {
+          "dataset": "wine",
+          "base_model": "logistic_regression",
+          "scale": true,
+          "sweep_param": "C",
+          "values": [
+            0.1,
+            1.0,
+            10.0
+          ],
+          "seeds": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "label_noise": 0.05
+        }
+      },
+      "prediction": {
+        "expected_metric": "accuracy around 0.85-0.98",
+        "expected_runtime_seconds": "under 35",
+        "risks": [
+          "label noise can make small hyperparameter differences non-robust",
+          "seed variance may exceed apparent gains"
+        ],
+        "recommendation": "run",
+        "rationale": "A multi-seed sweep is useful for the deterministic verifier: it tests whether an apparent gain survives effect-vs-noise scrutiny.",
+        "action_specific_signal": "Run a robustness sweep before allowing a best-hyperparameter claim.",
+        "claim_risk": "The apparent winner may be blocked if effect size is smaller than seed noise."
+      },
+      "source": "heuristic_fallback"
+    }
+  ],
+  "selected_action": {
+    "action_id": "action_svc",
+    "command": "python experiments/train_sklearn.py --dataset wine --model svc --scale --C 2.0",
+    "model": "svc",
+    "params": {
+      "dataset": "wine",
+      "scale": true,
+      "C": 2.0,
+      "kernel": "rbf"
+    }
+  },
+  "decision_trace": {
+    "selected_action": {
+      "action_id": "action_svc",
+      "command": "python experiments/train_sklearn.py --dataset wine --model svc --scale --C 2.0",
+      "model": "svc",
+      "params": {
+        "dataset": "wine",
+        "scale": true,
+        "C": 2.0,
+        "kernel": "rbf"
+      }
+    },
+    "world_model_signal_used": true,
+    "selector_policy_signal_used": true,
+    "causal_signal_type": "mixed",
+    "causal_reason": "Selected svc because score=60; world model recommended run; tree prediction missed, so a scaled margin model tests a different hypothesis. World model predicted accuracy around 0.90-0.99, runtime under 10, recommendation=run, risks=sensitive to scaling and C. Causal signal type: mixed.",
+    "rejected_candidates": [
+      {
+        "action": {
+          "action_id": "action_sweep_1_logistic_regression_C",
+          "command": "python experiments/sweep_sklearn.py --dataset wine --model logistic_regression --sweep-param C --values 0.1 1.0 10.0 --seeds 0 1 2 3 --scale --label-noise 0.05",
+          "model": "verification_sweep",
+          "params": {
+            "dataset": "wine",
+            "base_model": "logistic_regression",
+            "scale": true,
+            "sweep_param": "C",
+            "values": [
+              0.1,
+              1.0,
+              10.0
+            ],
+            "seeds": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "label_noise": 0.05
+          }
+        },
+        "reason": "score=60; world model recommended run; high single-run score needs robustness verification before a strong claim; world model predicted robustness or seed-variance risk; defer verifier sweep until several single-model baselines exist"
+      },
+      {
+        "action": {
+          "action_id": "action_gradient_boosting",
+          "command": "python experiments/train_sklearn.py --dataset wine --model gradient_boosting --n-estimators 150 --learning-rate 0.05",
+          "model": "gradient_boosting",
+          "params": {
+            "dataset": "wine",
+            "n_estimators": 150,
+            "learning_rate": 0.05
+          }
+        },
+        "reason": "score=31; world model recommended run; ensemble baseline is useful as a late comparison; world model predicted overfitting risk"
+      }
+    ]
+  },
+  "claim_ledger_updates": [],
+  "calibration_metrics": null,
+  "artifacts": {
+    "task_id": "wine_accuracy",
+    "trace_path": "runs/wine_accuracy/run_004.json",
+    "report_path": "reports/wine_accuracy/final_report.md",
+    "claim_ledger_path": "reports/wine_accuracy/claim_ledger.json"
+  }
+}

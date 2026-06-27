@@ -5,6 +5,71 @@ from .claim_ledger import build_claim_ledger
 from .schemas import ExperimentTrace
 
 
+def _write_markdown(path: Path, lines: list[str]) -> None:
+    while lines and lines[-1] == "":
+        lines.pop()
+    path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+
+def _actual_metric_text(t: ExperimentTrace) -> str:
+    if t.actual_result.accuracy is not None:
+        return f"accuracy {t.actual_result.accuracy:.4f}"
+    if t.actual_result.raw.get("best"):
+        best_raw = t.actual_result.raw["best"]
+        metric = t.actual_result.raw.get("metric", "accuracy")
+        if best_raw.get(f"mean_{metric}") is not None:
+            return f"best mean {metric} {best_raw[f'mean_{metric}']:.4f}"
+    return t.actual_result.status
+
+
+def _world_model_summary(t: ExperimentTrace) -> str:
+    signal = t.world_model_prediction.action_specific_signal or t.world_model_prediction.rationale
+    risks = "; ".join(t.world_model_prediction.risks[:2])
+    return signal or risks or t.world_model_prediction.expected_metric
+
+
+def _claim_verdict(t: ExperimentTrace) -> str:
+    if t.verification:
+        if t.verification.trustworthy:
+            return t.verification.status
+        return f"blocked: {t.verification.allowed_claim}"
+    if t.comparison.unexpected_events:
+        return "prediction miss logged; no robust claim"
+    return "observation only; no robust claim"
+
+
+def _agent_action_text(t: ExperimentTrace) -> str:
+    if t.decision_trace:
+        signal = t.decision_trace.causal_signal_type
+    else:
+        signal = "unknown"
+    if t.proposed_action.model == "verification_sweep":
+        base = t.proposed_action.params.get("base_model", "model")
+        param = t.proposed_action.params.get("sweep_param", "param")
+        return f"ran multi-seed {base} {param} sweep; signal={signal}"
+    return f"ran {t.proposed_action.model}; signal={signal}"
+
+
+def write_demo_summary(goal: str, traces: list[ExperimentTrace], path: Path) -> None:
+    lines = [
+        "# Lucky Loop Demo Summary",
+        "",
+        f"Goal: {goal}",
+        "",
+        "All rows are real sklearn executions or real multi-seed sweeps. The table summarizes the auditable loop: predict, run, compare, verify.",
+        "",
+        "| Run | World model said | Agent did | Reality showed | Claim verdict |",
+        "|---|---|---|---|---|",
+    ]
+    for t in traces:
+        lines.append(
+            f"| {t.run_id} | {_world_model_summary(t)} | {_agent_action_text(t)} | "
+            f"{_actual_metric_text(t)} | {_claim_verdict(t)} |"
+        )
+    path.parent.mkdir(parents=True, exist_ok=True)
+    _write_markdown(path, lines)
+
+
 def generate_report(goal: str, traces: list[ExperimentTrace], path: Path) -> None:
     best = max((t for t in traces if t.actual_result.accuracy is not None), key=lambda t: t.actual_result.accuracy or -1, default=None)
     calibration = compute_world_model_calibration(traces)
@@ -20,22 +85,14 @@ def generate_report(goal: str, traces: list[ExperimentTrace], path: Path) -> Non
         "",
         "## Experiment timeline",
         "",
-        "| Run | Hypothesis | Model | Prediction | Actual metric | Match | Verifier | Decision |",
-        "|---|---|---|---|---:|---|---|---|",
+        "| Run | World model said | Agent did | Reality showed | Claim verdict |",
+        "|---|---|---|---|---|",
     ]
     for t in traces:
-        acc = "" if t.actual_result.accuracy is None else f"{t.actual_result.accuracy:.4f}"
-        if acc == "" and t.actual_result.raw.get("best"):
-            best_raw = t.actual_result.raw["best"]
-            metric = t.actual_result.raw.get("metric", "accuracy")
-            if best_raw.get(f"mean_{metric}") is not None:
-                acc = f"best mean {best_raw[f'mean_{metric}']:.4f}"
-        match = "yes" if t.comparison.metric_match and t.comparison.runtime_match else "partial/no"
-        verifier = ""
-        if t.verification:
-            verifier = f"{t.verification.status}; effect={t.verification.effect_size}; noise={t.verification.seed_noise}"
-        decision = t.decision_trace.causal_reason if t.decision_trace else t.next_decision
-        lines.append(f"| {t.run_id} | {t.hypothesis} | {t.proposed_action.model} | {t.world_model_prediction.expected_metric} | {acc} | {match} | {verifier} | {decision} |")
+        lines.append(
+            f"| {t.run_id} | {_world_model_summary(t)} | {_agent_action_text(t)} | "
+            f"{_actual_metric_text(t)} | {_claim_verdict(t)} |"
+        )
 
     lines += ["", "## Best result", ""]
     if best:
@@ -119,4 +176,5 @@ def generate_report(goal: str, traces: list[ExperimentTrace], path: Path) -> Non
             lines.append(f"- Verifier rationale: {t.verification.rationale}")
         lines.append("")
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text("\n".join(lines), encoding="utf-8")
+    _write_markdown(path, lines)
+    write_demo_summary(goal, traces, path.parent / "demo_summary.md")
