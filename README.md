@@ -44,9 +44,10 @@ uv venv .venv && uv pip install --python .venv/bin/python torch scikit-learn
 ## État (Day 1)
 - ✅ Sandbox prouvé (vraies expés, 3.5s CPU)
 - ✅ Verifier prouvé (effet vs bruit)
-- ✅ GPU MI300X provisionné (<MI300X-IP>), image `rocm/vllm` en cours de pull
-- ⏳ Clé OpenAI ($50) → tester le loop complet
-- ⏳ Brancher experimenter sur le MI300X + figure + arXiv crawl + interface fun
+- ✅ GPU MI300X provisionné et Qwen-AgentWorld-35B-A3B servi via vLLM sur `http://134.199.205.222:8000/v1`
+- ✅ Prototype LuckyWorld ajouté dans [`luckyworld/`](./luckyworld) : prédiction Qwen-AgentWorld → vraie expé sklearn → comparaison → trace JSON → rapport
+- ✅ 5 expériences réelles sur `sklearn breast_cancer`; meilleur résultat observé : scaled logistic regression, accuracy **0.9860**
+- ⏳ Prochaine étape : perturbation contrôlée (`noisy_labels`, data leakage trap, bad split) + figure + arXiv crawl + interface fun
 
 ## Scope (set up the exams)
 **MVP (ce soir)** : le loop tourne end-to-end UNE fois → un rapport réel + le verdict du Verifier.

@@ -1,0 +1,9 @@
+scikit-learn
+pandas
+numpy
+openai
+streamlit
+pydantic
+rich
+typer
+python-dotenv
