@@ -21,12 +21,21 @@ Across the run, the claim ledger admitted **1 of 5** candidate claims as strongl
 the weaker, true statement ("best mean in this sweep, but effect within seed noise"). An additive
 rigorous cross-check (paired test, separate from the production verifier) agrees with these verdicts.
 
-## R2 — The world model is calibrated on familiar regimes
+## R2 — The world model ranks usefully but is overconfident (live Qwen-AgentWorld)
 
-On the benchmark suite the world model's prediction intervals reach **80% metric coverage** and
-**90% runtime coverage** (nominal 90%), with a small overconfidence gap and a handful of misses.
-It produces useful go/skip signals before compute. This is the *baseline* the rest of the results
-qualify: calibration is real, but conditional.
+With the **live** Qwen-AgentWorld (not a heuristic prior), the benchmark suite shows two distinct
+calibration facts the rest of the paper depends on:
+
+- **Interval calibration is poor:** 90% metric intervals cover only **28.57%** of runs (6 misses of 7).
+  Runtime intervals are better at **85.71%**. The model is overconfident about accuracy — its
+  intervals are too narrow (e.g. predicts 0.97–0.98, actual 0.986).
+- **Ranking is still useful:** its point predictions order candidates well enough to guide compute on
+  familiar regimes (this is what R3/R7 exploit).
+
+Keep these separate. *Ranking* calibration drives compute savings (R7). *Interval* calibration drives
+trust — and it is overconfident everywhere, independently confirmed by the memorization audit (R6,
+25–50% coverage) and by R7's regime split. That overconfidence is exactly why the deterministic
+verifier (R1) is necessary: the model's own confidence cannot be trusted as a claim gate.
 
 ## R3 — Guidance value is proportional to calibration (causal)
 
