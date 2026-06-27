@@ -39,9 +39,9 @@
       "best_single_run_score": 1.0,
       "top_model_verification_performed": true,
       "unsupported_best_model_claims": 0,
-      "claims_blocked": 2,
+      "claims_blocked": 1,
       "supported_claims": 0,
-      "prediction_misses_logged": 6,
+      "prediction_misses_logged": 5,
       "compute_spent_before_verified_claim": 7
     },
     {
@@ -52,7 +52,7 @@
       "unsupported_best_model_claims": 1,
       "claims_blocked": 0,
       "supported_claims": 0,
-      "prediction_misses_logged": 6,
+      "prediction_misses_logged": 5,
       "compute_spent_before_verified_claim": 0
     },
     {
@@ -61,42 +61,42 @@
       "best_single_run_score": 1.0,
       "top_model_verification_performed": true,
       "unsupported_best_model_claims": 0,
-      "claims_blocked": 2,
+      "claims_blocked": 1,
       "supported_claims": 0,
-      "prediction_misses_logged": 6,
+      "prediction_misses_logged": 5,
       "compute_spent_before_verified_claim": 7
     },
     {
       "task": "digits_accuracy",
       "policy": "fixed_order",
-      "best_single_run_score": 0.98,
+      "best_single_run_score": 0.9777777777777777,
       "top_model_verification_performed": true,
       "unsupported_best_model_claims": 0,
       "claims_blocked": 1,
       "supported_claims": 0,
-      "prediction_misses_logged": 3,
+      "prediction_misses_logged": 5,
       "compute_spent_before_verified_claim": 7
     },
     {
       "task": "digits_accuracy",
       "policy": "score_chaser",
-      "best_single_run_score": 0.98,
+      "best_single_run_score": 0.9777777777777777,
       "top_model_verification_performed": false,
       "unsupported_best_model_claims": 1,
       "claims_blocked": 0,
       "supported_claims": 0,
-      "prediction_misses_logged": 3,
+      "prediction_misses_logged": 5,
       "compute_spent_before_verified_claim": 0
     },
     {
       "task": "digits_accuracy",
       "policy": "lucky_loop_adaptive",
-      "best_single_run_score": 0.98,
+      "best_single_run_score": 0.9777777777777777,
       "top_model_verification_performed": true,
       "unsupported_best_model_claims": 0,
       "claims_blocked": 1,
       "supported_claims": 0,
-      "prediction_misses_logged": 3,
+      "prediction_misses_logged": 5,
       "compute_spent_before_verified_claim": 7
     }
   ]

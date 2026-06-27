@@ -26,12 +26,24 @@ def _actual_metric(trace):
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--planner-mode", choices=["llm", "replay", "selector"], default="replay")
+    parser.add_argument("--planner-mode", choices=["llm", "agent_handoff", "agent_command", "replay", "selector"], default="replay")
+    parser.add_argument("--agent-backend", default=None)
+    parser.add_argument("--agent-io-dir", default="agent_io")
+    parser.add_argument("--agent-timeout-seconds", type=int, default=900)
+    parser.add_argument("--agent-poll-seconds", type=float, default=2.0)
     args = parser.parse_args()
     rows = []
     for task_path in TASKS:
         task = load_task(task_path)
-        traces = run(task=task, output_namespace=task.task_id, planner_mode=args.planner_mode)
+        traces = run(
+            task=task,
+            output_namespace=task.task_id,
+            planner_mode=args.planner_mode,
+            agent_backend=args.agent_backend,
+            agent_io_dir=args.agent_io_dir,
+            agent_timeout_seconds=args.agent_timeout_seconds,
+            agent_poll_seconds=args.agent_poll_seconds,
+        )
         metric_traces = [
             t
             for t in traces
