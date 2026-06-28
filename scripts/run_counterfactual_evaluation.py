@@ -83,39 +83,63 @@ def _run_action(action: ProposedAction, out_path: Path) -> dict:
 
 
 def _verdict(lucky: dict, classic: dict, state_needs_verification: bool) -> dict:
+    """Honest paired verdict.
+
+    A claim-safety lucky_win is credited ONLY when Lucky actually produced a verification result
+    AND classic genuinely skipped verification the state required. Lucky running a verification
+    action that yielded no verification, or classic not being score-chasing, is never a win.
+
+    The raw-score comparison is only meaningful when both choices are the same KIND of experiment.
+    Lucky's verification is a multi-seed sweep (mean metric) while classic is typically a single
+    split — comparing those is apples-to-oranges, so it is reported as not_comparable.
+    """
     lucky_verification = lucky.get("verification")
     classic_verification = classic.get("verification")
-    lucky_blocks_or_calibrates = bool(lucky_verification and not lucky_verification.get("trustworthy", False))
+    lucky_ran_verification = lucky_verification is not None
+    classic_ran_verification = classic_verification is not None
     lucky_trusted = bool(lucky_verification and lucky_verification.get("trustworthy", False))
-    classic_is_score_chasing = not classic_verification and state_needs_verification
+    lucky_blocked = bool(lucky_verification and not lucky_verification.get("trustworthy", False))
+    classic_is_score_chasing = (not classic_ran_verification) and state_needs_verification
+
     lucky_metric = lucky.get("actual_metric")
     classic_metric = classic.get("actual_metric")
-    if lucky_metric is not None and classic_metric is not None:
-        if abs(lucky_metric - classic_metric) < 1e-12:
-            score_verdict = "tie"
-        elif lucky_metric > classic_metric:
-            score_verdict = "lucky_win"
-        else:
-            score_verdict = "classic_win"
-    else:
+    # Same KIND of experiment? Lucky's verification is a multi-seed sweep (mean metric); a classic
+    # single-split run is not comparable to it. Compare raw scores only for like-for-like actions.
+    lucky_is_sweep = lucky.get("action", {}).get("model") in VERIFICATION_MODELS
+    classic_is_sweep = classic.get("action", {}).get("model") in VERIFICATION_MODELS
+    comparable = (
+        lucky_is_sweep == classic_is_sweep
+        and lucky_metric is not None
+        and classic_metric is not None
+    )
+    if not comparable:
         score_verdict = "not_comparable"
+    elif abs(lucky_metric - classic_metric) < 1e-9:
+        score_verdict = "tie"
+    elif lucky_metric > classic_metric:
+        score_verdict = "lucky_win"
+    else:
+        score_verdict = "classic_win"
 
-    if lucky_trusted:
+    if lucky_trusted and classic_is_score_chasing:
         claim_safety_verdict = "lucky_win"
-        overall = "lucky_win"
-        reason = "Lucky choice produced a trusted verifier claim."
-    elif lucky_blocks_or_calibrates and classic_is_score_chasing:
+        reason = "Lucky ran verification and produced a trusted claim; classic skipped the verification the state required."
+    elif lucky_blocked and classic_is_score_chasing:
         claim_safety_verdict = "lucky_win"
-        overall = "lucky_win"
-        reason = "Lucky choice ran verification and prevented a robust claim that classic score-chasing would leave unsupported."
-    elif classic_is_score_chasing:
-        claim_safety_verdict = "lucky_win"
-        overall = "lucky_win"
-        reason = "Lucky choice spent compute on claim risk while classic continued a non-verification run."
+        reason = "Lucky ran verification and blocked an unsupported claim that classic score-chasing would have left."
+    elif not lucky_ran_verification:
+        claim_safety_verdict = "not_comparable"
+        reason = "Lucky's verification action produced no verification result; no claim-safety advantage can be measured."
+    elif lucky_trusted or lucky_blocked:
+        claim_safety_verdict = "tie"
+        reason = "Lucky verified, but classic was not score-chasing (state did not require verification); no safety advantage proven."
     else:
         claim_safety_verdict = "tie"
-        overall = score_verdict
-        reason = "No claim-safety advantage was detected; compare immediate score only."
+        reason = "No claim-safety advantage detected."
+
+    # Overall is a win ONLY on a genuine claim-safety win; otherwise fall back to the honest
+    # (often not_comparable) immediate-score comparison.
+    overall = "lucky_win" if claim_safety_verdict == "lucky_win" else score_verdict
     return {
         "score_verdict": score_verdict,
         "claim_safety_verdict": claim_safety_verdict,
@@ -174,15 +198,23 @@ def run_task(task: TaskSpec, max_cases: int) -> list[dict]:
 def write_reports(rows: list[dict]) -> None:
     out_dir = ROOT / "reports" / "counterfactuals"
     out_dir.mkdir(parents=True, exist_ok=True)
-    lucky_wins = sum(1 for row in rows if row["verdict"]["overall_verdict"] == "lucky_win")
     usable = len(rows)
+    breakdown: dict[str, int] = {}
+    for row in rows:
+        v = row["verdict"]["overall_verdict"]
+        breakdown[v] = breakdown.get(v, 0) + 1
+    lucky_wins = breakdown.get("lucky_win", 0)
+    # Claim-safety wins only — never counts not_comparable / score-only cases as wins.
+    claim_safety_wins = sum(1 for row in rows if row["verdict"]["claim_safety_verdict"] == "lucky_win")
     win_rate = (lucky_wins / usable) if usable else None
     payload = {
-        "schema_version": "1.0",
+        "schema_version": "1.1",
         "summary": {
             "cases": usable,
             "lucky_wins": lucky_wins,
-            "qwen_choice_usefulness": win_rate,
+            "claim_safety_wins": claim_safety_wins,
+            "overall_verdict_breakdown": breakdown,
+            "qwen_choice_usefulness": win_rate,  # honest: only genuine claim-safety wins / cases
         },
         "rows": rows,
     }

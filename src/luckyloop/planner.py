@@ -388,22 +388,30 @@ def _score_candidate(
             world_reasons.append("world model predicted top-model robustness or claim risk")
 
     if action.model == "stop_and_report":
+        has_verification = any(trace.verification for trace in traces)
         if any(trace.verification and not trace.verification.trustworthy for trace in traces):
             score += 80
             breakdown["verification_value"] += 40
             breakdown["compute_cost_penalty"] += 20
             reasons.append("verifier already blocked the robust claim; stop instead of score-chasing")
             selector_reasons.append("verifier already blocked the robust claim; stop instead of score-chasing")
-        elif prediction.recommendation == "stop_and_report":
+        elif prediction.recommendation == "stop_and_report" and has_verification:
+            # Verify before claim: the world model may only motivate stopping AFTER a verifier
+            # has actually run. Without a verification on record, stopping is always premature.
             score += 35
             breakdown["qwen_signal"] += 35
-            reasons.append("world model recommended stopping from current evidence")
-            world_reasons.append("world model recommended stopping from current evidence")
+            reasons.append("world model recommended stopping and a verifier has already run")
+            world_reasons.append("world model recommended stopping and a verifier has already run")
         else:
             score -= 35
             breakdown["compute_cost_penalty"] -= 35
-            reasons.append("stop is premature before claim risk has been checked")
-            selector_reasons.append("stop is premature before claim risk has been checked")
+            reason = (
+                "stop is premature: no verifier has run yet (verify before claim)"
+                if not has_verification
+                else "stop is premature before claim risk has been checked"
+            )
+            reasons.append(reason)
+            selector_reasons.append(reason)
 
     if action.model == "svc" and any(t.proposed_action.model == "random_forest" and not t.comparison.metric_match for t in traces):
         score += 30
