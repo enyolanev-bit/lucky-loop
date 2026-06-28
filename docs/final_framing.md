@@ -2,7 +2,7 @@
 
 ## Framing
 
-**Lucky Loop: World-Model-Guided Autonomous Research with Claim-Calibrated Reporting**
+**Lucky Loop: Predictive Research Lab OS with Claim-Calibrated Reporting**
 
 Tagline:
 
@@ -10,16 +10,17 @@ Tagline:
 
 One-liner:
 
-Lucky Loop is a world-model-guided autonomous research loop: an autoresearch agent proposes experiments, Qwen-AgentWorld predicts their likely outcomes before compute, real code tests reality, and a deterministic verifier decides which claims survive the evidence.
+Lucky Loop is a predictive research lab backend: an autoresearch agent proposes research actions, Qwen-AgentWorld predicts their likely outcome, cost, protocol risk, and claim impact before compute, real code tests reality, and a deterministic verifier decides which claims survive the evidence.
 
 ## Positionnement
 
-On ne vend pas "un agent qui lance des expériences ML". On vend un agent de recherche qui a deux comportements que les autoresearch agents classiques n'ont pas assez:
+On ne vend pas "un agent qui lance des expériences ML". On vend un research lab OS prédictif qui a trois comportements que les autoresearch agents classiques n'ont pas assez:
 
 1. **Foresight before compute**: Qwen-AgentWorld sert de language world model. Il prédit métriques, runtime, risques et failure modes à partir de l'état courant et d'une action candidate.
-2. **Discipline before claim**: après l'expérience réelle, un verifier déterministe bloque les claims non supportés et force le rapport à rester honnête.
+2. **Protocol awareness**: le système sait si une action va changer le rapport final ou juste ajouter un score non claimable.
+3. **Discipline before claim**: après l'expérience réelle, un verifier déterministe bloque les claims non supportés et force le rapport à rester honnête.
 
-Le world model est le cœur wow. Le verifier est la deuxième couche de confiance.
+Le world model est le cœur wow: il contrôle la boucle avant compute. Le verifier est la deuxième couche de confiance.
 
 ## Rôles
 
@@ -28,7 +29,7 @@ Autoresearch agent / planner API
     propose une hypothèse, une shortlist d'actions candidates et l'action préférée
 
 Qwen-AgentWorld
-    prédit ce qui devrait arriver si une action est lancée
+    prédit ce qui devrait arriver si une action est lancée, combien elle coûte, quels risques de protocole elle porte, et ce qu'elle change dans les claims
 
 Executor
     lance la vraie expérience sklearn et logge les métriques

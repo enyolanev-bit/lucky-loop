@@ -1,0 +1,43 @@
+{
+  "task_id": "har_accuracy",
+  "dataset": "har",
+  "problem_type": "classification",
+  "primary_metric": "accuracy",
+  "secondary_metrics": ["f1"],
+  "budget_runs": 7,
+  "models": ["logistic_regression", "random_forest", "hist_gradient_boosting"],
+  "candidate_space": {
+    "logistic_regression": {
+      "scale": [false, true],
+      "C": [0.1, 1.0],
+      "max_iter": [150],
+      "solver": ["newton-cg"]
+    },
+    "random_forest": {
+      "n_estimators": [80, 120],
+      "max_depth": [null, 12]
+    },
+    "hist_gradient_boosting": {
+      "n_estimators": [50, 80],
+      "learning_rate": [0.05, 0.08],
+      "max_depth": [null, 8]
+    }
+  },
+  "sweeps": [
+    {
+      "model": "hist_gradient_boosting",
+      "param": "learning_rate",
+      "values": [0.03, 0.05, 0.08],
+      "seeds": [0, 1, 2],
+      "scale": false,
+      "label_noise": 0.01
+    }
+  ],
+  "top_model_verification_seeds": [0, 1, 2],
+  "goal": "Recognize human activity from smartphone sensor features under a small compute budget, while avoiding unsupported cross-run best-model claims.",
+  "notes": [
+    "OpenML data_id=1478, Human Activity Recognition using smartphones.",
+    "Sensor-feature classification with 561 engineered features.",
+    "This task stresses compute-aware decisions because some models are materially slower."
+  ]
+}

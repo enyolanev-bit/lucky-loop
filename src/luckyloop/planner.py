@@ -49,11 +49,20 @@ def _model_command(task: TaskSpec, model: str, overrides: dict | None = None) ->
     overrides = overrides or {}
     cmd = f"python experiments/train_sklearn.py --dataset {task.dataset} --model {model}"
     if model == "logistic_regression":
-        params.update({"scale": bool(overrides.get("scale", True)), "C": overrides.get("C", 1.0)})
+        params.update({
+            "scale": bool(overrides.get("scale", True)),
+            "C": overrides.get("C", 1.0),
+            "max_iter": overrides.get("max_iter"),
+            "solver": overrides.get("solver"),
+        })
         if params["scale"]:
             cmd += " --scale"
         if params["C"] != 1.0:
             cmd += f" --C {params['C']}"
+        if params["max_iter"] is not None:
+            cmd += f" --max-iter {params['max_iter']}"
+        if params["solver"] is not None:
+            cmd += f" --solver {params['solver']}"
     elif model == "svc":
         params.update({"scale": bool(overrides.get("scale", True)), "C": overrides.get("C", 2.0), "kernel": overrides.get("kernel", "rbf")})
         if params["scale"]:
@@ -135,6 +144,42 @@ def _stop_candidate(task: TaskSpec) -> ProposedAction:
     )
 
 
+def _protocol_probe_candidate(task: TaskSpec) -> ProposedAction | None:
+    if not task.sweeps:
+        return None
+    sweep = task.sweeps[0]
+    values = " ".join(str(v) for v in sweep.values[:3])
+    seeds = " ".join(str(s) for s in (sweep.seeds[:3] or [0, 1, 2]))
+    warning = (
+        "protocol_probe: this result is intentionally treated as protocol-fragile; "
+        "a high metric must be rewritten as an observation, not a robust scientific claim"
+    )
+    cmd = (
+        f"python experiments/sweep_sklearn.py --dataset {task.dataset} --model {sweep.model} "
+        f"--sweep-param {sweep.param} --values {values} --seeds {seeds} "
+        f"--protocol-warning {json.dumps(warning)}"
+    )
+    if sweep.scale:
+        cmd += " --scale"
+    if sweep.label_noise:
+        cmd += f" --label-noise {sweep.label_noise}"
+    return _candidate(
+        f"action_protocol_probe_{sweep.model}_{sweep.param}",
+        cmd,
+        "protocol_probe",
+        {
+            "dataset": task.dataset,
+            "base_model": sweep.model,
+            "scale": sweep.scale,
+            "sweep_param": sweep.param,
+            "values": sweep.values[:3],
+            "seeds": sweep.seeds[:3] or [0, 1, 2],
+            "label_noise": sweep.label_noise,
+            "protocol_warning": warning,
+        },
+    )
+
+
 def _single_model_search_complete(task: TaskSpec, seen: set[str]) -> bool:
     for model in task.models:
         if not any(key.startswith(f"{model}:") for key in seen):
@@ -184,6 +229,15 @@ def generate_candidates(task: TaskSpec, state: ResearchState, traces: list[Exper
     if model_search_complete or (state.budget_remaining is not None and state.budget_remaining <= 2):
         for index, _sweep in enumerate(task.sweeps):
             candidates.append(_sweep_candidate(task, index))
+
+    if (
+        state.top_model_summary
+        and state.top_model_summary.needs_robustness_verification
+        and not any(trace.proposed_action.model == "protocol_probe" for trace in traces)
+    ):
+        protocol_probe = _protocol_probe_candidate(task)
+        if protocol_probe is not None:
+            candidates.append(protocol_probe)
 
     if any(trace.verification and not trace.verification.trustworthy for trace in traces):
         candidates.insert(0, _stop_candidate(task))
@@ -239,6 +293,83 @@ def _best_accuracy(traces: list[ExperimentTrace]) -> float:
     return max(values, default=0.0)
 
 
+def _level_value(value: str | None) -> float:
+    return {"low": 0.2, "medium": 0.55, "high": 0.9}.get(str(value or "medium").lower(), 0.55)
+
+
+def _runtime_cost_value(candidate_prediction: CandidatePrediction) -> float:
+    prediction = candidate_prediction.prediction
+    if prediction.predicted_next_state.expected_compute_cost_seconds is not None:
+        seconds = prediction.predicted_next_state.expected_compute_cost_seconds
+    elif prediction.expected_runtime_range_seconds:
+        seconds = max(prediction.expected_runtime_range_seconds)
+    else:
+        seconds = 5.0
+    if seconds <= 1:
+        return 0.05
+    if seconds <= 5:
+        return 0.15
+    if seconds <= 20:
+        return 0.35
+    if seconds <= 60:
+        return 0.65
+    return 0.9
+
+
+def _expected_metric_gain_value(candidate_prediction: CandidatePrediction, traces: list[ExperimentTrace]) -> float:
+    best = _best_accuracy(traces)
+    rng = candidate_prediction.prediction.expected_metric_range
+    if not rng or best <= 0:
+        return 0.3 if not traces else 0.15
+    midpoint = sum(rng[:2]) / 2
+    delta = midpoint - best
+    if delta >= 0.03:
+        return 0.9
+    if delta >= 0.01:
+        return 0.65
+    if delta >= -0.005:
+        return 0.35
+    return 0.1
+
+
+def _cost_aware_utility(
+    candidate_prediction: CandidatePrediction,
+    traces: list[ExperimentTrace],
+    redundant_variant: bool,
+) -> dict[str, float]:
+    prediction = candidate_prediction.prediction
+    next_state = prediction.predicted_next_state
+    expected_information_gain = prediction.expected_value_of_information
+    expected_claim_resolution = prediction.expected_claim_resolution
+    expected_metric_gain = _expected_metric_gain_value(candidate_prediction, traces)
+    expected_uncertainty_reduction = _level_value(next_state.uncertainty_reduction)
+    expected_research_value = _level_value(next_state.expected_research_value)
+    runtime_cost = _runtime_cost_value(candidate_prediction)
+    redundancy_cost = 0.75 if redundant_variant else 0.0
+    low_claim_impact_cost = 0.6 if prediction.claim_impact == "low" else 0.0
+    utility = (
+        1.5 * expected_information_gain
+        + 2.0 * expected_claim_resolution
+        + 1.2 * expected_uncertainty_reduction
+        + 1.0 * expected_research_value
+        + 0.8 * expected_metric_gain
+        - 0.9 * runtime_cost
+        - 1.1 * redundancy_cost
+        - 0.8 * low_claim_impact_cost
+    )
+    return {
+        "expected_information_gain": round(expected_information_gain, 4),
+        "expected_claim_resolution": round(expected_claim_resolution, 4),
+        "expected_uncertainty_reduction": round(expected_uncertainty_reduction, 4),
+        "expected_research_value": round(expected_research_value, 4),
+        "expected_metric_gain": round(expected_metric_gain, 4),
+        "expected_runtime_cost": round(runtime_cost, 4),
+        "redundancy_cost": round(redundancy_cost, 4),
+        "low_claim_impact_cost": round(low_claim_impact_cost, 4),
+        "research_value_per_compute": round(utility, 4),
+    }
+
+
 def _score_candidate(
     candidate_prediction: CandidatePrediction,
     traces: list[ExperimentTrace],
@@ -262,8 +393,50 @@ def _score_candidate(
         "compute_cost_penalty": 0.0,
         "unsupported_claim_risk": 0.0,
         "agent_preference": 0.0,
+        "expected_information_gain": 0.0,
+        "expected_claim_resolution": 0.0,
+        "expected_uncertainty_reduction": 0.0,
+        "expected_research_value": 0.0,
+        "expected_runtime_cost": 0.0,
+        "research_value_per_compute": 0.0,
     }
     tested_models = {t.proposed_action.model for t in traces if t.actual_result.accuracy is not None}
+    non_model_actions = {"verification_sweep", "top_model_verification", "protocol_probe", "stop_and_report"}
+    redundant_variant = action.model in tested_models and action.model not in non_model_actions
+    verifier_blocked_claim = any(trace.verification and not trace.verification.trustworthy for trace in traces)
+    cost_aware = _cost_aware_utility(candidate_prediction, traces, redundant_variant)
+    utility_bonus = 28 * cost_aware["research_value_per_compute"]
+    score += utility_bonus
+    breakdown.update(cost_aware)
+    claim_delta_value = {
+        "none": -0.6,
+        "adds_observation": 0.1,
+        "reduces_uncertainty": 0.55,
+        "enables_claim": 0.85,
+        "blocks_or_rewrites_claim": 1.0,
+        "report_ready": 0.9,
+    }.get(prediction.expected_claim_delta, 0.1)
+    protocol_risk_value = min(len(prediction.protocol_risks), 4) / 4
+    waste_penalty = prediction.compute_waste_risk
+    world_controller_bonus = 34 * claim_delta_value + 16 * protocol_risk_value - 20 * waste_penalty
+    score += world_controller_bonus
+    breakdown["expected_claim_delta"] = round(claim_delta_value, 4)
+    breakdown["protocol_risk_reduction"] = round(protocol_risk_value, 4)
+    breakdown["compute_waste_risk"] = round(waste_penalty, 4)
+    breakdown["world_controller_bonus"] = round(world_controller_bonus, 4)
+    reasons.append(f"cost-aware utility={cost_aware['research_value_per_compute']}")
+    reasons.append(
+        f"world-controller claim_delta={prediction.expected_claim_delta}, "
+        f"compute_waste_risk={prediction.compute_waste_risk:.2f}"
+    )
+    if prediction.expected_claim_delta in {"reduces_uncertainty", "enables_claim", "blocks_or_rewrites_claim", "report_ready"}:
+        world_reasons.append(f"world model predicted claim_delta={prediction.expected_claim_delta}")
+    if prediction.why_not_classic_autoresearch:
+        world_reasons.append("world model contrasted this action with classic autoresearch")
+    if cost_aware["research_value_per_compute"] >= 2.5:
+        world_reasons.append("world model predicted high research value per compute")
+    elif cost_aware["research_value_per_compute"] <= 0.7:
+        world_reasons.append("world model predicted low research value per compute")
 
     if agent_decision and action.action_id == agent_decision.preferred_action_id:
         score += 42
@@ -329,7 +502,6 @@ def _score_candidate(
         breakdown["qwen_signal"] += 10
         world_reasons.append("prediction contained an action-specific research signal")
 
-    non_model_actions = {"verification_sweep", "top_model_verification", "stop_and_report"}
     if action.model not in tested_models and action.model not in non_model_actions:
         score += 18
         breakdown["novelty"] += 18
@@ -387,12 +559,19 @@ def _score_candidate(
             reasons.append("world model predicted top-model robustness or claim risk")
             world_reasons.append("world model predicted top-model robustness or claim risk")
 
+    if action.model == "protocol_probe":
+        score += 55
+        breakdown["verification_value"] += 35
+        breakdown["qwen_signal"] += 20
+        reasons.append("protocol probe tests whether a tempting result should be blocked or rewritten")
+        world_reasons.append("world model predicted protocol or metric-risk value")
+
     if action.model == "stop_and_report":
         has_verification = any(trace.verification for trace in traces)
-        if any(trace.verification and not trace.verification.trustworthy for trace in traces):
-            score += 80
-            breakdown["verification_value"] += 40
-            breakdown["compute_cost_penalty"] += 20
+        if verifier_blocked_claim:
+            score += 260
+            breakdown["verification_value"] += 160
+            breakdown["compute_cost_penalty"] += 60
             reasons.append("verifier already blocked the robust claim; stop instead of score-chasing")
             selector_reasons.append("verifier already blocked the robust claim; stop instead of score-chasing")
         elif prediction.recommendation == "stop_and_report" and has_verification:
@@ -412,6 +591,13 @@ def _score_candidate(
             )
             reasons.append(reason)
             selector_reasons.append(reason)
+
+    if verifier_blocked_claim and action.model not in non_model_actions:
+        score -= 140
+        breakdown["compute_cost_penalty"] -= 70
+        breakdown["unsupported_claim_risk"] -= 70
+        reasons.append("single-run score chasing is penalized after the verifier blocked the robust claim")
+        selector_reasons.append("single-run score chasing is penalized after the verifier blocked the robust claim")
 
     if action.model == "svc" and any(t.proposed_action.model == "random_forest" and not t.comparison.metric_match for t in traces):
         score += 30
@@ -513,7 +699,12 @@ def select_candidate(
         f"{'; '.join(selected_reasons)}. "
         f"Agent hypothesis: {agent_decision.working_hypothesis if agent_decision else 'selector-only mode'}. "
         f"World model predicted {selected.prediction.expected_metric}, runtime {selected.prediction.expected_runtime_seconds}, "
+        f"next_state_claim_status={selected.prediction.predicted_next_state.claim_status_after_action}, "
+        f"uncertainty_reduction={selected.prediction.predicted_next_state.uncertainty_reduction}, "
+        f"research_value_per_compute={selected_breakdown.get('research_value_per_compute')}, "
         f"recommendation={selected.prediction.recommendation}, risks={risk_text}. "
+        f"Claim delta={selected.prediction.expected_claim_delta}; "
+        f"why_not_classic={selected.prediction.why_not_classic_autoresearch}. "
         f"Causal signal type: {causal_signal_type}."
     )
 
@@ -542,6 +733,22 @@ def select_candidate(
         preferred_action_id=agent_decision.preferred_action_id if agent_decision else None,
         selection_overrode_agent=selection_overrode_agent,
         override_reason=override_reason,
+        world_model_decision_basis=(
+            f"expected_claim_delta={selected.prediction.expected_claim_delta}; "
+            f"expected_claim_resolution={selected.prediction.expected_claim_resolution:.2f}; "
+            f"expected_value_of_information={selected.prediction.expected_value_of_information:.2f}; "
+            f"compute_waste_risk={selected.prediction.compute_waste_risk:.2f}; "
+            f"protocol_risks={', '.join(selected.prediction.protocol_risks)}"
+        ),
+        classic_counterfactual_action_id=next(
+            (
+                cp.action.action_id
+                for _score, cp, _reasons, _world, _selector, _breakdown in scored
+                if cp.action.model not in {"top_model_verification", "verification_sweep", "protocol_probe", "stop_and_report"}
+            ),
+            None,
+        ),
+        why_world_model_mattered=selected.prediction.why_not_classic_autoresearch,
         causal_reason=causal_reason,
         rejected_candidates=rejected,
     ), safety_validation

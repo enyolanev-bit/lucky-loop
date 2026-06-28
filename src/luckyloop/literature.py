@@ -9,6 +9,8 @@ import xml.etree.ElementTree as ET
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
 
+from .schemas import LiteratureQueryPlan
+
 
 ARXIV_API = "https://export.arxiv.org/api/query"
 ARXIV_RATE_LIMIT_SECONDS = 3.1
@@ -153,6 +155,61 @@ def generate_queries(question: str) -> list[str]:
             deduped.append(query)
             seen.add(key)
     return deduped
+
+
+def derive_literature_query_plan(question: str) -> LiteratureQueryPlan:
+    tokens = [
+        token
+        for token in re.findall(r"[a-zA-Z0-9]+", question.lower())
+        if len(token) > 3 and token not in {"with", "that", "from", "this", "does", "dataset", "public", "across"}
+    ]
+    joined = " ".join(tokens[:10])
+    domain_queries = [
+        question,
+        f'{joined} machine learning classification',
+        f'{joined} logistic regression random forest svm gradient boosting',
+        f'{joined} robustness repeated seeds cross validation',
+    ]
+    if any(term in question.lower() for term in ["sensor", "activity", "har", "eeg"]):
+        domain_queries.extend(
+            [
+                '"human activity recognition" sensor classification machine learning',
+                '"EEG eye state" classification machine learning',
+                'wearable sensor classification logistic regression random forest svm',
+            ]
+        )
+    method_queries = [
+        'ti:"AI Scientist" OR abs:"autonomous scientific discovery"',
+        'all:"Agent Laboratory" "research assistants"',
+        'all:"MLE-bench" "machine learning agents"',
+        'all:"Qwen-AgentWorld" OR all:"language world models"',
+        'all:"claim verification" scientific claims',
+    ]
+    dataset_queries = [
+        f"{joined} classification dataset",
+        f"{joined} openml huggingface dataset",
+        "sensor classification dataset",
+        "tabular classification benchmark",
+    ]
+    return LiteratureQueryPlan(
+        domain_queries=_dedupe_strings(domain_queries),
+        method_queries=_dedupe_strings(method_queries),
+        dataset_queries=_dedupe_strings(dataset_queries),
+        key_terms=tokens[:12],
+        excluded_terms=["autonomous research", "AI scientist", "world model"],
+        rationale="Domain queries are derived from the user question; method queries are isolated for orchestration safeguards.",
+    )
+
+
+def _dedupe_strings(values: list[str]) -> list[str]:
+    out = []
+    seen = set()
+    for value in values:
+        key = value.strip().lower()
+        if key and key not in seen:
+            out.append(value.strip())
+            seen.add(key)
+    return out
 
 
 def _year_from_text(text: str) -> int | None:
@@ -349,6 +406,27 @@ def collect_papers(question: str, max_arxiv_per_query: int = 2, polite_delay: fl
     return queries, _dedupe_papers(papers)
 
 
+def collect_papers_for_queries(
+    queries: list[str],
+    *,
+    include_curated: bool,
+    max_arxiv_per_query: int = 3,
+    polite_delay: float = ARXIV_RATE_LIMIT_SECONDS,
+) -> tuple[list[str], list[Paper]]:
+    papers: list[Paper] = []
+    if include_curated:
+        curated = [_paper_from_curated(row) for row in CURATED_REFERENCES]
+        papers.extend(curated)
+        curated_ids = [paper.arxiv_id for paper in curated if paper.arxiv_id]
+        papers.extend(_fetch_arxiv_ids(curated_ids))
+        if curated_ids:
+            time.sleep(polite_delay)
+    for query in queries:
+        papers.extend(_search_arxiv(query, max_results=max_arxiv_per_query))
+        time.sleep(polite_delay)
+    return _dedupe_strings(queries), _dedupe_papers(papers)
+
+
 def _tokens(text: str) -> set[str]:
     stop = {
         "the", "and", "for", "with", "that", "this", "from", "under", "which", "can",
@@ -399,6 +477,40 @@ def rank_and_filter_papers(question: str, papers: list[Paper], min_score: float 
             excluded.append(paper)
         elif paper.relevance_score < min_score or not usage:
             paper.exclusion_reason = "low relevance to autonomous research, ML agents, world models, or claim verification"
+            excluded.append(paper)
+        else:
+            ranked.append(paper)
+    ranked.sort(key=lambda p: (p.relevance_score, p.year or 0), reverse=True)
+    excluded.sort(key=lambda p: (p.relevance_score, p.year or 0), reverse=True)
+    return ranked, excluded
+
+
+def rank_and_filter_domain_papers(question: str, papers: list[Paper], min_score: float = 1.0) -> tuple[list[Paper], list[Paper]]:
+    q = _tokens(question)
+    method_terms = [
+        "ai scientist",
+        "agent laboratory",
+        "qwen-agentworld",
+        "language world model",
+        "autonomous scientific discovery",
+        "claim verification",
+    ]
+    ranked: list[Paper] = []
+    excluded: list[Paper] = []
+    for paper in papers:
+        haystack = f"{paper.title} {paper.abstract} {' '.join(paper.tags)} {' '.join(paper.categories)}"
+        lowered = haystack.lower()
+        tokens = _tokens(haystack)
+        overlap = len(q & tokens)
+        domain_bonus = 0
+        for term in ["classification", "sensor", "activity", "eeg", "logistic", "random forest", "support vector", "gradient boosting", "robust"]:
+            if term in lowered:
+                domain_bonus += 1
+        method_penalty = 6 if any(term in lowered for term in method_terms) else 0
+        paper.used_for = ["domain_background"]
+        paper.relevance_score = float(overlap + domain_bonus - method_penalty)
+        if paper.relevance_score < min_score or method_penalty:
+            paper.exclusion_reason = "low relevance to the domain research question"
             excluded.append(paper)
         else:
             ranked.append(paper)
@@ -486,6 +598,91 @@ def synthesize_context(question: str, max_papers: int = 12) -> ResearchContext:
             "Compare unsupported claim rate, prediction-vs-reality traces, verification timing, and claimable evidence.",
         ],
     )
+
+
+def synthesize_domain_context(question: str, plan: LiteratureQueryPlan, max_papers: int = 10) -> ResearchContext:
+    queries, papers = collect_papers_for_queries(plan.domain_queries, include_curated=False)
+    ranked, excluded = rank_and_filter_domain_papers(question, papers)
+    selected = ranked[:max_papers]
+    return ResearchContext(
+        question=question,
+        queries=queries,
+        papers=selected,
+        excluded_papers=excluded,
+        gap_findings=build_domain_gap_findings(question, selected),
+        recommended_metrics=["balanced_accuracy", "accuracy", "f1_macro", "precision_macro", "recall_macro"],
+        recommended_baselines=["literature_baseline", "simple_model_baseline"],
+        recommended_experiment_plan=[
+            "Select a dataset whose metadata and target match the research question.",
+            "Compare baseline and candidate model families with matched splits and repeated seeds.",
+            "Report only claims supported by the verification plan.",
+        ],
+    )
+
+
+def synthesize_method_context(question: str, plan: LiteratureQueryPlan, max_papers: int = 8) -> ResearchContext:
+    queries, papers = collect_papers_for_queries(plan.method_queries, include_curated=True)
+    ranked, excluded = rank_and_filter_papers(question, papers)
+    selected = ranked[:max_papers]
+    return ResearchContext(
+        question=f"{question} auto-research method safeguards",
+        queries=queries,
+        papers=selected,
+        excluded_papers=excluded,
+        gap_findings=build_gap_findings(selected),
+        recommended_metrics=[
+            "unsupported_claim_rate",
+            "prediction_interval_coverage",
+            "prediction_miss_count",
+            "compute_per_claimable_claim",
+        ],
+        recommended_baselines=["classic_autoresearch", "classic_verified", "lucky_loop_full"],
+        recommended_experiment_plan=[
+            "Use Qwen-AgentWorld predictions before expensive actions.",
+            "Run generated code only after validation and dry-run.",
+            "Gate final claims through deterministic verification.",
+        ],
+    )
+
+
+def build_domain_gap_findings(question: str, papers: list[Paper]) -> list[GapFinding]:
+    source_ids = [paper.citation_id for paper in papers[:5]]
+    lower = question.lower()
+    topic = "the selected ML task"
+    if "sensor" in lower or "activity" in lower:
+        topic = "sensor classification"
+    if "eeg" in lower:
+        topic = "EEG/sensor classification"
+    return [
+        GapFinding(
+            gap_id="domain_gap_model_comparison",
+            claim=f"The literature context must establish whether nonlinear models are actually expected to improve {topic} over simple baselines.",
+            source_ids=source_ids,
+            implication="Generate hypotheses from domain-specific evidence rather than Lucky Loop meta-literature.",
+            metric="domain_source_coverage",
+            experiment="Compare baseline and nonlinear model families on a dataset selected for the user question.",
+        ),
+        GapFinding(
+            gap_id="domain_gap_robustness",
+            claim=f"Claims about {topic} performance require robustness checks across splits or seeds, not a single score.",
+            source_ids=source_ids,
+            implication="Use repeated seeds and block claims whose effect is within run-to-run noise.",
+            metric="effect_to_noise_ratio",
+            experiment="Run matched repeated-seed comparisons and verify effect size against seed noise.",
+        ),
+    ]
+
+
+def write_split_context(domain: ResearchContext, method: ResearchContext, out_dir: Path, plan: LiteratureQueryPlan) -> None:
+    out_dir.mkdir(parents=True, exist_ok=True)
+    (out_dir / "query_plan.json").write_text(json.dumps(plan.model_dump(), indent=2), encoding="utf-8")
+    write_context(domain, out_dir / "domain")
+    write_context(method, out_dir / "method")
+    (out_dir / "domain_sources.json").write_text((out_dir / "domain" / "sources.json").read_text(encoding="utf-8"), encoding="utf-8")
+    (out_dir / "method_sources.json").write_text((out_dir / "method" / "sources.json").read_text(encoding="utf-8"), encoding="utf-8")
+    (out_dir / "domain_related_work.md").write_text((out_dir / "domain" / "related_work.md").read_text(encoding="utf-8"), encoding="utf-8")
+    (out_dir / "method_related_work.md").write_text((out_dir / "method" / "related_work.md").read_text(encoding="utf-8"), encoding="utf-8")
+    (out_dir / "domain_gaps.json").write_text(json.dumps([asdict(gap) for gap in domain.gap_findings], indent=2), encoding="utf-8")
 
 
 def _source_payload(context: ResearchContext) -> dict:

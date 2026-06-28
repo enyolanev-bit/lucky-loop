@@ -7,16 +7,19 @@ import shutil
 from pathlib import Path
 
 from luckyloop.executor import execute
+from luckyloop.defaults import CORE_TASK_PATHS
 from luckyloop.loop import build_state
 from luckyloop.planner import action_key, generate_candidates
 from luckyloop.schemas import ExperimentTrace, ProposedAction, TaskSpec
 from luckyloop.tasks import ROOT, load_task
 from luckyloop.verifier import verify_sweep
 
-from run_ablation_suite import TASK_PATHS, _choose_classic_action
+from luckyloop.operator_trace import append_operator_event, write_operator_summary
+
+from run_ablation_suite import _choose_classic_action
 
 
-VERIFICATION_MODELS = {"verification_sweep", "top_model_verification"}
+VERIFICATION_MODELS = {"verification_sweep", "top_model_verification", "protocol_probe"}
 
 
 def load_traces(policy: str, task_id: str) -> list[ExperimentTrace]:
@@ -251,13 +254,40 @@ def write_reports(rows: list[dict]) -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--tasks", nargs="*", default=TASK_PATHS)
+    parser.add_argument("--tasks", nargs="*", default=CORE_TASK_PATHS)
     parser.add_argument("--max-cases-per-task", type=int, default=1)
     args = parser.parse_args()
+    task_ids = [Path(task_path).stem for task_path in args.tasks]
+    append_operator_event(
+        event_type="counterfactual_evaluation",
+        goal="Evaluate states where Lucky Loop's world-model-guided choice differs from classic autoresearch.",
+        action="run_counterfactual_evaluation",
+        status="started",
+        inputs={"tasks": args.tasks, "task_ids": task_ids, "max_cases_per_task": args.max_cases_per_task},
+        rationale="Generate evidence that Qwen predictions can change the next experiment rather than merely narrating it.",
+    )
     rows = []
-    for task_path in args.tasks:
-        rows.extend(run_task(load_task(task_path), args.max_cases_per_task))
-    write_reports(rows)
+    status = "completed"
+    error = None
+    try:
+        for task_path in args.tasks:
+            rows.extend(run_task(load_task(task_path), args.max_cases_per_task))
+        write_reports(rows)
+    except Exception as exc:
+        status = "failed"
+        error = str(exc)
+        raise
+    finally:
+        append_operator_event(
+            event_type="counterfactual_evaluation",
+            goal="Evaluate states where Lucky Loop's world-model-guided choice differs from classic autoresearch.",
+            action="run_counterfactual_evaluation",
+            status=status,
+            inputs={"task_ids": task_ids},
+            outputs={"rows": len(rows), "error": error},
+            rationale="Counterfactual evaluation completed for the selected task subset.",
+        )
+        write_operator_summary()
     print("Wrote reports/counterfactuals/counterfactual_evaluation.md")
 
 

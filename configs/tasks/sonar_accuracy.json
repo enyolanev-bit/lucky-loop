@@ -1,0 +1,46 @@
+{
+  "task_id": "sonar_accuracy",
+  "dataset": "sonar",
+  "problem_type": "classification",
+  "primary_metric": "accuracy",
+  "secondary_metrics": ["f1"],
+  "budget_runs": 7,
+  "models": ["logistic_regression", "random_forest", "svc", "gradient_boosting"],
+  "candidate_space": {
+    "logistic_regression": {
+      "scale": [false, true],
+      "C": [0.1, 1.0, 10.0]
+    },
+    "svc": {
+      "scale": [true],
+      "C": [0.5, 2.0, 5.0],
+      "kernel": ["rbf"]
+    },
+    "random_forest": {
+      "n_estimators": [100, 300],
+      "max_depth": [null, 4, 8]
+    },
+    "gradient_boosting": {
+      "n_estimators": [100, 150],
+      "learning_rate": [0.05, 0.1]
+    }
+  },
+  "sweeps": [
+    {
+      "model": "svc",
+      "param": "C",
+      "values": [0.5, 1.0, 2.0],
+      "seeds": [0, 1, 2, 3],
+      "scale": true,
+      "label_noise": 0.03
+    }
+  ],
+  "top_model_verification_min_single_runs": 3,
+  "top_model_verification_seeds": [0, 1, 2],
+  "goal": "Robustly classify acoustic sonar returns as mines or rocks under a small compute budget, while avoiding unsupported best-model claims.",
+  "notes": [
+    "OpenML data_id=40, UCI Sonar Mines vs Rocks.",
+    "Small acoustic dataset with 208 examples and 60 numeric signal features.",
+    "Single split wins are fragile; repeated-seed verification is expected to matter."
+  ]
+}

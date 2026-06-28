@@ -1,4 +1,4 @@
-# Lucky Loop: World-Model-Guided Autonomous Research with Claim-Calibrated Reporting
+# Lucky Loop: Complete ML Research Validity Lab with Claim-Calibrated Reporting
 
 **Team Pegasus** — Paris Research Hackathon (TUM.ai x Iterate), Track 3 "Lucky Loop", June 2026.
 
@@ -6,7 +6,7 @@
 
 ## Abstract
 
-Autonomous research agents can generate plausible experiments and convincing reports, but they often lack two safeguards: prospective prediction before compute and conservative claim calibration after execution. We present **Lucky Loop**, a world-model-guided autoresearch loop in which an agent-in-repo or API-backed planner proposes candidate ML experiments, Qwen-AgentWorld predicts likely metrics, runtime, and failure modes before execution, and real sklearn experiments test those predictions. A comparator records prediction-vs-reality, while a deterministic verifier and claim ledger prevent fragile results from becoming unsupported scientific claims. On small tabular benchmarks, Lucky Loop produces auditable traces containing state, agent decision, action, predicted observation, real observation, comparison, and claim verdicts. The contribution is a research loop that measures both experimental outcomes and the agent's own predictive reliability.
+Autonomous research agents can generate plausible experiments and convincing reports, but they often lack three safeguards: prospective prediction before compute, protocol awareness during action selection, and conservative claim calibration after execution. We present **Lucky Loop**, a complete computational ML research validity lab. Starting from a research question, Lucky Loop builds literature context, maps gaps to hypotheses, compiles safe experimental protocols, asks Qwen-AgentWorld to predict the next computer-lab observation before action, runs real Python ML experiments, analyzes effects, and gates every claim through a deterministic verifier and claim ledger. The contribution is not another AutoML score chaser. It is an auditable research loop that measures whether world-model foresight changes compute allocation, protocol-risk handling, and claim quality.
 
 ## 1. Introduction
 
@@ -18,14 +18,14 @@ Lucky Loop targets that failure mode by adding foresight before compute and disc
 Predict before compute. Verify before claim.
 ```
 
-An autoresearch agent proposes candidate experiments. Qwen-AgentWorld is used as a language world model: given the current research state and a candidate action, it predicts the next experimental observation. Lucky Loop then runs the real experiment, compares prediction against reality, and only allows claims that survive a deterministic evidence gate.
+An autoresearch agent proposes candidate lab actions from a safe protocol catalog. Qwen-AgentWorld is used in its natural setting as a language world model for computer-lab transitions: given the current notebook state and a candidate action, it predicts the likely terminal/output/artifact observation, failure risk, protocol risk, and claim impact. Lucky Loop then runs the real ML experiment, compares prediction against reality, and only allows claims that survive a deterministic evidence gate.
 
 Contributions:
 
-1. A world-model-guided autoresearch loop that predicts experiment outcomes before execution.
-2. A prediction-vs-actual trace format for auditing research-agent decisions.
-3. A deterministic verifier and claim ledger for claim-calibrated reporting.
-4. A small demonstration with useful predictions, prediction misses, and blocked overclaims.
+1. A complete ML research lab pipeline from literature review to final claim ledger.
+2. A Qwen-AgentWorld integration aligned with computer-use world modeling rather than scientific oracle claims.
+3. Real ML validity protocols for split validity, leakage, metric misuse, seed variance, and small-data complexity.
+4. A deterministic verifier and notebook trace for claim-calibrated reporting.
 
 ## 2. Related Work
 
@@ -33,15 +33,15 @@ Contributions:
 
 **ML experiment agents.** MLE-bench and related work frame ML agents as search policies over experiment spaces. These systems are often judged by final score. Lucky Loop also asks whether the agent could predict what would happen before acting, and whether its final claims are supported by the evidence it collected.
 
-**World models for agents.** Qwen-AgentWorld frames a language world model as a predictor of environment dynamics from state and action. Lucky Loop applies that idea to experimental research: the state is the current evidence base, the action is a candidate experiment, and the predicted observation is a metric/runtime/risk forecast.
+**World models for agents.** Qwen-AgentWorld frames a language world model as a predictor of environment dynamics from state and action across computer-use domains such as terminal, software engineering, tools, web, and OS. Lucky Loop applies that idea to an ML research lab: the state is the current notebook and evidence base, the action is a protocol-compiled lab command, and the predicted observation is the expected computer-lab output, artifact pattern, failure risk, protocol risk, and claim impact.
 
 **Verification and reproducibility.** Critiques of AI scientist systems highlight hallucinated findings, weak implementations, and benchmark misuse. Lucky Loop addresses this with logs, prediction-vs-actual comparisons, a deterministic verifier, and a claim ledger.
 
 ## 3. Method
 
-### World Model as Experimental Simulator
+### World Model as Computer-Lab Simulator
 
-At step `t`, Lucky Loop maintains an explicit research state `s_t`: goal, known results, budget, open questions, and unresolved risks. The autoresearch agent proposes candidate actions `a_t`, such as running a scaled model, testing a new inductive bias, or launching a multi-seed robustness sweep.
+At step `t`, Lucky Loop maintains an explicit lab state `s_t`: research question, literature gaps, hypotheses, protocols, notebook entries, known results, budget, and unresolved risks. The autoresearch agent proposes candidate actions `a_t`, such as running a split-validity protocol, launching a leakage probe, auditing metrics under imbalance, or replicating a single-run winner.
 
 For each candidate action, Qwen-AgentWorld predicts a next observation:
 
@@ -51,11 +51,12 @@ o_hat_t+1 = world_model(s_t, a_t)
 
 The predicted observation includes:
 
-- expected metric range
-- expected runtime
-- expected failure modes
-- recommendation: run / skip / modify
-- rationale
+- terminal/output pattern
+- expected artifacts
+- runtime or failure risk
+- protocol risk
+- expected claim delta
+- recommendation: run / skip / modify / verify / stop
 
 The selector chooses an action using the world-model signal. The executor then runs real code and returns the actual observation:
 
@@ -69,7 +70,7 @@ The comparator measures prediction-vs-reality. The verifier gates any scientific
 s_t+1 = update(s_t, a_t, o_hat_t+1, o_t+1, verifier_result)
 ```
 
-This makes Qwen-AgentWorld a simulator of experimental consequences, not merely a generic planner or text generator.
+This makes Qwen-AgentWorld a simulator of the research computer environment, not an oracle for scientific truth. Scientific evidence comes only from executed Python experiments and deterministic analysis.
 
 ### Claim-Calibrated Reporting
 

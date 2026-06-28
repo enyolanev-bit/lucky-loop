@@ -207,6 +207,9 @@ class LLMResearchAgent:
     ) -> tuple[AgentDecision, str]:
         prompt = build_agent_prompt(task, state, candidate_catalog, prior_traces)
         client = OpenAI(base_url=self.base_url, api_key=self.api_key)
+        extra_body = {}
+        if os.getenv("LUCKYLOOP_AGENT_DISABLE_THINKING", "").lower() in {"1", "true", "yes"}:
+            extra_body["thinking"] = {"type": "disabled"}
         resp = client.chat.completions.create(
             model=self.model_name,
             messages=[
@@ -215,6 +218,7 @@ class LLMResearchAgent:
             ],
             temperature=0.2,
             max_tokens=900,
+            extra_body=extra_body or None,
         )
         content = resp.choices[0].message.content or "{}"
         decision = AgentDecision(**_json_from_text(content))

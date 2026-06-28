@@ -25,7 +25,7 @@ def label_for(model: str, options: dict[str, str]) -> str:
     parts = [model]
     if options.get("scale", "").lower() == "true":
         parts.append("scaled")
-    for key in ("C", "kernel", "n_estimators", "max_depth", "learning_rate"):
+    for key in ("C", "kernel", "n_estimators", "max_depth", "learning_rate", "max_iter", "solver"):
         if options.get(key) not in {None, ""}:
             short = {
                 "n_estimators": "n",
@@ -60,12 +60,16 @@ def build_command(dataset: str, spec: str, seed: int) -> tuple[str, list[str]]:
         cmd += ["--max-depth", options["max_depth"]]
     if options.get("learning_rate"):
         cmd += ["--learning-rate", options["learning_rate"]]
+    if options.get("max_iter"):
+        cmd += ["--max-iter", options["max_iter"]]
+    if options.get("solver"):
+        cmd += ["--solver", options["solver"]]
     return label_for(model, options), cmd
 
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--dataset", required=True, choices=["breast_cancer", "wine", "digits"])
+    parser.add_argument("--dataset", required=True, choices=["breast_cancer", "wine", "digits", "sonar", "eeg_eye_state", "har"])
     parser.add_argument("--models", nargs="+", required=True)
     parser.add_argument("--seeds", nargs="+", type=int, default=[0, 1, 2, 3, 4])
     args = parser.parse_args()

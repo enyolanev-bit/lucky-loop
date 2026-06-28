@@ -9,15 +9,13 @@ import sys
 from dataclasses import asdict
 from pathlib import Path
 
+from .defaults import CORE_POLICIES, CORE_TASK_PATHS
 from .literature import synthesize_context, write_context
+from .schemas import ResearchAction, ResearchProgram
 from .tasks import ROOT, load_task
 
 
-DEFAULT_TASKS = [
-    "configs/tasks/breast_cancer_accuracy.json",
-    "configs/tasks/wine_accuracy.json",
-    "configs/tasks/digits_accuracy.json",
-]
+DEFAULT_TASKS = CORE_TASK_PATHS
 
 
 def slugify(text: str, max_len: int = 72) -> str:
@@ -35,6 +33,53 @@ def _rel(path: Path) -> str:
 def _write_json(path: Path, payload: dict) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
+
+
+def _research_actions_for_task(task_path: str) -> list[ResearchAction]:
+    task = load_task(task_path)
+    return [
+        ResearchAction(
+            action_id=f"{task.task_id}:literature_review",
+            kind="literature_review",
+            task_id=task.task_id,
+            description=f"Map literature gaps to the {task.task_id} evidence target.",
+            expected_claim_change="Defines which claims must be verified before reporting.",
+            cost_class="free",
+            risk_focus=["claim_calibration", "benchmark_misuse"],
+            produces=["literature/related_work.md", "experiment_plan.json"],
+        ),
+        ResearchAction(
+            action_id=f"{task.task_id}:single_experiment",
+            kind="single_experiment",
+            task_id=task.task_id,
+            description=f"Run safe-catalog sklearn experiments on {task.dataset}.",
+            command=f"PYTHONPATH=src python -m luckyloop.loop --task {task_path}",
+            expected_claim_change="Adds observations but does not by itself allow a robust best-model claim.",
+            cost_class="cheap",
+            risk_focus=["single_split_overclaim"],
+            produces=[f"runs/ablations/lucky_loop_full/{task.task_id}/run_*.json"],
+        ),
+        ResearchAction(
+            action_id=f"{task.task_id}:multi_seed_verification",
+            kind="multi_seed_verification",
+            task_id=task.task_id,
+            description="Verify close top models or hyperparameter winners on matched seeds.",
+            expected_claim_change="Allows, weakens, blocks, or rewrites best-model claims.",
+            cost_class="moderate",
+            risk_focus=["seed_variance", "effect_smaller_than_noise"],
+            produces=[f"reports/ablations/lucky_loop_full/{task.task_id}/claim_ledger.json"],
+        ),
+        ResearchAction(
+            action_id=f"{task.task_id}:protocol_probe",
+            kind="protocol_probe",
+            task_id=task.task_id,
+            description="Probe whether a high-looking metric should be blocked by protocol risk.",
+            expected_claim_change="Blocks or rewrites protocol-fragile claims.",
+            cost_class="moderate",
+            risk_focus=["metric_misuse", "protocol_fragility"],
+            produces=[f"runs/ablations/lucky_loop_full/{task.task_id}/run_*.json"],
+        ),
+    ]
 
 
 def write_question(path: Path, question: str, agent: str) -> None:
@@ -114,30 +159,84 @@ def build_experiment_plan(question: str, task_paths: list[str], context) -> dict
                 "task_spec": task_path,
             }
         )
-    return {
-        "schema_version": "1.0",
-        "question": question,
-        "goal": "Run an end-to-end agent-operated autoresearch loop with world-model predictions before compute and claim verification after execution.",
-        "tasks": tasks,
-        "policies": context.recommended_baselines,
-        "metrics": context.recommended_metrics,
-        "steps": [
-            "literature_review",
-            "experiment_plan",
-            "classic_autoresearch_baseline",
-            "classic_verified_baseline",
-            "lucky_loop_full_world_model_run",
-            "artifact_validation",
-            "claim_calibrated_report",
-        ],
-        "success_criteria": [
-            "Live or cached Qwen-AgentWorld candidate predictions exist for Lucky Loop full traces.",
-            "Classic autoresearch baseline is compared against Lucky Loop full.",
-            "Top observed models are detected from real sklearn results.",
-            "Claims are allowed or blocked through claim ledger entries.",
-            "Final report distinguishes score observations from robust claims.",
-        ],
-    }
+    actions = []
+    for task_path in task_paths:
+        actions.extend(_research_actions_for_task(task_path))
+    actions.extend(
+        [
+            ResearchAction(
+                action_id="global:ablation",
+                kind="ablation",
+                description="Compare classic autoresearch, verifier-only, and Lucky Loop full.",
+                command="PYTHONPATH=src python scripts/run_ablation_suite.py --world-model auto",
+                expected_claim_change="Measures whether world-model-guided decisions change claim quality.",
+                cost_class="expensive",
+                risk_focus=["unsupported_claims", "score_chasing"],
+                produces=["reports/ablations/world_model_ablation.json"],
+            ),
+            ResearchAction(
+                action_id="global:counterfactual",
+                kind="counterfactual",
+                description="Replay states where Lucky Loop and classic autoresearch choose different actions.",
+                command="PYTHONPATH=src python scripts/run_counterfactual_evaluation.py",
+                expected_claim_change="Shows whether Qwen-guided choices prevented unsupported claims.",
+                cost_class="moderate",
+                risk_focus=["world_model_usefulness"],
+                produces=["reports/counterfactuals/counterfactual_evaluation.json"],
+            ),
+            ResearchAction(
+                action_id="global:stop_and_report",
+                kind="stop_and_report",
+                description="Stop spending compute once remaining actions cannot improve claim quality.",
+                expected_claim_change="Makes the final report honest instead of score-chasing.",
+                cost_class="free",
+                risk_focus=["non_claimable_compute"],
+                produces=["reports/autoresearch/<slug>/final_report.md"],
+            ),
+        ]
+    )
+    program = ResearchProgram(
+        question=question,
+        goal="Run an end-to-end predictive research lab loop with world-model simulation before compute and claim verification after execution.",
+        selected_tasks=[task["task_id"] for task in tasks],
+        literature_gaps=[asdict(gap) for gap in context.gap_findings],
+        success_metrics=context.recommended_metrics,
+        candidate_research_actions=actions,
+        baselines=CORE_POLICIES,
+        constraints={
+            "safe_catalog_only": True,
+            "single_run_is_observation_not_claim": True,
+            "world_model_predicts_not_verifies": True,
+            "verifier_is_deterministic": True,
+        },
+    )
+    payload = program.model_dump()
+    payload.update(
+        {
+            "tasks": tasks,
+            "policies": CORE_POLICIES,
+            "metrics": context.recommended_metrics,
+            "steps": [
+                "literature_review",
+                "research_program",
+                "classic_autoresearch_baseline",
+                "classic_verified_baseline",
+                "lucky_loop_full_world_model_run",
+                "counterfactual_evaluation",
+                "budgeted_compute_evaluation",
+                "artifact_validation",
+                "claim_calibrated_report",
+            ],
+            "success_criteria": [
+                "Live or cached Qwen-AgentWorld candidate predictions exist for Lucky Loop full traces.",
+                "Classic autoresearch baseline is compared against Lucky Loop full.",
+                "At least one world-model-driven action differs from classic score chasing.",
+                "Claims are allowed or blocked through claim ledger entries.",
+                "Final report distinguishes score observations from robust claims.",
+            ],
+        }
+    )
+    return payload
 
 
 def write_run_commands(path: Path, question: str, agent: str, task_paths: list[str]) -> None:
@@ -197,6 +296,12 @@ def collect_evidence_manifest(out_dir: Path, task_paths: list[str], executed: bo
             "budgeted_compute": "reports/budgeted_compute/budgeted_compute_evaluation.md",
             "backend_pitch": "reports/pitch_backend_summary.md",
         },
+        "workspace_artifacts": {
+            "experiment_plan": _rel(out_dir / "experiment_plan.json"),
+            "research_trace": _rel(out_dir / "research_trace.json"),
+            "decision_journal": _rel(out_dir / "decision_journal.jsonl"),
+            "final_report": _rel(out_dir / "final_report.md"),
+        },
         "task_artifacts": [],
     }
     for task_id in task_ids:
@@ -223,12 +328,93 @@ def execute_backend(task_paths: list[str], agent: str, rerun_experiments: bool) 
     env = os.environ.copy()
     env["PYTHONPATH"] = "src"
     if rerun_experiments:
-        _run([sys.executable, "scripts/run_ablation_suite.py", "--world-model", "auto", "--operator-agent", agent, "--tasks", *task_paths], env)
-    # Regenerate the counterfactual evidence from the current ablation traces so the report and the
-    # ablation never read a stale (or differently-generated) counterfactual_evaluation.json.
-    _run([sys.executable, "scripts/run_counterfactual_evaluation.py"], env)
-    _run([sys.executable, "scripts/run_budgeted_compute_evaluation.py"], env)
-    _run([sys.executable, "scripts/validate_artifacts.py", "--check-ablations", "--require-qwen"], env)
+        _run([sys.executable, "scripts/run_ablation_suite.py", "--world-model", "auto", "--operator-agent", agent, "--tasks", *task_paths, "--policies", *CORE_POLICIES], env)
+    _run([sys.executable, "scripts/run_counterfactual_evaluation.py", "--tasks", *task_paths], env)
+    _run([sys.executable, "scripts/run_budgeted_compute_evaluation.py", "--tasks", *task_paths], env)
+    _run([sys.executable, "scripts/validate_artifacts.py", "--check-ablations", "--require-qwen", "--skip-main", "--tasks", *task_paths], env)
+
+
+def _load_policy_trace_paths(task_paths: list[str], policy: str = "lucky_loop_full") -> list[Path]:
+    paths: list[Path] = []
+    for task_path in task_paths:
+        task_id = load_task(task_path).task_id
+        paths.extend(sorted((ROOT / "runs" / "ablations" / policy / task_id).glob("run_*.json")))
+    return paths
+
+
+def write_research_trace(out_dir: Path, question: str, task_paths: list[str]) -> None:
+    traces = []
+    for path in _load_policy_trace_paths(task_paths):
+        data = json.loads(path.read_text(encoding="utf-8"))
+        traces.append(
+            {
+                "trace_path": _rel(path),
+                "task_id": data.get("artifacts", {}).get("task_id"),
+                "run_id": data.get("run_id"),
+                "selected_action": data.get("proposed_action", {}).get("model"),
+                "world_model_prediction": {
+                    "recommendation": data.get("world_model_prediction", {}).get("recommendation"),
+                    "expected_claim_delta": data.get("world_model_prediction", {}).get("expected_claim_delta"),
+                    "expected_claim_resolution": data.get("world_model_prediction", {}).get("expected_claim_resolution"),
+                    "why_not_classic_autoresearch": data.get("world_model_prediction", {}).get("why_not_classic_autoresearch"),
+                },
+                "actual_status": data.get("actual_result", {}).get("status"),
+                "verification_status": (data.get("verification") or {}).get("status"),
+            }
+        )
+    _write_json(
+        out_dir / "research_trace.json",
+        {
+            "schema_version": "1.0",
+            "question": question,
+            "trace_count": len(traces),
+            "traces": traces,
+        },
+    )
+
+
+def write_decision_journal(out_dir: Path, task_paths: list[str]) -> None:
+    lines = []
+    for path in _load_policy_trace_paths(task_paths):
+        data = json.loads(path.read_text(encoding="utf-8"))
+        decision = data.get("decision_trace") or {}
+        state = data.get("state_before") or {}
+        selected = data.get("proposed_action") or {}
+        entry = {
+            "state_id": state.get("state_id"),
+            "task_id": data.get("artifacts", {}).get("task_id"),
+            "candidate_actions": [
+                {
+                    "action_id": action.get("action_id"),
+                    "model": action.get("model"),
+                    "params": action.get("params"),
+                }
+                for action in data.get("candidate_actions", [])
+            ],
+            "world_model_predictions": [
+                {
+                    "action_id": item.get("action", {}).get("action_id"),
+                    "model": item.get("action", {}).get("model"),
+                    "recommendation": item.get("prediction", {}).get("recommendation"),
+                    "expected_claim_delta": item.get("prediction", {}).get("expected_claim_delta"),
+                    "expected_claim_resolution": item.get("prediction", {}).get("expected_claim_resolution"),
+                    "source": item.get("source"),
+                }
+                for item in data.get("candidate_predictions", [])
+            ],
+            "selected_action": selected.get("action_id"),
+            "selected_model": selected.get("model"),
+            "why_world_model_mattered": decision.get("why_world_model_mattered") or decision.get("world_model_decision_basis"),
+            "classic_counterfactual_action": decision.get("classic_counterfactual_action_id"),
+            "claim_status_before": (
+                "needs_verification"
+                if (state.get("top_model_summary") or {}).get("needs_robustness_verification")
+                else "observation_only"
+            ),
+            "claim_status_after": (data.get("world_model_prediction") or {}).get("expected_claim_delta"),
+        }
+        lines.append(json.dumps(entry, sort_keys=True))
+    (out_dir / "decision_journal.jsonl").write_text("\n".join(lines) + ("\n" if lines else ""), encoding="utf-8")
 
 
 def write_final_report(out_dir: Path, question: str, context, evidence: dict) -> None:
@@ -245,13 +431,13 @@ def write_final_report(out_dir: Path, question: str, context, evidence: dict) ->
     if budgeted_path.exists():
         budgeted_summary = json.loads(budgeted_path.read_text(encoding="utf-8")).get("summary", {})
     lines = [
-        "# Agent-Operated Autoresearch Report",
+        "# Predictive Research Lab Report",
         "",
         f"Question: {question}",
         "",
         "## Method",
         "",
-        "A coding agent operates inside the repository. Lucky Loop supplies the research protocol: literature context, safe experiment catalog, Qwen-AgentWorld predictions before compute, real sklearn execution, prediction-vs-reality comparison, deterministic verification, and claim ledger reporting.",
+        "Lucky Loop is a predictive research lab OS backend. A coding agent operates inside the repository, but Qwen-AgentWorld acts as the language world model: before compute is spent, it predicts each candidate research action's outcome, protocol risk, value of information, and likely claim impact. Real sklearn experiments then test those predictions, and a deterministic verifier decides which claims can enter the report.",
         "",
         "## Literature-Derived Gaps",
         "",
@@ -269,6 +455,8 @@ def write_final_report(out_dir: Path, question: str, context, evidence: dict) ->
         "- Related work: `literature/related_work.md`",
         "- Sources: `literature/sources.json` and `literature/sources.bib`",
         "- Experiment plan: `experiment_plan.json`",
+        "- Research trace: `research_trace.json`",
+        "- Decision journal: `decision_journal.jsonl`",
         "- Evidence manifest: `evidence_manifest.json`",
         "- Backend ablation: `reports/ablations/world_model_ablation.md`",
         "- Counterfactual evaluation: `reports/counterfactuals/counterfactual_evaluation.md`",
@@ -303,7 +491,7 @@ def write_final_report(out_dir: Path, question: str, context, evidence: dict) ->
             f"- Cases: {counterfactual_summary.get('cases')}",
             f"- Claim-safety wins (Lucky verified what classic skipped): {counterfactual_summary.get('claim_safety_wins')}",
             f"- Verdict breakdown: {breakdown_text}",
-            f"- Lucky win rate: {usefulness_text}",
+            f"- Qwen choice usefulness: {usefulness_text}",
             "",
             "A win requires Lucky to have actually run verification the state needed and classic to "
             "have skipped it; raw scores across different experiment kinds (multi-seed sweep vs single "
@@ -333,6 +521,8 @@ def write_final_report(out_dir: Path, question: str, context, evidence: dict) ->
         "## Claim Discipline",
         "",
         claim_discipline,
+        "",
+        "The final report may discuss raw score observations, verified means, and blocked claims, but it must not turn a single-run best score into a robust scientific claim.",
         "",
         "## Source Mapping",
         "",
@@ -374,6 +564,8 @@ def create_workspace(
     if execute:
         execute_backend(task_paths, agent, rerun_experiments)
 
+    write_research_trace(out_dir, question, task_paths)
+    write_decision_journal(out_dir, task_paths)
     evidence = collect_evidence_manifest(out_dir, task_paths, executed=execute)
     _write_json(out_dir / "evidence_manifest.json", evidence)
     write_final_report(out_dir, question, context, evidence)

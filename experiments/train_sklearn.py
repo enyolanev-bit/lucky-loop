@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 import argparse, json, time, warnings
+from pathlib import Path
 import numpy as np
-from sklearn.datasets import load_breast_cancer, load_wine, load_digits
+from sklearn.datasets import fetch_openml, load_breast_cancer, load_wine, load_digits
 from sklearn.exceptions import ConvergenceWarning
 from sklearn.metrics import accuracy_score, f1_score
 from sklearn.model_selection import train_test_split
@@ -13,21 +14,62 @@ from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier,
 from sklearn.svm import SVC
 
 
+OPENML_DATASETS = {
+    "sonar": 40,
+    "eeg_eye_state": 1471,
+    "har": 1478,
+}
+
+CACHE_DIR = Path(__file__).resolve().parents[1] / ".cache" / "luckyloop_datasets"
+
+
 def get_dataset(name: str):
     if name == "breast_cancer":
         d = load_breast_cancer()
+        return d.data, d.target
     elif name == "wine":
         d = load_wine()
+        return d.data, d.target
     elif name == "digits":
         d = load_digits()
-    else:
-        raise ValueError(f"unknown dataset: {name}")
-    return d.data, d.target
+        return d.data, d.target
+    elif name in OPENML_DATASETS:
+        cache_path = CACHE_DIR / f"{name}.npz"
+        if cache_path.exists():
+            cached = np.load(cache_path, allow_pickle=False)
+            X, y = cached["X"], cached["y"]
+            return _maybe_subsample(name, X, y)
+        d = fetch_openml(data_id=OPENML_DATASETS[name], as_frame=False, parser="auto")
+        X = np.asarray(d.data, dtype=float)
+        _, y = np.unique(d.target, return_inverse=True)
+        CACHE_DIR.mkdir(parents=True, exist_ok=True)
+        np.savez_compressed(cache_path, X=X, y=y)
+        return _maybe_subsample(name, X, y)
+    raise ValueError(f"unknown dataset: {name}")
+
+
+def _maybe_subsample(name: str, X, y):
+    limits = {
+        "eeg_eye_state": 5000,
+        "har": 3000,
+    }
+    limit = limits.get(name)
+    if limit is None or len(y) <= limit:
+        return X, y
+    rng = np.random.default_rng(123)
+    selected = []
+    classes, counts = np.unique(y, return_counts=True)
+    for cls, count in zip(classes, counts):
+        cls_idxs = np.flatnonzero(y == cls)
+        n = max(1, int(round(limit * count / len(y))))
+        selected.extend(rng.choice(cls_idxs, size=min(n, len(cls_idxs)), replace=False).tolist())
+    selected = np.array(sorted(selected[:limit]))
+    return X[selected], y[selected]
 
 
 def build_model(args):
     if args.model == "logistic_regression":
-        clf = LogisticRegression(max_iter=args.max_iter, C=args.C, random_state=args.seed)
+        clf = LogisticRegression(max_iter=args.max_iter, C=args.C, solver=args.solver, random_state=args.seed)
         return make_pipeline(StandardScaler(), clf) if args.scale else clf
     if args.model == "random_forest":
         return RandomForestClassifier(n_estimators=args.n_estimators, max_depth=args.max_depth, random_state=args.seed, n_jobs=-1)
@@ -43,7 +85,7 @@ def build_model(args):
 
 def main():
     p = argparse.ArgumentParser()
-    p.add_argument("--dataset", default="breast_cancer", choices=["breast_cancer", "wine", "digits"])
+    p.add_argument("--dataset", default="breast_cancer", choices=["breast_cancer", "wine", "digits", "sonar", "eeg_eye_state", "har"])
     p.add_argument("--model", required=True, choices=["logistic_regression", "random_forest", "gradient_boosting", "hist_gradient_boosting", "svc"])
     p.add_argument("--scale", action="store_true")
     p.add_argument("--n-estimators", type=int, default=200)
@@ -52,6 +94,7 @@ def main():
     p.add_argument("--C", type=float, default=1.0)
     p.add_argument("--kernel", default="rbf")
     p.add_argument("--max-iter", type=int, default=1000)
+    p.add_argument("--solver", default="lbfgs", choices=["lbfgs", "saga", "newton-cg", "newton-cholesky"])
     p.add_argument("--test-size", type=float, default=0.25)
     p.add_argument("--seed", type=int, default=42)
     p.add_argument("--label-noise", type=float, default=0.0, help="Fraction of training labels to flip for controlled perturbation demos.")

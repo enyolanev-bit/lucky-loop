@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import os
+import time
 from pathlib import Path
 
 from .calibration import write_calibration_report
@@ -70,7 +71,11 @@ def risks_for(traces: list[ExperimentTrace]) -> list[str]:
 
 
 def build_state(task: TaskSpec, traces: list[ExperimentTrace], run_index: int, max_experiments: int, summary: str) -> ResearchState:
-    top_model_summary = detect_top_models(traces, metric=task.primary_metric)
+    top_model_summary = detect_top_models(
+        traces,
+        metric=task.primary_metric,
+        min_single_runs=task.top_model_verification_min_single_runs,
+    )
     open_questions = open_questions_for(traces)
     risks = risks_for(traces)
     if top_model_summary.needs_robustness_verification:
@@ -112,8 +117,8 @@ def run(
     else:
         runs_dir = ROOT / "runs"
         reports_dir = ROOT / "reports"
-    runs_dir.mkdir(exist_ok=True)
-    reports_dir.mkdir(exist_ok=True)
+    runs_dir.mkdir(parents=True, exist_ok=True)
+    reports_dir.mkdir(parents=True, exist_ok=True)
     traces: list[ExperimentTrace] = []
     seen: set[str] = set()
     agent = make_research_agent(
@@ -137,9 +142,14 @@ def run(
             break
         agent_decision = None
         agent_prompt = ""
+        agent_runtime_seconds = 0.0
         if agent is not None:
+            agent_start = time.perf_counter()
             agent_decision, agent_prompt = agent.propose_next_step(task, state_before, candidates, traces)
+            agent_runtime_seconds = round(time.perf_counter() - agent_start, 6)
+        prediction_start = time.perf_counter()
         candidate_predictions = predict_candidates(task, state_before, candidates, simulator_configured(), traces=traces)
+        world_model_prediction_runtime_seconds = round(time.perf_counter() - prediction_start, 6)
         selected_candidate, decision_trace, safety_validation = select_candidate(
             state_before,
             candidate_predictions,
@@ -194,6 +204,9 @@ def run(
             world_model_schema_version=prediction.world_model_schema_version,
             artifacts={
                 "task_id": task.task_id,
+                "agent_runtime_seconds": agent_runtime_seconds,
+                "world_model_prediction_runtime_seconds": world_model_prediction_runtime_seconds,
+                "candidate_prediction_count": len(candidate_predictions),
                 "trace_path": f"{runs_dir.relative_to(ROOT)}/{run_id}.json",
                 "report_path": f"{reports_dir.relative_to(ROOT)}/final_report.md",
                 "claim_ledger_path": f"{reports_dir.relative_to(ROOT)}/claim_ledger.json",

@@ -4,15 +4,12 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
+from luckyloop.defaults import CORE_TASK_PATHS
 from luckyloop.loop import run
 from luckyloop.tasks import ROOT, load_task
 
 
-TASKS = [
-    "configs/tasks/breast_cancer_accuracy.json",
-    "configs/tasks/wine_accuracy.json",
-    "configs/tasks/digits_accuracy.json",
-]
+TASKS = CORE_TASK_PATHS
 
 
 def _actual_metric(trace):

@@ -6,7 +6,7 @@ from typing import Iterable
 from .schemas import ExperimentTrace
 
 
-VERIFICATION_MODELS = {"verification_sweep", "top_model_verification"}
+VERIFICATION_MODELS = {"verification_sweep", "top_model_verification", "protocol_probe"}
 
 
 def actual_metric(trace: ExperimentTrace) -> float | None:
@@ -58,6 +58,14 @@ def runs_to_first_verification(traces: list[ExperimentTrace]) -> int | None:
 
 def total_runtime_seconds(traces: Iterable[ExperimentTrace]) -> float:
     values = [trace.actual_result.runtime_seconds for trace in traces if trace.actual_result.runtime_seconds is not None]
+    return round(sum(values), 6)
+
+
+def world_model_runtime_seconds(traces: Iterable[ExperimentTrace]) -> float:
+    values = [
+        float(trace.artifacts.get("world_model_prediction_runtime_seconds") or 0.0)
+        for trace in traces
+    ]
     return round(sum(values), 6)
 
 
@@ -194,6 +202,7 @@ def claimable_evidence_summary(traces: list[ExperimentTrace]) -> dict:
         "best_claimable_score": best_claimable_score(traces),
         "runs_to_first_verification": runs_to_first_verification(traces),
         "total_runtime_seconds": total_runtime_seconds(traces),
+        "world_model_runtime_seconds": world_model_runtime_seconds(traces),
         "compute_per_claimable_claim": compute_per_claimable_claim(traces),
         "non_claimable_runs": non_claimable_runs(traces),
         "non_claimable_runtime_seconds": non_claimable_runtime_seconds(traces),

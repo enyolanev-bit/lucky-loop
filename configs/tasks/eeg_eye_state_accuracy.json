@@ -1,0 +1,41 @@
+{
+  "task_id": "eeg_eye_state_accuracy",
+  "dataset": "eeg_eye_state",
+  "problem_type": "classification",
+  "primary_metric": "accuracy",
+  "secondary_metrics": ["f1"],
+  "budget_runs": 7,
+  "models": ["logistic_regression", "random_forest", "hist_gradient_boosting"],
+  "candidate_space": {
+    "logistic_regression": {
+      "scale": [false, true],
+      "C": [0.1, 1.0, 10.0]
+    },
+    "random_forest": {
+      "n_estimators": [80, 120],
+      "max_depth": [null, 8]
+    },
+    "hist_gradient_boosting": {
+      "n_estimators": [60, 100],
+      "learning_rate": [0.05, 0.08],
+      "max_depth": [null, 8]
+    }
+  },
+  "sweeps": [
+    {
+      "model": "hist_gradient_boosting",
+      "param": "learning_rate",
+      "values": [0.03, 0.05, 0.08],
+      "seeds": [0, 1, 2],
+      "scale": false,
+      "label_noise": 0.02
+    }
+  ],
+  "top_model_verification_seeds": [0, 1, 2],
+  "goal": "Classify EEG eye-open versus eye-closed state under a small compute budget, while avoiding unsupported claims from fragile validation protocols.",
+  "notes": [
+    "OpenML data_id=1471, EEG Eye State.",
+    "Neural signal classification with 14 EEG features and many sequential measurements.",
+    "World model should flag single-split and protocol-risk claims before robust reporting."
+  ]
+}

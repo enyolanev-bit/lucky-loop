@@ -14,8 +14,10 @@ from luckyloop.benchmark_metrics import claimable_evidence_summary
 from luckyloop.calibration import write_calibration_report
 from luckyloop.claim_ledger import entries_from_verification, write_claim_ledger
 from luckyloop.comparator import compare
+from luckyloop.defaults import ALL_POLICIES, CORE_POLICIES, CORE_TASK_PATHS
 from luckyloop.executor import execute
 from luckyloop.loop import build_state, run as run_lucky_loop
+from luckyloop.operator_trace import append_operator_event, write_operator_summary
 from luckyloop.planner import action_key, generate_candidates, initial_hypothesis
 from luckyloop.reporter import generate_report
 from luckyloop.research_agent import prompt_hash
@@ -36,13 +38,8 @@ from luckyloop.top_models import detect_top_models
 from luckyloop.verifier import verify_sweep
 
 
-TASK_PATHS = [
-    "configs/tasks/breast_cancer_accuracy.json",
-    "configs/tasks/wine_accuracy.json",
-    "configs/tasks/digits_accuracy.json",
-]
-
-POLICIES = ["classic_autoresearch", "classic_verified", "lucky_loop_full"]
+TASK_PATHS = CORE_TASK_PATHS
+POLICIES = ALL_POLICIES
 
 
 def _clean_namespace(namespace: str) -> tuple[Path, Path]:
@@ -125,11 +122,21 @@ def _choose_classic_action(
     candidates: list[ProposedAction],
     traces: list[ExperimentTrace],
 ) -> ProposedAction:
-    top_summary = detect_top_models(traces, metric=task.primary_metric)
+    top_summary = detect_top_models(
+        traces,
+        metric=task.primary_metric,
+        min_single_runs=task.top_model_verification_min_single_runs,
+    )
     if policy == "classic_verified" and top_summary.needs_robustness_verification:
         for candidate in candidates:
             if candidate.model == "top_model_verification":
                 return candidate
+
+    if policy == "fixed_order":
+        for candidate in candidates:
+            if candidate.model not in {"top_model_verification", "verification_sweep", "stop_and_report"}:
+                return candidate
+        return candidates[0]
 
     if not traces:
         for candidate in candidates:
@@ -147,6 +154,8 @@ def _choose_classic_action(
 
     tested_models = {trace.proposed_action.model for trace in traces}
     priority = ["svc", "random_forest", "gradient_boosting", "hist_gradient_boosting", "logistic_regression"]
+    if policy == "score_chaser":
+        priority = ["hist_gradient_boosting", "gradient_boosting", "random_forest", "svc", "logistic_regression"]
     for model in priority:
         for candidate in candidates:
             if candidate.model == model and candidate.model not in tested_models:
@@ -285,16 +294,28 @@ def run_classic_policy(policy: str, task: TaskSpec, max_experiments: int | None 
 
 
 def run_policy(policy: str, task: TaskSpec, max_experiments: int | None, operator_agent: str) -> list[ExperimentTrace]:
-    if policy == "lucky_loop_full":
+    if policy in {"lucky_loop_full", "lucky_loop_qwen_cost_aware", "lucky_loop_no_qwen"}:
         namespace = f"ablations/{policy}/{task.task_id}"
         _clean_namespace(namespace)
-        return run_lucky_loop(
-            task=task,
-            output_namespace=namespace,
-            max_experiments=max_experiments,
-            planner_mode="operator_driven",
-            agent_backend=operator_agent,
-        )
+        old_base = os.environ.get("LUCKYWORLD_SIMULATOR_BASE_URL")
+        old_model = os.environ.get("LUCKYWORLD_SIMULATOR_MODEL")
+        if policy == "lucky_loop_no_qwen":
+            os.environ.pop("LUCKYWORLD_SIMULATOR_BASE_URL", None)
+            os.environ.pop("LUCKYWORLD_SIMULATOR_MODEL", None)
+        try:
+            return run_lucky_loop(
+                task=task,
+                output_namespace=namespace,
+                max_experiments=max_experiments,
+                planner_mode="operator_driven",
+                agent_backend=operator_agent,
+            )
+        finally:
+            if policy == "lucky_loop_no_qwen":
+                if old_base is not None:
+                    os.environ["LUCKYWORLD_SIMULATOR_BASE_URL"] = old_base
+                if old_model is not None:
+                    os.environ["LUCKYWORLD_SIMULATOR_MODEL"] = old_model
     return run_classic_policy(policy, task, max_experiments=max_experiments)
 
 
@@ -320,7 +341,7 @@ def summarize_traces(policy: str, task_id: str, traces: list[ExperimentTrace]) -
         if candidate_prediction.source == "qwen_agentworld"
     )
     unsupported_claims = 0
-    if policy == "classic_autoresearch" and best:
+    if policy in {"classic_autoresearch", "fixed_order", "score_chaser"} and best:
         unsupported_claims = 1
     elif best and not top_verifications and not supported:
         unsupported_claims = 1
@@ -346,6 +367,7 @@ def summarize_traces(policy: str, task_id: str, traces: list[ExperimentTrace]) -
         "best_claimable_score": claimable["best_claimable_score"],
         "runs_to_first_verification": claimable["runs_to_first_verification"],
         "total_runtime_seconds": claimable["total_runtime_seconds"],
+        "world_model_runtime_seconds": claimable["world_model_runtime_seconds"],
         "compute_per_claimable_claim": claimable["compute_per_claimable_claim"],
         "non_claimable_runs": claimable["non_claimable_runs"],
         "non_claimable_runtime_seconds": claimable["non_claimable_runtime_seconds"],
@@ -407,11 +429,11 @@ def write_ablation_reports(rows: list[dict]) -> None:
     lines = [
         "# World Model Ablation",
         "",
-        "This suite runs real sklearn experiments under three backend policies.",
+        "This suite evaluates Lucky Loop as a predictive research lab backend. The question is whether a world model changes research actions before compute, not merely whether it narrates results afterward.",
         "",
         "- `classic_autoresearch`: agent policy runs experiments and can report a best single-run score without prospective simulation.",
         "- `classic_verified`: same no-world-model planner, but with deterministic top-model verification.",
-        "- `lucky_loop_full`: agent-in-repo planner plus Qwen-AgentWorld predictions before compute and deterministic claim verification.",
+        "- `lucky_loop_full`: agent-in-repo planner plus Qwen-AgentWorld predictions of outcome, cost, protocol risk, and claim impact before compute.",
         "",
         "| Task | Policy | Runs | Best single-run | Best verified mean | Best claimable | Runs to verification | Compute / claimable claim | Wasted score-chasing | Unsupported claims | Claims blocked | Qwen predictions | Qwen triggered verification | Qwen choice usefulness |",
         "|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|---:|",
@@ -490,13 +512,14 @@ def write_ablation_reports(rows: list[dict]) -> None:
     pitch = [
         "# Backend Pitch Summary",
         "",
-        "Lucky Loop is a world-model-guided autoresearch backend. The agent proposes catalog actions, Qwen-AgentWorld predicts outcomes before compute, real sklearn experiments run, prediction-vs-reality is logged, and a deterministic verifier gates claims.",
+        "Lucky Loop is a predictive research lab OS backend. The agent proposes catalog actions, Qwen-AgentWorld simulates their consequences before compute, real sklearn experiments test reality, and a deterministic verifier gates claims.",
         "",
         "## What the ablation proves",
         "",
         "- Classic autoresearch can find good single-run scores, but has no pre-compute prediction trace.",
         "- Classic verified shows the trust gate alone can reduce overclaims, but still lacks prospective simulation.",
-        "- Lucky Loop full adds the missing world-model layer: every candidate is predicted before compute and every miss is logged.",
+        "- Lucky Loop full adds the missing world-model layer: candidate actions are predicted for outcome, cost, protocol risk, and claim impact before compute.",
+        "- Counterfactual cases show where world-model-guided choices differ from classic score chasing.",
         "- Claimable-score metrics are strict: inconclusive verifier outcomes block robust claims rather than becoming claimable wins.",
         "",
         "## Artifacts",
@@ -515,7 +538,7 @@ def write_ablation_reports(rows: list[dict]) -> None:
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--tasks", nargs="*", default=TASK_PATHS)
-    parser.add_argument("--policies", nargs="*", choices=POLICIES, default=POLICIES)
+    parser.add_argument("--policies", nargs="*", choices=POLICIES, default=CORE_POLICIES)
     parser.add_argument("--max-experiments", type=int, default=None)
     parser.add_argument("--operator-agent", default="codex_operator")
     parser.add_argument("--reuse-existing", action="store_true", help="Recompute reports from existing runs/ablations traces.")
@@ -526,6 +549,33 @@ def main() -> None:
         help="auto uses the configured Qwen-AgentWorld endpoint; heuristic temporarily disables it.",
     )
     args = parser.parse_args()
+    task_ids = [load_task(task_path).task_id for task_path in args.tasks]
+    if (
+        args.world_model == "auto"
+        and any(policy in {"lucky_loop_full", "lucky_loop_qwen_cost_aware"} for policy in args.policies)
+        and not args.reuse_existing
+        and not (os.environ.get("LUCKYWORLD_SIMULATOR_BASE_URL") and os.environ.get("LUCKYWORLD_SIMULATOR_MODEL"))
+    ):
+        raise SystemExit(
+            "Qwen-AgentWorld is required for --world-model auto. "
+            "Set LUCKYWORLD_SIMULATOR_BASE_URL and LUCKYWORLD_SIMULATOR_MODEL, "
+            "or pass --world-model heuristic explicitly for local non-evidence smoke runs."
+        )
+    append_operator_event(
+        event_type="ablation_suite",
+        goal="Compare classic autoresearch, verifier-only, and Lucky Loop full on selected ML tasks.",
+        action="run_ablation_suite",
+        operator=args.operator_agent,
+        status="started",
+        inputs={
+            "tasks": args.tasks,
+            "task_ids": task_ids,
+            "policies": args.policies,
+            "world_model": args.world_model,
+            "reuse_existing": args.reuse_existing,
+        },
+        rationale="Generate backend evidence for whether world-model-guided autoresearch changes compute allocation and claim quality.",
+    )
 
     old_base = os.environ.get("LUCKYWORLD_SIMULATOR_BASE_URL")
     old_model = os.environ.get("LUCKYWORLD_SIMULATOR_MODEL")
@@ -534,6 +584,8 @@ def main() -> None:
         os.environ.pop("LUCKYWORLD_SIMULATOR_MODEL", None)
 
     rows: list[dict] = []
+    status = "completed"
+    error = None
     try:
         for task_path in args.tasks:
             task = load_task(task_path)
@@ -543,11 +595,26 @@ def main() -> None:
                 else:
                     traces = run_policy(policy, task, args.max_experiments, args.operator_agent)
                 rows.append(summarize_traces(policy, task.task_id, traces))
+    except Exception as exc:
+        status = "failed"
+        error = str(exc)
+        raise
     finally:
         if old_base is not None:
             os.environ["LUCKYWORLD_SIMULATOR_BASE_URL"] = old_base
         if old_model is not None:
             os.environ["LUCKYWORLD_SIMULATOR_MODEL"] = old_model
+        append_operator_event(
+            event_type="ablation_suite",
+            goal="Compare classic autoresearch, verifier-only, and Lucky Loop full on selected ML tasks.",
+            action="run_ablation_suite",
+            operator=args.operator_agent,
+            status=status,
+            inputs={"task_ids": task_ids, "policies": args.policies, "world_model": args.world_model},
+            outputs={"rows": len(rows), "error": error},
+            rationale="Ablation suite finished; reports should be read with matching task subset if interrupted runs exist.",
+        )
+        write_operator_summary()
 
     write_ablation_reports(rows)
     print("Wrote reports/ablations/world_model_ablation.md")

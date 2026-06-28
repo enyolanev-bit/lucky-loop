@@ -1,8 +1,11 @@
 scikit-learn
 pandas
 numpy
+scipy
+datasets
+huggingface_hub
+pyarrow
 openai
-streamlit
 pydantic
 rich
 typer

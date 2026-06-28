@@ -1,13 +1,13 @@
 from __future__ import annotations
 import json, os, re
 from openai import OpenAI
-from .schemas import Prediction, ProposedAction
+from .schemas import Prediction, PredictedNextState, ProposedAction
 
-PROMPT_VERSION = "world_model_prompt_v2"
-SCHEMA_VERSION = "prediction_schema_v2"
+PROMPT_VERSION = "world_model_prompt_v4_research_action"
+SCHEMA_VERSION = "prediction_schema_v4_research_action"
 
 SYSTEM = """You are Qwen-AgentWorld acting as a language world model for ML autoresearch.
-Your job is not to plan after the fact. Given state s_t and candidate action a_t, predict the next experimental observation o_t+1 before compute is spent.
+Your job is not to plan after the fact. Given state s_t and candidate research action a_t, predict the next experimental observation o_t+1, the next research state s_t+1, and whether this action changes what the final report can honestly claim before compute is spent.
 
 Be specific to the action and dataset. Prefer concrete scientific signals over generic cautions.
 For sklearn tabular classification:
@@ -17,8 +17,15 @@ For sklearn tabular classification:
 - mention robustness sweeps before strong claims when a high single-run score exists
 - mention that label-noise sweeps test claim robustness, not leaderboard performance
 - when the action is top_model_verification, predict whether top single-run models are likely robustly separated or tied across seeds
+- for sonar, mention small acoustic/sonar sample size, mine-vs-rock fragility, and high seed variance
+- for eeg_eye_state, mention neural time-series measurements and possible protocol fragility from random splits
+- for har, mention smartphone sensor features, high dimensionality, runtime cost, and split/protocol sensitivity
 - if the action is unlikely to change what the final report can claim, say so and recommend skip or stop_and_report
 - if the action is needed to turn observations into evidence, use claim_impact=high and recommendation=verify
+- estimate value of information: prefer actions that reduce uncertainty or resolve claim status per unit compute
+- explicitly say whether this action changes the final report, just adds a score, or should stop the loop
+- explicitly contrast the action with classic score-chasing autoresearch
+- protocol_probe actions test whether an impressive result should be blocked by protocol, metric, split, or leakage risk
 
 Return strict JSON only, with exactly these keys:
 - expected_metric: string, e.g. "accuracy around 0.94-0.97"
@@ -36,6 +43,23 @@ Return strict JSON only, with exactly these keys:
 - why_this_action_may_be_wasteful: string
 - risk_predictions: array of strings chosen from ["seed_variance", "overfitting", "scaling_sensitivity", "runtime_cost", "single_split_overclaim", "metric_misuse", "data_leakage", "low_claim_impact"]
 - stop_condition: string
+- predicted_next_state: object with keys:
+  - likely_best_model: string or null
+  - expected_metric_delta: string
+  - uncertainty_reduction: one of "low", "medium", "high"
+  - claim_status_after_action: one of "observation_only", "needs_verification", "likely_inconclusive", "likely_supported", "report_ready"
+  - likely_next_open_questions: array of strings
+  - recommended_followup: string
+  - expected_compute_cost_seconds: float or null
+  - expected_research_value: one of "low", "medium", "high"
+- expected_value_of_information: float from 0.0 to 1.0
+- expected_claim_resolution: float from 0.0 to 1.0
+- cost_aware_recommendation_reason: string
+- predicted_observation: string
+- expected_claim_delta: one of "none", "adds_observation", "reduces_uncertainty", "enables_claim", "blocks_or_rewrites_claim", "report_ready"
+- protocol_risks: array of strings
+- compute_waste_risk: float from 0.0 to 1.0
+- why_not_classic_autoresearch: string
 Do not use markdown. Do not claim actual execution. Predict only."""
 
 FEW_SHOTS = [
@@ -82,6 +106,8 @@ def heuristic_prediction(action: ProposedAction, state: str) -> Prediction:
         return Prediction(expected_metric="accuracy around 0.85-0.98", expected_runtime_seconds="under 35", expected_metric_range=[0.85, 0.98], expected_runtime_range_seconds=[5.0, 35.0], risks=["label noise can make small hyperparameter differences non-robust", "seed variance may exceed apparent gains"], recommendation="verify", rationale="A multi-seed sweep is useful for the deterministic verifier: it tests whether an apparent gain survives effect-vs-noise scrutiny.", action_specific_signal="Run a robustness sweep before allowing a best-hyperparameter claim.", claim_risk="The apparent winner may be blocked if effect size is smaller than seed noise.", claim_impact="high", compute_value="high", why_this_action_changes_claims="It directly determines whether a hyperparameter claim can survive the trust ladder.", why_this_action_may_be_wasteful="It is wasteful only if no claim candidate exists yet.", risk_predictions=["seed_variance", "single_split_overclaim"], stop_condition="If effect/noise is below threshold, stop making robust winner claims.", prompt_version=PROMPT_VERSION, world_model_schema_version=SCHEMA_VERSION)
     if m == "top_model_verification":
         return Prediction(expected_metric="accuracy around 0.90-0.99", expected_runtime_seconds="under 45", expected_metric_range=[0.90, 0.99], expected_runtime_range_seconds=[10.0, 45.0], risks=["top single-run models may be tied across seeds", "seed variance may exceed the observed top-model gap"], recommendation="verify", rationale="A multi-seed top-model comparison is required before reporting a robust best model.", action_specific_signal="Verify the top observed models on matched seeds before allowing a best-model claim.", claim_risk="Best observed single-run model may not be a robust winner.", claim_impact="high", compute_value="high", why_this_action_changes_claims="It is the gate between a best observed score and an allowed robust best-model claim.", why_this_action_may_be_wasteful="It is wasteful only before top candidates exist.", risk_predictions=["seed_variance", "single_split_overclaim"], stop_condition="If verification is inconclusive, stop_and_report instead of running extra score-chasing models.", prompt_version=PROMPT_VERSION, world_model_schema_version=SCHEMA_VERSION)
+    if m == "protocol_probe":
+        return Prediction(expected_metric="best mean accuracy may look high but should be claim-blocked by protocol warning", expected_runtime_seconds="under 35", expected_metric_range=[0.80, 0.99], expected_runtime_range_seconds=[5.0, 35.0], risks=["metric-only or protocol-fragile result can look claimable without a verifier", "protocol warning should block a strong scientific claim"], recommendation="verify", rationale="A protocol probe intentionally tests whether the lab can reject an impressive-looking but scientifically fragile result.", action_specific_signal="Probe protocol risk before allowing the report to treat a score as a discovery.", claim_risk="Classic autoresearch may report the apparent winner and miss the protocol warning.", claim_impact="high", compute_value="high", why_this_action_changes_claims="It can block or rewrite a tempting claim when the protocol is unsafe.", why_this_action_may_be_wasteful="It is wasteful before there is any score that might enter the report.", risk_predictions=["metric_misuse", "single_split_overclaim"], stop_condition="If protocol warning fires, report the limitation instead of claiming a valid winner.", prompt_version=PROMPT_VERSION, world_model_schema_version=SCHEMA_VERSION)
     if m == "stop_and_report":
         return Prediction(expected_metric="no metric; reporting action", expected_runtime_seconds="under 1", expected_metric_range=None, expected_runtime_range_seconds=[0.0, 1.0], risks=["stopping may leave only inconclusive findings"], recommendation="stop_and_report", rationale="If the verifier has already blocked a robust best-model claim, further score-chasing is unlikely to change what can be honestly reported under the current objective.", action_specific_signal="Stop after verifier evidence instead of spending compute on non-claimable score chasing.", claim_risk="The final report must state the robust claim was blocked or remains inconclusive.", claim_impact="high", compute_value="high", why_this_action_changes_claims="It prevents unsupported claims and closes the loop with an honest report.", why_this_action_may_be_wasteful="It is premature before a verifier result exists.", risk_predictions=["low_claim_impact", "single_split_overclaim"], stop_condition="Stop when the verifier is inconclusive and remaining candidates only add single-run observations.", prompt_version=PROMPT_VERSION, world_model_schema_version=SCHEMA_VERSION)
     return Prediction(expected_metric="unknown", expected_runtime_seconds="unknown", risks=["no calibrated prior"], recommendation="run", rationale="Fallback prediction.", action_specific_signal="No action-specific prior available.", claim_risk="No claim should be made from this prediction alone.", claim_impact="low", compute_value="low", why_this_action_changes_claims="", why_this_action_may_be_wasteful="No calibrated prior means this action may not change claim status.", risk_predictions=["low_claim_impact"], stop_condition="Stop if no claim-relevant candidate is available.", prompt_version=PROMPT_VERSION, world_model_schema_version=SCHEMA_VERSION)
@@ -139,9 +165,73 @@ def _normalize_prediction(data: dict) -> dict:
     data.setdefault("why_this_action_may_be_wasteful", "")
     data["risk_predictions"] = _string_list(data.get("risk_predictions", []))
     data.setdefault("stop_condition", "")
+    data["predicted_next_state"] = _normalize_next_state(data)
+    data["expected_value_of_information"] = _bounded_float(
+        data.get("expected_value_of_information"),
+        _default_value_of_information(data),
+    )
+    data["expected_claim_resolution"] = _bounded_float(
+        data.get("expected_claim_resolution"),
+        _default_claim_resolution(data),
+    )
+    data.setdefault("cost_aware_recommendation_reason", "")
+    data.setdefault("predicted_observation", data.get("rationale", ""))
+    data["expected_claim_delta"] = _one_of(
+        data.get("expected_claim_delta"),
+        {"none", "adds_observation", "reduces_uncertainty", "enables_claim", "blocks_or_rewrites_claim", "report_ready"},
+        _default_claim_delta(data),
+    )
+    data["protocol_risks"] = _string_list(data.get("protocol_risks", data.get("risk_predictions", [])))
+    data["compute_waste_risk"] = _bounded_float(
+        data.get("compute_waste_risk"),
+        _default_compute_waste_risk(data),
+    )
+    data.setdefault("why_not_classic_autoresearch", _default_why_not_classic(data))
     data.setdefault("prompt_version", PROMPT_VERSION)
     data.setdefault("world_model_schema_version", SCHEMA_VERSION)
     return data
+
+
+def _normalize_next_state(data: dict) -> dict:
+    raw = data.get("predicted_next_state")
+    if not isinstance(raw, dict):
+        raw = {}
+    recommendation = str(data.get("recommendation", "run"))
+    claim_impact = str(data.get("claim_impact", "medium"))
+    compute_value = str(data.get("compute_value", "medium"))
+    if recommendation == "verify":
+        default_status = "needs_verification"
+        default_followup = "Use verifier output to allow, block, or rewrite the best-model claim."
+    elif recommendation == "stop_and_report":
+        default_status = "report_ready"
+        default_followup = "Write the honest report from current evidence and avoid further score-chasing."
+    elif claim_impact == "high":
+        default_status = "needs_verification"
+        default_followup = "Check whether the result changes allowed claims."
+    else:
+        default_status = "observation_only"
+        default_followup = "Update the evidence table and reconsider whether verification is now needed."
+    if compute_value == "high" or claim_impact == "high":
+        default_value = "high"
+    elif compute_value == "low" and claim_impact == "low":
+        default_value = "low"
+    else:
+        default_value = "medium"
+    normalized = {
+        "likely_best_model": raw.get("likely_best_model"),
+        "expected_metric_delta": str(raw.get("expected_metric_delta") or "unknown"),
+        "uncertainty_reduction": _one_of(raw.get("uncertainty_reduction"), {"low", "medium", "high"}, "medium"),
+        "claim_status_after_action": _one_of(
+            raw.get("claim_status_after_action"),
+            {"observation_only", "needs_verification", "likely_inconclusive", "likely_supported", "report_ready"},
+            default_status,
+        ),
+        "likely_next_open_questions": _string_list(raw.get("likely_next_open_questions", [])),
+        "recommended_followup": str(raw.get("recommended_followup") or default_followup),
+        "expected_compute_cost_seconds": _optional_float(raw.get("expected_compute_cost_seconds")),
+        "expected_research_value": _one_of(raw.get("expected_research_value"), {"low", "medium", "high"}, default_value),
+    }
+    return PredictedNextState(**normalized).model_dump()
 
 
 def _clean_float_pair(value) -> list[float] | None:
@@ -166,6 +256,79 @@ def _clean_float_pair(value) -> list[float] | None:
 def _one_of(value, allowed: set[str], default: str) -> str:
     text = str(value or default).lower()
     return text if text in allowed else default
+
+
+def _optional_float(value) -> float | None:
+    if value is None or value == "":
+        return None
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return None
+
+
+def _bounded_float(value, default: float) -> float:
+    parsed = _optional_float(value)
+    if parsed is None:
+        parsed = default
+    return max(0.0, min(1.0, parsed))
+
+
+def _default_value_of_information(data: dict) -> float:
+    if data.get("recommendation") in {"verify", "stop_and_report"}:
+        return 0.9
+    if data.get("claim_impact") == "high" or data.get("compute_value") == "high":
+        return 0.75
+    if data.get("claim_impact") == "low" and data.get("compute_value") == "low":
+        return 0.2
+    return 0.5
+
+
+def _default_claim_resolution(data: dict) -> float:
+    if data.get("recommendation") in {"verify", "stop_and_report"}:
+        return 0.9
+    if data.get("claim_impact") == "high":
+        return 0.75
+    if data.get("claim_impact") == "low":
+        return 0.2
+    return 0.5
+
+
+def _default_claim_delta(data: dict) -> str:
+    rec = data.get("recommendation")
+    claim_impact = data.get("claim_impact")
+    status = (data.get("predicted_next_state") or {}).get("claim_status_after_action")
+    if rec == "stop_and_report" or status == "report_ready":
+        return "report_ready"
+    if rec == "verify":
+        return "blocks_or_rewrites_claim"
+    if claim_impact == "high":
+        return "enables_claim"
+    if data.get("expected_value_of_information", 0.5) >= 0.7:
+        return "reduces_uncertainty"
+    if claim_impact == "low":
+        return "none"
+    return "adds_observation"
+
+
+def _default_compute_waste_risk(data: dict) -> float:
+    if data.get("recommendation") in {"skip", "stop_and_report"}:
+        return 0.9
+    if data.get("claim_impact") == "low" and data.get("compute_value") == "low":
+        return 0.8
+    if data.get("expected_claim_resolution", 0.5) >= 0.75:
+        return 0.15
+    return 0.45
+
+
+def _default_why_not_classic(data: dict) -> str:
+    if data.get("recommendation") == "verify":
+        return "Classic score-chasing might launch another model run, while this action resolves whether an existing result can become a claim."
+    if data.get("recommendation") == "stop_and_report":
+        return "Classic score-chasing might spend remaining budget on non-claimable scores, while this action closes the loop honestly."
+    if data.get("claim_impact") == "low":
+        return "A classic policy may overvalue the immediate metric even though this action is unlikely to change claim status."
+    return "This action is evaluated by predicted research value and claim impact, not only by immediate score."
 
 
 def _string_list(value) -> list[str]:
@@ -193,13 +356,17 @@ def _prompt_context(memory_examples: list[dict] | None) -> str:
     )
 
 
+def _enrich_prediction(prediction: Prediction) -> Prediction:
+    return Prediction(**_normalize_prediction(prediction.model_dump(exclude_defaults=True)))
+
+
 def predict(action: ProposedAction, state: str, memory_examples: list[dict] | None = None) -> Prediction:
     base_url = os.getenv("LUCKYWORLD_SIMULATOR_BASE_URL")
     model = os.getenv("LUCKYWORLD_SIMULATOR_MODEL")
     api_key = os.getenv("LUCKYWORLD_SIMULATOR_API_KEY", "dummy")
     timeout_seconds = float(os.getenv("LUCKYWORLD_SIMULATOR_TIMEOUT_SECONDS", "45"))
     if not base_url or not model:
-        prediction = heuristic_prediction(action, state)
+        prediction = _enrich_prediction(heuristic_prediction(action, state))
         prediction.memory_example_ids = [item.get("memory_id", "") for item in (memory_examples or []) if item.get("memory_id")]
         prediction.few_shot_example_ids = [item["example_id"] for item in FEW_SHOTS]
         return prediction
@@ -228,7 +395,7 @@ def predict(action: ProposedAction, state: str, memory_examples: list[dict] | No
         data["few_shot_example_ids"] = [item["example_id"] for item in FEW_SHOTS]
         return Prediction(**data)
     except Exception as e:
-        hp = heuristic_prediction(action, state)
+        hp = _enrich_prediction(heuristic_prediction(action, state))
         hp.memory_example_ids = [item.get("memory_id", "") for item in (memory_examples or []) if item.get("memory_id")]
         hp.few_shot_example_ids = [item["example_id"] for item in FEW_SHOTS]
         hp.rationale += f" Fallback used because simulator endpoint failed: {type(e).__name__}: {e}"

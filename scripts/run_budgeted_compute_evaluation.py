@@ -6,11 +6,10 @@ import json
 from pathlib import Path
 
 from luckyloop.benchmark_metrics import claimable_evidence_summary
+from luckyloop.defaults import CORE_TASK_PATHS
+from luckyloop.operator_trace import append_operator_event, write_operator_summary
 from luckyloop.schemas import ExperimentTrace
 from luckyloop.tasks import ROOT
-
-from run_ablation_suite import TASK_PATHS
-
 
 POLICIES = ["classic_autoresearch", "lucky_loop_full"]
 
@@ -169,19 +168,47 @@ def write_reports(rows: list[dict], paired_rows: list[dict]) -> None:
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--budget", type=int, default=None, help="Optional fixed run budget; defaults to all existing ablation traces.")
+    parser.add_argument("--tasks", nargs="*", default=CORE_TASK_PATHS)
     args = parser.parse_args()
+    task_ids = [Path(task_path).stem for task_path in args.tasks]
+    append_operator_event(
+        event_type="budgeted_compute_evaluation",
+        goal="Measure score-chasing compute and claimable evidence under a fixed budget.",
+        action="run_budgeted_compute_evaluation",
+        status="started",
+        inputs={"tasks": args.tasks, "task_ids": task_ids, "budget": args.budget},
+        rationale="Quantify whether Lucky Loop reallocates budget away from non-claimable search toward verification.",
+    )
 
     rows = []
     paired_rows = []
-    for task_path in TASK_PATHS:
-        task_id = Path(task_path).stem
-        classic_traces = _load_traces("classic_autoresearch", task_id, args.budget)
-        lucky_traces = _load_traces("lucky_loop_full", task_id, args.budget)
-        shared_budget = min(len(classic_traces), len(lucky_traces))
-        classic = _policy_row(task_id, "classic_autoresearch", classic_traces[:shared_budget])
-        lucky = _policy_row(task_id, "lucky_loop_full", lucky_traces[:shared_budget])
-        rows.extend([classic, lucky])
-        paired_rows.append(_paired_row(task_id, classic, lucky))
+    status = "completed"
+    error = None
+    try:
+        for task_path in args.tasks:
+            task_id = Path(task_path).stem
+            classic_traces = _load_traces("classic_autoresearch", task_id, args.budget)
+            lucky_traces = _load_traces("lucky_loop_full", task_id, args.budget)
+            shared_budget = min(len(classic_traces), len(lucky_traces))
+            classic = _policy_row(task_id, "classic_autoresearch", classic_traces[:shared_budget])
+            lucky = _policy_row(task_id, "lucky_loop_full", lucky_traces[:shared_budget])
+            rows.extend([classic, lucky])
+            paired_rows.append(_paired_row(task_id, classic, lucky))
+    except Exception as exc:
+        status = "failed"
+        error = str(exc)
+        raise
+    finally:
+        append_operator_event(
+            event_type="budgeted_compute_evaluation",
+            goal="Measure score-chasing compute and claimable evidence under a fixed budget.",
+            action="run_budgeted_compute_evaluation",
+            status=status,
+            inputs={"task_ids": task_ids, "budget": args.budget},
+            outputs={"paired_rows": len(paired_rows), "error": error},
+            rationale="Budgeted compute report generation completed for the selected task subset.",
+        )
+        write_operator_summary()
 
     write_reports(rows, paired_rows)
     print("Wrote reports/budgeted_compute/budgeted_compute_evaluation.md")

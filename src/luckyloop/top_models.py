@@ -19,6 +19,10 @@ def model_key(model: str, params: dict) -> str:
         parts.append(f"depth={params['max_depth']}")
     if params.get("learning_rate") is not None:
         parts.append(f"lr={params['learning_rate']}")
+    if params.get("max_iter") is not None:
+        parts.append(f"max_iter={params['max_iter']}")
+    if params.get("solver") is not None:
+        parts.append(f"solver={params['solver']}")
     return "_".join(str(p).replace(" ", "") for p in parts)
 
 
@@ -38,6 +42,10 @@ def _model_arg(candidate: TopModelCandidate) -> str:
         options.append(f"max_depth={params['max_depth']}")
     if params.get("learning_rate") is not None:
         options.append(f"learning_rate={params['learning_rate']}")
+    if params.get("max_iter") is not None:
+        options.append(f"max_iter={params['max_iter']}")
+    if params.get("solver") is not None:
+        options.append(f"solver={params['solver']}")
     if options:
         pieces.append(",".join(options))
     return ":".join(pieces)
@@ -116,7 +124,7 @@ def build_top_model_verification_action(task: TaskSpec, summary: TopModelSummary
     if not summary.needs_robustness_verification or len(summary.top_models) < 2:
         return None
     model_args = [_model_arg(candidate) for candidate in summary.top_models]
-    seeds = [0, 1, 2, 3, 4]
+    seeds = task.top_model_verification_seeds or [0, 1, 2, 3, 4]
     command = (
         f"python experiments/compare_models_sklearn.py --dataset {task.dataset} "
         f"--models {' '.join(shlex.quote(arg) for arg in model_args)} "

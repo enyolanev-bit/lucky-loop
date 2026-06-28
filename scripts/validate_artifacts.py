@@ -5,11 +5,17 @@ import argparse
 import json
 from pathlib import Path
 
+from luckyloop.defaults import CORE_POLICIES, CORE_TASK_PATHS
 from luckyloop.schemas import ExperimentTrace
 from luckyloop.tasks import ROOT
 
 
-TASKS = ["breast_cancer_accuracy", "wine_accuracy", "digits_accuracy"]
+TASKS = [Path(path).stem for path in CORE_TASK_PATHS]
+
+
+def _task_id(value: str) -> str:
+    path = Path(value)
+    return path.stem if path.suffix == ".json" else value
 
 
 def _failures_for_task(task: str, runs_dir: Path, require_qwen: bool) -> list[str]:
@@ -51,11 +57,15 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--require-qwen", action="store_true")
     parser.add_argument("--check-ablations", action="store_true")
+    parser.add_argument("--tasks", nargs="*", default=TASKS)
+    parser.add_argument("--skip-main", action="store_true")
     args = parser.parse_args()
+    tasks = [_task_id(task) for task in args.tasks]
 
     failures: list[str] = []
-    for task in TASKS:
-        failures.extend(_failures_for_task(task, ROOT / "runs" / task, args.require_qwen))
+    if not args.skip_main:
+        for task in tasks:
+            failures.extend(_failures_for_task(task, ROOT / "runs" / task, args.require_qwen))
 
     required_reports = [
         ROOT / "reports" / "benchmark_summary.md",
@@ -73,8 +83,8 @@ def main() -> None:
                 ROOT / "reports" / "budgeted_compute" / "budgeted_compute_evaluation.json",
             ]
         )
-        for policy in ["classic_autoresearch", "classic_verified", "lucky_loop_full"]:
-            for task in TASKS:
+        for policy in CORE_POLICIES:
+            for task in tasks:
                 failures.extend(
                     _failures_for_task(
                         task,
@@ -91,11 +101,12 @@ def main() -> None:
     if args.check_ablations and ablation_json.exists():
         payload = json.loads(ablation_json.read_text(encoding="utf-8"))
         rows = payload.get("rows") or []
-        expected = 9
-        if len(rows) < expected:
-            failures.append(f"ablation json has {len(rows)} rows, expected at least {expected}")
+        selected_rows = [row for row in rows if row.get("task") in set(tasks)]
+        expected = len(tasks) * 3
+        if len(selected_rows) < expected:
+            failures.append(f"ablation json has {len(selected_rows)} selected rows, expected at least {expected}")
         for key in ["best_claimable_score", "best_verified_mean_score", "runs_to_first_verification", "qwen_choice_usefulness"]:
-            if any(key not in row for row in rows):
+            if any(key not in row for row in selected_rows):
                 failures.append(f"ablation json rows missing {key}")
 
     counterfactual_json = ROOT / "reports" / "counterfactuals" / "counterfactual_evaluation.json"

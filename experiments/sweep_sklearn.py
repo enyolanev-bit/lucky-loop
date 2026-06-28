@@ -41,7 +41,7 @@ def build_command(args, seed: int, value: str) -> list[str]:
 
 def main() -> None:
     p = argparse.ArgumentParser()
-    p.add_argument("--dataset", default="breast_cancer", choices=["breast_cancer", "wine", "digits"])
+    p.add_argument("--dataset", default="breast_cancer", choices=["breast_cancer", "wine", "digits", "sonar", "eeg_eye_state", "har"])
     p.add_argument("--model", default="logistic_regression", choices=["logistic_regression", "random_forest", "gradient_boosting", "hist_gradient_boosting", "svc"])
     p.add_argument("--scale", action="store_true")
     p.add_argument("--sweep-param", default="C", choices=["C", "n_estimators", "max_depth", "learning_rate"])
@@ -49,6 +49,7 @@ def main() -> None:
     p.add_argument("--seeds", nargs="+", type=int, default=[0, 1, 2, 3])
     p.add_argument("--test-size", type=float, default=0.25)
     p.add_argument("--label-noise", type=float, default=0.0)
+    p.add_argument("--protocol-warning", default=None)
     args = p.parse_args()
 
     root = Path(__file__).resolve().parents[1]
@@ -105,6 +106,8 @@ def main() -> None:
         "failures": failures,
         "runtime_seconds": round(time.perf_counter() - t0, 4),
     }
+    if args.protocol_warning:
+        out["protocol_warning"] = args.protocol_warning
     print(json.dumps(out, indent=2, sort_keys=True))
 
 
