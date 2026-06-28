@@ -47,8 +47,10 @@ def _paired_row(task_id: str, classic: dict, lucky: dict) -> dict:
     lucky_wasted = lucky["wasted_score_chasing_runs"]
     classic_wasted_runtime = classic["wasted_score_chasing_runtime_seconds"]
     lucky_wasted_runtime = lucky["wasted_score_chasing_runtime_seconds"]
-    saved_runs = max(classic_wasted - lucky_wasted, 0)
-    saved_runtime = max(classic_wasted_runtime - lucky_wasted_runtime, 0.0)
+    # Signed delta (NOT clamped at 0): negative means Lucky wasted more than classic, so regressions
+    # stay visible instead of being hidden as "0 saved".
+    saved_runs = classic_wasted - lucky_wasted
+    saved_runtime = classic_wasted_runtime - lucky_wasted_runtime
     strict_stop_saved_runs = lucky["saved_remaining_runs"] if lucky["qwen_skip_or_stop_recommended"] else 0
     strict_stop_saved_runtime = (
         lucky["saved_remaining_runtime_seconds"] if lucky["qwen_skip_or_stop_recommended"] else 0.0
@@ -85,6 +87,7 @@ def write_reports(rows: list[dict], paired_rows: list[dict]) -> None:
         "schema_version": "1.0",
         "interpretation": (
             "This evaluation holds run budget constant and measures score-chasing compute that cannot support a robust claim. "
+            "Saved counts are SIGNED deltas (classic - lucky): negative means Lucky wasted more, so regressions are visible. "
             "It does not claim lower total runtime when Lucky Loop chooses expensive multi-seed verification."
         ),
         "rows": rows,
@@ -92,6 +95,7 @@ def write_reports(rows: list[dict], paired_rows: list[dict]) -> None:
         "summary": {
             "tasks": len(paired_rows),
             "tasks_with_saved_score_chasing_runs": sum(1 for row in paired_rows if row["saved_score_chasing_runs"] > 0),
+            "tasks_where_lucky_wasted_more": sum(1 for row in paired_rows if row["saved_score_chasing_runs"] < 0),
             "total_saved_score_chasing_runs": sum(row["saved_score_chasing_runs"] for row in paired_rows),
             "total_saved_score_chasing_runtime_seconds": round(
                 sum(row["saved_score_chasing_runtime_seconds"] for row in paired_rows),

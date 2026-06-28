@@ -224,6 +224,9 @@ def execute_backend(task_paths: list[str], agent: str, rerun_experiments: bool) 
     env["PYTHONPATH"] = "src"
     if rerun_experiments:
         _run([sys.executable, "scripts/run_ablation_suite.py", "--world-model", "auto", "--operator-agent", agent, "--tasks", *task_paths], env)
+    # Regenerate the counterfactual evidence from the current ablation traces so the report and the
+    # ablation never read a stale (or differently-generated) counterfactual_evaluation.json.
+    _run([sys.executable, "scripts/run_counterfactual_evaluation.py"], env)
     _run([sys.executable, "scripts/run_budgeted_compute_evaluation.py"], env)
     _run([sys.executable, "scripts/validate_artifacts.py", "--check-ablations", "--require-qwen"], env)
 
@@ -291,13 +294,20 @@ def write_final_report(out_dir: Path, question: str, context, evidence: dict) ->
     if counterfactual_summary:
         usefulness = counterfactual_summary.get("qwen_choice_usefulness")
         usefulness_text = "" if usefulness is None else f"{usefulness:.2%}"
+        breakdown = counterfactual_summary.get("overall_verdict_breakdown") or {}
+        breakdown_text = ", ".join(f"{k}: {v}" for k, v in sorted(breakdown.items())) or "n/a"
         lines += [
             "",
             "## Counterfactual Result",
             "",
             f"- Cases: {counterfactual_summary.get('cases')}",
-            f"- Lucky wins: {counterfactual_summary.get('lucky_wins')}",
-            f"- Qwen choice usefulness: {usefulness_text}",
+            f"- Claim-safety wins (Lucky verified what classic skipped): {counterfactual_summary.get('claim_safety_wins')}",
+            f"- Verdict breakdown: {breakdown_text}",
+            f"- Lucky win rate: {usefulness_text}",
+            "",
+            "A win requires Lucky to have actually run verification the state needed and classic to "
+            "have skipped it; raw scores across different experiment kinds (multi-seed sweep vs single "
+            "split) are reported as not_comparable, never as a win.",
         ]
     if budgeted_summary:
         lines += [
@@ -310,11 +320,19 @@ def write_final_report(out_dir: Path, question: str, context, evidence: dict) ->
             f"- Tasks where Qwen would skip/stop after verifier: {budgeted_summary.get('tasks_with_qwen_stop_or_skip')}",
             f"- Strict stop policy saved runs after verification: {budgeted_summary.get('total_strict_stop_saved_runs')}",
         ]
+    lucky_rows = [r for r in rows if r.get("policy") == "lucky_loop_full"]
+    unsupported_claims = sum((r.get("unsupported_best_model_claims") or 0) for r in lucky_rows)
+    claim_discipline = (
+        "Classic autoresearch can find good single-run scores, but those are not robust claims. "
+        "Lucky Loop full adds auditable pre-compute predictions and a deterministic claim gate; "
+        f"across the generated ablation artifacts it leaves {unsupported_claims} unsupported "
+        "best-model claim(s)."
+    )
     lines += [
         "",
         "## Claim Discipline",
         "",
-        "Classic autoresearch can find good single-run scores, but those are not robust claims. Lucky Loop full adds auditable pre-compute predictions and keeps unsupported best-model claims at zero in the generated ablation artifacts.",
+        claim_discipline,
         "",
         "## Source Mapping",
         "",

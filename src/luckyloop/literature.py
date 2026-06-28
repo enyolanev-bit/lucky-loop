@@ -407,11 +407,14 @@ def _find_sources(papers: list[Paper], usage: str, fallback: list[str]) -> list[
 
 
 def build_gap_findings(papers: list[Paper]) -> list[GapFinding]:
+    # No cross-topic fallback: a gap cites only papers actually tagged for its topic, otherwise it
+    # renders as [no_source]. Falling back to the autonomous-research list made gaps about, e.g.,
+    # world models cite unrelated AI-Scientist papers — a citation that does not support the claim.
     autonomous = _find_sources(papers, "autonomous_research_baseline", [])
-    ml_agents = _find_sources(papers, "ml_agent_baseline", autonomous)
-    world_models = _find_sources(papers, "world_model_framing", autonomous)
-    claim_risk = _find_sources(papers, "claim_risk", autonomous)
-    end_to_end = _find_sources(papers, "end_to_end_loop", autonomous)
+    ml_agents = _find_sources(papers, "ml_agent_baseline", [])
+    world_models = _find_sources(papers, "world_model_framing", [])
+    claim_risk = _find_sources(papers, "claim_risk", [])
+    end_to_end = _find_sources(papers, "end_to_end_loop", [])
     return [
         GapFinding(
             gap_id="gap_claim_calibration",
