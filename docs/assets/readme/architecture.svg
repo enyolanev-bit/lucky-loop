@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="500" viewBox="0 0 1280 500" role="img" aria-label="Lucky Loop architecture: planner, world model, executor, verifier, UI">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#070709"/>
+      <stop offset="0.55" stop-color="#111018"/>
+      <stop offset="1" stop-color="#260606"/>
+    </linearGradient>
+    <linearGradient id="red" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#ff302b"/>
+      <stop offset="1" stop-color="#ffb199"/>
+    </linearGradient>
+    <filter id="glow"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <style>
+      .title{font:700 34px Inter,Arial,sans-serif;fill:#f5ead7;letter-spacing:2px}.sub{font:500 16px Inter,Arial,sans-serif;fill:#b9ad9b}.box{fill:#111115;stroke:#3a3028;stroke-width:2;rx:18}.boxHot{fill:#171014;stroke:#e52b26;stroke-width:2;rx:18;filter:url(#glow)}.h{font:700 21px Inter,Arial,sans-serif;fill:#f5ead7;letter-spacing:1px}.p{font:500 14px Inter,Arial,sans-serif;fill:#b9ad9b}.tag{font:700 12px Inter,Arial,sans-serif;fill:#ff4b45;letter-spacing:1.5px}.arrow{stroke:url(#red);stroke-width:4;fill:none;marker-end:url(#arrowhead);filter:url(#glow)}.thin{stroke:#6c5146;stroke-width:2;fill:none}.num{font:800 18px Inter,Arial,sans-serif;fill:#0b0b0c}.badge{fill:url(#red);rx:14}
+    </style>
+    <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#ff4b45"/></marker>
+  </defs>
+  <rect width="1280" height="500" fill="url(#bg)"/>
+  <circle cx="1080" cy="80" r="210" fill="#66100d" opacity="0.18"/>
+  <text x="60" y="70" class="title">LUCKY LOOP</text>
+  <text x="60" y="100" class="sub">Predict before compute. Verify before claim.</text>
+
+  <g transform="translate(50 160)">
+    <rect class="box" width="205" height="155"/>
+    <rect class="badge" x="22" y="22" width="30" height="30"/><text class="num" x="32" y="44">1</text>
+    <text class="h" x="22" y="78">Planner / agent</text>
+    <text class="p" x="22" y="108">Chooses safe candidate</text>
+    <text class="p" x="22" y="130">actions from the catalog.</text>
+    <text class="tag" x="22" y="145">NO INVENTED COMMANDS</text>
+  </g>
+  <path class="arrow" d="M265 238 C305 238 320 238 355 238"/>
+
+  <g transform="translate(365 135)">
+    <rect class="boxHot" width="230" height="205"/>
+    <rect class="badge" x="22" y="22" width="30" height="30"/><text class="num" x="32" y="44">2</text>
+    <text class="h" x="22" y="78">Qwen-AgentWorld</text>
+    <text class="p" x="22" y="108">Forecasts observation,</text>
+    <text class="p" x="22" y="130">runtime, failure modes,</text>
+    <text class="p" x="22" y="152">protocol risks and claim</text>
+    <text class="p" x="22" y="174">impact before compute.</text>
+    <text class="tag" x="22" y="190">PLANNING SIGNAL ONLY</text>
+  </g>
+  <path class="arrow" d="M605 238 C645 238 660 238 695 238"/>
+
+  <g transform="translate(705 160)">
+    <rect class="box" width="205" height="155"/>
+    <rect class="badge" x="22" y="22" width="30" height="30"/><text class="num" x="32" y="44">3</text>
+    <text class="h" x="22" y="78">Executor</text>
+    <text class="p" x="22" y="108">Runs real sklearn code,</text>
+    <text class="p" x="22" y="130">captures metrics and</text>
+    <text class="p" x="22" y="152">JSON evidence.</text>
+  </g>
+  <path class="arrow" d="M920 238 C960 238 975 238 1010 238"/>
+
+  <g transform="translate(1020 135)">
+    <rect class="boxHot" width="220" height="205"/>
+    <rect class="badge" x="22" y="22" width="30" height="30"/><text class="num" x="32" y="44">4</text>
+    <text class="h" x="22" y="78">Verifier + ledger</text>
+    <text class="p" x="22" y="108">Compares prediction with</text>
+    <text class="p" x="22" y="130">reality and blocks weak</text>
+    <text class="p" x="22" y="152">scientific claims.</text>
+    <text class="tag" x="22" y="180">AUDITABLE REPORT</text>
+  </g>
+
+  <path class="thin" d="M1130 355 C900 440 360 440 160 335"/>
+  <path class="arrow" d="M160 335 C360 430 900 430 1130 355" opacity="0.35"/>
+  <text x="455" y="455" class="sub">Every run updates the next state: observations, misses, claims, open risks.</text>
+</svg>
