@@ -55,10 +55,22 @@ class Prediction(BaseModel):
     expected_metric: str
     expected_runtime_seconds: str
     risks: list[str] = Field(default_factory=list)
-    recommendation: Literal["run", "skip", "modify"] = "run"
+    recommendation: Literal["run", "skip", "modify", "verify", "stop_and_report"] = "run"
     rationale: str = ""
     action_specific_signal: str = ""
     claim_risk: str = ""
+    expected_metric_range: list[float] | None = None
+    expected_runtime_range_seconds: list[float] | None = None
+    claim_impact: Literal["low", "medium", "high"] = "medium"
+    compute_value: Literal["low", "medium", "high"] = "medium"
+    why_this_action_changes_claims: str = ""
+    why_this_action_may_be_wasteful: str = ""
+    risk_predictions: list[str] = Field(default_factory=list)
+    stop_condition: str = ""
+    memory_example_ids: list[str] = Field(default_factory=list)
+    few_shot_example_ids: list[str] = Field(default_factory=list)
+    prompt_version: str | None = None
+    world_model_schema_version: str | None = None
 
 
 class ActualResult(BaseModel):
@@ -185,6 +197,10 @@ class CalibrationMetrics(BaseModel):
     risk_recall: float | None = None
     recommendation_quality: float | None = None
     useful_decision_count: int = 0
+    high_claim_impact_verification_count: int = 0
+    skip_or_stop_recommendation_count: int = 0
+    memory_augmented_prediction_count: int = 0
+    few_shot_augmented_prediction_count: int = 0
 
 
 class ExperimentTrace(BaseModel):
@@ -214,3 +230,6 @@ class ExperimentTrace(BaseModel):
     calibration_metrics: CalibrationMetrics | None = None
     top_model_summary: TopModelSummary | None = None
     artifacts: dict[str, Any] = Field(default_factory=dict)
+    memory_examples_used: list[dict[str, Any]] = Field(default_factory=list)
+    prompt_version: str | None = None
+    world_model_schema_version: str | None = None

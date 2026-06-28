@@ -64,14 +64,26 @@
     "recommendation": "run",
     "rationale": "This baseline chooses experiments from observed state and policy rules without Qwen-AgentWorld.",
     "action_specific_signal": "none",
-    "claim_risk": "Without prospective simulation, claim risk is only discovered after execution or verification."
+    "claim_risk": "Without prospective simulation, claim risk is only discovered after execution or verification.",
+    "expected_metric_range": null,
+    "expected_runtime_range_seconds": null,
+    "claim_impact": "medium",
+    "compute_value": "medium",
+    "why_this_action_changes_claims": "",
+    "why_this_action_may_be_wasteful": "",
+    "risk_predictions": [],
+    "stop_condition": "",
+    "memory_example_ids": [],
+    "few_shot_example_ids": [],
+    "prompt_version": null,
+    "world_model_schema_version": null
   },
   "actual_result": {
     "status": "success",
     "accuracy": null,
     "f1": null,
-    "runtime_seconds": 32.6931,
-    "stdout_tail": "model\",\n      \"value\": \"logistic_regression_scaled_C=0.1\"\n    },\n    {\n      \"accuracy\": 0.9622222222222222,\n      \"config_key\": \"logistic_regression_scaled_C=0.1\",\n      \"f1\": 0.9622957967217298,\n      \"label\": \"logistic_regression_scaled_C=0.1\",\n      \"runtime_seconds\": 0.2547,\n      \"seed\": 2,\n      \"sweep_param\": \"model\",\n      \"value\": \"logistic_regression_scaled_C=0.1\"\n    },\n    {\n      \"accuracy\": 0.9688888888888889,\n      \"config_key\": \"logistic_regression_scaled_C=0.1\",\n      \"f1\": 0.9688737558564582,\n      \"label\": \"logistic_regression_scaled_C=0.1\",\n      \"runtime_seconds\": 0.4251,\n      \"seed\": 3,\n      \"sweep_param\": \"model\",\n      \"value\": \"logistic_regression_scaled_C=0.1\"\n    },\n    {\n      \"accuracy\": 0.9688888888888889,\n      \"config_key\": \"logistic_regression_scaled_C=0.1\",\n      \"f1\": 0.9688482685985577,\n      \"label\": \"logistic_regression_scaled_C=0.1\",\n      \"runtime_seconds\": 0.8689,\n      \"seed\": 4,\n      \"sweep_param\": \"model\",\n      \"value\": \"logistic_regression_scaled_C=0.1\"\n    }\n  ],\n  \"runtime_seconds\": 32.6931,\n  \"seeds\": [\n    0,\n    1,\n    2,\n    3,\n    4\n  ],\n  \"status\": \"success\",\n  \"summary_by_value\": {\n    \"logistic_regression_scaled_C=0.1\": {\n      \"max_accuracy\": 0.9711111111111111,\n      \"mean_accuracy\": 0.9671111111111111,\n      \"mean_f1\": 0.9672246346001282,\n      \"min_accuracy\": 0.9622222222222222,\n      \"n\": 5\n    },\n    \"logistic_regression_scaled_C=1.0\": {\n      \"max_accuracy\": 0.98,\n      \"mean_accuracy\": 0.9693333333333334,\n      \"mean_f1\": 0.9693974260204404,\n      \"min_accuracy\": 0.9488888888888889,\n      \"n\": 5\n    },\n    \"svc_scaled_C=0.5_kernel=rbf\": {\n      \"max_accuracy\": 0.9822222222222222,\n      \"mean_accuracy\": 0.9764444444444444,\n      \"mean_f1\": 0.9765097023471897,\n      \"min_accuracy\": 0.9711111111111111,\n      \"n\": 5\n    }\n  },\n  \"type\": \"top_model_verification\",\n  \"verified_models\": [\n    \"logistic_regression_scaled_C=1.0\",\n    \"svc_scaled_C=0.5_kernel=rbf\",\n    \"logistic_regression_scaled_C=0.1\"\n  ]\n}\n",
+    "runtime_seconds": 30.9354,
+    "stdout_tail": "model\",\n      \"value\": \"logistic_regression_scaled_C=0.1\"\n    },\n    {\n      \"accuracy\": 0.9622222222222222,\n      \"config_key\": \"logistic_regression_scaled_C=0.1\",\n      \"f1\": 0.9622957967217298,\n      \"label\": \"logistic_regression_scaled_C=0.1\",\n      \"runtime_seconds\": 0.9112,\n      \"seed\": 2,\n      \"sweep_param\": \"model\",\n      \"value\": \"logistic_regression_scaled_C=0.1\"\n    },\n    {\n      \"accuracy\": 0.9688888888888889,\n      \"config_key\": \"logistic_regression_scaled_C=0.1\",\n      \"f1\": 0.9688737558564582,\n      \"label\": \"logistic_regression_scaled_C=0.1\",\n      \"runtime_seconds\": 0.5197,\n      \"seed\": 3,\n      \"sweep_param\": \"model\",\n      \"value\": \"logistic_regression_scaled_C=0.1\"\n    },\n    {\n      \"accuracy\": 0.9688888888888889,\n      \"config_key\": \"logistic_regression_scaled_C=0.1\",\n      \"f1\": 0.9688482685985577,\n      \"label\": \"logistic_regression_scaled_C=0.1\",\n      \"runtime_seconds\": 0.4743,\n      \"seed\": 4,\n      \"sweep_param\": \"model\",\n      \"value\": \"logistic_regression_scaled_C=0.1\"\n    }\n  ],\n  \"runtime_seconds\": 30.9354,\n  \"seeds\": [\n    0,\n    1,\n    2,\n    3,\n    4\n  ],\n  \"status\": \"success\",\n  \"summary_by_value\": {\n    \"logistic_regression_scaled_C=0.1\": {\n      \"max_accuracy\": 0.9711111111111111,\n      \"mean_accuracy\": 0.9671111111111111,\n      \"mean_f1\": 0.9672246346001282,\n      \"min_accuracy\": 0.9622222222222222,\n      \"n\": 5\n    },\n    \"logistic_regression_scaled_C=1.0\": {\n      \"max_accuracy\": 0.98,\n      \"mean_accuracy\": 0.9693333333333334,\n      \"mean_f1\": 0.9693974260204404,\n      \"min_accuracy\": 0.9488888888888889,\n      \"n\": 5\n    },\n    \"svc_scaled_C=0.5_kernel=rbf\": {\n      \"max_accuracy\": 0.9822222222222222,\n      \"mean_accuracy\": 0.9764444444444444,\n      \"mean_f1\": 0.9765097023471897,\n      \"min_accuracy\": 0.9711111111111111,\n      \"n\": 5\n    }\n  },\n  \"type\": \"top_model_verification\",\n  \"verified_models\": [\n    \"logistic_regression_scaled_C=1.0\",\n    \"svc_scaled_C=0.5_kernel=rbf\",\n    \"logistic_regression_scaled_C=0.1\"\n  ]\n}\n",
     "stderr_tail": "",
     "raw": {
       "best": {
@@ -104,7 +116,7 @@
           "config_key": "logistic_regression_scaled_C=1.0",
           "f1": 0.9691218883006076,
           "label": "logistic_regression_scaled_C=1.0",
-          "runtime_seconds": 0.5884,
+          "runtime_seconds": 0.3514,
           "seed": 0,
           "sweep_param": "model",
           "value": "logistic_regression_scaled_C=1.0"
@@ -114,7 +126,7 @@
           "config_key": "logistic_regression_scaled_C=1.0",
           "f1": 0.9687469425020353,
           "label": "logistic_regression_scaled_C=1.0",
-          "runtime_seconds": 0.328,
+          "runtime_seconds": 0.4999,
           "seed": 1,
           "sweep_param": "model",
           "value": "logistic_regression_scaled_C=1.0"
@@ -124,7 +136,7 @@
           "config_key": "logistic_regression_scaled_C=1.0",
           "f1": 0.9490281970972656,
           "label": "logistic_regression_scaled_C=1.0",
-          "runtime_seconds": 0.7984,
+          "runtime_seconds": 0.6647,
           "seed": 2,
           "sweep_param": "model",
           "value": "logistic_regression_scaled_C=1.0"
@@ -134,7 +146,7 @@
           "config_key": "logistic_regression_scaled_C=1.0",
           "f1": 0.9800719178533867,
           "label": "logistic_regression_scaled_C=1.0",
-          "runtime_seconds": 0.2671,
+          "runtime_seconds": 0.3456,
           "seed": 3,
           "sweep_param": "model",
           "value": "logistic_regression_scaled_C=1.0"
@@ -144,7 +156,7 @@
           "config_key": "logistic_regression_scaled_C=1.0",
           "f1": 0.9800181843489072,
           "label": "logistic_regression_scaled_C=1.0",
-          "runtime_seconds": 0.7476,
+          "runtime_seconds": 0.2386,
           "seed": 4,
           "sweep_param": "model",
           "value": "logistic_regression_scaled_C=1.0"
@@ -154,7 +166,7 @@
           "config_key": "svc_scaled_C=0.5_kernel=rbf",
           "f1": 0.9712828463454455,
           "label": "svc_scaled_C=0.5_kernel=rbf",
-          "runtime_seconds": 0.1502,
+          "runtime_seconds": 0.0888,
           "seed": 0,
           "sweep_param": "model",
           "value": "svc_scaled_C=0.5_kernel=rbf"
@@ -164,7 +176,7 @@
           "config_key": "svc_scaled_C=0.5_kernel=rbf",
           "f1": 0.9822666435141579,
           "label": "svc_scaled_C=0.5_kernel=rbf",
-          "runtime_seconds": 0.0968,
+          "runtime_seconds": 0.0892,
           "seed": 1,
           "sweep_param": "model",
           "value": "svc_scaled_C=0.5_kernel=rbf"
@@ -174,7 +186,7 @@
           "config_key": "svc_scaled_C=0.5_kernel=rbf",
           "f1": 0.9710961141281487,
           "label": "svc_scaled_C=0.5_kernel=rbf",
-          "runtime_seconds": 0.0946,
+          "runtime_seconds": 0.0882,
           "seed": 2,
           "sweep_param": "model",
           "value": "svc_scaled_C=0.5_kernel=rbf"
@@ -184,7 +196,7 @@
           "config_key": "svc_scaled_C=0.5_kernel=rbf",
           "f1": 0.9757150745855024,
           "label": "svc_scaled_C=0.5_kernel=rbf",
-          "runtime_seconds": 0.0936,
+          "runtime_seconds": 0.09,
           "seed": 3,
           "sweep_param": "model",
           "value": "svc_scaled_C=0.5_kernel=rbf"
@@ -194,7 +206,7 @@
           "config_key": "svc_scaled_C=0.5_kernel=rbf",
           "f1": 0.9821878331626943,
           "label": "svc_scaled_C=0.5_kernel=rbf",
-          "runtime_seconds": 0.0969,
+          "runtime_seconds": 0.0913,
           "seed": 4,
           "sweep_param": "model",
           "value": "svc_scaled_C=0.5_kernel=rbf"
@@ -204,7 +216,7 @@
           "config_key": "logistic_regression_scaled_C=0.1",
           "f1": 0.971679705918373,
           "label": "logistic_regression_scaled_C=0.1",
-          "runtime_seconds": 0.2939,
+          "runtime_seconds": 0.3314,
           "seed": 0,
           "sweep_param": "model",
           "value": "logistic_regression_scaled_C=0.1"
@@ -214,7 +226,7 @@
           "config_key": "logistic_regression_scaled_C=0.1",
           "f1": 0.964425645905522,
           "label": "logistic_regression_scaled_C=0.1",
-          "runtime_seconds": 0.5034,
+          "runtime_seconds": 0.2783,
           "seed": 1,
           "sweep_param": "model",
           "value": "logistic_regression_scaled_C=0.1"
@@ -224,7 +236,7 @@
           "config_key": "logistic_regression_scaled_C=0.1",
           "f1": 0.9622957967217298,
           "label": "logistic_regression_scaled_C=0.1",
-          "runtime_seconds": 0.2547,
+          "runtime_seconds": 0.9112,
           "seed": 2,
           "sweep_param": "model",
           "value": "logistic_regression_scaled_C=0.1"
@@ -234,7 +246,7 @@
           "config_key": "logistic_regression_scaled_C=0.1",
           "f1": 0.9688737558564582,
           "label": "logistic_regression_scaled_C=0.1",
-          "runtime_seconds": 0.4251,
+          "runtime_seconds": 0.5197,
           "seed": 3,
           "sweep_param": "model",
           "value": "logistic_regression_scaled_C=0.1"
@@ -244,13 +256,13 @@
           "config_key": "logistic_regression_scaled_C=0.1",
           "f1": 0.9688482685985577,
           "label": "logistic_regression_scaled_C=0.1",
-          "runtime_seconds": 0.8689,
+          "runtime_seconds": 0.4743,
           "seed": 4,
           "sweep_param": "model",
           "value": "logistic_regression_scaled_C=0.1"
         }
       ],
-      "runtime_seconds": 32.6931,
+      "runtime_seconds": 30.9354,
       "seeds": [
         0,
         1,
@@ -699,7 +711,19 @@
         "recommendation": "run",
         "rationale": "This baseline chooses experiments from observed state and policy rules without Qwen-AgentWorld.",
         "action_specific_signal": "none",
-        "claim_risk": "Without prospective simulation, claim risk is only discovered after execution or verification."
+        "claim_risk": "Without prospective simulation, claim risk is only discovered after execution or verification.",
+        "expected_metric_range": null,
+        "expected_runtime_range_seconds": null,
+        "claim_impact": "medium",
+        "compute_value": "medium",
+        "why_this_action_changes_claims": "",
+        "why_this_action_may_be_wasteful": "",
+        "risk_predictions": [],
+        "stop_condition": "",
+        "memory_example_ids": [],
+        "few_shot_example_ids": [],
+        "prompt_version": null,
+        "world_model_schema_version": null
       },
       "source": "unknown"
     },
@@ -723,7 +747,19 @@
         "recommendation": "run",
         "rationale": "This baseline chooses experiments from observed state and policy rules without Qwen-AgentWorld.",
         "action_specific_signal": "none",
-        "claim_risk": "Without prospective simulation, claim risk is only discovered after execution or verification."
+        "claim_risk": "Without prospective simulation, claim risk is only discovered after execution or verification.",
+        "expected_metric_range": null,
+        "expected_runtime_range_seconds": null,
+        "claim_impact": "medium",
+        "compute_value": "medium",
+        "why_this_action_changes_claims": "",
+        "why_this_action_may_be_wasteful": "",
+        "risk_predictions": [],
+        "stop_condition": "",
+        "memory_example_ids": [],
+        "few_shot_example_ids": [],
+        "prompt_version": null,
+        "world_model_schema_version": null
       },
       "source": "unknown"
     },
@@ -747,7 +783,19 @@
         "recommendation": "run",
         "rationale": "This baseline chooses experiments from observed state and policy rules without Qwen-AgentWorld.",
         "action_specific_signal": "none",
-        "claim_risk": "Without prospective simulation, claim risk is only discovered after execution or verification."
+        "claim_risk": "Without prospective simulation, claim risk is only discovered after execution or verification.",
+        "expected_metric_range": null,
+        "expected_runtime_range_seconds": null,
+        "claim_impact": "medium",
+        "compute_value": "medium",
+        "why_this_action_changes_claims": "",
+        "why_this_action_may_be_wasteful": "",
+        "risk_predictions": [],
+        "stop_condition": "",
+        "memory_example_ids": [],
+        "few_shot_example_ids": [],
+        "prompt_version": null,
+        "world_model_schema_version": null
       },
       "source": "unknown"
     },
@@ -771,7 +819,19 @@
         "recommendation": "run",
         "rationale": "This baseline chooses experiments from observed state and policy rules without Qwen-AgentWorld.",
         "action_specific_signal": "none",
-        "claim_risk": "Without prospective simulation, claim risk is only discovered after execution or verification."
+        "claim_risk": "Without prospective simulation, claim risk is only discovered after execution or verification.",
+        "expected_metric_range": null,
+        "expected_runtime_range_seconds": null,
+        "claim_impact": "medium",
+        "compute_value": "medium",
+        "why_this_action_changes_claims": "",
+        "why_this_action_may_be_wasteful": "",
+        "risk_predictions": [],
+        "stop_condition": "",
+        "memory_example_ids": [],
+        "few_shot_example_ids": [],
+        "prompt_version": null,
+        "world_model_schema_version": null
       },
       "source": "unknown"
     },
@@ -795,7 +855,19 @@
         "recommendation": "run",
         "rationale": "This baseline chooses experiments from observed state and policy rules without Qwen-AgentWorld.",
         "action_specific_signal": "none",
-        "claim_risk": "Without prospective simulation, claim risk is only discovered after execution or verification."
+        "claim_risk": "Without prospective simulation, claim risk is only discovered after execution or verification.",
+        "expected_metric_range": null,
+        "expected_runtime_range_seconds": null,
+        "claim_impact": "medium",
+        "compute_value": "medium",
+        "why_this_action_changes_claims": "",
+        "why_this_action_may_be_wasteful": "",
+        "risk_predictions": [],
+        "stop_condition": "",
+        "memory_example_ids": [],
+        "few_shot_example_ids": [],
+        "prompt_version": null,
+        "world_model_schema_version": null
       },
       "source": "unknown"
     },
@@ -819,7 +891,19 @@
         "recommendation": "run",
         "rationale": "This baseline chooses experiments from observed state and policy rules without Qwen-AgentWorld.",
         "action_specific_signal": "none",
-        "claim_risk": "Without prospective simulation, claim risk is only discovered after execution or verification."
+        "claim_risk": "Without prospective simulation, claim risk is only discovered after execution or verification.",
+        "expected_metric_range": null,
+        "expected_runtime_range_seconds": null,
+        "claim_impact": "medium",
+        "compute_value": "medium",
+        "why_this_action_changes_claims": "",
+        "why_this_action_may_be_wasteful": "",
+        "risk_predictions": [],
+        "stop_condition": "",
+        "memory_example_ids": [],
+        "few_shot_example_ids": [],
+        "prompt_version": null,
+        "world_model_schema_version": null
       },
       "source": "unknown"
     },
@@ -843,7 +927,19 @@
         "recommendation": "run",
         "rationale": "This baseline chooses experiments from observed state and policy rules without Qwen-AgentWorld.",
         "action_specific_signal": "none",
-        "claim_risk": "Without prospective simulation, claim risk is only discovered after execution or verification."
+        "claim_risk": "Without prospective simulation, claim risk is only discovered after execution or verification.",
+        "expected_metric_range": null,
+        "expected_runtime_range_seconds": null,
+        "claim_impact": "medium",
+        "compute_value": "medium",
+        "why_this_action_changes_claims": "",
+        "why_this_action_may_be_wasteful": "",
+        "risk_predictions": [],
+        "stop_condition": "",
+        "memory_example_ids": [],
+        "few_shot_example_ids": [],
+        "prompt_version": null,
+        "world_model_schema_version": null
       },
       "source": "unknown"
     },
@@ -867,7 +963,19 @@
         "recommendation": "run",
         "rationale": "This baseline chooses experiments from observed state and policy rules without Qwen-AgentWorld.",
         "action_specific_signal": "none",
-        "claim_risk": "Without prospective simulation, claim risk is only discovered after execution or verification."
+        "claim_risk": "Without prospective simulation, claim risk is only discovered after execution or verification.",
+        "expected_metric_range": null,
+        "expected_runtime_range_seconds": null,
+        "claim_impact": "medium",
+        "compute_value": "medium",
+        "why_this_action_changes_claims": "",
+        "why_this_action_may_be_wasteful": "",
+        "risk_predictions": [],
+        "stop_condition": "",
+        "memory_example_ids": [],
+        "few_shot_example_ids": [],
+        "prompt_version": null,
+        "world_model_schema_version": null
       },
       "source": "unknown"
     },
@@ -891,7 +999,19 @@
         "recommendation": "run",
         "rationale": "This baseline chooses experiments from observed state and policy rules without Qwen-AgentWorld.",
         "action_specific_signal": "none",
-        "claim_risk": "Without prospective simulation, claim risk is only discovered after execution or verification."
+        "claim_risk": "Without prospective simulation, claim risk is only discovered after execution or verification.",
+        "expected_metric_range": null,
+        "expected_runtime_range_seconds": null,
+        "claim_impact": "medium",
+        "compute_value": "medium",
+        "why_this_action_changes_claims": "",
+        "why_this_action_may_be_wasteful": "",
+        "risk_predictions": [],
+        "stop_condition": "",
+        "memory_example_ids": [],
+        "few_shot_example_ids": [],
+        "prompt_version": null,
+        "world_model_schema_version": null
       },
       "source": "unknown"
     },
@@ -915,7 +1035,19 @@
         "recommendation": "run",
         "rationale": "This baseline chooses experiments from observed state and policy rules without Qwen-AgentWorld.",
         "action_specific_signal": "none",
-        "claim_risk": "Without prospective simulation, claim risk is only discovered after execution or verification."
+        "claim_risk": "Without prospective simulation, claim risk is only discovered after execution or verification.",
+        "expected_metric_range": null,
+        "expected_runtime_range_seconds": null,
+        "claim_impact": "medium",
+        "compute_value": "medium",
+        "why_this_action_changes_claims": "",
+        "why_this_action_may_be_wasteful": "",
+        "risk_predictions": [],
+        "stop_condition": "",
+        "memory_example_ids": [],
+        "few_shot_example_ids": [],
+        "prompt_version": null,
+        "world_model_schema_version": null
       },
       "source": "unknown"
     },
@@ -940,7 +1072,19 @@
         "recommendation": "run",
         "rationale": "This baseline chooses experiments from observed state and policy rules without Qwen-AgentWorld.",
         "action_specific_signal": "none",
-        "claim_risk": "Without prospective simulation, claim risk is only discovered after execution or verification."
+        "claim_risk": "Without prospective simulation, claim risk is only discovered after execution or verification.",
+        "expected_metric_range": null,
+        "expected_runtime_range_seconds": null,
+        "claim_impact": "medium",
+        "compute_value": "medium",
+        "why_this_action_changes_claims": "",
+        "why_this_action_may_be_wasteful": "",
+        "risk_predictions": [],
+        "stop_condition": "",
+        "memory_example_ids": [],
+        "few_shot_example_ids": [],
+        "prompt_version": null,
+        "world_model_schema_version": null
       },
       "source": "unknown"
     },
@@ -965,7 +1109,19 @@
         "recommendation": "run",
         "rationale": "This baseline chooses experiments from observed state and policy rules without Qwen-AgentWorld.",
         "action_specific_signal": "none",
-        "claim_risk": "Without prospective simulation, claim risk is only discovered after execution or verification."
+        "claim_risk": "Without prospective simulation, claim risk is only discovered after execution or verification.",
+        "expected_metric_range": null,
+        "expected_runtime_range_seconds": null,
+        "claim_impact": "medium",
+        "compute_value": "medium",
+        "why_this_action_changes_claims": "",
+        "why_this_action_may_be_wasteful": "",
+        "risk_predictions": [],
+        "stop_condition": "",
+        "memory_example_ids": [],
+        "few_shot_example_ids": [],
+        "prompt_version": null,
+        "world_model_schema_version": null
       },
       "source": "unknown"
     }
@@ -1358,5 +1514,8 @@
     "trace_path": "runs/ablations/classic_verified/digits_accuracy/run_006.json",
     "report_path": "reports/ablations/classic_verified/digits_accuracy/final_report.md",
     "claim_ledger_path": "reports/ablations/classic_verified/digits_accuracy/claim_ledger.json"
-  }
+  },
+  "memory_examples_used": [],
+  "prompt_version": null,
+  "world_model_schema_version": null
 }

@@ -16,6 +16,7 @@ from .schemas import (
 )
 from .simulator import predict
 from .top_models import build_top_model_verification_action
+from .world_model_memory import retrieve_similar_memories
 
 
 def action_key(action: ProposedAction) -> str:
@@ -125,6 +126,15 @@ def _sweep_candidate(task: TaskSpec, index: int) -> ProposedAction:
     )
 
 
+def _stop_candidate(task: TaskSpec) -> ProposedAction:
+    return _candidate(
+        "action_stop_and_report",
+        "python -c \"print('stop_and_report: no further compute requested')\"",
+        "stop_and_report",
+        {"dataset": task.dataset, "reason": "report from current verified evidence"},
+    )
+
+
 def _single_model_search_complete(task: TaskSpec, seen: set[str]) -> bool:
     for model in task.models:
         if not any(key.startswith(f"{model}:") for key in seen):
@@ -175,6 +185,11 @@ def generate_candidates(task: TaskSpec, state: ResearchState, traces: list[Exper
         for index, _sweep in enumerate(task.sweeps):
             candidates.append(_sweep_candidate(task, index))
 
+    if any(trace.verification and not trace.verification.trustworthy for trace in traces):
+        candidates.insert(0, _stop_candidate(task))
+    elif state.budget_remaining is not None and state.budget_remaining <= 1 and traces:
+        candidates.append(_stop_candidate(task))
+
     if not traces:
         candidates.insert(0, initial_action(task))
 
@@ -196,11 +211,19 @@ def prediction_source(prediction, simulator_configured: bool) -> str:
     return "heuristic_fallback" if "fallback" in text or "heuristic" in text else "qwen_agentworld"
 
 
-def predict_candidates(task: TaskSpec, state: ResearchState, candidates: list[ProposedAction], simulator_configured: bool) -> list[CandidatePrediction]:
+def predict_candidates(
+    task: TaskSpec,
+    state: ResearchState,
+    candidates: list[ProposedAction],
+    simulator_configured: bool,
+    traces: list[ExperimentTrace] | None = None,
+) -> list[CandidatePrediction]:
     state_text = json.dumps({"task": task.model_dump(), "state": state.model_dump()}, indent=2)
+    traces = traces or []
     predictions = []
     for candidate in candidates:
-        prediction = predict(candidate, state_text)
+        memory_examples = retrieve_similar_memories(task, candidate, traces)
+        prediction = predict(candidate, state_text, memory_examples=memory_examples)
         predictions.append(
             CandidatePrediction(
                 action=candidate,
@@ -256,6 +279,17 @@ def _score_candidate(
         score += 20
         breakdown["qwen_signal"] += 20
         reasons.append("world model recommended run")
+    elif prediction.recommendation == "verify":
+        score += 34
+        breakdown["qwen_signal"] += 34
+        breakdown["verification_value"] += 18
+        reasons.append("world model recommended verification")
+        world_reasons.append("world model recommended verification")
+    elif prediction.recommendation == "stop_and_report":
+        score += 10
+        breakdown["qwen_signal"] += 10
+        reasons.append("world model recommended stop_and_report")
+        world_reasons.append("world model recommended stop_and_report")
     elif prediction.recommendation == "modify":
         score += 12
         breakdown["qwen_signal"] += 12
@@ -267,18 +301,41 @@ def _score_candidate(
         reasons.append("world model recommended skip")
         world_reasons.append("world model recommended skip")
 
+    if prediction.claim_impact == "high":
+        score += 20
+        breakdown["unsupported_claim_risk"] += 10
+        reasons.append("world model predicted high claim impact")
+        world_reasons.append("world model predicted high claim impact")
+    elif prediction.claim_impact == "low":
+        score -= 14
+        breakdown["unsupported_claim_risk"] -= 14
+        reasons.append("world model predicted low claim impact")
+        world_reasons.append("world model predicted low claim impact")
+
+    if prediction.compute_value == "high":
+        score += 12
+        breakdown["qwen_signal"] += 12
+        reasons.append("world model predicted high compute value")
+        world_reasons.append("world model predicted high compute value")
+    elif prediction.compute_value == "low":
+        score -= 16
+        breakdown["compute_cost_penalty"] -= 16
+        reasons.append("world model predicted low compute value")
+        world_reasons.append("world model predicted low compute value")
+
     signal = f"{prediction.action_specific_signal} {prediction.claim_risk} {risks} {rationale}".lower()
     if any(word in signal for word in ["scal", "seed", "variance", "noise", "robust", "leak", "protocol", "metric", "overfit"]):
         score += 10
         breakdown["qwen_signal"] += 10
         world_reasons.append("prediction contained an action-specific research signal")
 
-    if action.model not in tested_models and action.model not in {"verification_sweep", "top_model_verification"}:
+    non_model_actions = {"verification_sweep", "top_model_verification", "stop_and_report"}
+    if action.model not in tested_models and action.model not in non_model_actions:
         score += 18
         breakdown["novelty"] += 18
         reasons.append("new model family increases search coverage")
         selector_reasons.append("new model family increases search coverage")
-    elif action.model in tested_models and action.model not in {"verification_sweep", "top_model_verification"}:
+    elif action.model in tested_models and action.model not in non_model_actions:
         score -= 12
         breakdown["redundancy_penalty"] -= 12
         reasons.append("candidate is a variant of an already tested family")
@@ -330,6 +387,24 @@ def _score_candidate(
             reasons.append("world model predicted top-model robustness or claim risk")
             world_reasons.append("world model predicted top-model robustness or claim risk")
 
+    if action.model == "stop_and_report":
+        if any(trace.verification and not trace.verification.trustworthy for trace in traces):
+            score += 80
+            breakdown["verification_value"] += 40
+            breakdown["compute_cost_penalty"] += 20
+            reasons.append("verifier already blocked the robust claim; stop instead of score-chasing")
+            selector_reasons.append("verifier already blocked the robust claim; stop instead of score-chasing")
+        elif prediction.recommendation == "stop_and_report":
+            score += 35
+            breakdown["qwen_signal"] += 35
+            reasons.append("world model recommended stopping from current evidence")
+            world_reasons.append("world model recommended stopping from current evidence")
+        else:
+            score -= 35
+            breakdown["compute_cost_penalty"] -= 35
+            reasons.append("stop is premature before claim risk has been checked")
+            selector_reasons.append("stop is premature before claim risk has been checked")
+
     if action.model == "svc" and any(t.proposed_action.model == "random_forest" and not t.comparison.metric_match for t in traces):
         score += 30
         breakdown["uncertainty"] += 30
@@ -354,7 +429,7 @@ def _score_candidate(
         reasons.append("world model predicted overfitting risk")
         world_reasons.append("world model predicted overfitting risk")
 
-    if _best_accuracy(traces) >= 0.98 and action.model not in {"verification_sweep", "top_model_verification"}:
+    if _best_accuracy(traces) >= 0.98 and action.model not in non_model_actions:
         score -= 8
         breakdown["unsupported_claim_risk"] -= 8
         reasons.append("high best score increases claim risk for additional single-run score chasing")

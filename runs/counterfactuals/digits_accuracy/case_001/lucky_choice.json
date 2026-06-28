@@ -1,11 +1,23 @@
 {
   "action": {
     "action_id": "action_verify_top_models",
-    "command": "python experiments/compare_models_sklearn.py --dataset digits --models svc:scale=true,C=0.5,kernel=rbf logistic_regression:scale=true,C=1.0 logistic_regression:scale=true,C=0.1 --seeds 0 1 2 3 4",
+    "command": "python experiments/compare_models_sklearn.py --dataset digits --models svc:scale=true,C=2.0,kernel=rbf svc:scale=true,C=0.5,kernel=rbf logistic_regression:scale=true,C=1.0 --seeds 0 1 2 3 4",
     "model": "top_model_verification",
     "params": {
       "dataset": "digits",
       "models": [
+        {
+          "run_id": "run_004",
+          "model": "svc",
+          "model_key": "svc_scaled_C=2.0_kernel=rbf",
+          "metric": 0.98,
+          "params": {
+            "dataset": "digits",
+            "scale": true,
+            "C": 2.0,
+            "kernel": "rbf"
+          }
+        },
         {
           "run_id": "run_003",
           "model": "svc",
@@ -19,7 +31,7 @@
           }
         },
         {
-          "run_id": "run_004",
+          "run_id": "run_005",
           "model": "logistic_regression",
           "model_key": "logistic_regression_scaled_C=1.0",
           "metric": 0.9777777777777777,
@@ -27,17 +39,6 @@
             "dataset": "digits",
             "scale": true,
             "C": 1.0
-          }
-        },
-        {
-          "run_id": "run_002",
-          "model": "logistic_regression",
-          "model_key": "logistic_regression_scaled_C=0.1",
-          "metric": 0.9711111111111111,
-          "params": {
-            "dataset": "digits",
-            "scale": true,
-            "C": 0.1
           }
         }
       ],
@@ -48,19 +49,35 @@
         3,
         4
       ],
-      "reason": "Top models are tied on single-split evidence; robust best-model claim requires multi-seed verification.",
-      "verification_action_key": "logistic_regression_scaled_C=0.1:logistic_regression_scaled_C=1.0:svc_scaled_C=0.5_kernel=rbf"
+      "reason": "Top-model gap 0.0022 is within margin 0.0100; verify before claiming a winner.",
+      "verification_action_key": "logistic_regression_scaled_C=1.0:svc_scaled_C=0.5_kernel=rbf:svc_scaled_C=2.0_kernel=rbf"
     }
   },
   "actual_result": {
     "status": "success",
     "accuracy": null,
     "f1": null,
-    "runtime_seconds": 43.9296,
-    "stdout_tail": "\"model\",\n      \"value\": \"logistic_regression_scaled_C=0.1\"\n    },\n    {\n      \"accuracy\": 0.9622222222222222,\n      \"config_key\": \"logistic_regression_scaled_C=0.1\",\n      \"f1\": 0.9622957967217298,\n      \"label\": \"logistic_regression_scaled_C=0.1\",\n      \"runtime_seconds\": 0.318,\n      \"seed\": 2,\n      \"sweep_param\": \"model\",\n      \"value\": \"logistic_regression_scaled_C=0.1\"\n    },\n    {\n      \"accuracy\": 0.9688888888888889,\n      \"config_key\": \"logistic_regression_scaled_C=0.1\",\n      \"f1\": 0.9688737558564582,\n      \"label\": \"logistic_regression_scaled_C=0.1\",\n      \"runtime_seconds\": 0.6879,\n      \"seed\": 3,\n      \"sweep_param\": \"model\",\n      \"value\": \"logistic_regression_scaled_C=0.1\"\n    },\n    {\n      \"accuracy\": 0.9688888888888889,\n      \"config_key\": \"logistic_regression_scaled_C=0.1\",\n      \"f1\": 0.9688482685985577,\n      \"label\": \"logistic_regression_scaled_C=0.1\",\n      \"runtime_seconds\": 0.8905,\n      \"seed\": 4,\n      \"sweep_param\": \"model\",\n      \"value\": \"logistic_regression_scaled_C=0.1\"\n    }\n  ],\n  \"runtime_seconds\": 43.9296,\n  \"seeds\": [\n    0,\n    1,\n    2,\n    3,\n    4\n  ],\n  \"status\": \"success\",\n  \"summary_by_value\": {\n    \"logistic_regression_scaled_C=0.1\": {\n      \"max_accuracy\": 0.9711111111111111,\n      \"mean_accuracy\": 0.9671111111111111,\n      \"mean_f1\": 0.9672246346001282,\n      \"min_accuracy\": 0.9622222222222222,\n      \"n\": 5\n    },\n    \"logistic_regression_scaled_C=1.0\": {\n      \"max_accuracy\": 0.98,\n      \"mean_accuracy\": 0.9693333333333334,\n      \"mean_f1\": 0.9693974260204404,\n      \"min_accuracy\": 0.9488888888888889,\n      \"n\": 5\n    },\n    \"svc_scaled_C=0.5_kernel=rbf\": {\n      \"max_accuracy\": 0.9822222222222222,\n      \"mean_accuracy\": 0.9764444444444444,\n      \"mean_f1\": 0.9765097023471897,\n      \"min_accuracy\": 0.9711111111111111,\n      \"n\": 5\n    }\n  },\n  \"type\": \"top_model_verification\",\n  \"verified_models\": [\n    \"svc_scaled_C=0.5_kernel=rbf\",\n    \"logistic_regression_scaled_C=1.0\",\n    \"logistic_regression_scaled_C=0.1\"\n  ]\n}\n",
+    "runtime_seconds": 38.738,
+    "stdout_tail": "      \"seed\": 1,\n      \"sweep_param\": \"model\",\n      \"value\": \"logistic_regression_scaled_C=1.0\"\n    },\n    {\n      \"accuracy\": 0.9488888888888889,\n      \"config_key\": \"logistic_regression_scaled_C=1.0\",\n      \"f1\": 0.9490281970972656,\n      \"label\": \"logistic_regression_scaled_C=1.0\",\n      \"runtime_seconds\": 0.4525,\n      \"seed\": 2,\n      \"sweep_param\": \"model\",\n      \"value\": \"logistic_regression_scaled_C=1.0\"\n    },\n    {\n      \"accuracy\": 0.98,\n      \"config_key\": \"logistic_regression_scaled_C=1.0\",\n      \"f1\": 0.9800719178533867,\n      \"label\": \"logistic_regression_scaled_C=1.0\",\n      \"runtime_seconds\": 0.8702,\n      \"seed\": 3,\n      \"sweep_param\": \"model\",\n      \"value\": \"logistic_regression_scaled_C=1.0\"\n    },\n    {\n      \"accuracy\": 0.98,\n      \"config_key\": \"logistic_regression_scaled_C=1.0\",\n      \"f1\": 0.9800181843489072,\n      \"label\": \"logistic_regression_scaled_C=1.0\",\n      \"runtime_seconds\": 0.8566,\n      \"seed\": 4,\n      \"sweep_param\": \"model\",\n      \"value\": \"logistic_regression_scaled_C=1.0\"\n    }\n  ],\n  \"runtime_seconds\": 38.738,\n  \"seeds\": [\n    0,\n    1,\n    2,\n    3,\n    4\n  ],\n  \"status\": \"success\",\n  \"summary_by_value\": {\n    \"logistic_regression_scaled_C=1.0\": {\n      \"max_accuracy\": 0.98,\n      \"mean_accuracy\": 0.9693333333333334,\n      \"mean_f1\": 0.9693974260204404,\n      \"min_accuracy\": 0.9488888888888889,\n      \"n\": 5\n    },\n    \"svc_scaled_C=0.5_kernel=rbf\": {\n      \"max_accuracy\": 0.9822222222222222,\n      \"mean_accuracy\": 0.9764444444444444,\n      \"mean_f1\": 0.9765097023471897,\n      \"min_accuracy\": 0.9711111111111111,\n      \"n\": 5\n    },\n    \"svc_scaled_C=2.0_kernel=rbf\": {\n      \"max_accuracy\": 0.9866666666666667,\n      \"mean_accuracy\": 0.9817777777777777,\n      \"mean_f1\": 0.9817751619679045,\n      \"min_accuracy\": 0.9777777777777777,\n      \"n\": 5\n    }\n  },\n  \"type\": \"top_model_verification\",\n  \"verified_models\": [\n    \"svc_scaled_C=2.0_kernel=rbf\",\n    \"svc_scaled_C=0.5_kernel=rbf\",\n    \"logistic_regression_scaled_C=1.0\"\n  ]\n}\n",
     "stderr_tail": "",
     "raw": {
       "best": {
+        "max_accuracy": 0.9866666666666667,
+        "mean_accuracy": 0.9817777777777777,
+        "mean_f1": 0.9817751619679045,
+        "min_accuracy": 0.9777777777777777,
+        "n": 5,
+        "value": "svc_scaled_C=2.0_kernel=rbf"
+      },
+      "dataset": "digits",
+      "failures": [],
+      "metric": "accuracy",
+      "models": [
+        "svc:scale=true,C=2.0,kernel=rbf",
+        "svc:scale=true,C=0.5,kernel=rbf",
+        "logistic_regression:scale=true,C=1.0"
+      ],
+      "runner_up": {
         "max_accuracy": 0.9822222222222222,
         "mean_accuracy": 0.9764444444444444,
         "mean_f1": 0.9765097023471897,
@@ -68,29 +85,63 @@
         "n": 5,
         "value": "svc_scaled_C=0.5_kernel=rbf"
       },
-      "dataset": "digits",
-      "failures": [],
-      "metric": "accuracy",
-      "models": [
-        "svc:scale=true,C=0.5,kernel=rbf",
-        "logistic_regression:scale=true,C=1.0",
-        "logistic_regression:scale=true,C=0.1"
-      ],
-      "runner_up": {
-        "max_accuracy": 0.98,
-        "mean_accuracy": 0.9693333333333334,
-        "mean_f1": 0.9693974260204404,
-        "min_accuracy": 0.9488888888888889,
-        "n": 5,
-        "value": "logistic_regression_scaled_C=1.0"
-      },
       "runs": [
+        {
+          "accuracy": 0.9822222222222222,
+          "config_key": "svc_scaled_C=2.0_kernel=rbf",
+          "f1": 0.9823063215247015,
+          "label": "svc_scaled_C=2.0_kernel=rbf",
+          "runtime_seconds": 0.1364,
+          "seed": 0,
+          "sweep_param": "model",
+          "value": "svc_scaled_C=2.0_kernel=rbf"
+        },
+        {
+          "accuracy": 0.9822222222222222,
+          "config_key": "svc_scaled_C=2.0_kernel=rbf",
+          "f1": 0.9821590845559875,
+          "label": "svc_scaled_C=2.0_kernel=rbf",
+          "runtime_seconds": 0.0996,
+          "seed": 1,
+          "sweep_param": "model",
+          "value": "svc_scaled_C=2.0_kernel=rbf"
+        },
+        {
+          "accuracy": 0.9777777777777777,
+          "config_key": "svc_scaled_C=2.0_kernel=rbf",
+          "f1": 0.977741338676599,
+          "label": "svc_scaled_C=2.0_kernel=rbf",
+          "runtime_seconds": 0.1341,
+          "seed": 2,
+          "sweep_param": "model",
+          "value": "svc_scaled_C=2.0_kernel=rbf"
+        },
+        {
+          "accuracy": 0.98,
+          "config_key": "svc_scaled_C=2.0_kernel=rbf",
+          "f1": 0.9800178915676812,
+          "label": "svc_scaled_C=2.0_kernel=rbf",
+          "runtime_seconds": 0.114,
+          "seed": 3,
+          "sweep_param": "model",
+          "value": "svc_scaled_C=2.0_kernel=rbf"
+        },
+        {
+          "accuracy": 0.9866666666666667,
+          "config_key": "svc_scaled_C=2.0_kernel=rbf",
+          "f1": 0.9866511735145537,
+          "label": "svc_scaled_C=2.0_kernel=rbf",
+          "runtime_seconds": 0.1268,
+          "seed": 4,
+          "sweep_param": "model",
+          "value": "svc_scaled_C=2.0_kernel=rbf"
+        },
         {
           "accuracy": 0.9711111111111111,
           "config_key": "svc_scaled_C=0.5_kernel=rbf",
           "f1": 0.9712828463454455,
           "label": "svc_scaled_C=0.5_kernel=rbf",
-          "runtime_seconds": 0.1547,
+          "runtime_seconds": 0.1353,
           "seed": 0,
           "sweep_param": "model",
           "value": "svc_scaled_C=0.5_kernel=rbf"
@@ -100,7 +151,7 @@
           "config_key": "svc_scaled_C=0.5_kernel=rbf",
           "f1": 0.9822666435141579,
           "label": "svc_scaled_C=0.5_kernel=rbf",
-          "runtime_seconds": 0.1301,
+          "runtime_seconds": 0.1529,
           "seed": 1,
           "sweep_param": "model",
           "value": "svc_scaled_C=0.5_kernel=rbf"
@@ -110,7 +161,7 @@
           "config_key": "svc_scaled_C=0.5_kernel=rbf",
           "f1": 0.9710961141281487,
           "label": "svc_scaled_C=0.5_kernel=rbf",
-          "runtime_seconds": 0.1275,
+          "runtime_seconds": 0.1149,
           "seed": 2,
           "sweep_param": "model",
           "value": "svc_scaled_C=0.5_kernel=rbf"
@@ -120,7 +171,7 @@
           "config_key": "svc_scaled_C=0.5_kernel=rbf",
           "f1": 0.9757150745855024,
           "label": "svc_scaled_C=0.5_kernel=rbf",
-          "runtime_seconds": 0.1052,
+          "runtime_seconds": 0.2002,
           "seed": 3,
           "sweep_param": "model",
           "value": "svc_scaled_C=0.5_kernel=rbf"
@@ -130,7 +181,7 @@
           "config_key": "svc_scaled_C=0.5_kernel=rbf",
           "f1": 0.9821878331626943,
           "label": "svc_scaled_C=0.5_kernel=rbf",
-          "runtime_seconds": 0.14,
+          "runtime_seconds": 0.1125,
           "seed": 4,
           "sweep_param": "model",
           "value": "svc_scaled_C=0.5_kernel=rbf"
@@ -140,7 +191,7 @@
           "config_key": "logistic_regression_scaled_C=1.0",
           "f1": 0.9691218883006076,
           "label": "logistic_regression_scaled_C=1.0",
-          "runtime_seconds": 0.7631,
+          "runtime_seconds": 1.2799,
           "seed": 0,
           "sweep_param": "model",
           "value": "logistic_regression_scaled_C=1.0"
@@ -150,7 +201,7 @@
           "config_key": "logistic_regression_scaled_C=1.0",
           "f1": 0.9687469425020353,
           "label": "logistic_regression_scaled_C=1.0",
-          "runtime_seconds": 0.7748,
+          "runtime_seconds": 0.355,
           "seed": 1,
           "sweep_param": "model",
           "value": "logistic_regression_scaled_C=1.0"
@@ -160,7 +211,7 @@
           "config_key": "logistic_regression_scaled_C=1.0",
           "f1": 0.9490281970972656,
           "label": "logistic_regression_scaled_C=1.0",
-          "runtime_seconds": 0.5174,
+          "runtime_seconds": 0.4525,
           "seed": 2,
           "sweep_param": "model",
           "value": "logistic_regression_scaled_C=1.0"
@@ -170,7 +221,7 @@
           "config_key": "logistic_regression_scaled_C=1.0",
           "f1": 0.9800719178533867,
           "label": "logistic_regression_scaled_C=1.0",
-          "runtime_seconds": 0.397,
+          "runtime_seconds": 0.8702,
           "seed": 3,
           "sweep_param": "model",
           "value": "logistic_regression_scaled_C=1.0"
@@ -180,63 +231,13 @@
           "config_key": "logistic_regression_scaled_C=1.0",
           "f1": 0.9800181843489072,
           "label": "logistic_regression_scaled_C=1.0",
-          "runtime_seconds": 0.3901,
+          "runtime_seconds": 0.8566,
           "seed": 4,
           "sweep_param": "model",
           "value": "logistic_regression_scaled_C=1.0"
-        },
-        {
-          "accuracy": 0.9711111111111111,
-          "config_key": "logistic_regression_scaled_C=0.1",
-          "f1": 0.971679705918373,
-          "label": "logistic_regression_scaled_C=0.1",
-          "runtime_seconds": 1.5503,
-          "seed": 0,
-          "sweep_param": "model",
-          "value": "logistic_regression_scaled_C=0.1"
-        },
-        {
-          "accuracy": 0.9644444444444444,
-          "config_key": "logistic_regression_scaled_C=0.1",
-          "f1": 0.964425645905522,
-          "label": "logistic_regression_scaled_C=0.1",
-          "runtime_seconds": 0.4702,
-          "seed": 1,
-          "sweep_param": "model",
-          "value": "logistic_regression_scaled_C=0.1"
-        },
-        {
-          "accuracy": 0.9622222222222222,
-          "config_key": "logistic_regression_scaled_C=0.1",
-          "f1": 0.9622957967217298,
-          "label": "logistic_regression_scaled_C=0.1",
-          "runtime_seconds": 0.318,
-          "seed": 2,
-          "sweep_param": "model",
-          "value": "logistic_regression_scaled_C=0.1"
-        },
-        {
-          "accuracy": 0.9688888888888889,
-          "config_key": "logistic_regression_scaled_C=0.1",
-          "f1": 0.9688737558564582,
-          "label": "logistic_regression_scaled_C=0.1",
-          "runtime_seconds": 0.6879,
-          "seed": 3,
-          "sweep_param": "model",
-          "value": "logistic_regression_scaled_C=0.1"
-        },
-        {
-          "accuracy": 0.9688888888888889,
-          "config_key": "logistic_regression_scaled_C=0.1",
-          "f1": 0.9688482685985577,
-          "label": "logistic_regression_scaled_C=0.1",
-          "runtime_seconds": 0.8905,
-          "seed": 4,
-          "sweep_param": "model",
-          "value": "logistic_regression_scaled_C=0.1"
         }
       ],
-      "runtime_seconds": 43.9296,
+      "runtime_seconds": 38.738,
       "seeds": [
         0,
         1,
@@ -246,13 +247,6 @@
       ],
       "status": "success",
       "summary_by_value": {
-        "logistic_regression_scaled_C=0.1": {
-          "max_accuracy": 0.9711111111111111,
-          "mean_accuracy": 0.9671111111111111,
-          "mean_f1": 0.9672246346001282,
-          "min_accuracy": 0.9622222222222222,
-          "n": 5
-        },
         "logistic_regression_scaled_C=1.0": {
           "max_accuracy": 0.98,
           "mean_accuracy": 0.9693333333333334,
@@ -266,33 +260,40 @@
           "mean_f1": 0.9765097023471897,
           "min_accuracy": 0.9711111111111111,
           "n": 5
+        },
+        "svc_scaled_C=2.0_kernel=rbf": {
+          "max_accuracy": 0.9866666666666667,
+          "mean_accuracy": 0.9817777777777777,
+          "mean_f1": 0.9817751619679045,
+          "min_accuracy": 0.9777777777777777,
+          "n": 5
         }
       },
       "type": "top_model_verification",
       "verified_models": [
+        "svc_scaled_C=2.0_kernel=rbf",
         "svc_scaled_C=0.5_kernel=rbf",
-        "logistic_regression_scaled_C=1.0",
-        "logistic_regression_scaled_C=0.1"
+        "logistic_regression_scaled_C=1.0"
       ]
     }
   },
-  "actual_metric": 0.9764444444444444,
+  "actual_metric": 0.9817777777777777,
   "verification": {
     "status": "inconclusive",
     "metric": "accuracy",
-    "effect_size": 0.007111,
-    "seed_noise": 0.011111,
-    "effect_to_noise_ratio": 0.639996,
+    "effect_size": 0.005333,
+    "seed_noise": 0.008889,
+    "effect_to_noise_ratio": 0.599955,
     "min_seed_count": 5,
     "low_n_warning": false,
     "trustworthy": false,
-    "best_config": "svc_scaled_C=0.5_kernel=rbf",
-    "worst_config": "logistic_regression_scaled_C=1.0",
-    "blocked_claim": "svc_scaled_C=0.5_kernel=rbf is robustly better than logistic_regression_scaled_C=1.0.",
-    "allowed_claim": "svc_scaled_C=0.5_kernel=rbf had the best multi-seed mean accuracy, but the effect was smaller than seed noise; no robust best-model claim is allowed.",
+    "best_config": "svc_scaled_C=2.0_kernel=rbf",
+    "worst_config": "svc_scaled_C=0.5_kernel=rbf",
+    "blocked_claim": "svc_scaled_C=2.0_kernel=rbf is robustly better than svc_scaled_C=0.5_kernel=rbf.",
+    "allowed_claim": "svc_scaled_C=2.0_kernel=rbf had the best multi-seed mean accuracy, but the effect was smaller than seed noise; no robust best-model claim is allowed.",
     "supported_claims": [],
     "inconclusive_findings": [
-      "Best config 'svc_scaled_C=0.5_kernel=rbf' improves over 'logistic_regression_scaled_C=1.0' by 0.0071 accuracy, but best-config seed noise is 0.0111."
+      "Best config 'svc_scaled_C=2.0_kernel=rbf' improves over 'svc_scaled_C=0.5_kernel=rbf' by 0.0053 accuracy, but best-config seed noise is 0.0089."
     ],
     "rationale": "Measured top-model effect is not larger than inter-seed noise. The report must not claim a robust best model."
   }

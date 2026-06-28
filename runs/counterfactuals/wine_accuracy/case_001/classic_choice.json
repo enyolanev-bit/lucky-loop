@@ -1,31 +1,31 @@
 {
   "action": {
-    "action_id": "action_logistic_regression_C-1p0_scale-True",
-    "command": "python experiments/train_sklearn.py --dataset wine --model logistic_regression --scale",
+    "action_id": "action_logistic_regression_C-10p0_scale-True",
+    "command": "python experiments/train_sklearn.py --dataset wine --model logistic_regression --scale --C 10.0",
     "model": "logistic_regression",
     "params": {
       "dataset": "wine",
       "scale": true,
-      "C": 1.0
+      "C": 10.0
     }
   },
   "actual_result": {
     "status": "success",
-    "accuracy": 1.0,
-    "f1": 1.0,
-    "runtime_seconds": 0.0445,
-    "stdout_tail": "{\n  \"accuracy\": 1.0,\n  \"dataset\": \"wine\",\n  \"f1\": 1.0,\n  \"model\": \"logistic_regression\",\n  \"n_label_noise_flips\": 0,\n  \"n_test\": 45,\n  \"n_train\": 133,\n  \"params\": {\n    \"C\": 1.0,\n    \"dataset\": \"wine\",\n    \"kernel\": \"rbf\",\n    \"label_noise\": 0.0,\n    \"learning_rate\": 0.1,\n    \"max_depth\": null,\n    \"max_iter\": 1000,\n    \"model\": \"logistic_regression\",\n    \"n_estimators\": 200,\n    \"scale\": true,\n    \"seed\": 42,\n    \"test_size\": 0.25\n  },\n  \"runtime_seconds\": 0.0445,\n  \"status\": \"success\"\n}\n",
+    "accuracy": 0.9777777777777777,
+    "f1": 0.9775949862906386,
+    "runtime_seconds": 0.0409,
+    "stdout_tail": "{\n  \"accuracy\": 0.9777777777777777,\n  \"dataset\": \"wine\",\n  \"f1\": 0.9775949862906386,\n  \"model\": \"logistic_regression\",\n  \"n_label_noise_flips\": 0,\n  \"n_test\": 45,\n  \"n_train\": 133,\n  \"params\": {\n    \"C\": 10.0,\n    \"dataset\": \"wine\",\n    \"kernel\": \"rbf\",\n    \"label_noise\": 0.0,\n    \"learning_rate\": 0.1,\n    \"max_depth\": null,\n    \"max_iter\": 1000,\n    \"model\": \"logistic_regression\",\n    \"n_estimators\": 200,\n    \"scale\": true,\n    \"seed\": 42,\n    \"test_size\": 0.25\n  },\n  \"runtime_seconds\": 0.0409,\n  \"status\": \"success\"\n}\n",
     "stderr_tail": "",
     "raw": {
-      "accuracy": 1.0,
+      "accuracy": 0.9777777777777777,
       "dataset": "wine",
-      "f1": 1.0,
+      "f1": 0.9775949862906386,
       "model": "logistic_regression",
       "n_label_noise_flips": 0,
       "n_test": 45,
       "n_train": 133,
       "params": {
-        "C": 1.0,
+        "C": 10.0,
         "dataset": "wine",
         "kernel": "rbf",
         "label_noise": 0.0,
@@ -38,10 +38,10 @@
         "seed": 42,
         "test_size": 0.25
       },
-      "runtime_seconds": 0.0445,
+      "runtime_seconds": 0.0409,
       "status": "success"
     }
   },
-  "actual_metric": 1.0,
+  "actual_metric": 0.9777777777777777,
   "verification": null
 }

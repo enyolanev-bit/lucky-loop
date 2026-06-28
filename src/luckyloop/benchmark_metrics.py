@@ -134,6 +134,8 @@ def stop_after_verification_opportunity(traces: list[ExperimentTrace]) -> dict:
         if trace.proposed_action.model not in VERIFICATION_MODELS:
             continue
         remaining = traces[index + 1 :]
+        remaining_compute = [t for t in remaining if t.proposed_action.model != "stop_and_report"]
+        stop_selected = any(t.proposed_action.model == "stop_and_report" for t in remaining[:1])
         trustworthy = bool(trace.verification and trace.verification.trustworthy)
         if trustworthy:
             return {
@@ -145,13 +147,13 @@ def stop_after_verification_opportunity(traces: list[ExperimentTrace]) -> dict:
                 "saved_remaining_runtime_seconds": 0.0,
             }
         return {
-            "qwen_skip_or_stop_recommended": bool(remaining),
+            "qwen_skip_or_stop_recommended": bool(stop_selected or remaining_compute),
             "recommended_action": "stop_and_report" if remaining else "report",
             "reason": "strict best-model claim objective: verifier did not allow a robust claim, so remaining score-chasing budget should be skipped or reported as exploratory only",
             "stop_after_run": trace.run_id,
-            "saved_remaining_runs": len(remaining),
+            "saved_remaining_runs": len(remaining_compute),
             "saved_remaining_runtime_seconds": round(
-                sum(t.actual_result.runtime_seconds or 0.0 for t in remaining),
+                sum(t.actual_result.runtime_seconds or 0.0 for t in remaining_compute),
                 6,
             ),
         }

@@ -23,9 +23,12 @@ def _actual_metric_text(t: ExperimentTrace) -> str:
 
 
 def _world_model_summary(t: ExperimentTrace) -> str:
-    signal = t.world_model_prediction.action_specific_signal or t.world_model_prediction.rationale
+    prediction = t.world_model_prediction
+    signal = prediction.action_specific_signal or prediction.why_this_action_changes_claims or prediction.rationale
     risks = "; ".join(t.world_model_prediction.risks[:2])
-    return signal or risks or t.world_model_prediction.expected_metric
+    impact = f"claim_impact={prediction.claim_impact}, compute_value={prediction.compute_value}, rec={prediction.recommendation}"
+    base = signal or risks or prediction.expected_metric
+    return f"{base} ({impact})"
 
 
 def _agent_hypothesis(t: ExperimentTrace) -> str:
@@ -146,6 +149,10 @@ def generate_report(goal: str, traces: list[ExperimentTrace], path: Path) -> Non
         f"- Runtime interval coverage: {'n/a' if calibration.runtime_interval_coverage is None else f'{calibration.runtime_interval_coverage:.2%}'}",
         f"- Prediction miss count: {calibration.prediction_miss_count}",
         f"- Useful decision signals: {calibration.useful_decision_count}/{len(traces)}",
+        f"- High claim-impact verification/stop decisions: {calibration.high_claim_impact_verification_count}",
+        f"- Skip/stop recommendations: {calibration.skip_or_stop_recommendation_count}",
+        f"- Memory-augmented predictions: {calibration.memory_augmented_prediction_count}/{len(traces)}",
+        f"- Few-shot-augmented predictions: {calibration.few_shot_augmented_prediction_count}/{len(traces)}",
         "- Full calibration table: `reports/world_model_calibration.md`",
     ]
 
@@ -186,6 +193,20 @@ def generate_report(goal: str, traces: list[ExperimentTrace], path: Path) -> Non
     for t in traces:
         lines.append(f"### {t.run_id}")
         lines.append(f"- Prediction rationale: {t.world_model_prediction.rationale}")
+        lines.append(
+            f"- Prediction schema: prompt={t.world_model_prediction.prompt_version or t.prompt_version or 'legacy'}; "
+            f"schema={t.world_model_prediction.world_model_schema_version or t.world_model_schema_version or 'legacy'}; "
+            f"claim_impact={t.world_model_prediction.claim_impact}; compute_value={t.world_model_prediction.compute_value}; "
+            f"recommendation={t.world_model_prediction.recommendation}"
+        )
+        if t.world_model_prediction.why_this_action_changes_claims:
+            lines.append(f"- Claim impact rationale: {t.world_model_prediction.why_this_action_changes_claims}")
+        if t.world_model_prediction.why_this_action_may_be_wasteful:
+            lines.append(f"- Wastefulness rationale: {t.world_model_prediction.why_this_action_may_be_wasteful}")
+        if t.world_model_prediction.memory_example_ids:
+            lines.append(f"- Retrieved memory examples: {', '.join(t.world_model_prediction.memory_example_ids)}")
+        if t.world_model_prediction.few_shot_example_ids:
+            lines.append(f"- Few-shot examples: {', '.join(t.world_model_prediction.few_shot_example_ids)}")
         lines.append(f"- Risks: {', '.join(t.world_model_prediction.risks) or 'none'}")
         if t.state_before:
             lines.append(f"- State before: {t.state_before.state_id}; budget_remaining={t.state_before.budget_remaining}; known_results={len(t.state_before.known_results)}")

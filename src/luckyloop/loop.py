@@ -15,6 +15,7 @@ from .schemas import ExperimentTrace, ResearchState, TaskSpec
 from .tasks import load_task
 from .top_models import detect_top_models
 from .verifier import verify_sweep
+from .world_model_memory import retrieve_similar_memories, write_memory_jsonl
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -138,7 +139,7 @@ def run(
         agent_prompt = ""
         if agent is not None:
             agent_decision, agent_prompt = agent.propose_next_step(task, state_before, candidates, traces)
-        candidate_predictions = predict_candidates(task, state_before, candidates, simulator_configured())
+        candidate_predictions = predict_candidates(task, state_before, candidates, simulator_configured(), traces=traces)
         selected_candidate, decision_trace, safety_validation = select_candidate(
             state_before,
             candidate_predictions,
@@ -154,7 +155,9 @@ def run(
         top_model_summary = detect_top_models(traces, metric=task.primary_metric)
         hypothesis = decision_trace.causal_reason if traces else initial_hypothesis()
 
-        if i >= max_experiments:
+        if action.model == "stop_and_report":
+            next_decision = "Stop and report from current verified evidence; no further compute requested."
+        elif i >= max_experiments:
             next_decision = "Stop and report the best observed model."
         elif actual.status != "success":
             next_decision = "Execution failed; prioritize repairing the environment before spending more experiments."
@@ -186,6 +189,9 @@ def run(
             decision_trace=decision_trace,
             claim_ledger_updates=claim_updates_for(run_id, verification),
             top_model_summary=top_model_summary,
+            memory_examples_used=retrieve_similar_memories(task, action, traces),
+            prompt_version=prediction.prompt_version,
+            world_model_schema_version=prediction.world_model_schema_version,
             artifacts={
                 "task_id": task.task_id,
                 "trace_path": f"{runs_dir.relative_to(ROOT)}/{run_id}.json",
@@ -214,11 +220,12 @@ def run(
                 f"trustworthy={verification.trustworthy}",
                 flush=True,
             )
-        if i >= max_experiments:
+        if action.model == "stop_and_report" or i >= max_experiments:
             break
 
     write_calibration_report(traces, reports_dir / "world_model_calibration.md")
     write_claim_ledger(traces, reports_dir / "claim_ledger.json")
+    write_memory_jsonl(task, traces, reports_dir / "world_model_memory.jsonl")
     generate_report(goal, traces, reports_dir / "final_report.md")
     return traces
 

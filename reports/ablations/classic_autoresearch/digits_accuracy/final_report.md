@@ -10,13 +10,13 @@ An API-backed autoresearch planner proposes hypotheses and safe catalog actions.
 
 | Run | Agent hypothesis | Qwen predicted | Action run | Reality showed | Claim verdict |
 |---|---|---|---|---|---|
-| run_001 | Score-chasing autoresearch should spend budget on the next promising model family. | none | ran logistic_regression; signal=selector_policy | accuracy 0.9622 | prediction miss logged; no robust claim |
-| run_002 | Score-chasing autoresearch should spend budget on the next promising model family. | none | ran logistic_regression; signal=selector_policy | accuracy 0.9711 | prediction miss logged; no robust claim |
-| run_003 | Score-chasing autoresearch should spend budget on the next promising model family. | none | ran logistic_regression; signal=selector_policy | accuracy 0.9778 | prediction miss logged; no robust claim |
-| run_004 | Score-chasing autoresearch should spend budget on the next promising model family. | none | ran logistic_regression; signal=selector_policy | accuracy 0.9644 | prediction miss logged; no robust claim |
-| run_005 | Score-chasing autoresearch should spend budget on the next promising model family. | none | ran svc; signal=selector_policy | accuracy 0.9778 | prediction miss logged; no robust claim |
-| run_006 | Score-chasing autoresearch should spend budget on the next promising model family. | none | ran random_forest; signal=selector_policy | accuracy 0.9600 | prediction miss logged; no robust claim |
-| run_007 | Score-chasing autoresearch should spend budget on the next promising model family. | none | ran hist_gradient_boosting; signal=selector_policy | accuracy 0.9578 | prediction miss logged; no robust claim |
+| run_001 | Score-chasing autoresearch should spend budget on the next promising model family. | none (claim_impact=medium, compute_value=medium, rec=run) | ran logistic_regression; signal=selector_policy | accuracy 0.9622 | prediction miss logged; no robust claim |
+| run_002 | Score-chasing autoresearch should spend budget on the next promising model family. | none (claim_impact=medium, compute_value=medium, rec=run) | ran logistic_regression; signal=selector_policy | accuracy 0.9711 | prediction miss logged; no robust claim |
+| run_003 | Score-chasing autoresearch should spend budget on the next promising model family. | none (claim_impact=medium, compute_value=medium, rec=run) | ran logistic_regression; signal=selector_policy | accuracy 0.9778 | prediction miss logged; no robust claim |
+| run_004 | Score-chasing autoresearch should spend budget on the next promising model family. | none (claim_impact=medium, compute_value=medium, rec=run) | ran logistic_regression; signal=selector_policy | accuracy 0.9644 | prediction miss logged; no robust claim |
+| run_005 | Score-chasing autoresearch should spend budget on the next promising model family. | none (claim_impact=medium, compute_value=medium, rec=run) | ran svc; signal=selector_policy | accuracy 0.9778 | prediction miss logged; no robust claim |
+| run_006 | Score-chasing autoresearch should spend budget on the next promising model family. | none (claim_impact=medium, compute_value=medium, rec=run) | ran random_forest; signal=selector_policy | accuracy 0.9600 | prediction miss logged; no robust claim |
+| run_007 | Score-chasing autoresearch should spend budget on the next promising model family. | none (claim_impact=medium, compute_value=medium, rec=run) | ran hist_gradient_boosting; signal=selector_policy | accuracy 0.9578 | prediction miss logged; no robust claim |
 
 ## Autoresearch agent decisions
 
@@ -42,6 +42,10 @@ Best single run: run_003, model=logistic_regression, accuracy=0.9778, f1=0.9778.
 - Runtime interval coverage: n/a
 - Prediction miss count: 7
 - Useful decision signals: 0/7
+- High claim-impact verification/stop decisions: 0
+- Skip/stop recommendations: 0
+- Memory-augmented predictions: 0/7
+- Few-shot-augmented predictions: 0/7
 - Full calibration table: `reports/world_model_calibration.md`
 
 ## Supported claims
@@ -74,6 +78,7 @@ Best single run: run_003, model=logistic_regression, accuracy=0.9778, f1=0.9778.
 
 ### run_001
 - Prediction rationale: This baseline chooses experiments from observed state and policy rules without Qwen-AgentWorld.
+- Prediction schema: prompt=legacy; schema=legacy; claim_impact=medium; compute_value=medium; recommendation=run
 - Risks: classic autoresearch baseline does not simulate this action before compute
 - State before: state_001; budget_remaining=7; known_results=0
 - Candidates considered: action_001:logistic_regression, action_logistic_regression_C-0p1_scale-False:logistic_regression, action_logistic_regression_C-1p0_scale-False:logistic_regression, action_logistic_regression_C-10p0_scale-False:logistic_regression, action_logistic_regression_C-0p1_scale-True:logistic_regression, action_logistic_regression_C-1p0_scale-True:logistic_regression, action_logistic_regression_C-10p0_scale-True:logistic_regression, action_svc_C-0p5_kernel-rbf_scale-True:svc, action_svc_C-2p0_kernel-rbf_scale-True:svc, action_svc_C-5p0_kernel-rbf_scale-True:svc, action_random_forest_n_estimators-100:random_forest, action_random_forest_max_depth-4_n_estimators-100:random_forest
@@ -83,12 +88,13 @@ Best single run: run_003, model=logistic_regression, accuracy=0.9778, f1=0.9778.
 - Claim risk: A best single-run claim can be unsupported if top models are close.
 - Safety validation: selected=action_001; override=False; reason=none
 - Rejected / deferred: logistic_regression: classic_autoresearch deferred this catalog action; no world-model score was available.; logistic_regression: classic_autoresearch deferred this catalog action; no world-model score was available.; logistic_regression: classic_autoresearch deferred this catalog action; no world-model score was available.; logistic_regression: classic_autoresearch deferred this catalog action; no world-model score was available.; logistic_regression: classic_autoresearch deferred this catalog action; no world-model score was available.; logistic_regression: classic_autoresearch deferred this catalog action; no world-model score was available.; svc: classic_autoresearch deferred this catalog action; no world-model score was available.; svc: classic_autoresearch deferred this catalog action; no world-model score was available.; svc: classic_autoresearch deferred this catalog action; no world-model score was available.; random_forest: classic_autoresearch deferred this catalog action; no world-model score was available.; random_forest: classic_autoresearch deferred this catalog action; no world-model score was available.
-- Actual status: success, runtime: 4.2435s
+- Actual status: success, runtime: 2.6466s
 - Unexpected: no world-model prediction was made before compute
 - Lesson: Classic baseline has no prediction-vs-reality evidence for this action.
 
 ### run_002
 - Prediction rationale: This baseline chooses experiments from observed state and policy rules without Qwen-AgentWorld.
+- Prediction schema: prompt=legacy; schema=legacy; claim_impact=medium; compute_value=medium; recommendation=run
 - Risks: classic autoresearch baseline does not simulate this action before compute
 - State before: state_002; budget_remaining=6; known_results=1
 - Candidates considered: action_logistic_regression_C-0p1_scale-True:logistic_regression, action_logistic_regression_C-1p0_scale-True:logistic_regression, action_logistic_regression_C-10p0_scale-True:logistic_regression, action_logistic_regression_C-0p1_scale-False:logistic_regression, action_logistic_regression_C-1p0_scale-False:logistic_regression, action_logistic_regression_C-10p0_scale-False:logistic_regression, action_svc_C-0p5_kernel-rbf_scale-True:svc, action_svc_C-2p0_kernel-rbf_scale-True:svc, action_svc_C-5p0_kernel-rbf_scale-True:svc, action_random_forest_n_estimators-100:random_forest, action_random_forest_max_depth-4_n_estimators-100:random_forest, action_random_forest_max_depth-8_n_estimators-100:random_forest
@@ -98,12 +104,13 @@ Best single run: run_003, model=logistic_regression, accuracy=0.9778, f1=0.9778.
 - Claim risk: A best single-run claim can be unsupported if top models are close.
 - Safety validation: selected=action_logistic_regression_C-0p1_scale-True; override=False; reason=none
 - Rejected / deferred: logistic_regression: classic_autoresearch deferred this catalog action; no world-model score was available.; logistic_regression: classic_autoresearch deferred this catalog action; no world-model score was available.; logistic_regression: classic_autoresearch deferred this catalog action; no world-model score was available.; logistic_regression: classic_autoresearch deferred this catalog action; no world-model score was available.; logistic_regression: classic_autoresearch deferred this catalog action; no world-model score was available.; svc: classic_autoresearch deferred this catalog action; no world-model score was available.; svc: classic_autoresearch deferred this catalog action; no world-model score was available.; svc: classic_autoresearch deferred this catalog action; no world-model score was available.; random_forest: classic_autoresearch deferred this catalog action; no world-model score was available.; random_forest: classic_autoresearch deferred this catalog action; no world-model score was available.; random_forest: classic_autoresearch deferred this catalog action; no world-model score was available.
-- Actual status: success, runtime: 0.6028s
+- Actual status: success, runtime: 0.5631s
 - Unexpected: no world-model prediction was made before compute
 - Lesson: Classic baseline has no prediction-vs-reality evidence for this action.
 
 ### run_003
 - Prediction rationale: This baseline chooses experiments from observed state and policy rules without Qwen-AgentWorld.
+- Prediction schema: prompt=legacy; schema=legacy; claim_impact=medium; compute_value=medium; recommendation=run
 - Risks: classic autoresearch baseline does not simulate this action before compute
 - State before: state_003; budget_remaining=5; known_results=2
 - Candidates considered: action_logistic_regression_C-1p0_scale-True:logistic_regression, action_logistic_regression_C-10p0_scale-True:logistic_regression, action_logistic_regression_C-0p1_scale-False:logistic_regression, action_logistic_regression_C-1p0_scale-False:logistic_regression, action_logistic_regression_C-10p0_scale-False:logistic_regression, action_svc_C-0p5_kernel-rbf_scale-True:svc, action_svc_C-2p0_kernel-rbf_scale-True:svc, action_svc_C-5p0_kernel-rbf_scale-True:svc, action_random_forest_n_estimators-100:random_forest, action_random_forest_max_depth-4_n_estimators-100:random_forest, action_random_forest_max_depth-8_n_estimators-100:random_forest, action_random_forest_n_estimators-300:random_forest
@@ -113,12 +120,13 @@ Best single run: run_003, model=logistic_regression, accuracy=0.9778, f1=0.9778.
 - Claim risk: A best single-run claim can be unsupported if top models are close.
 - Safety validation: selected=action_logistic_regression_C-1p0_scale-True; override=False; reason=none
 - Rejected / deferred: logistic_regression: classic_autoresearch deferred this catalog action; no world-model score was available.; logistic_regression: classic_autoresearch deferred this catalog action; no world-model score was available.; logistic_regression: classic_autoresearch deferred this catalog action; no world-model score was available.; logistic_regression: classic_autoresearch deferred this catalog action; no world-model score was available.; svc: classic_autoresearch deferred this catalog action; no world-model score was available.; svc: classic_autoresearch deferred this catalog action; no world-model score was available.; svc: classic_autoresearch deferred this catalog action; no world-model score was available.; random_forest: classic_autoresearch deferred this catalog action; no world-model score was available.; random_forest: classic_autoresearch deferred this catalog action; no world-model score was available.; random_forest: classic_autoresearch deferred this catalog action; no world-model score was available.; random_forest: classic_autoresearch deferred this catalog action; no world-model score was available.
-- Actual status: success, runtime: 0.4808s
+- Actual status: success, runtime: 0.8604s
 - Unexpected: no world-model prediction was made before compute
 - Lesson: Classic baseline has no prediction-vs-reality evidence for this action.
 
 ### run_004
 - Prediction rationale: This baseline chooses experiments from observed state and policy rules without Qwen-AgentWorld.
+- Prediction schema: prompt=legacy; schema=legacy; claim_impact=medium; compute_value=medium; recommendation=run
 - Risks: classic autoresearch baseline does not simulate this action before compute
 - State before: state_004; budget_remaining=4; known_results=3
 - Candidates considered: action_logistic_regression_C-10p0_scale-True:logistic_regression, action_logistic_regression_C-0p1_scale-False:logistic_regression, action_logistic_regression_C-1p0_scale-False:logistic_regression, action_logistic_regression_C-10p0_scale-False:logistic_regression, action_svc_C-0p5_kernel-rbf_scale-True:svc, action_svc_C-2p0_kernel-rbf_scale-True:svc, action_svc_C-5p0_kernel-rbf_scale-True:svc, action_random_forest_n_estimators-100:random_forest, action_random_forest_max_depth-4_n_estimators-100:random_forest, action_random_forest_max_depth-8_n_estimators-100:random_forest, action_random_forest_n_estimators-300:random_forest, action_random_forest_max_depth-4_n_estimators-300:random_forest
@@ -128,12 +136,13 @@ Best single run: run_003, model=logistic_regression, accuracy=0.9778, f1=0.9778.
 - Claim risk: A best single-run claim can be unsupported if top models are close.
 - Safety validation: selected=action_logistic_regression_C-10p0_scale-True; override=False; reason=none
 - Rejected / deferred: logistic_regression: classic_autoresearch deferred this catalog action; no world-model score was available.; logistic_regression: classic_autoresearch deferred this catalog action; no world-model score was available.; logistic_regression: classic_autoresearch deferred this catalog action; no world-model score was available.; svc: classic_autoresearch deferred this catalog action; no world-model score was available.; svc: classic_autoresearch deferred this catalog action; no world-model score was available.; svc: classic_autoresearch deferred this catalog action; no world-model score was available.; random_forest: classic_autoresearch deferred this catalog action; no world-model score was available.; random_forest: classic_autoresearch deferred this catalog action; no world-model score was available.; random_forest: classic_autoresearch deferred this catalog action; no world-model score was available.; random_forest: classic_autoresearch deferred this catalog action; no world-model score was available.; random_forest: classic_autoresearch deferred this catalog action; no world-model score was available.
-- Actual status: success, runtime: 0.2101s
+- Actual status: success, runtime: 0.3564s
 - Unexpected: no world-model prediction was made before compute
 - Lesson: Classic baseline has no prediction-vs-reality evidence for this action.
 
 ### run_005
 - Prediction rationale: This baseline chooses experiments from observed state and policy rules without Qwen-AgentWorld.
+- Prediction schema: prompt=legacy; schema=legacy; claim_impact=medium; compute_value=medium; recommendation=run
 - Risks: classic autoresearch baseline does not simulate this action before compute
 - State before: state_005; budget_remaining=3; known_results=4
 - Candidates considered: action_logistic_regression_C-0p1_scale-False:logistic_regression, action_logistic_regression_C-1p0_scale-False:logistic_regression, action_logistic_regression_C-10p0_scale-False:logistic_regression, action_svc_C-0p5_kernel-rbf_scale-True:svc, action_svc_C-2p0_kernel-rbf_scale-True:svc, action_svc_C-5p0_kernel-rbf_scale-True:svc, action_random_forest_n_estimators-100:random_forest, action_random_forest_max_depth-4_n_estimators-100:random_forest, action_random_forest_max_depth-8_n_estimators-100:random_forest, action_random_forest_n_estimators-300:random_forest, action_random_forest_max_depth-4_n_estimators-300:random_forest, action_random_forest_max_depth-8_n_estimators-300:random_forest
@@ -143,12 +152,13 @@ Best single run: run_003, model=logistic_regression, accuracy=0.9778, f1=0.9778.
 - Claim risk: A best single-run claim can be unsupported if top models are close.
 - Safety validation: selected=action_svc_C-0p5_kernel-rbf_scale-True; override=False; reason=none
 - Rejected / deferred: logistic_regression: classic_autoresearch deferred this catalog action; no world-model score was available.; logistic_regression: classic_autoresearch deferred this catalog action; no world-model score was available.; logistic_regression: classic_autoresearch deferred this catalog action; no world-model score was available.; svc: classic_autoresearch deferred this catalog action; no world-model score was available.; svc: classic_autoresearch deferred this catalog action; no world-model score was available.; random_forest: classic_autoresearch deferred this catalog action; no world-model score was available.; random_forest: classic_autoresearch deferred this catalog action; no world-model score was available.; random_forest: classic_autoresearch deferred this catalog action; no world-model score was available.; random_forest: classic_autoresearch deferred this catalog action; no world-model score was available.; random_forest: classic_autoresearch deferred this catalog action; no world-model score was available.; random_forest: classic_autoresearch deferred this catalog action; no world-model score was available.
-- Actual status: success, runtime: 0.094s
+- Actual status: success, runtime: 0.112s
 - Unexpected: no world-model prediction was made before compute
 - Lesson: Classic baseline has no prediction-vs-reality evidence for this action.
 
 ### run_006
 - Prediction rationale: This baseline chooses experiments from observed state and policy rules without Qwen-AgentWorld.
+- Prediction schema: prompt=legacy; schema=legacy; claim_impact=medium; compute_value=medium; recommendation=run
 - Risks: classic autoresearch baseline does not simulate this action before compute
 - State before: state_006; budget_remaining=2; known_results=5
 - Candidates considered: action_verify_top_models:top_model_verification, action_logistic_regression_C-0p1_scale-False:logistic_regression, action_logistic_regression_C-1p0_scale-False:logistic_regression, action_logistic_regression_C-10p0_scale-False:logistic_regression, action_random_forest_n_estimators-100:random_forest, action_random_forest_max_depth-4_n_estimators-100:random_forest, action_random_forest_max_depth-8_n_estimators-100:random_forest, action_random_forest_n_estimators-300:random_forest, action_random_forest_max_depth-4_n_estimators-300:random_forest, action_random_forest_max_depth-8_n_estimators-300:random_forest, action_hist_gradient_boosting_learning_rate-0p05_n_estimators-100:hist_gradient_boosting, action_hist_gradient_boosting_learning_rate-0p05_max_depth-8_n_estimators-100:hist_gradient_boosting
@@ -158,12 +168,13 @@ Best single run: run_003, model=logistic_regression, accuracy=0.9778, f1=0.9778.
 - Claim risk: A best single-run claim can be unsupported if top models are close.
 - Safety validation: selected=action_random_forest_n_estimators-100; override=False; reason=none
 - Rejected / deferred: top_model_verification: classic_autoresearch deferred this catalog action; no world-model score was available.; logistic_regression: classic_autoresearch deferred this catalog action; no world-model score was available.; logistic_regression: classic_autoresearch deferred this catalog action; no world-model score was available.; logistic_regression: classic_autoresearch deferred this catalog action; no world-model score was available.; random_forest: classic_autoresearch deferred this catalog action; no world-model score was available.; random_forest: classic_autoresearch deferred this catalog action; no world-model score was available.; random_forest: classic_autoresearch deferred this catalog action; no world-model score was available.; random_forest: classic_autoresearch deferred this catalog action; no world-model score was available.; random_forest: classic_autoresearch deferred this catalog action; no world-model score was available.; hist_gradient_boosting: classic_autoresearch deferred this catalog action; no world-model score was available.; hist_gradient_boosting: classic_autoresearch deferred this catalog action; no world-model score was available.
-- Actual status: success, runtime: 0.3726s
+- Actual status: success, runtime: 0.3982s
 - Unexpected: no world-model prediction was made before compute
 - Lesson: Classic baseline has no prediction-vs-reality evidence for this action.
 
 ### run_007
 - Prediction rationale: This baseline chooses experiments from observed state and policy rules without Qwen-AgentWorld.
+- Prediction schema: prompt=legacy; schema=legacy; claim_impact=medium; compute_value=medium; recommendation=run
 - Risks: classic autoresearch baseline does not simulate this action before compute
 - State before: state_007; budget_remaining=1; known_results=6
 - Candidates considered: action_verify_top_models:top_model_verification, action_logistic_regression_C-0p1_scale-False:logistic_regression, action_logistic_regression_C-1p0_scale-False:logistic_regression, action_logistic_regression_C-10p0_scale-False:logistic_regression, action_hist_gradient_boosting_learning_rate-0p05_n_estimators-100:hist_gradient_boosting, action_hist_gradient_boosting_learning_rate-0p05_max_depth-8_n_estimators-100:hist_gradient_boosting, action_hist_gradient_boosting_learning_rate-0p08_n_estimators-100:hist_gradient_boosting, action_hist_gradient_boosting_learning_rate-0p08_max_depth-8_n_estimators-100:hist_gradient_boosting, action_hist_gradient_boosting_learning_rate-0p05_n_estimators-150:hist_gradient_boosting, action_hist_gradient_boosting_learning_rate-0p05_max_depth-8_n_estimators-150:hist_gradient_boosting, action_hist_gradient_boosting_learning_rate-0p08_n_estimators-150:hist_gradient_boosting, action_hist_gradient_boosting_learning_rate-0p08_max_depth-8_n_estimators-150:hist_gradient_boosting
@@ -173,6 +184,6 @@ Best single run: run_003, model=logistic_regression, accuracy=0.9778, f1=0.9778.
 - Claim risk: A best single-run claim can be unsupported if top models are close.
 - Safety validation: selected=action_hist_gradient_boosting_learning_rate-0p05_n_estimators-100; override=False; reason=none
 - Rejected / deferred: top_model_verification: classic_autoresearch deferred this catalog action; no world-model score was available.; logistic_regression: classic_autoresearch deferred this catalog action; no world-model score was available.; logistic_regression: classic_autoresearch deferred this catalog action; no world-model score was available.; logistic_regression: classic_autoresearch deferred this catalog action; no world-model score was available.; hist_gradient_boosting: classic_autoresearch deferred this catalog action; no world-model score was available.; hist_gradient_boosting: classic_autoresearch deferred this catalog action; no world-model score was available.; hist_gradient_boosting: classic_autoresearch deferred this catalog action; no world-model score was available.; hist_gradient_boosting: classic_autoresearch deferred this catalog action; no world-model score was available.; hist_gradient_boosting: classic_autoresearch deferred this catalog action; no world-model score was available.; hist_gradient_boosting: classic_autoresearch deferred this catalog action; no world-model score was available.; hist_gradient_boosting: classic_autoresearch deferred this catalog action; no world-model score was available.
-- Actual status: success, runtime: 3.5431s
+- Actual status: success, runtime: 4.8579s
 - Unexpected: no world-model prediction was made before compute
 - Lesson: Classic baseline has no prediction-vs-reality evidence for this action.

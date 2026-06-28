@@ -12,7 +12,7 @@
       "dataset": "breast_cancer",
       "models": [
         {
-          "run_id": "run_005",
+          "run_id": "run_004",
           "model": "logistic_regression",
           "model_key": "logistic_regression_scaled_C=1.0",
           "metric": 0.986013986013986,
@@ -58,17 +58,17 @@
     }
   },
   "classic_action": {
-    "action_id": "action_logistic_regression_C-10p0_scale-True",
-    "command": "python experiments/train_sklearn.py --dataset breast_cancer --model logistic_regression --scale --C 10.0",
-    "model": "logistic_regression",
+    "action_id": "action_random_forest_n_estimators-100",
+    "command": "python experiments/train_sklearn.py --dataset breast_cancer --model random_forest --n-estimators 100",
+    "model": "random_forest",
     "params": {
       "dataset": "breast_cancer",
-      "scale": true,
-      "C": 10.0
+      "n_estimators": 100,
+      "max_depth": null
     }
   },
   "lucky_actual_metric": 0.9706293706293707,
-  "classic_actual_metric": 0.972027972027972,
+  "classic_actual_metric": 0.958041958041958,
   "lucky_verification": {
     "status": "inconclusive",
     "metric": "accuracy",
@@ -90,7 +90,7 @@
   },
   "classic_verification": null,
   "verdict": {
-    "score_verdict": "classic_win",
+    "score_verdict": "lucky_win",
     "claim_safety_verdict": "lucky_win",
     "overall_verdict": "lucky_win",
     "reason": "Lucky choice ran verification and prevented a robust claim that classic score-chasing would leave unsupported."

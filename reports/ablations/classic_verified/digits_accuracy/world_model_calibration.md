@@ -11,18 +11,22 @@ Lucky Loop records whether Qwen-AgentWorld predictions matched real experiment o
 - Prediction miss count: 7
 - Risk recall approximation: 0.00%
 - Useful decision signals: 0/7
+- High claim-impact verification/stop decisions: 0
+- Skip/stop recommendations: 0
+- Memory-augmented predictions: 0/7
+- Few-shot-augmented predictions: 0/7
 
 ## Prediction vs Reality
 
 | Run | Model | Predicted metric | Actual metric | Metric hit | Predicted runtime | Actual runtime | Runtime hit | Observed miss |
 |---|---|---|---:|---|---|---:|---|---|
-| run_001 | logistic_regression | no pre-compute world-model prediction | 0.9622 | no | not predicted | 2.82s | no | no world-model prediction was made before compute |
-| run_002 | logistic_regression | no pre-compute world-model prediction | 0.9711 | no | not predicted | 0.32s | no | no world-model prediction was made before compute |
-| run_003 | logistic_regression | no pre-compute world-model prediction | 0.9778 | no | not predicted | 0.48s | no | no world-model prediction was made before compute |
-| run_004 | logistic_regression | no pre-compute world-model prediction | 0.9644 | no | not predicted | 0.30s | no | no world-model prediction was made before compute |
+| run_001 | logistic_regression | no pre-compute world-model prediction | 0.9622 | no | not predicted | 2.90s | no | no world-model prediction was made before compute |
+| run_002 | logistic_regression | no pre-compute world-model prediction | 0.9711 | no | not predicted | 0.33s | no | no world-model prediction was made before compute |
+| run_003 | logistic_regression | no pre-compute world-model prediction | 0.9778 | no | not predicted | 0.52s | no | no world-model prediction was made before compute |
+| run_004 | logistic_regression | no pre-compute world-model prediction | 0.9644 | no | not predicted | 0.51s | no | no world-model prediction was made before compute |
 | run_005 | svc | no pre-compute world-model prediction | 0.9778 | no | not predicted | 0.09s | no | no world-model prediction was made before compute |
-| run_006 | top_model_verification | no pre-compute world-model prediction | 0.9764 | no | not predicted | 32.69s | no | no world-model prediction was made before compute |
-| run_007 | random_forest | no pre-compute world-model prediction | 0.9600 | no | not predicted | 0.40s | no | no world-model prediction was made before compute |
+| run_006 | top_model_verification | no pre-compute world-model prediction | 0.9764 | no | not predicted | 30.94s | no | no world-model prediction was made before compute |
+| run_007 | random_forest | no pre-compute world-model prediction | 0.9600 | no | not predicted | 0.45s | no | no world-model prediction was made before compute |
 
 ## Risk Signals
 
@@ -47,3 +51,15 @@ Lucky Loop records whether Qwen-AgentWorld predictions matched real experiment o
 | run_005 | svc | no | no | classic_verified selected svc without pre-compute world-model simulation. This is the baseline Lucky Loop is compared against. |
 | run_006 | top_model_verification | no | no | classic_verified selected top_model_verification without pre-compute world-model simulation. This is the baseline Lucky Loop is compared against. |
 | run_007 | random_forest | no | no | classic_verified selected random_forest without pre-compute world-model simulation. This is the baseline Lucky Loop is compared against. |
+
+## Prompt Context
+
+| Run | Prompt version | Schema version | Few-shot examples | Retrieved memory examples | Claim impact | Compute value | Recommendation |
+|---|---|---|---:|---:|---|---|---|
+| run_001 | legacy | legacy | 0 | 0 | medium | medium | run |
+| run_002 | legacy | legacy | 0 | 0 | medium | medium | run |
+| run_003 | legacy | legacy | 0 | 0 | medium | medium | run |
+| run_004 | legacy | legacy | 0 | 0 | medium | medium | run |
+| run_005 | legacy | legacy | 0 | 0 | medium | medium | run |
+| run_006 | legacy | legacy | 0 | 0 | medium | medium | run |
+| run_007 | legacy | legacy | 0 | 0 | medium | medium | run |

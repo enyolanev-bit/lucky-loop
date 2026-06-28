@@ -15,7 +15,7 @@ def _range_from_text(text: str):
 def compare(pred: Prediction, actual: ActualResult) -> Comparison:
     unexpected = []
     metric_match = False
-    rng = _range_from_text(pred.expected_metric)
+    rng = tuple(pred.expected_metric_range) if pred.expected_metric_range else _range_from_text(pred.expected_metric)
     actual_metric = actual.accuracy
     metric = actual.raw.get("metric", "accuracy")
     best = actual.raw.get("best", {})
@@ -32,10 +32,16 @@ def compare(pred: Prediction, actual: ActualResult) -> Comparison:
         metric_match = True
     runtime_match = True
     if actual.runtime_seconds is not None:
-        m = re.search(r"under\s+(\d+)", pred.expected_runtime_seconds.lower())
-        if m and actual.runtime_seconds > float(m.group(1)):
+        upper = None
+        if pred.expected_runtime_range_seconds:
+            upper = max(pred.expected_runtime_range_seconds)
+        else:
+            m = re.search(r"under\s+(\d+)", pred.expected_runtime_seconds.lower())
+            if m:
+                upper = float(m.group(1))
+        if upper is not None and actual.runtime_seconds > upper:
             runtime_match = False
-            unexpected.append(f"runtime {actual.runtime_seconds:.2f}s exceeded predicted {m.group(1)}s")
+            unexpected.append(f"runtime {actual.runtime_seconds:.2f}s exceeded predicted {upper:g}s")
     if metric_match and runtime_match and actual.status == "success":
         lesson = "Prediction was broadly consistent with the real run."
     elif actual.status == "success":

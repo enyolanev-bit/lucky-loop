@@ -8,9 +8,9 @@ This report executes paired choices from the same reconstructed state: Lucky Loo
 
 | Task | Case | Lucky action | Classic action | Lucky metric | Classic metric | Score verdict | Claim-safety verdict | Overall | Reason |
 |---|---|---|---|---:|---:|---|---|---|---|
-| breast_cancer_accuracy | case_001 | top_model_verification | logistic_regression | 0.9706 | 0.9720 | classic_win | lucky_win | lucky_win | Lucky choice ran verification and prevented a robust claim that classic score-chasing would leave unsupported. |
-| wine_accuracy | case_001 | top_model_verification | logistic_regression | 0.9956 | 1.0000 | classic_win | lucky_win | lucky_win | Lucky choice ran verification and prevented a robust claim that classic score-chasing would leave unsupported. |
-| digits_accuracy | case_001 | top_model_verification | random_forest | 0.9764 | 0.9600 | lucky_win | lucky_win | lucky_win | Lucky choice ran verification and prevented a robust claim that classic score-chasing would leave unsupported. |
+| breast_cancer_accuracy | case_001 | top_model_verification | random_forest | 0.9706 | 0.9580 | lucky_win | lucky_win | lucky_win | Lucky choice ran verification and prevented a robust claim that classic score-chasing would leave unsupported. |
+| wine_accuracy | case_001 | top_model_verification | logistic_regression | 0.9956 | 0.9778 | lucky_win | lucky_win | lucky_win | Lucky choice ran verification and prevented a robust claim that classic score-chasing would leave unsupported. |
+| digits_accuracy | case_001 | top_model_verification | logistic_regression | 0.9818 | 0.9644 | lucky_win | lucky_win | lucky_win | Lucky choice ran verification and prevented a robust claim that classic score-chasing would leave unsupported. |
 
 ## Interpretation
 

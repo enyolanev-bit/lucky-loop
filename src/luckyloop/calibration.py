@@ -37,7 +37,11 @@ def _actual_metric(trace: ExperimentTrace) -> float | None:
 
 def _metric_error(trace: ExperimentTrace) -> float | None:
     actual = _actual_metric(trace)
-    rng = _range_from_text(trace.world_model_prediction.expected_metric)
+    rng = (
+        tuple(trace.world_model_prediction.expected_metric_range)
+        if trace.world_model_prediction.expected_metric_range
+        else _range_from_text(trace.world_model_prediction.expected_metric)
+    )
     if actual is None or rng is None:
         return None
     lo, hi = rng
@@ -48,7 +52,11 @@ def _metric_error(trace: ExperimentTrace) -> float | None:
 
 def _runtime_relative_error(trace: ExperimentTrace) -> float | None:
     actual = trace.actual_result.runtime_seconds
-    upper = _runtime_upper_bound(trace.world_model_prediction.expected_runtime_seconds)
+    upper = (
+        max(trace.world_model_prediction.expected_runtime_range_seconds)
+        if trace.world_model_prediction.expected_runtime_range_seconds
+        else _runtime_upper_bound(trace.world_model_prediction.expected_runtime_seconds)
+    )
     if actual is None or upper is None or upper == 0:
         return None
     if actual <= upper:
@@ -98,7 +106,11 @@ def compute_world_model_calibration(traces: list[ExperimentTrace]) -> Calibratio
 
     for trace in traces:
         actual = _actual_metric(trace)
-        metric_range = _range_from_text(trace.world_model_prediction.expected_metric)
+        metric_range = (
+            tuple(trace.world_model_prediction.expected_metric_range)
+            if trace.world_model_prediction.expected_metric_range
+            else _range_from_text(trace.world_model_prediction.expected_metric)
+        )
         if actual is not None and metric_range is not None:
             lo, hi = metric_range
             metric_hits.append(lo <= actual <= hi)
@@ -106,7 +118,11 @@ def compute_world_model_calibration(traces: list[ExperimentTrace]) -> Calibratio
             if err is not None:
                 metric_errors.append(err)
 
-        upper = _runtime_upper_bound(trace.world_model_prediction.expected_runtime_seconds)
+        upper = (
+            max(trace.world_model_prediction.expected_runtime_range_seconds)
+            if trace.world_model_prediction.expected_runtime_range_seconds
+            else _runtime_upper_bound(trace.world_model_prediction.expected_runtime_seconds)
+        )
         if trace.actual_result.runtime_seconds is not None and upper is not None:
             runtime_hits.append(trace.actual_result.runtime_seconds <= upper)
             err = _runtime_relative_error(trace)
@@ -118,6 +134,17 @@ def compute_world_model_calibration(traces: list[ExperimentTrace]) -> Calibratio
 
     prediction_miss_count = sum(1 for t in traces if t.comparison.unexpected_events)
     useful_decision_count = sum(1 for t in traces if _useful_decision(t))
+    high_claim_impact_verification_count = sum(
+        1
+        for t in traces
+        if t.world_model_prediction.claim_impact == "high"
+        and t.proposed_action.model in {"verification_sweep", "top_model_verification", "stop_and_report"}
+    )
+    skip_or_stop_recommendation_count = sum(
+        1 for t in traces if t.world_model_prediction.recommendation in {"skip", "stop_and_report"}
+    )
+    memory_augmented_prediction_count = sum(1 for t in traces if t.world_model_prediction.memory_example_ids)
+    few_shot_augmented_prediction_count = sum(1 for t in traces if t.world_model_prediction.few_shot_example_ids)
 
     return CalibrationMetrics(
         metric_interval_coverage=(sum(metric_hits) / len(metric_hits)) if metric_hits else None,
@@ -128,6 +155,10 @@ def compute_world_model_calibration(traces: list[ExperimentTrace]) -> Calibratio
         risk_recall=(sum(risk_hits) / len(risk_hits)) if risk_hits else None,
         recommendation_quality=None,
         useful_decision_count=useful_decision_count,
+        high_claim_impact_verification_count=high_claim_impact_verification_count,
+        skip_or_stop_recommendation_count=skip_or_stop_recommendation_count,
+        memory_augmented_prediction_count=memory_augmented_prediction_count,
+        few_shot_augmented_prediction_count=few_shot_augmented_prediction_count,
     )
 
 
@@ -155,6 +186,10 @@ def write_calibration_report(traces: list[ExperimentTrace], path: Path) -> Calib
         f"- Prediction miss count: {metrics.prediction_miss_count}",
         f"- Risk recall approximation: {_fmt_ratio(metrics.risk_recall)}",
         f"- Useful decision signals: {metrics.useful_decision_count}/{len(traces)}",
+        f"- High claim-impact verification/stop decisions: {metrics.high_claim_impact_verification_count}",
+        f"- Skip/stop recommendations: {metrics.skip_or_stop_recommendation_count}",
+        f"- Memory-augmented predictions: {metrics.memory_augmented_prediction_count}/{len(traces)}",
+        f"- Few-shot-augmented predictions: {metrics.few_shot_augmented_prediction_count}/{len(traces)}",
         "",
         "## Prediction vs Reality",
         "",
@@ -216,6 +251,26 @@ def write_calibration_report(traces: list[ExperimentTrace], path: Path) -> Calib
             f"{'yes' if trace.decision_trace and trace.decision_trace.world_model_signal_used else 'no'} | "
             f"{'yes' if _useful_decision(trace) else 'no'} | "
             f"{decision} |"
+        )
+
+    lines += [
+        "",
+        "## Prompt Context",
+        "",
+        "| Run | Prompt version | Schema version | Few-shot examples | Retrieved memory examples | Claim impact | Compute value | Recommendation |",
+        "|---|---|---|---:|---:|---|---|---|",
+    ]
+    for trace in traces:
+        lines.append(
+            "| "
+            f"{trace.run_id} | "
+            f"{trace.world_model_prediction.prompt_version or trace.prompt_version or 'legacy'} | "
+            f"{trace.world_model_prediction.world_model_schema_version or trace.world_model_schema_version or 'legacy'} | "
+            f"{len(trace.world_model_prediction.few_shot_example_ids)} | "
+            f"{len(trace.world_model_prediction.memory_example_ids)} | "
+            f"{trace.world_model_prediction.claim_impact} | "
+            f"{trace.world_model_prediction.compute_value} | "
+            f"{trace.world_model_prediction.recommendation} |"
         )
 
     path.parent.mkdir(parents=True, exist_ok=True)

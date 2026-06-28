@@ -21,14 +21,26 @@
     "recommendation": "run",
     "rationale": "This baseline chooses experiments from observed state and policy rules without Qwen-AgentWorld.",
     "action_specific_signal": "none",
-    "claim_risk": "Without prospective simulation, claim risk is only discovered after execution or verification."
+    "claim_risk": "Without prospective simulation, claim risk is only discovered after execution or verification.",
+    "expected_metric_range": null,
+    "expected_runtime_range_seconds": null,
+    "claim_impact": "medium",
+    "compute_value": "medium",
+    "why_this_action_changes_claims": "",
+    "why_this_action_may_be_wasteful": "",
+    "risk_predictions": [],
+    "stop_condition": "",
+    "memory_example_ids": [],
+    "few_shot_example_ids": [],
+    "prompt_version": null,
+    "world_model_schema_version": null
   },
   "actual_result": {
     "status": "success",
     "accuracy": 0.96,
     "f1": 0.9597281558755765,
-    "runtime_seconds": 0.3971,
-    "stdout_tail": "{\n  \"accuracy\": 0.96,\n  \"dataset\": \"digits\",\n  \"f1\": 0.9597281558755765,\n  \"model\": \"random_forest\",\n  \"n_label_noise_flips\": 0,\n  \"n_test\": 450,\n  \"n_train\": 1347,\n  \"params\": {\n    \"C\": 1.0,\n    \"dataset\": \"digits\",\n    \"kernel\": \"rbf\",\n    \"label_noise\": 0.0,\n    \"learning_rate\": 0.1,\n    \"max_depth\": null,\n    \"max_iter\": 1000,\n    \"model\": \"random_forest\",\n    \"n_estimators\": 100,\n    \"scale\": false,\n    \"seed\": 42,\n    \"test_size\": 0.25\n  },\n  \"runtime_seconds\": 0.3971,\n  \"status\": \"success\"\n}\n",
+    "runtime_seconds": 0.4496,
+    "stdout_tail": "{\n  \"accuracy\": 0.96,\n  \"dataset\": \"digits\",\n  \"f1\": 0.9597281558755765,\n  \"model\": \"random_forest\",\n  \"n_label_noise_flips\": 0,\n  \"n_test\": 450,\n  \"n_train\": 1347,\n  \"params\": {\n    \"C\": 1.0,\n    \"dataset\": \"digits\",\n    \"kernel\": \"rbf\",\n    \"label_noise\": 0.0,\n    \"learning_rate\": 0.1,\n    \"max_depth\": null,\n    \"max_iter\": 1000,\n    \"model\": \"random_forest\",\n    \"n_estimators\": 100,\n    \"scale\": false,\n    \"seed\": 42,\n    \"test_size\": 0.25\n  },\n  \"runtime_seconds\": 0.4496,\n  \"status\": \"success\"\n}\n",
     "stderr_tail": "",
     "raw": {
       "accuracy": 0.96,
@@ -52,7 +64,7 @@
         "seed": 42,
         "test_size": 0.25
       },
-      "runtime_seconds": 0.3971,
+      "runtime_seconds": 0.4496,
       "status": "success"
     }
   },
@@ -75,12 +87,12 @@
     "research_question": "Maximize validation accuracy on sklearn digits under a small compute budget, while avoiding unsupported claims.",
     "working_hypothesis": "Classic autoresearch should verify the top observed models before a robust winner claim.",
     "candidate_action_ids": [
+      "action_stop_and_report",
       "action_logistic_regression_C-0p1_scale-False",
       "action_logistic_regression_C-1p0_scale-False",
       "action_logistic_regression_C-10p0_scale-False",
       "action_random_forest_n_estimators-100",
-      "action_random_forest_max_depth-4_n_estimators-100",
-      "action_random_forest_max_depth-8_n_estimators-100"
+      "action_random_forest_max_depth-4_n_estimators-100"
     ],
     "preferred_action_id": "action_random_forest_n_estimators-100",
     "rationale": "classic_verified selected action_random_forest_n_estimators-100 from state state_007.",
@@ -275,6 +287,15 @@
   },
   "candidate_actions": [
     {
+      "action_id": "action_stop_and_report",
+      "command": "python -c \"print('stop_and_report: no further compute requested')\"",
+      "model": "stop_and_report",
+      "params": {
+        "dataset": "digits",
+        "reason": "report from current verified evidence"
+      }
+    },
+    {
       "action_id": "action_logistic_regression_C-0p1_scale-False",
       "command": "python experiments/train_sklearn.py --dataset digits --model logistic_regression --C 0.1",
       "model": "logistic_regression",
@@ -385,20 +406,44 @@
         "learning_rate": 0.05,
         "max_depth": 8
       }
-    },
-    {
-      "action_id": "action_hist_gradient_boosting_learning_rate-0p08_n_estimators-100",
-      "command": "python experiments/train_sklearn.py --dataset digits --model hist_gradient_boosting --n-estimators 100 --learning-rate 0.08",
-      "model": "hist_gradient_boosting",
-      "params": {
-        "dataset": "digits",
-        "n_estimators": 100,
-        "learning_rate": 0.08,
-        "max_depth": null
-      }
     }
   ],
   "candidate_predictions": [
+    {
+      "action": {
+        "action_id": "action_stop_and_report",
+        "command": "python -c \"print('stop_and_report: no further compute requested')\"",
+        "model": "stop_and_report",
+        "params": {
+          "dataset": "digits",
+          "reason": "report from current verified evidence"
+        }
+      },
+      "prediction": {
+        "expected_metric": "no pre-compute world-model prediction",
+        "expected_runtime_seconds": "not predicted",
+        "risks": [
+          "classic autoresearch baseline does not simulate this action before compute"
+        ],
+        "recommendation": "run",
+        "rationale": "This baseline chooses experiments from observed state and policy rules without Qwen-AgentWorld.",
+        "action_specific_signal": "none",
+        "claim_risk": "Without prospective simulation, claim risk is only discovered after execution or verification.",
+        "expected_metric_range": null,
+        "expected_runtime_range_seconds": null,
+        "claim_impact": "medium",
+        "compute_value": "medium",
+        "why_this_action_changes_claims": "",
+        "why_this_action_may_be_wasteful": "",
+        "risk_predictions": [],
+        "stop_condition": "",
+        "memory_example_ids": [],
+        "few_shot_example_ids": [],
+        "prompt_version": null,
+        "world_model_schema_version": null
+      },
+      "source": "unknown"
+    },
     {
       "action": {
         "action_id": "action_logistic_regression_C-0p1_scale-False",
@@ -419,7 +464,19 @@
         "recommendation": "run",
         "rationale": "This baseline chooses experiments from observed state and policy rules without Qwen-AgentWorld.",
         "action_specific_signal": "none",
-        "claim_risk": "Without prospective simulation, claim risk is only discovered after execution or verification."
+        "claim_risk": "Without prospective simulation, claim risk is only discovered after execution or verification.",
+        "expected_metric_range": null,
+        "expected_runtime_range_seconds": null,
+        "claim_impact": "medium",
+        "compute_value": "medium",
+        "why_this_action_changes_claims": "",
+        "why_this_action_may_be_wasteful": "",
+        "risk_predictions": [],
+        "stop_condition": "",
+        "memory_example_ids": [],
+        "few_shot_example_ids": [],
+        "prompt_version": null,
+        "world_model_schema_version": null
       },
       "source": "unknown"
     },
@@ -443,7 +500,19 @@
         "recommendation": "run",
         "rationale": "This baseline chooses experiments from observed state and policy rules without Qwen-AgentWorld.",
         "action_specific_signal": "none",
-        "claim_risk": "Without prospective simulation, claim risk is only discovered after execution or verification."
+        "claim_risk": "Without prospective simulation, claim risk is only discovered after execution or verification.",
+        "expected_metric_range": null,
+        "expected_runtime_range_seconds": null,
+        "claim_impact": "medium",
+        "compute_value": "medium",
+        "why_this_action_changes_claims": "",
+        "why_this_action_may_be_wasteful": "",
+        "risk_predictions": [],
+        "stop_condition": "",
+        "memory_example_ids": [],
+        "few_shot_example_ids": [],
+        "prompt_version": null,
+        "world_model_schema_version": null
       },
       "source": "unknown"
     },
@@ -467,7 +536,19 @@
         "recommendation": "run",
         "rationale": "This baseline chooses experiments from observed state and policy rules without Qwen-AgentWorld.",
         "action_specific_signal": "none",
-        "claim_risk": "Without prospective simulation, claim risk is only discovered after execution or verification."
+        "claim_risk": "Without prospective simulation, claim risk is only discovered after execution or verification.",
+        "expected_metric_range": null,
+        "expected_runtime_range_seconds": null,
+        "claim_impact": "medium",
+        "compute_value": "medium",
+        "why_this_action_changes_claims": "",
+        "why_this_action_may_be_wasteful": "",
+        "risk_predictions": [],
+        "stop_condition": "",
+        "memory_example_ids": [],
+        "few_shot_example_ids": [],
+        "prompt_version": null,
+        "world_model_schema_version": null
       },
       "source": "unknown"
     },
@@ -491,7 +572,19 @@
         "recommendation": "run",
         "rationale": "This baseline chooses experiments from observed state and policy rules without Qwen-AgentWorld.",
         "action_specific_signal": "none",
-        "claim_risk": "Without prospective simulation, claim risk is only discovered after execution or verification."
+        "claim_risk": "Without prospective simulation, claim risk is only discovered after execution or verification.",
+        "expected_metric_range": null,
+        "expected_runtime_range_seconds": null,
+        "claim_impact": "medium",
+        "compute_value": "medium",
+        "why_this_action_changes_claims": "",
+        "why_this_action_may_be_wasteful": "",
+        "risk_predictions": [],
+        "stop_condition": "",
+        "memory_example_ids": [],
+        "few_shot_example_ids": [],
+        "prompt_version": null,
+        "world_model_schema_version": null
       },
       "source": "unknown"
     },
@@ -515,7 +608,19 @@
         "recommendation": "run",
         "rationale": "This baseline chooses experiments from observed state and policy rules without Qwen-AgentWorld.",
         "action_specific_signal": "none",
-        "claim_risk": "Without prospective simulation, claim risk is only discovered after execution or verification."
+        "claim_risk": "Without prospective simulation, claim risk is only discovered after execution or verification.",
+        "expected_metric_range": null,
+        "expected_runtime_range_seconds": null,
+        "claim_impact": "medium",
+        "compute_value": "medium",
+        "why_this_action_changes_claims": "",
+        "why_this_action_may_be_wasteful": "",
+        "risk_predictions": [],
+        "stop_condition": "",
+        "memory_example_ids": [],
+        "few_shot_example_ids": [],
+        "prompt_version": null,
+        "world_model_schema_version": null
       },
       "source": "unknown"
     },
@@ -539,7 +644,19 @@
         "recommendation": "run",
         "rationale": "This baseline chooses experiments from observed state and policy rules without Qwen-AgentWorld.",
         "action_specific_signal": "none",
-        "claim_risk": "Without prospective simulation, claim risk is only discovered after execution or verification."
+        "claim_risk": "Without prospective simulation, claim risk is only discovered after execution or verification.",
+        "expected_metric_range": null,
+        "expected_runtime_range_seconds": null,
+        "claim_impact": "medium",
+        "compute_value": "medium",
+        "why_this_action_changes_claims": "",
+        "why_this_action_may_be_wasteful": "",
+        "risk_predictions": [],
+        "stop_condition": "",
+        "memory_example_ids": [],
+        "few_shot_example_ids": [],
+        "prompt_version": null,
+        "world_model_schema_version": null
       },
       "source": "unknown"
     },
@@ -563,7 +680,19 @@
         "recommendation": "run",
         "rationale": "This baseline chooses experiments from observed state and policy rules without Qwen-AgentWorld.",
         "action_specific_signal": "none",
-        "claim_risk": "Without prospective simulation, claim risk is only discovered after execution or verification."
+        "claim_risk": "Without prospective simulation, claim risk is only discovered after execution or verification.",
+        "expected_metric_range": null,
+        "expected_runtime_range_seconds": null,
+        "claim_impact": "medium",
+        "compute_value": "medium",
+        "why_this_action_changes_claims": "",
+        "why_this_action_may_be_wasteful": "",
+        "risk_predictions": [],
+        "stop_condition": "",
+        "memory_example_ids": [],
+        "few_shot_example_ids": [],
+        "prompt_version": null,
+        "world_model_schema_version": null
       },
       "source": "unknown"
     },
@@ -587,7 +716,19 @@
         "recommendation": "run",
         "rationale": "This baseline chooses experiments from observed state and policy rules without Qwen-AgentWorld.",
         "action_specific_signal": "none",
-        "claim_risk": "Without prospective simulation, claim risk is only discovered after execution or verification."
+        "claim_risk": "Without prospective simulation, claim risk is only discovered after execution or verification.",
+        "expected_metric_range": null,
+        "expected_runtime_range_seconds": null,
+        "claim_impact": "medium",
+        "compute_value": "medium",
+        "why_this_action_changes_claims": "",
+        "why_this_action_may_be_wasteful": "",
+        "risk_predictions": [],
+        "stop_condition": "",
+        "memory_example_ids": [],
+        "few_shot_example_ids": [],
+        "prompt_version": null,
+        "world_model_schema_version": null
       },
       "source": "unknown"
     },
@@ -611,7 +752,19 @@
         "recommendation": "run",
         "rationale": "This baseline chooses experiments from observed state and policy rules without Qwen-AgentWorld.",
         "action_specific_signal": "none",
-        "claim_risk": "Without prospective simulation, claim risk is only discovered after execution or verification."
+        "claim_risk": "Without prospective simulation, claim risk is only discovered after execution or verification.",
+        "expected_metric_range": null,
+        "expected_runtime_range_seconds": null,
+        "claim_impact": "medium",
+        "compute_value": "medium",
+        "why_this_action_changes_claims": "",
+        "why_this_action_may_be_wasteful": "",
+        "risk_predictions": [],
+        "stop_condition": "",
+        "memory_example_ids": [],
+        "few_shot_example_ids": [],
+        "prompt_version": null,
+        "world_model_schema_version": null
       },
       "source": "unknown"
     },
@@ -636,7 +789,19 @@
         "recommendation": "run",
         "rationale": "This baseline chooses experiments from observed state and policy rules without Qwen-AgentWorld.",
         "action_specific_signal": "none",
-        "claim_risk": "Without prospective simulation, claim risk is only discovered after execution or verification."
+        "claim_risk": "Without prospective simulation, claim risk is only discovered after execution or verification.",
+        "expected_metric_range": null,
+        "expected_runtime_range_seconds": null,
+        "claim_impact": "medium",
+        "compute_value": "medium",
+        "why_this_action_changes_claims": "",
+        "why_this_action_may_be_wasteful": "",
+        "risk_predictions": [],
+        "stop_condition": "",
+        "memory_example_ids": [],
+        "few_shot_example_ids": [],
+        "prompt_version": null,
+        "world_model_schema_version": null
       },
       "source": "unknown"
     },
@@ -661,32 +826,19 @@
         "recommendation": "run",
         "rationale": "This baseline chooses experiments from observed state and policy rules without Qwen-AgentWorld.",
         "action_specific_signal": "none",
-        "claim_risk": "Without prospective simulation, claim risk is only discovered after execution or verification."
-      },
-      "source": "unknown"
-    },
-    {
-      "action": {
-        "action_id": "action_hist_gradient_boosting_learning_rate-0p08_n_estimators-100",
-        "command": "python experiments/train_sklearn.py --dataset digits --model hist_gradient_boosting --n-estimators 100 --learning-rate 0.08",
-        "model": "hist_gradient_boosting",
-        "params": {
-          "dataset": "digits",
-          "n_estimators": 100,
-          "learning_rate": 0.08,
-          "max_depth": null
-        }
-      },
-      "prediction": {
-        "expected_metric": "no pre-compute world-model prediction",
-        "expected_runtime_seconds": "not predicted",
-        "risks": [
-          "classic autoresearch baseline does not simulate this action before compute"
-        ],
-        "recommendation": "run",
-        "rationale": "This baseline chooses experiments from observed state and policy rules without Qwen-AgentWorld.",
-        "action_specific_signal": "none",
-        "claim_risk": "Without prospective simulation, claim risk is only discovered after execution or verification."
+        "claim_risk": "Without prospective simulation, claim risk is only discovered after execution or verification.",
+        "expected_metric_range": null,
+        "expected_runtime_range_seconds": null,
+        "claim_impact": "medium",
+        "compute_value": "medium",
+        "why_this_action_changes_claims": "",
+        "why_this_action_may_be_wasteful": "",
+        "risk_predictions": [],
+        "stop_condition": "",
+        "memory_example_ids": [],
+        "few_shot_example_ids": [],
+        "prompt_version": null,
+        "world_model_schema_version": null
       },
       "source": "unknown"
     }
@@ -732,6 +884,22 @@
     "override_reason": null,
     "causal_reason": "classic_verified selected random_forest without pre-compute world-model simulation. This is the baseline Lucky Loop is compared against.",
     "rejected_candidates": [
+      {
+        "action": {
+          "action_id": "action_stop_and_report",
+          "command": "python -c \"print('stop_and_report: no further compute requested')\"",
+          "model": "stop_and_report",
+          "params": {
+            "dataset": "digits",
+            "reason": "report from current verified evidence"
+          }
+        },
+        "reason": "classic_verified deferred this catalog action; no world-model score was available.",
+        "score_breakdown": {
+          "agent_preference": 0.0,
+          "qwen_signal": 0.0
+        }
+      },
       {
         "action": {
           "action_id": "action_logistic_regression_C-0p1_scale-False",
@@ -903,24 +1071,6 @@
           "agent_preference": 0.0,
           "qwen_signal": 0.0
         }
-      },
-      {
-        "action": {
-          "action_id": "action_hist_gradient_boosting_learning_rate-0p08_n_estimators-100",
-          "command": "python experiments/train_sklearn.py --dataset digits --model hist_gradient_boosting --n-estimators 100 --learning-rate 0.08",
-          "model": "hist_gradient_boosting",
-          "params": {
-            "dataset": "digits",
-            "n_estimators": 100,
-            "learning_rate": 0.08,
-            "max_depth": null
-          }
-        },
-        "reason": "classic_verified deferred this catalog action; no world-model score was available.",
-        "score_breakdown": {
-          "agent_preference": 0.0,
-          "qwen_signal": 0.0
-        }
       }
     ]
   },
@@ -976,5 +1126,8 @@
     "trace_path": "runs/ablations/classic_verified/digits_accuracy/run_007.json",
     "report_path": "reports/ablations/classic_verified/digits_accuracy/final_report.md",
     "claim_ledger_path": "reports/ablations/classic_verified/digits_accuracy/claim_ledger.json"
-  }
+  },
+  "memory_examples_used": [],
+  "prompt_version": null,
+  "world_model_schema_version": null
 }

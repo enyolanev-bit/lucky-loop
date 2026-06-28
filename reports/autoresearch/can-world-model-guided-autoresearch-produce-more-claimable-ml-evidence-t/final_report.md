@@ -32,10 +32,10 @@ A coding agent operates inside the repository. Lucky Loop supplies the research 
 | breast_cancer_accuracy | lucky_loop_full | 0.9860 | 0.9706 |  | 0 | 1 | 84 |
 | wine_accuracy | classic_autoresearch | 1.0000 |  |  | 1 | 0 | 0 |
 | wine_accuracy | classic_verified | 1.0000 | 0.9956 |  | 0 | 1 | 0 |
-| wine_accuracy | lucky_loop_full | 1.0000 | 0.9956 |  | 0 | 2 | 83 |
+| wine_accuracy | lucky_loop_full | 1.0000 | 0.9956 |  | 0 | 1 | 83 |
 | digits_accuracy | classic_autoresearch | 0.9778 |  |  | 1 | 0 | 0 |
 | digits_accuracy | classic_verified | 0.9778 | 0.9764 |  | 0 | 1 | 0 |
-| digits_accuracy | lucky_loop_full | 0.9800 | 0.9764 |  | 0 | 1 | 84 |
+| digits_accuracy | lucky_loop_full | 0.9800 | 0.9818 |  | 0 | 1 | 84 |
 
 ## Counterfactual Result
 
@@ -47,9 +47,9 @@ A coding agent operates inside the repository. Lucky Loop supplies the research 
 
 - Tasks with saved score-chasing runs: 3
 - Total saved score-chasing runs: 6
-- Total saved score-chasing runtime: 5.4781s
+- Total saved score-chasing runtime: 7.0665s
 - Tasks where Qwen would skip/stop after verifier: 3
-- Strict stop policy saved runs after verification: 3
+- Strict stop policy saved runs after verification: 0
 
 ## Claim Discipline
 
