@@ -72,6 +72,11 @@ def retrieve_similar_memories(
     ).lower()
     scored = []
     for item in build_memory_items(task, traces):
+        # Calibration integrity: never feed a candidate's OWN identical prior action (same model +
+        # params) into its pre-compute prediction — that would leak the answer. Makes the no-leakage
+        # boundary explicit here rather than relying on the caller's candidate de-duplication.
+        if item["action_model"] == action.model and item["action_params"] == action.params:
+            continue
         score = 0
         if item["dataset"] == task.dataset:
             score += 5

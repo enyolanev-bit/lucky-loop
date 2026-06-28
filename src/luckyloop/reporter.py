@@ -149,11 +149,15 @@ def generate_report(goal: str, traces: list[ExperimentTrace], path: Path) -> Non
         f"- Runtime interval coverage: {'n/a' if calibration.runtime_interval_coverage is None else f'{calibration.runtime_interval_coverage:.2%}'}",
         f"- Prediction miss count: {calibration.prediction_miss_count}",
         f"- Useful decision signals: {calibration.useful_decision_count}/{len(traces)}",
+        "- Full calibration table: `reports/world_model_calibration.md`",
+        "",
+        "## Process instrumentation (not outcomes)",
+        "",
+        "Activity counts describing how the loop ran — not accuracy or quality metrics.",
         f"- High claim-impact verification/stop decisions: {calibration.high_claim_impact_verification_count}",
         f"- Skip/stop recommendations: {calibration.skip_or_stop_recommendation_count}",
         f"- Memory-augmented predictions: {calibration.memory_augmented_prediction_count}/{len(traces)}",
         f"- Few-shot-augmented predictions: {calibration.few_shot_augmented_prediction_count}/{len(traces)}",
-        "- Full calibration table: `reports/world_model_calibration.md`",
     ]
 
     lines += ["", "## Supported claims", ""]

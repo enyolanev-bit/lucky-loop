@@ -165,10 +165,12 @@ def _normalize_title(title: str) -> str:
 
 
 def _extract_arxiv_id(url: str) -> tuple[str | None, str | None]:
-    match = re.search(r"arxiv\.org/(?:abs|pdf)/([^?#/]+)", url, flags=re.I)
+    # Allow the old archive-prefixed form (e.g. abs/cs/0501001) — stopping at the first slash
+    # would capture just "cs" and corrupt the id.
+    match = re.search(r"arxiv\.org/(?:abs|pdf)/([^?#]+)", url, flags=re.I)
     if not match:
         return None, None
-    raw = match.group(1).removesuffix(".pdf")
+    raw = match.group(1).removesuffix(".pdf").rstrip("/")
     version_match = re.match(r"(.+?)(v\d+)$", raw)
     if version_match:
         return version_match.group(1), version_match.group(2)
@@ -187,8 +189,12 @@ def _citation_key(title: str, year: int | None, arxiv_id: str | None) -> str:
     if arxiv_id:
         base = "arxiv_" + arxiv_id.replace(".", "_").replace("/", "_")
     else:
+        import hashlib
+
         words = re.findall(r"[a-zA-Z0-9]+", title)
         base = "_".join(words[:4]).lower() or "source"
+        # Disambiguate non-arXiv papers that share the first four title words.
+        base = f"{base}_{hashlib.sha1(title.encode('utf-8')).hexdigest()[:6]}"
     if year:
         base = f"{base}_{year}"
     return base
