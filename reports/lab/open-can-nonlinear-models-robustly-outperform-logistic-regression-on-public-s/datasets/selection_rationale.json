@@ -1,0 +1,11 @@
+{
+  "selected_dataset_id": "1471",
+  "selected_source": "openml",
+  "selected_reason": "usable supervised classification table; score=15.90; reasons=Dynamic OpenML API candidate via query `eeg-eye-state`, metadata match",
+  "rejected_summary": [
+    "huggingface:thienphuprogrammer/Activity_Human_Recognition -> load_failed: ImportError: To support decoding videos, please install 'torchcodec'.",
+    "huggingface:DiFronzo/Human_Activity_Recognition -> load_failed: ValueError: no plausible target column found"
+  ],
+  "fit_to_hypothesis": "openml:1471 provides 14980 rows, 14 features, target `Class`, and is being used to test: A nonlinear model can robustly outperform logistic regression across repeated seeds on a public sensor classification dataset.. Required properties considered: One public sensor dataset (e.g., UCI HAR, EEG Eye State) with at least 1000 samples, binary or multiclass target, and standard train/test split..",
+  "risks": []
+}

@@ -1,0 +1,41 @@
+{
+  "domain_queries": [
+    "Can nonlinear models robustly outperform logistic regression on public sensor classification data?",
+    "nonlinear models robustly outperform logistic regression sensor classification data machine learning classification",
+    "nonlinear models robustly outperform logistic regression sensor classification data logistic regression random forest svm gradient boosting",
+    "nonlinear models robustly outperform logistic regression sensor classification data robustness repeated seeds cross validation",
+    "\"human activity recognition\" sensor classification machine learning",
+    "\"EEG eye state\" classification machine learning",
+    "wearable sensor classification logistic regression random forest svm"
+  ],
+  "method_queries": [
+    "ti:\"AI Scientist\" OR abs:\"autonomous scientific discovery\"",
+    "all:\"Agent Laboratory\" \"research assistants\"",
+    "all:\"MLE-bench\" \"machine learning agents\"",
+    "all:\"Qwen-AgentWorld\" OR all:\"language world models\"",
+    "all:\"claim verification\" scientific claims"
+  ],
+  "dataset_queries": [
+    "nonlinear models robustly outperform logistic regression sensor classification data classification dataset",
+    "nonlinear models robustly outperform logistic regression sensor classification data openml huggingface dataset",
+    "sensor classification dataset",
+    "tabular classification benchmark"
+  ],
+  "key_terms": [
+    "nonlinear",
+    "models",
+    "robustly",
+    "outperform",
+    "logistic",
+    "regression",
+    "sensor",
+    "classification",
+    "data"
+  ],
+  "excluded_terms": [
+    "autonomous research",
+    "AI scientist",
+    "world model"
+  ],
+  "rationale": "Domain queries are derived from the user question; method queries are isolated for orchestration safeguards."
+}

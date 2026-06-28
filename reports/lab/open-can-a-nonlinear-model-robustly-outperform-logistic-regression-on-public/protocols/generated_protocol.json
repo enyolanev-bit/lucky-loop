@@ -1,0 +1,48 @@
+{
+  "claim_blocked_if": "mean balanced_accuracy of best candidate model is within 1% of logistic regression mean balanced_accuracy or effect-to-noise ratio < 1.5",
+  "claim_enabled_if": "mean balanced_accuracy of best candidate model > mean balanced_accuracy of logistic regression by at least 2% and effect-to-noise ratio > 2 across 10 seeds",
+  "conditions": [
+    "gradientboostingclassifier",
+    "logisticregression",
+    "mlpclassifier",
+    "randomforestclassifier",
+    "svc"
+  ],
+  "controlled_variables": [
+    "dataset",
+    "target_column",
+    "split_strategy",
+    "seeds",
+    "preprocessing"
+  ],
+  "dataset": "eeg_eye_state",
+  "expected_artifacts": [
+    "runs/experiment_<step>.json",
+    "analyses/analysis_<step>.json"
+  ],
+  "hypothesis_id": "H1_generated",
+  "manipulated_variable": "model_family",
+  "primary_metric": "balanced_accuracy",
+  "protocol_id": "generated_ml_research_protocol",
+  "protocol_risks": [
+    "generated_protocol",
+    "dataset_selection_bias"
+  ],
+  "scientific_goal": "A Transformer-based model (e.g., HART) robustly outperforms logistic regression on public sensor classification data across repeated seeds.",
+  "secondary_metrics": [
+    "accuracy",
+    "f1_macro",
+    "precision_macro",
+    "recall_macro"
+  ],
+  "seeds": [
+    42,
+    123,
+    456,
+    789,
+    101112,
+    131415,
+    161718,
+    192021
+  ]
+}

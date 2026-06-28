@@ -1,0 +1,119 @@
+{
+  "claims": [
+    {
+      "allowed_rewrite": "Report the baseline result as an observation; do not claim baseline superiority.",
+      "claim": "A Transformer-based model (e.g., HART) robustly outperforms logistic regression on public sensor classification data across repeated seeds.",
+      "claim_id": "experiment_008:robustness",
+      "diagnostic": "The claim is about logistic regression, but the best observed condition was `candidate`.",
+      "evidence_ids": [
+        "experiment_008"
+      ],
+      "failure_category": "claim_direction_failed",
+      "hypothesis_id": "H1_generated",
+      "metrics": {
+        "effect_size": 0.2381480808071711,
+        "effect_to_noise_ratio": 0.6706016648681001,
+        "seed_noise": 0.3551259910069149
+      },
+      "next_action": "Report which condition won, or run a follow-up focused on why the baseline underperformed.",
+      "reason": "The claim is about logistic regression, but the best observed condition was `candidate`.",
+      "verdict": "blocked"
+    },
+    {
+      "allowed_rewrite": null,
+      "claim": "The generated claim should be rejected or rewritten under this protocol: A Transformer-based model (e.g., HART) robustly outperforms logistic regression on public sensor classification data across repeated seeds.",
+      "claim_id": "experiment_008:negative_finding",
+      "diagnostic": null,
+      "evidence_ids": [
+        "experiment_008"
+      ],
+      "failure_category": null,
+      "hypothesis_id": "H1_generated",
+      "metrics": {
+        "effect_size": 0.2381480808071711,
+        "effect_to_noise_ratio": 0.6706016648681001,
+        "seed_noise": 0.3551259910069149
+      },
+      "next_action": null,
+      "reason": "The verifier found `claim_direction_failed`: The claim is about logistic regression, but the best observed condition was `candidate`.",
+      "verdict": "supported"
+    }
+  ],
+  "final_report": "reports/lab/open-can-a-nonlinear-model-robustly-outperform-logistic-regression-on-public/final_report.md",
+  "hypotheses": [
+    {
+      "claim_candidate": "A Transformer-based model (e.g., HART) robustly outperforms logistic regression on public sensor classification data across repeated seeds.",
+      "falsification_condition": "If logistic regression's mean balanced accuracy is within 1% of Transformer's, or if the effect-to-noise ratio is <1.5, the hypothesis is falsified.",
+      "hypothesis_id": "H1",
+      "literature_gap_ids": [
+        "domain_gap_model_comparison",
+        "domain_gap_robustness"
+      ],
+      "minimum_evidence_needed": "One public dataset with 10 seeds, showing Transformer mean balanced accuracy > logistic regression by at least 2% and effect-to-noise ratio >2.",
+      "why_it_matters": "HAR literature (arxiv_2209_11750_2022) shows Transformers outperform CNNs/LSTMs and are robust to sensor heterogeneity, suggesting a nonlinear advantage over logistic regression."
+    }
+  ],
+  "lab_question": {
+    "budget": 8,
+    "domain": "ml_research_validity",
+    "question": "Can a nonlinear model robustly outperform logistic regression on public sensor classification data across repeated seeds?",
+    "require_qwen": true,
+    "study_id": "open_generated_ml_research",
+    "success_criteria": [
+      "external dataset discovery finds a usable Hugging Face or OpenML dataset",
+      "the research protocol is generated from the question, literature, and dataset audit",
+      "the experiment code is generated, statically validated, dry-run, executed, analyzed, verified, and reported"
+    ]
+  },
+  "protocols": [
+    {
+      "claim_blocked_if": "mean balanced_accuracy of best candidate model is within 1% of logistic regression mean balanced_accuracy or effect-to-noise ratio < 1.5",
+      "claim_enabled_if": "mean balanced_accuracy of best candidate model > mean balanced_accuracy of logistic regression by at least 2% and effect-to-noise ratio > 2 across 10 seeds",
+      "conditions": [
+        "gradientboostingclassifier",
+        "logisticregression",
+        "mlpclassifier",
+        "randomforestclassifier",
+        "svc"
+      ],
+      "controlled_variables": [
+        "dataset",
+        "target_column",
+        "split_strategy",
+        "seeds",
+        "preprocessing"
+      ],
+      "dataset": "eeg_eye_state",
+      "expected_artifacts": [
+        "runs/experiment_<step>.json",
+        "analyses/analysis_<step>.json"
+      ],
+      "hypothesis_id": "H1_generated",
+      "manipulated_variable": "model_family",
+      "primary_metric": "balanced_accuracy",
+      "protocol_id": "generated_ml_research_protocol",
+      "protocol_risks": [
+        "generated_protocol",
+        "dataset_selection_bias"
+      ],
+      "scientific_goal": "A Transformer-based model (e.g., HART) robustly outperforms logistic regression on public sensor classification data across repeated seeds.",
+      "secondary_metrics": [
+        "accuracy",
+        "f1_macro",
+        "precision_macro",
+        "recall_macro"
+      ],
+      "seeds": [
+        42,
+        123,
+        456,
+        789,
+        101112,
+        131415,
+        161718,
+        192021
+      ]
+    }
+  ],
+  "workspace": "reports/lab/open-can-a-nonlinear-model-robustly-outperform-logistic-regression-on-public"
+}

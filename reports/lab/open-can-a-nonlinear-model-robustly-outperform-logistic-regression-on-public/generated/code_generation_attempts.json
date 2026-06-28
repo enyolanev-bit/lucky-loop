@@ -1,0 +1,13 @@
+[
+  {
+    "attempt": 1,
+    "rationale": "The script implements a supervised classification experiment as per the protocol. It reads the dataset, performs stratified train-test splits for each seed, scales features, trains models, and computes metrics. It handles dry-run by limiting rows, seeds, and models. Output is written to the specified directory and printed as JSON. All constraints are satisfied: no forbidden imports, no open(), no network, etc.",
+    "validation": {
+      "blocked_imports": [],
+      "blocked_nodes": [],
+      "reason": "static validation passed",
+      "status": "accepted",
+      "warnings": []
+    }
+  }
+]

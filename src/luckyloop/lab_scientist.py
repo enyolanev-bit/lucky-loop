@@ -76,6 +76,8 @@ AGENDA_SYSTEM = """You are the lead research scientist for Lucky Loop.
 Build a domain-specific ML research agenda from the user's question and separated literature contexts.
 
 Use domain literature for scientific hypotheses. Use method literature only for risk controls.
+Preserve the direction of the user's question. If the user asks whether nonlinear models outperform logistic regression, do not invert it into a logistic-regression-superiority claim unless the agenda explicitly labels that as a counter-hypothesis and selects a hypothesis aligned with the user's requested direction.
+Prefer hypotheses that can become supported or weakly supported on one audited public dataset before requiring multi-dataset proof.
 Return strict JSON only with exactly:
 - domain_summary: string
 - method_summary: string
@@ -132,6 +134,14 @@ def _json_from_text(text: str) -> dict:
     try:
         return json.loads(text)
     except Exception:
+        decoder = json.JSONDecoder()
+        for match in re.finditer(r"\{", text):
+            try:
+                data, _ = decoder.raw_decode(text[match.start() :])
+                if isinstance(data, dict):
+                    return data
+            except json.JSONDecodeError:
+                pass
         match = re.search(r"\{.*\}", text, flags=re.S)
         if not match:
             raise ValueError("scientist planner response did not contain JSON")
@@ -262,18 +272,28 @@ def generate_open_protocol(
             "must_include_baseline": True,
             "must_include_claim_blocking_rule": True,
             "models_must_be_sklearn_compatible": True,
+            "preserve_user_question_direction": True,
+            "avoid_reversing_selected_hypothesis": True,
         },
     }
-    response = _client().chat.completions.create(
-        model=model,
-        messages=[
+    request = {
+        "model": model,
+        "messages": [
             {"role": "system", "content": OPEN_PROTOCOL_SYSTEM},
             {"role": "user", "content": json.dumps(payload, indent=2, sort_keys=True)},
         ],
-        temperature=0.2,
-        max_tokens=1200,
-    )
+        "temperature": 0.2,
+        "max_tokens": 1200,
+        "response_format": {"type": "json_object"},
+    }
+    try:
+        response = _client().chat.completions.create(**request)
+    except Exception:
+        request.pop("response_format", None)
+        response = _client().chat.completions.create(**request)
     data = _json_from_text(response.choices[0].message.content or "{}")
+    if hypothesis:
+        data["hypothesis"] = _align_claim_direction(question, str(data.get("hypothesis") or hypothesis.claim_candidate))
     return _protocol_from_data(question, dataset_audit, data)
 
 
@@ -295,17 +315,26 @@ def generate_research_agenda(
             "method_literature_only_for_safeguards": True,
             "produce_multiple_hypotheses": True,
             "select_one_initial_hypothesis": True,
+            "preserve_user_question_direction": True,
+            "selected_hypothesis_must_answer_user_question": True,
+            "avoid_multi_dataset_minimum_when_one_dataset_can_answer": True,
         },
     }
-    response = _client().chat.completions.create(
-        model=model,
-        messages=[
+    request = {
+        "model": model,
+        "messages": [
             {"role": "system", "content": AGENDA_SYSTEM},
             {"role": "user", "content": json.dumps(payload, indent=2, sort_keys=True)},
         ],
-        temperature=0.2,
-        max_tokens=2200,
-    )
+        "temperature": 0.2,
+        "max_tokens": 2200,
+        "response_format": {"type": "json_object"},
+    }
+    try:
+        response = _client().chat.completions.create(**request)
+    except Exception:
+        request.pop("response_format", None)
+        response = _client().chat.completions.create(**request)
     data = _json_from_text(response.choices[0].message.content or "{}")
     return _agenda_from_data(question, data)
 
@@ -332,18 +361,25 @@ def decide_next_research_step(
         "contract": {
             "do_not_stop_after_unsupported_claim_unless_budget_exhausted": True,
             "prefer_targeted_followup_for_weak_or_invalid_evidence": True,
+            "if_budget_remains_and_claim_blocked_choose_revision_or_followup": True,
             "python_execution_is_ground_truth": True,
         },
     }
-    response = _client().chat.completions.create(
-        model=model,
-        messages=[
+    request = {
+        "model": model,
+        "messages": [
             {"role": "system", "content": NEXT_DECISION_SYSTEM},
             {"role": "user", "content": json.dumps(payload, indent=2, sort_keys=True)},
         ],
-        temperature=0.2,
-        max_tokens=900,
-    )
+        "temperature": 0.2,
+        "max_tokens": 900,
+        "response_format": {"type": "json_object"},
+    }
+    try:
+        response = _client().chat.completions.create(**request)
+    except Exception:
+        request.pop("response_format", None)
+        response = _client().chat.completions.create(**request)
     data = _json_from_text(response.choices[0].message.content or "{}")
     decision = str(data.get("decision") or "stop_and_report")
     allowed = {
@@ -358,6 +394,13 @@ def decide_next_research_step(
     }
     if decision not in allowed:
         decision = "stop_and_report"
+    has_blocked_claim = any(str(claim.get("verdict") or claim.get("status") or "").lower() == "blocked" for claim in latest_claims)
+    if budget_remaining > 0 and has_blocked_claim and decision == "stop_and_report":
+        failure_categories = {str(claim.get("failure_category") or "") for claim in latest_claims}
+        decision = "search_better_dataset" if "claim_direction_failed" in failure_categories else "revise_hypothesis"
+        data["next_action_goal"] = data.get("next_action_goal") or "Use the blocked claim to generate a narrower follow-up that can become supported."
+        data["expected_evidence_gain"] = data.get("expected_evidence_gain") or "A targeted follow-up should distinguish unsupported overclaim from a weaker supportable claim."
+        data["stop_reason"] = ""
     return NextDecision(
         decision=decision,
         rationale=str(data.get("rationale") or ""),
@@ -413,8 +456,8 @@ def generate_experiment_code(
 
 
 def _protocol_from_data(question: str, audit: DatasetAudit, data: dict) -> GeneratedResearchProtocol:
-    baselines = [_safe_model_name(item) for item in data.get("baseline_models", []) if _safe_model_name(item)] or ["logistic_regression"]
-    candidates = [_safe_model_name(item) for item in data.get("candidate_models", []) if _safe_model_name(item)] or ["logistic_regression", "random_forest", "svc"]
+    baselines = [_safe_model_name(item) for item in _strings(data.get("baseline_models")) if _safe_model_name(item)] or ["logistic_regression"]
+    candidates = [_safe_model_name(item) for item in _strings(data.get("candidate_models")) if _safe_model_name(item)] or ["logistic_regression", "random_forest", "svc"]
     seeds = []
     for item in data.get("seeds", [0, 1, 2, 3]):
         try:
@@ -431,13 +474,13 @@ def _protocol_from_data(question: str, audit: DatasetAudit, data: dict) -> Gener
         baseline_models=baselines,
         candidate_models=sorted(set(candidates + baselines)),
         primary_metric="balanced_accuracy",
-        secondary_metrics=[str(item) for item in data.get("secondary_metrics", ["accuracy", "f1_weighted"])],
+        secondary_metrics=_strings(data.get("secondary_metrics")) or ["accuracy", "f1_weighted"],
         seeds=seeds[:8] or [0, 1, 2, 3],
         split_strategy="stratified_train_test_split",
-        ablations=[str(item) for item in data.get("ablations", [])],
+        ablations=_strings(data.get("ablations")),
         claim_enabled_if=str(data.get("claim_enabled_if") or "The best candidate beats the strongest baseline by more than seed noise."),
         claim_blocked_if=str(data.get("claim_blocked_if") or "The effect is less than or equal to seed noise."),
-        risk_controls=[str(item) for item in data.get("risk_controls", [])],
+        risk_controls=_strings(data.get("risk_controls")),
     )
 
 
@@ -445,6 +488,27 @@ def _safe_model_name(value) -> str:
     text = re.sub(r"[^a-zA-Z0-9_]+", "_", str(value or "").strip().lower()).strip("_")
     blocked = {"", "xgboost", "lightgbm", "catboost", "tensorflow", "torch", "pytorch"}
     return "" if text in blocked else text
+
+
+def _strings(value) -> list[str]:
+    if value is None:
+        return []
+    if isinstance(value, str):
+        return [value.strip()] if value.strip() else []
+    if isinstance(value, list):
+        return [str(item).strip() for item in value if str(item).strip()]
+    return [str(value).strip()] if str(value).strip() else []
+
+
+def _align_claim_direction(question: str, claim: str) -> str:
+    q = question.lower()
+    c = claim.lower()
+    asks_nonlinear_over_logistic = "nonlinear" in q and "outperform" in q and "logistic" in q
+    logistic_superiority = "logistic" in c and any(word in c for word in ["higher", "better", "outperform", "exceed"])
+    nonlinear_mentioned = "nonlinear" in c or any(word in c for word in ["random forest", "svc", "svm", "mlp", "tree", "ensemble"])
+    if asks_nonlinear_over_logistic and logistic_superiority and nonlinear_mentioned:
+        return "A nonlinear model can robustly outperform logistic regression across repeated seeds on a public sensor classification dataset."
+    return claim
 
 
 def _agenda_from_data(question: str, data: dict) -> ResearchAgenda:
@@ -456,11 +520,11 @@ def _agenda_from_data(question: str, data: dict) -> ResearchAgenda:
             {
                 "gap_id": str(item.get("gap_id") or f"domain_gap_{index}"),
                 "claim": str(item.get("claim") or ""),
-                "source_ids": [str(source) for source in item.get("source_ids", [])],
+                "source_ids": _strings(item.get("source_ids")),
                 "why_it_matters": str(item.get("why_it_matters") or ""),
                 "testable_question": str(item.get("testable_question") or ""),
-                "dataset_requirements": [str(req) for req in item.get("dataset_requirements", [])],
-                "suggested_metrics": [str(metric) for metric in item.get("suggested_metrics", [])],
+                "dataset_requirements": _strings(item.get("dataset_requirements")),
+                "suggested_metrics": _strings(item.get("suggested_metrics")),
             }
         )
     hypotheses = []
@@ -472,10 +536,10 @@ def _agenda_from_data(question: str, data: dict) -> ResearchAgenda:
         hypotheses.append(
             HypothesisCandidate(
                 hypothesis_id=str(item.get("hypothesis_id") or f"H{index}"),
-                claim_candidate=str(item.get("claim_candidate") or question),
+                claim_candidate=_align_claim_direction(question, str(item.get("claim_candidate") or question)),
                 motivation=str(item.get("motivation") or ""),
-                literature_gap_ids=[str(gap) for gap in item.get("literature_gap_ids", [])],
-                dataset_requirements=[str(req) for req in item.get("dataset_requirements", [])],
+                literature_gap_ids=_strings(item.get("literature_gap_ids")),
+                dataset_requirements=_strings(item.get("dataset_requirements")),
                 expected_signal=str(item.get("expected_signal") or ""),
                 falsification_condition=str(item.get("falsification_condition") or "The observed effect does not exceed seed noise."),
                 minimum_evidence_needed=str(item.get("minimum_evidence_needed") or "Repeated-seed evidence exceeds noise."),
@@ -541,11 +605,12 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 from sklearn.compose import ColumnTransformer
-from sklearn.ensemble import HistGradientBoostingClassifier, RandomForestClassifier
+from sklearn.ensemble import GradientBoostingClassifier, HistGradientBoostingClassifier, RandomForestClassifier
 from sklearn.impute import SimpleImputer
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, balanced_accuracy_score, f1_score
 from sklearn.model_selection import train_test_split
+from sklearn.neural_network import MLPClassifier
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 from sklearn.svm import SVC
@@ -553,14 +618,19 @@ from sklearn.svm import SVC
 PROTOCOL = __PROTOCOL_JSON__
 
 def model_for(name, seed):
-    if name == "logistic_regression":
+    normalized = str(name).lower().replace("-", "_")
+    if normalized in {"logistic_regression", "logisticregression", "linear_baseline"}:
         return LogisticRegression(max_iter=1000, random_state=seed)
-    if name == "random_forest":
+    if normalized in {"random_forest", "randomforest", "randomforestclassifier"}:
         return RandomForestClassifier(n_estimators=160, random_state=seed, n_jobs=-1)
-    if name == "svc":
+    if normalized in {"svc", "svm", "support_vector_classifier"}:
         return SVC(C=2.0, kernel="rbf", gamma="scale", random_state=seed)
-    if name == "hist_gradient_boosting":
+    if normalized in {"hist_gradient_boosting", "histgradientboostingclassifier"}:
         return HistGradientBoostingClassifier(max_iter=80, learning_rate=0.08, random_state=seed)
+    if normalized in {"gradient_boosting", "gradientboostingclassifier"}:
+        return GradientBoostingClassifier(n_estimators=120, random_state=seed)
+    if normalized in {"mlp", "mlpclassifier", "neural_network"}:
+        return MLPClassifier(hidden_layer_sizes=(64,), max_iter=500, random_state=seed)
     raise ValueError(f"unknown model: {name}")
 
 def metrics(y_true, y_pred):

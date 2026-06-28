@@ -1,0 +1,13 @@
+{
+  "dataset_id": "thienphuprogrammer/Activity_Human_Recognition",
+  "source": "huggingface",
+  "status": "rejected",
+  "reason": "load_failed: ImportError: To support decoding videos, please install 'torchcodec'.",
+  "local_path": null,
+  "target_column": null,
+  "feature_columns": [],
+  "n_rows": 0,
+  "n_features": 0,
+  "class_counts": {},
+  "warnings": []
+}

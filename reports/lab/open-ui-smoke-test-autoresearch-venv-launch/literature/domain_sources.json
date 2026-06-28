@@ -1,0 +1,343 @@
+{
+  "schema_version": "1.0",
+  "question": "UI smoke test autoresearch venv launch",
+  "sources": [
+    {
+      "title": "Benchmarking Logistic Regression, SVM, and LightGBM Against BiLSTM with Attention for Sentiment Analysis on Indonesian Product Reviews",
+      "authors": [
+        "Razin Hafid Hamdi",
+        "Ivana Margareth Hutabarat",
+        "Hanna Gresia Sinaga",
+        "Luluk Muthoharoh",
+        "Ardika Satria",
+        "Martin C. T. Manullang"
+      ],
+      "year": 2026,
+      "url": "https://arxiv.org/abs/2604.25452v1",
+      "abstract": "Sentiment analysis of product reviews on e-commerce platforms plays a critical role in automatically understanding customer satisfaction and providing actionable insights for sellers seeking to improve product quality. This paper presents a comprehensive benchmarking study comparing a Machine Learning (ML) approach via the PyCaret AutoML framework against a Deep Learning (DL) approach based on a Bidirectional Long Short-Term Memory (BiLSTM) architecture with an Attention mechanism for binary sentiment classification on Indonesian product reviews. The dataset comprises 19,728 samples balanced equally between positive and negative reviews. For the ML approach, three prominent algorithms were evaluated via 10-fold stratified cross-validation: Logistic Regression (LR), Support Vector Machine (SVM) with a linear kernel, and Light Gradient Boosting Machine (LightGBM). Logistic Regression achieved the best ML performance with an accuracy of 97.26\\% and an F1-score of 97.26\\%. The BiLSTM with Attention model, evaluated on 3,946 held-out test samples, achieved an accuracy of 97.24\\% and an F1-score of 97.24\\%. These comparative results demonstrate that traditional ML algorithms with proper preprocessing and feature extraction can compete closely with, and even marginally outperform, more complex sequential DL architectures on high-dimensional datasets, while simultaneously offering greater computational efficiency.",
+      "tags": [
+        "arxiv"
+      ],
+      "source": "arxiv",
+      "arxiv_id": "2604.25452",
+      "arxiv_version": "v1",
+      "categories": [
+        "cs.CL"
+      ],
+      "relevance_score": 5.0,
+      "citation_id": "arxiv_2604_25452_2026",
+      "used_for": [
+        "domain_background"
+      ],
+      "exclusion_reason": null
+    },
+    {
+      "title": "Multinomial Logistic Regression Algorithms via Quadratic Gradient",
+      "authors": [
+        "John Chiang"
+      ],
+      "year": 2022,
+      "url": "https://arxiv.org/abs/2208.06828v2",
+      "abstract": "Multinomial logistic regression, also known by other names such as multiclass logistic regression and softmax regression, is a fundamental classification method that generalizes binary logistic regression to multiclass problems. A recently work proposed a faster gradient called $\\texttt{quadratic gradient}$ that can accelerate the binary logistic regression training, and presented an enhanced Nesterov's accelerated gradient (NAG) method for binary logistic regression. In this paper, we extend this work to multiclass logistic regression and propose an enhanced Adaptive Gradient Algorithm (Adagrad) that can accelerate the original Adagrad method. We test the enhanced NAG method and the enhanced Adagrad method on some multiclass-problem datasets. Experimental results show that both enhanced methods converge faster than their original ones respectively.",
+      "tags": [
+        "arxiv"
+      ],
+      "source": "arxiv",
+      "arxiv_id": "2208.06828",
+      "arxiv_version": "v2",
+      "categories": [
+        "cs.LG",
+        "math.OC"
+      ],
+      "relevance_score": 3.0,
+      "citation_id": "arxiv_2208_06828_2022",
+      "used_for": [
+        "domain_background"
+      ],
+      "exclusion_reason": null
+    },
+    {
+      "title": "Changing Data Sources in the Age of Machine Learning for Official Statistics",
+      "authors": [
+        "Cedric De Boom",
+        "Michael Reusens"
+      ],
+      "year": 2023,
+      "url": "https://arxiv.org/abs/2306.04338v1",
+      "abstract": "Data science has become increasingly essential for the production of official statistics, as it enables the automated collection, processing, and analysis of large amounts of data. With such data science practices in place, it enables more timely, more insightful and more flexible reporting. However, the quality and integrity of data-science-driven statistics rely on the accuracy and reliability of the data sources and the machine learning techniques that support them. In particular, changes in data sources are inevitable to occur and pose significant risks that are crucial to address in the context of machine learning for official statistics. This paper gives an overview of the main risks, liabilities, and uncertainties associated with changing data sources in the context of machine learning for official statistics. We provide a checklist of the most prevalent origins and causes of changing data sources; not only on a technical level but also regarding ownership, ethics, regulation, and public perception. Next, we highlight the repercussions of changing data sources on statistical reporting. These include technical effects such as concept drift, bias, availability, validity, accuracy and completeness, but also the neutrality and potential discontinuation of the statistical offering. We offer a few important precautionary measures, such as enhancing robustness in both data sourcing and statistical techniques, and thorough monitoring. In doing so, machine learning-based official statistics can maintain integrity, reliability, consistency, and relevance in policy-making, decision-making, and public discourse.",
+      "tags": [
+        "arxiv"
+      ],
+      "source": "arxiv",
+      "arxiv_id": "2306.04338",
+      "arxiv_version": "v1",
+      "categories": [
+        "stat.ML",
+        "cs.LG"
+      ],
+      "relevance_score": 1.0,
+      "citation_id": "arxiv_2306_04338_2023",
+      "used_for": [
+        "domain_background"
+      ],
+      "exclusion_reason": null
+    },
+    {
+      "title": "Factor Analysis on Citation, Using a Combined Latent and Logistic Regression Model",
+      "authors": [
+        "Namjoon Suh",
+        "Xiaoming Huo",
+        "Eric Heim",
+        "Lee Seversky"
+      ],
+      "year": 2019,
+      "url": "https://arxiv.org/abs/1912.00524v1",
+      "abstract": "We propose a combined model, which integrates the latent factor model and the logistic regression model, for the citation network. It is noticed that neither a latent factor model nor a logistic regression model alone is sufficient to capture the structure of the data. The proposed model has a latent (i.e., factor analysis) model to represents the main technological trends (a.k.a., factors), and adds a sparse component that captures the remaining ad-hoc dependence. Parameter estimation is carried out through the construction of a joint-likelihood function of edges and properly chosen penalty terms. The convexity of the objective function allows us to develop an efficient algorithm, while the penalty terms push towards a low-dimensional latent component and a sparse graphical structure. Simulation results show that the proposed method works well in practical situations. The proposed method has been applied to a real application, which contains a citation network of statisticians (Ji and Jin, 2016). Some interesting findings are reported.",
+      "tags": [
+        "arxiv"
+      ],
+      "source": "arxiv",
+      "arxiv_id": "1912.00524",
+      "arxiv_version": "v1",
+      "categories": [
+        "stat.ML",
+        "cs.LG"
+      ],
+      "relevance_score": 1.0,
+      "citation_id": "arxiv_1912_00524_2019",
+      "used_for": [
+        "domain_background"
+      ],
+      "exclusion_reason": null
+    },
+    {
+      "title": "On the marginal likelihood and cross-validation",
+      "authors": [
+        "Edwin Fong",
+        "Chris Holmes"
+      ],
+      "year": 2019,
+      "url": "https://arxiv.org/abs/1905.08737v2",
+      "abstract": "In Bayesian statistics, the marginal likelihood, also known as the evidence, is used to evaluate model fit as it quantifies the joint probability of the data under the prior. In contrast, non-Bayesian models are typically compared using cross-validation on held-out data, either through $k$-fold partitioning or leave-$p$-out subsampling. We show that the marginal likelihood is formally equivalent to exhaustive leave-$p$-out cross-validation averaged over all values of $p$ and all held-out test sets when using the log posterior predictive probability as the scoring rule. Moreover, the log posterior predictive is the only coherent scoring rule under data exchangeability. This offers new insight into the marginal likelihood and cross-validation and highlights the potential sensitivity of the marginal likelihood to the choice of the prior. We suggest an alternative approach using cumulative cross-validation following a preparatory training phase. Our work has connections to prequential analysis and intrinsic Bayes factors but is motivated through a different course.",
+      "tags": [
+        "arxiv"
+      ],
+      "source": "arxiv",
+      "arxiv_id": "1905.08737",
+      "arxiv_version": "v2",
+      "categories": [
+        "stat.ME",
+        "stat.ML"
+      ],
+      "relevance_score": 1.0,
+      "citation_id": "arxiv_1905_08737_2019",
+      "used_for": [
+        "domain_background"
+      ],
+      "exclusion_reason": null
+    },
+    {
+      "title": "Increasing Launch Efficiency with the PEGASUS Launcher",
+      "authors": [
+        "S. Hundertmark",
+        "G. Vincent",
+        "D. Simicic",
+        "M. Schneider"
+      ],
+      "year": 2016,
+      "url": "https://arxiv.org/abs/1612.03614v1",
+      "abstract": "In the real world application of railguns, the launch efficiency is one of the most important parameters. This efficiency directly relates to the capacity of the electrical energy storage that is needed for the launch. In this study, the rail/armature contact behavior for two different armature technologies was compared. To this end, experiments using aluminum c-shaped armature and copper brush armature type projectiles were performed under same initial conditions. The c-shaped armature type showed a superior behavior with respect to electrical contact to the rails and in acceleration. A 300 g projectile with a c-shaped armature reached a velocity of 3100 m/s and an overall launch efficiency including the power supply of 41%. This is to be compared to 2500 m/s and 23% for the launching of a projectile using a brush armature.",
+      "tags": [
+        "arxiv"
+      ],
+      "source": "arxiv",
+      "arxiv_id": "1612.03614",
+      "arxiv_version": "v1",
+      "categories": [
+        "physics.ins-det",
+        "physics.plasm-ph"
+      ],
+      "relevance_score": 1.0,
+      "citation_id": "arxiv_1612_03614_2016",
+      "used_for": [
+        "domain_background"
+      ],
+      "exclusion_reason": null
+    },
+    {
+      "title": "Developing a Launch Package for the PEGASUS Launcher",
+      "authors": [
+        "S. Hundertmark",
+        "G. Vincent",
+        "D. Simicic"
+      ],
+      "year": 2016,
+      "url": "https://arxiv.org/abs/1612.04143v1",
+      "abstract": "Railguns are capable to far exceed the muzzle energies of current naval deck guns. Therefore one of the most promising scenario for the future application of railguns in naval warfare is the long range artillery. Hypervelocity projectiles being propelled to velocities above 2 km/s reach targets at distances of 200 km or more. At the French-German Research Institute the PEGASUS launcher is used for investigations with respect to this scenario. The 6 m long barrel has a square caliber of 40 mm. The power supply unit is able to deliver 10 MJ to the gun. Within this investigation, a complete launch package is being developed and experiments are performed that aim at showing that this package can be accelerated to velocities ranging from 2000 m/s to 2500 m/s. A launch package consists out of an armature, a sabot and the projectile. The armature ensures the electrical contact during launch and pushes the sabot with its payload through the barrel. The sabot guides and protects the payload during the acceleration. At the same time the accelerating forces generated at the armature needs to be transferred to the projectile. After the launch package has left the barrel, the sabot should open and release its payload, the projectile into free-flight. Here the current status of the launch package development and results from experiments with the PEGASUS railgun are presented.",
+      "tags": [
+        "arxiv"
+      ],
+      "source": "arxiv",
+      "arxiv_id": "1612.04143",
+      "arxiv_version": "v1",
+      "categories": [
+        "physics.plasm-ph"
+      ],
+      "relevance_score": 1.0,
+      "citation_id": "arxiv_1612_04143_2016",
+      "used_for": [
+        "domain_background"
+      ],
+      "exclusion_reason": null
+    }
+  ],
+  "excluded_sources": [
+    {
+      "title": "Design-Based Cross-Validation for Comparing Small Area Estimators",
+      "authors": [
+        "Qianyu Dong",
+        "Zehang Richard Li"
+      ],
+      "year": 2026,
+      "url": "https://arxiv.org/abs/2604.23464v3",
+      "abstract": "Subnational monitoring of public health and development indicators often relies on household surveys where data are sparse at the desired spatial resolution. Small area estimation (SAE) methods address this challenge by borrowing strength across areas and incorporating auxiliary information. However, comparing these estimators remains difficult in the absence of ground truth. We propose a design-based cross-validation framework for evaluating small area estimators that accommodates complex survey designs. Our approach enables model-agnostic comparisons between area-level and unit-level SAE models. We derive a decomposition of the conditional mean squared error that yields a consistent cross-validation score, show that finite-sample comparisons carry an unidentifiable bias that can be bounded, and use this bound as a principled threshold for ranking models. We further show that leave-one-area-out cross-validation, a popular alternative, targets extrapolation rather than smoothing error and can reverse the correct ranking. We evaluate the framework through extensive design-based simulations. We apply the framework to compare subnational female literacy estimators in Zambia using the 2024 Demographic and Health Survey. The framework applies broadly across prevalence mapping and other SAE problems and is applicable to any small area estimator irrespective of the underlying model class.",
+      "tags": [
+        "arxiv"
+      ],
+      "source": "arxiv",
+      "arxiv_id": "2604.23464",
+      "arxiv_version": "v3",
+      "categories": [
+        "stat.ME",
+        "stat.AP"
+      ],
+      "relevance_score": 0.0,
+      "citation_id": "arxiv_2604_23464_2026",
+      "used_for": [
+        "domain_background"
+      ],
+      "exclusion_reason": "low relevance to the domain research question"
+    },
+    {
+      "title": "UI-R1: Enhancing Efficient Action Prediction of GUI Agents by Reinforcement Learning",
+      "authors": [
+        "Zhengxi Lu",
+        "Yuxiang Chai",
+        "Yaxuan Guo",
+        "Xi Yin",
+        "Liang Liu",
+        "Hao Wang",
+        "Han Xiao",
+        "Shuai Ren",
+        "Guanjing Xiong",
+        "Hongsheng Li"
+      ],
+      "year": 2025,
+      "url": "https://arxiv.org/abs/2503.21620v5",
+      "abstract": "The recent DeepSeek-R1 has showcased the emergence of reasoning capabilities in LLMs through reinforcement learning (RL) with rule-based rewards. Despite its success in language models, its application in multi-modal domains, particularly in graphic user interface (GUI) agent tasks, remains under-explored. To address this issue, we propose UI-R1, the first framework to explore how rule-based RL can enhance the reasoning capabilities of multimodal large language models (MLLMs) for GUI action prediction tasks. Specifically, UI-R1 introduces a novel rule-based action reward, enabling model optimization via policy-based algorithms such as Group Relative Policy Optimization (GRPO). For efficient training, we curate a small yet high-quality dataset of 136 challenging tasks, encompassing five common action types on mobile devices. Experimental results demonstrate that our proposed UI-R1-3B achieves significant improvements over the base model (i.e. Qwen2.5-VL-3B) on both in-domain (ID) and out-of-domain (OOD) tasks, with average accuracy gains of 22.1% on ScreenSpot, 6.0% on ScreenSpot-Pro, and 12.7% on ANDROIDCONTROL. Furthermore, UI-R1-3B delivers competitive performance compared to larger models (e.g., OS-Atlas-7B) trained via supervised fine-tuning (SFT) on 76K samples. We additionally develop an optimized version, UI-R1-E-3B, which significantly improves both grounding efficiency and accuracy. These results underscore the potential of rule-based reinforcement learning to advance GUI understanding and control, paving the way for future research in this domain. Code website: https://github.com/lll6gg/UI-R1.",
+      "tags": [
+        "arxiv"
+      ],
+      "source": "arxiv",
+      "arxiv_id": "2503.21620",
+      "arxiv_version": "v5",
+      "categories": [
+        "cs.AI"
+      ],
+      "relevance_score": 0.0,
+      "citation_id": "arxiv_2503_21620_2025",
+      "used_for": [
+        "domain_background"
+      ],
+      "exclusion_reason": "low relevance to the domain research question"
+    },
+    {
+      "title": "Learning Curves for Decision Making in Supervised Machine Learning: A Survey",
+      "authors": [
+        "Felix Mohr",
+        "Jan N. van Rijn"
+      ],
+      "year": 2022,
+      "url": "https://arxiv.org/abs/2201.12150v2",
+      "abstract": "Learning curves are a concept from social sciences that has been adopted in the context of machine learning to assess the performance of a learning algorithm with respect to a certain resource, e.g., the number of training examples or the number of training iterations. Learning curves have important applications in several machine learning contexts, most notably in data acquisition, early stopping of model training, and model selection. For instance, learning curves can be used to model the performance of the combination of an algorithm and its hyperparameter configuration, providing insights into their potential suitability at an early stage and often expediting the algorithm selection process. Various learning curve models have been proposed to use learning curves for decision making. Some of these models answer the binary decision question of whether a given algorithm at a certain budget will outperform a certain reference performance, whereas more complex models predict the entire learning curve of an algorithm. We contribute a framework that categorises learning curve approaches using three criteria: the decision-making situation they address, the intrinsic learning curve question they answer and the type of resources they use. We survey papers from the literature and classify them into this framework.",
+      "tags": [
+        "arxiv"
+      ],
+      "source": "arxiv",
+      "arxiv_id": "2201.12150",
+      "arxiv_version": "v2",
+      "categories": [
+        "cs.LG"
+      ],
+      "relevance_score": 0.0,
+      "citation_id": "arxiv_2201_12150_2022",
+      "used_for": [
+        "domain_background"
+      ],
+      "exclusion_reason": "low relevance to the domain research question"
+    },
+    {
+      "title": "DOME: Recommendations for supervised machine learning validation in biology",
+      "authors": [
+        "Ian Walsh",
+        "Dmytro Fishman",
+        "Dario Garcia-Gasulla",
+        "Tiina Titma",
+        "Gianluca Pollastri",
+        "The ELIXIR Machine Learning focus group",
+        "Jen Harrow",
+        "Fotis E. Psomopoulos",
+        "Silvio C. E. Tosatto"
+      ],
+      "year": 2020,
+      "url": "https://arxiv.org/abs/2006.16189v4",
+      "abstract": "Modern biology frequently relies on machine learning to provide predictions and improve decision processes. There have been recent calls for more scrutiny on machine learning performance and possible limitations. Here we present a set of community-wide recommendations aiming to help establish standards of supervised machine learning validation in biology. Adopting a structured methods description for machine learning based on data, optimization, model, evaluation (DOME) will aim to help both reviewers and readers to better understand and assess the performance and limitations of a method or outcome. The recommendations are formulated as questions to anyone wishing to pursue implementation of a machine learning algorithm. Answers to these questions can be easily included in the supplementary material of published papers.",
+      "tags": [
+        "arxiv"
+      ],
+      "source": "arxiv",
+      "arxiv_id": "2006.16189",
+      "arxiv_version": "v4",
+      "categories": [
+        "q-bio.OT",
+        "cs.LG"
+      ],
+      "relevance_score": 0.0,
+      "citation_id": "arxiv_2006_16189_2020",
+      "used_for": [
+        "domain_background"
+      ],
+      "exclusion_reason": "low relevance to the domain research question"
+    }
+  ],
+  "gap_findings": [
+    {
+      "gap_id": "domain_gap_model_comparison",
+      "claim": "The literature context must establish whether nonlinear models are actually expected to improve the selected ML task over simple baselines.",
+      "source_ids": [
+        "arxiv_2604_25452_2026",
+        "arxiv_2208_06828_2022",
+        "arxiv_2306_04338_2023",
+        "arxiv_1912_00524_2019",
+        "arxiv_1905_08737_2019"
+      ],
+      "implication": "Generate hypotheses from domain-specific evidence rather than Lucky Loop meta-literature.",
+      "metric": "domain_source_coverage",
+      "experiment": "Compare baseline and nonlinear model families on a dataset selected for the user question."
+    },
+    {
+      "gap_id": "domain_gap_robustness",
+      "claim": "Claims about the selected ML task performance require robustness checks across splits or seeds, not a single score.",
+      "source_ids": [
+        "arxiv_2604_25452_2026",
+        "arxiv_2208_06828_2022",
+        "arxiv_2306_04338_2023",
+        "arxiv_1912_00524_2019",
+        "arxiv_1905_08737_2019"
+      ],
+      "implication": "Use repeated seeds and block claims whose effect is within run-to-run noise.",
+      "metric": "effect_to_noise_ratio",
+      "experiment": "Run matched repeated-seed comparisons and verify effect size against seed noise."
+    }
+  ]
+}

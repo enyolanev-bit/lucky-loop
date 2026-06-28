@@ -1,0 +1,34 @@
+{
+  "domain_queries": [
+    "UI smoke test autoresearch venv launch",
+    "smoke test autoresearch venv launch machine learning classification",
+    "smoke test autoresearch venv launch logistic regression random forest svm gradient boosting",
+    "smoke test autoresearch venv launch robustness repeated seeds cross validation"
+  ],
+  "method_queries": [
+    "ti:\"AI Scientist\" OR abs:\"autonomous scientific discovery\"",
+    "all:\"Agent Laboratory\" \"research assistants\"",
+    "all:\"MLE-bench\" \"machine learning agents\"",
+    "all:\"Qwen-AgentWorld\" OR all:\"language world models\"",
+    "all:\"claim verification\" scientific claims"
+  ],
+  "dataset_queries": [
+    "smoke test autoresearch venv launch classification dataset",
+    "smoke test autoresearch venv launch openml huggingface dataset",
+    "sensor classification dataset",
+    "tabular classification benchmark"
+  ],
+  "key_terms": [
+    "smoke",
+    "test",
+    "autoresearch",
+    "venv",
+    "launch"
+  ],
+  "excluded_terms": [
+    "autonomous research",
+    "AI scientist",
+    "world model"
+  ],
+  "rationale": "Domain queries are derived from the user question; method queries are isolated for orchestration safeguards."
+}

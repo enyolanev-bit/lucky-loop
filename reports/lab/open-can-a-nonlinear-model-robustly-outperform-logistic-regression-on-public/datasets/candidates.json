@@ -1,0 +1,89 @@
+[
+  {
+    "dataset_id": "eeg_eye_state",
+    "source": "openml",
+    "name": "eeg_eye_state",
+    "url": "https://www.openml.org/d/1471",
+    "description": "OpenML EEG eye state sensor classification benchmark",
+    "license": "unknown",
+    "task_tags": [
+      "classification",
+      "tabular"
+    ],
+    "score": 75.8,
+    "score_reasons": [
+      "External OpenML registry candidate with known classification target",
+      "classification tag/name match",
+      "likely usable for empirical ML"
+    ],
+    "risk_flags": [],
+    "fallback_rank": 2
+  },
+  {
+    "dataset_id": "sonar",
+    "source": "openml",
+    "name": "sonar",
+    "url": "https://www.openml.org/d/40",
+    "description": "OpenML Sonar binary classification benchmark",
+    "license": "unknown",
+    "task_tags": [
+      "classification",
+      "tabular"
+    ],
+    "score": 67.9,
+    "score_reasons": [
+      "External OpenML registry candidate with known classification target",
+      "classification tag/name match",
+      "likely usable for empirical ML"
+    ],
+    "risk_flags": [],
+    "fallback_rank": 1
+  },
+  {
+    "dataset_id": "har",
+    "source": "openml",
+    "name": "har",
+    "url": "https://www.openml.org/d/1478",
+    "description": "OpenML human activity recognition classification benchmark",
+    "license": "unknown",
+    "task_tags": [
+      "classification",
+      "tabular"
+    ],
+    "score": 67.7,
+    "score_reasons": [
+      "External OpenML registry candidate with known classification target",
+      "classification tag/name match",
+      "likely usable for empirical ML"
+    ],
+    "risk_flags": [],
+    "fallback_rank": 3
+  },
+  {
+    "dataset_id": "imodels/tabular-benchmark-797-classification",
+    "source": "huggingface",
+    "name": "imodels/tabular-benchmark-797-classification",
+    "url": "https://huggingface.co/datasets/imodels/tabular-benchmark-797-classification",
+    "description": "",
+    "license": null,
+    "task_tags": [
+      "size_categories:1K<n<10K",
+      "format:csv",
+      "modality:tabular",
+      "library:datasets",
+      "library:pandas",
+      "library:mlcroissant",
+      "library:polars",
+      "region:us"
+    ],
+    "score": 22.0,
+    "score_reasons": [
+      "classification tag/name match",
+      "likely usable for empirical ML"
+    ],
+    "risk_flags": [
+      "missing_license"
+    ],
+    "fallback_rank": 1
+  }
+]

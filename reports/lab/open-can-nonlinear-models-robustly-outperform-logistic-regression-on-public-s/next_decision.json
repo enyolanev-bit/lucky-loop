@@ -1,0 +1,7 @@
+{
+  "decision": "stop_and_report",
+  "expected_evidence_gain": "None; no further experiments possible.",
+  "next_action_goal": "Compile a final report summarizing the negative finding: nonlinear models did not robustly outperform logistic regression on this dataset under multi-seed evaluation.",
+  "rationale": "Budget is exhausted (0 remaining) and the claim was blocked due to effect within seed noise. No further experiments can be run. The evidence is insufficient to support the hypothesis, and the contract requires stopping when budget is exhausted.",
+  "stop_reason": "Budget exhausted."
+}

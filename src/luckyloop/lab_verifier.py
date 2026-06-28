@@ -60,7 +60,7 @@ def _claims_logistic_baseline_wins(claim_text: str) -> bool:
     text = claim_text.lower()
     baseline_terms = ["simple baseline", "logistic regression"]
     positive_terms = ["outperform", "higher", "better", "superior", "comparable or higher", "wins"]
-    nonlinear_terms = ["nonlinear", "random_forest", "random forest", "svc", "hist_gradient_boosting", "complex model"]
+    nonlinear_terms = ["nonlinear", "random_forest", "random forest", "svc", "svm", "hist_gradient_boosting", "gradient boosting", "mlp", "transformer", "hart", "complex model"]
     if not any(term in text for term in baseline_terms):
         return False
     if any(term in text for term in nonlinear_terms) and "logistic regression" in text:
@@ -217,21 +217,32 @@ def verify_lab_claims(
             verdict = "blocked"
             failure_category, diagnostic, next_action, allowed_rewrite = _blocked_diagnostic(protocol, analysis, hypothesis, effect, ratio)
             reason = diagnostic
-        claims.append(
-            LabClaim(
-                claim_id=f"{evidence_id}:robustness",
-                hypothesis_id=protocol.hypothesis_id,
-                claim=_claim_text(hypothesis, "The observed winner is robust."),
-                verdict=verdict,
-                evidence_ids=[evidence_id],
-                reason=reason,
-                failure_category=failure_category,
-                diagnostic=diagnostic,
-                next_action=next_action,
-                allowed_rewrite=None if verdict != "blocked" else (allowed_rewrite or "Report the best condition as an observation, not a robust winner."),
-                metrics={"effect_size": effect, "seed_noise": analysis.seed_noise, "effect_to_noise_ratio": ratio},
-            )
+        claim = LabClaim(
+            claim_id=f"{evidence_id}:robustness",
+            hypothesis_id=protocol.hypothesis_id,
+            claim=_claim_text(hypothesis, "The observed winner is robust."),
+            verdict=verdict,
+            evidence_ids=[evidence_id],
+            reason=reason,
+            failure_category=failure_category,
+            diagnostic=diagnostic,
+            next_action=next_action,
+            allowed_rewrite=None if verdict != "blocked" else (allowed_rewrite or "Report the best condition as an observation, not a robust winner."),
+            metrics={"effect_size": effect, "seed_noise": analysis.seed_noise, "effect_to_noise_ratio": ratio},
         )
+        claims.append(claim)
+        if protocol.protocol_id == "generated_ml_research_protocol" and verdict == "blocked":
+            claims.append(
+                LabClaim(
+                    claim_id=f"{evidence_id}:negative_finding",
+                    hypothesis_id=protocol.hypothesis_id,
+                    claim=f"The generated claim should be rejected or rewritten under this protocol: {claim.claim}",
+                    verdict="supported",
+                    evidence_ids=[evidence_id],
+                    reason=f"The verifier found `{failure_category}`: {reason}",
+                    metrics={"effect_size": effect, "seed_noise": analysis.seed_noise, "effect_to_noise_ratio": ratio},
+                )
+            )
 
     if not claims:
         claims.append(

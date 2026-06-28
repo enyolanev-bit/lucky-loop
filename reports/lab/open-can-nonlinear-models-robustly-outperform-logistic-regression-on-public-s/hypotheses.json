@@ -1,0 +1,13 @@
+[
+  {
+    "claim_candidate": "A nonlinear model can robustly outperform logistic regression across repeated seeds on a public sensor classification dataset.",
+    "falsification_condition": "If logistic regression achieves balanced accuracy within 1 percentage point of the best nonlinear model across 10 seeds, or if the effect_to_noise_ratio is less than 1.5.",
+    "hypothesis_id": "H1",
+    "literature_gap_ids": [
+      "domain_gap_model_comparison",
+      "domain_gap_robustness"
+    ],
+    "minimum_evidence_needed": "One dataset with 10 repeated seeds, showing consistent advantage for nonlinear models.",
+    "why_it_matters": "Domain literature shows that sensor data often contains complex interactions and nonlinear patterns that linear models may miss. For example, transformer-based HAR models outperform simpler baselines in heterogeneous environments."
+  }
+]

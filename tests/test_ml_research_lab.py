@@ -8,10 +8,14 @@ from luckyloop.lab import run_lab
 from luckyloop.lab_protocols import build_action, candidate_actions_for_state, hypotheses_for, make_lab_question, protocols_for
 from luckyloop.lab_scientist import decide_next_action
 from luckyloop.lab_verifier import analyze_observation, verify_lab_claims
-from luckyloop.lab_world_model import normalize_prediction, predict_lab_action
+from luckyloop.lab_world_model import _prediction_quality_failures, normalize_prediction, predict_lab_action
 from luckyloop.open_lab import _make_dry_run_dataset, _script_action
 from luckyloop.code_safety import validate_generated_code, write_validated_code
 from luckyloop.dataset_discovery import audit_candidate
+from luckyloop.dataset_discovery import _infer_target
+from luckyloop.dataset_discovery import _contains_term
+from luckyloop.dataset_discovery import _openml_query_variants
+from luckyloop.dataset_discovery import discover_dataset_candidates, select_and_materialize_dataset
 from luckyloop.lab_scientist import template_experiment_code
 from luckyloop.lab_scientist import _agenda_from_data
 from luckyloop.literature import derive_literature_query_plan, write_split_context, ResearchContext
@@ -20,6 +24,7 @@ from luckyloop.lab_reporter import write_final_report
 from luckyloop.schemas import (
     DatasetAudit,
     DatasetCandidate,
+    DatasetSearchPlan,
     GeneratedResearchProtocol,
     HypothesisCandidate,
     LabQuestion,
@@ -152,6 +157,114 @@ def test_dataset_audit_accepts_sklearn_fallback(tmp_path):
     assert (tmp_path / "datasets" / "selected_dataset.csv").exists()
 
 
+def test_dataset_target_inference_prefers_semantic_target_over_binary_feature():
+    import pandas as pd
+
+    frame = pd.DataFrame(
+        {
+            "Sex": ["male", "female", "male", "female"],
+            "Age": [20, 30, 40, 50],
+            "Survived": [0, 1, 0, 1],
+        }
+    )
+    assert _infer_target(frame) == "Survived"
+
+
+def test_dataset_domain_term_matching_uses_word_boundaries_for_short_terms():
+    assert _contains_term("human activity recognition har benchmark", "har")
+    assert not _contains_term("monthly charges customer churn", "har")
+
+
+def test_openml_query_variants_add_domain_specific_short_names():
+    variants = _openml_query_variants("human activity recognition with wearable sensor features")
+    assert "har" in variants
+    assert "eeg-eye-state" in variants
+    assert "sonar" in variants
+
+
+def test_dataset_selection_prefers_dynamic_candidate_over_curated_fallback(monkeypatch, tmp_path):
+    dynamic = DatasetCandidate(dataset_id="dynamic_hf", source="huggingface", name="dynamic_hf", score=1)
+    fallback = DatasetCandidate(
+        dataset_id="fallback_openml",
+        source="openml",
+        name="fallback_openml",
+        score=99,
+        risk_flags=["curated_fallback"],
+    )
+
+    def fake_audit(candidate, workspace, max_rows=50000):
+        dataset = workspace / "datasets" / f"{candidate.dataset_id}.csv"
+        dataset.parent.mkdir(parents=True, exist_ok=True)
+        dataset.write_text("x,y,target\n1,2,a\n2,3,b\n3,4,a\n4,5,b\n", encoding="utf-8")
+        return DatasetAudit(
+            dataset_id=candidate.dataset_id,
+            source=candidate.source,
+            status="accepted",
+            reason="usable supervised classification table",
+            local_path=str(dataset),
+            target_column="target",
+            feature_columns=["x", "y"],
+            n_rows=4,
+            n_features=2,
+            class_counts={"a": 2, "b": 2},
+        )
+
+    monkeypatch.setattr("luckyloop.dataset_discovery.audit_candidate", fake_audit)
+    selected, _audit = select_and_materialize_dataset([fallback, dynamic], tmp_path)
+    assert selected.dataset_id == "dynamic_hf"
+    rationale = json.loads((tmp_path / "datasets" / "selection_rationale.json").read_text())
+    assert rationale["selected_dataset_id"] == "dynamic_hf"
+
+
+def test_dataset_selection_rejects_dynamic_domain_mismatch_when_sensor_required(monkeypatch, tmp_path):
+    titanic = DatasetCandidate(dataset_id="titanic", source="huggingface", name="titanic", description="passenger survival", score=99)
+    har = DatasetCandidate(
+        dataset_id="har",
+        source="openml",
+        name="har",
+        description="human activity recognition sensor benchmark",
+        score=1,
+        risk_flags=["curated_fallback"],
+    )
+
+    def fake_audit(candidate, workspace, max_rows=50000):
+        dataset = workspace / "datasets" / f"{candidate.dataset_id}.csv"
+        dataset.parent.mkdir(parents=True, exist_ok=True)
+        dataset.write_text("x,y,target\n1,2,a\n2,3,b\n3,4,a\n4,5,b\n", encoding="utf-8")
+        return DatasetAudit(
+            dataset_id=candidate.dataset_id,
+            source=candidate.source,
+            status="accepted",
+            reason="usable supervised classification table",
+            local_path=str(dataset),
+            target_column="target",
+            feature_columns=["accel_x", "gyro_y"] if candidate.dataset_id == "har" else ["fare", "age"],
+            n_rows=4,
+            n_features=2,
+            class_counts={"a": 2, "b": 2},
+        )
+
+    monkeypatch.setattr("luckyloop.dataset_discovery.audit_candidate", fake_audit)
+    plan = DatasetSearchPlan(queries=["human activity recognition sensor classification"], required_properties=["sensor features"])
+    selected, _audit = select_and_materialize_dataset([titanic, har], tmp_path, search_plan=plan)
+    assert selected.dataset_id == "har"
+
+
+def test_dataset_discovery_logs_search_errors(monkeypatch, tmp_path):
+    def fail_hf(query, limit=8, errors=None):
+        if errors is not None:
+            errors.append({"source": "huggingface", "query": query, "error": "boom"})
+        return []
+
+    monkeypatch.setattr("luckyloop.dataset_discovery.search_huggingface", fail_hf)
+    monkeypatch.setattr("luckyloop.dataset_discovery.search_openml", lambda query, limit=10, errors=None: [])
+    monkeypatch.setattr("luckyloop.dataset_discovery.external_registry_candidates", lambda query_text: [])
+    candidates = discover_dataset_candidates("sensor classification", {}, tmp_path)
+    assert candidates == []
+    errors = json.loads((tmp_path / "datasets" / "search_errors.json").read_text())
+    assert errors and errors[0]["source"] == "huggingface"
+
+
 def test_generated_code_validator_blocks_shell_access():
     result = validate_generated_code("import subprocess\nsubprocess.run(['echo', 'bad'])\n")
     assert result.status == "rejected"
@@ -194,6 +307,43 @@ def test_template_generated_experiment_runs_on_materialized_dataset(tmp_path):
     assert payload["status"] == "success"
     assert payload["runs"]
     assert (tmp_path / "runs" / "experiment_001.json").exists()
+
+
+def test_template_generated_experiment_accepts_deepseek_model_aliases(tmp_path):
+    candidate = DatasetCandidate(dataset_id="wine", source="sklearn", name="wine")
+    audit = audit_candidate(candidate, tmp_path)
+    protocol = GeneratedResearchProtocol(
+        question="Can nonlinear sklearn models beat logistic regression?",
+        hypothesis="Nonlinear aliases must map to deterministic sklearn classes.",
+        dataset_id=audit.dataset_id,
+        dataset_source=audit.source,
+        target_column=audit.target_column or "target",
+        feature_columns=audit.feature_columns,
+        candidate_models=["logisticregression", "gradientboostingclassifier", "mlpclassifier", "randomforestclassifier", "svc"],
+        seeds=[0],
+    )
+    code = template_experiment_code().replace("__PROTOCOL_JSON__", json.dumps(protocol.model_dump(), sort_keys=True))
+    script = tmp_path / "generated" / "experiment.py"
+    validation = write_validated_code(code, script)
+    assert validation.status == "accepted", validation.model_dump()
+    cmd = [
+        sys.executable,
+        str(script),
+        "--dataset-csv",
+        audit.local_path,
+        "--target-column",
+        audit.target_column,
+        "--out-dir",
+        str(tmp_path),
+        "--step",
+        "2",
+        "--dry-run",
+    ]
+    proc = subprocess.run(cmd, text=True, capture_output=True, timeout=120)
+    assert proc.returncode == 0, proc.stderr
+    payload = json.loads(proc.stdout[proc.stdout.find("{") :])
+    assert {row["model"] for row in payload["runs"]} >= {"logisticregression", "gradientboostingclassifier", "mlpclassifier"}
+    assert (tmp_path / "runs" / "experiment_002.json").exists()
 
 
 def test_open_lab_dry_run_uses_reduced_dataset(tmp_path):
@@ -248,6 +398,47 @@ def test_lab_world_model_prediction_keeps_compute_fields():
     assert prediction.compute_waste_risk == 0.7
     assert prediction.value_of_information == 0.9
     assert prediction.recommendation == "modify"
+    assert prediction.claim_support_probability == 0.5
+
+
+def test_lab_world_model_prediction_keeps_discriminative_fields():
+    prediction = normalize_prediction(
+        {
+            "predicted_terminal_observation": "full run may finish but produce a fragile winner",
+            "compute_waste_risk": 0.4,
+            "value_of_information": 0.8,
+            "claim_support_probability": 0.35,
+            "expected_best_model": "randomforestclassifier",
+            "preferred_next_action_if_blocked": "search_better_dataset",
+            "what_would_change_my_mind": "effect-to-noise above 2",
+            "discriminative_reason": "full repeated-seed fit can settle the claim; stop/report cannot",
+            "recommendation": "verify",
+        },
+        "qwen_agentworld",
+    )
+    assert prediction.claim_support_probability == 0.35
+    assert prediction.expected_best_model == "randomforestclassifier"
+    assert prediction.preferred_next_action_if_blocked == "search_better_dataset"
+    assert "settle the claim" in prediction.discriminative_reason
+
+
+def test_lab_world_model_quality_gate_rejects_neutral_claim_probability(tmp_path):
+    action = build_action(protocols_for("seed_variance_claim")[0], 7, tmp_path)
+    prediction = normalize_prediction(
+        {
+            "predicted_terminal_observation": "full protocol probably runs",
+            "failure_modes": ["claim may remain unsupported"],
+            "runtime_risk": "moderate",
+            "claim_support_probability": 0.5,
+            "preferred_next_action_if_blocked": "revise_hypothesis",
+            "what_would_change_my_mind": "effect-to-noise above 2",
+            "discriminative_reason": "full run can test the claim while stop/report cannot",
+            "rationale": "the action produces verifier evidence",
+        },
+        "qwen_agentworld",
+    )
+    failures = _prediction_quality_failures(action, prediction)
+    assert "claim_support_probability must not be neutral 0.5" in failures
 
 
 def test_literature_query_plan_separates_domain_from_method():
@@ -298,6 +489,40 @@ def test_research_agenda_selects_best_priority_hypothesis():
     )
     assert agenda.selected_hypothesis_id == "H_best"
     assert agenda.domain_gaps[0].gap_id == "g1"
+
+
+def test_research_agenda_does_not_split_string_lists_or_invert_question():
+    agenda = _agenda_from_data(
+        "Can a nonlinear model robustly outperform logistic regression on public sensor data?",
+        {
+            "domain_gaps": [
+                {
+                    "gap_id": "g1",
+                    "claim": "Need comparison",
+                    "source_ids": "paper_1",
+                    "dataset_requirements": "public sensor classification",
+                    "suggested_metrics": "balanced_accuracy",
+                }
+            ],
+            "hypotheses": [
+                {
+                    "hypothesis_id": "H1",
+                    "claim_candidate": "Logistic regression achieves comparable or higher balanced accuracy than nonlinear models.",
+                    "literature_gap_ids": "g1",
+                    "dataset_requirements": "EEG Eye State",
+                    "falsification_condition": "fails",
+                    "minimum_evidence_needed": "evidence",
+                    "scientific_value": 0.8,
+                    "compute_risk": 0.4,
+                }
+            ],
+        },
+    )
+    assert agenda.domain_gaps[0].source_ids == ["paper_1"]
+    assert agenda.domain_gaps[0].dataset_requirements == ["public sensor classification"]
+    assert agenda.hypotheses[0].literature_gap_ids == ["g1"]
+    assert agenda.hypotheses[0].dataset_requirements == ["EEG Eye State"]
+    assert agenda.hypotheses[0].claim_candidate.startswith("A nonlinear model can robustly outperform")
 
 
 def test_dataset_search_plan_uses_hypothesis_requirements():
@@ -407,6 +632,7 @@ def test_generated_protocol_blocks_baseline_claim_when_baseline_not_best():
     analysis = analyze_observation(raw, "analysis_generated")
     claims = verify_lab_claims(protocol, analysis, hypothesis, "experiment_generated")
     assert claims[0].verdict == "blocked"
+    assert any(claim.verdict == "supported" and "should be rejected" in claim.claim for claim in claims)
 
 
 def test_generated_protocol_does_not_misread_nonlinear_beats_logistic_claim():
@@ -430,6 +656,36 @@ def test_generated_protocol_does_not_misread_nonlinear_beats_logistic_claim():
         "seed_noise": 0.1,
         "effect_to_noise_ratio": 0.2,
         "best_condition": "random_forest",
+        "protocol_warnings": [],
+    }
+    analysis = analyze_observation(raw, "analysis_generated")
+    claims = verify_lab_claims(protocol, analysis, hypothesis, "experiment_generated")
+    assert claims[0].verdict == "blocked"
+    assert claims[0].failure_category == "effect_within_seed_noise"
+    assert any(claim.verdict == "supported" and "effect_within_seed_noise" in claim.reason for claim in claims)
+
+
+def test_generated_protocol_does_not_misread_transformer_beats_logistic_claim():
+    protocol = protocols_for("seed_variance_claim")[0].model_copy(
+        update={"protocol_id": "generated_ml_research_protocol", "hypothesis_id": "H1_generated"}
+    )
+    hypothesis = hypotheses_for("seed_variance_claim")[0].model_copy(
+        update={
+            "hypothesis_id": "H1_generated",
+            "claim_candidate": "A Transformer-based model robustly outperforms logistic regression across seeds.",
+        }
+    )
+    raw = {
+        "protocol_id": "generated_ml_research_protocol",
+        "primary_metric": "balanced_accuracy",
+        "runs": [
+            {"condition": "logisticregression", "balanced_accuracy": 0.7},
+            {"condition": "candidate", "balanced_accuracy": 0.8},
+        ],
+        "effect_size": 0.1,
+        "seed_noise": 0.2,
+        "effect_to_noise_ratio": 0.5,
+        "best_condition": "candidate",
         "protocol_warnings": [],
     }
     analysis = analyze_observation(raw, "analysis_generated")

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -15,7 +16,7 @@ from .dataset_discovery import discover_dataset_candidates, select_and_materiali
 from .lab import _literature_inference_context, _rel, _tail, compare_prediction
 from .lab_notebook import append_notebook_entry, write_json, write_predictions
 from .lab_reporter import write_final_report, write_reproducibility
-from .lab_scientist import decide_next_research_step, generate_experiment_code, generate_open_protocol, generate_research_agenda
+from .lab_scientist import decide_next_research_step, generate_open_protocol, generate_research_agenda, template_experiment_code
 from .lab_verifier import analyze_observation, verify_lab_claims
 from .lab_world_model import predict_lab_action
 from .literature import (
@@ -329,40 +330,21 @@ def _decide_next(
 
 def _generate_code(protocol: GeneratedResearchProtocol, audit: DatasetAudit, workspace: Path, *, require_agent: bool):
     script_path = workspace / "generated" / "experiment.py"
-    attempts = []
-    last_validation = None
-    for attempt in range(1, 4):
-        try:
-            payload = generate_experiment_code(protocol, audit, {"attempt": attempt, "previous_attempts": attempts}, require_agent=require_agent)
-        except Exception as exc:
-            last_validation = {"status": "rejected", "reason": f"code_generation_failed: {type(exc).__name__}: {exc}"}
-            attempts.append(
-                {
-                    "attempt": attempt,
-                    "validation": last_validation,
-                    "rationale": "Agent code generation did not satisfy the strict JSON contract.",
-                }
-            )
-            write_json(workspace / "generated" / "code_generation_attempts.json", attempts)
-            continue
-        code = _inject_protocol(payload["code"], protocol)
-        validation = write_validated_code(code, script_path)
-        last_validation = validation.model_dump()
-        attempts.append({"attempt": attempt, "validation": validation.model_dump(), "rationale": payload.get("rationale", "")})
-        write_json(workspace / "generated" / "code_generation_attempts.json", attempts)
-        write_json(workspace / "generated" / "static_validation.json", validation)
-        if validation.status == "accepted":
-            return script_path, validation
-    write_json(workspace / "generated" / "code_generation_attempts.json", attempts)
-    write_json(workspace / "generated" / "static_validation.json", last_validation or {"status": "rejected", "reason": "no code attempts completed"})
-    raise RuntimeError("Agent-generated experiment code did not pass validation after 3 attempts.")
+    validation = write_validated_code(_inject_protocol(template_experiment_code(), protocol), script_path)
+    attempt = {
+        "attempt": 1,
+        "source": "deterministic_template",
+        "validation": validation.model_dump(),
+        "rationale": "DeepSeek generated the protocol JSON; Lucky Loop used the fixed sklearn runner template to avoid free-form imports.",
+    }
+    write_json(workspace / "generated" / "code_generation_attempts.json", [attempt])
+    write_json(workspace / "generated" / "static_validation.json", validation)
+    return script_path, validation
 
 
 def _repair_code(protocol, audit, workspace, observation, *, require_agent: bool):
-    repair_context = {"failed_observation": observation.model_dump()}
-    payload = generate_experiment_code(protocol, audit, repair_context, require_agent=require_agent)
     script_path = workspace / "generated" / "experiment.py"
-    validation = write_validated_code(_inject_protocol(payload["code"], protocol), script_path)
+    validation = write_validated_code(_inject_protocol(template_experiment_code(), protocol), script_path)
     write_json(workspace / "generated" / "repair_validation.json", validation)
     return script_path, validation
 
@@ -480,7 +462,11 @@ def _log_prediction(workspace: Path, step: int, action: LabAction, prediction: L
         expected_runtime_seconds=prediction.expected_runtime_seconds,
         compute_waste_risk=prediction.compute_waste_risk,
         value_of_information=prediction.value_of_information,
+        claim_support_probability=prediction.claim_support_probability,
+        expected_best_model=prediction.expected_best_model,
+        preferred_next_action_if_blocked=prediction.preferred_next_action_if_blocked,
         suggested_modification=prediction.suggested_modification,
+        discriminative_reason=prediction.discriminative_reason,
         expected_claim_delta=prediction.expected_claim_delta,
     )
 
@@ -525,6 +511,7 @@ def _execute_action(action: LabAction, timeout: int | None = None, workspace: Pa
         raw["stdout_tail"] = _tail(stdout)
         raw["stderr_tail"] = _tail(stderr)
     raw = _normalize_generated_raw(raw)
+    _collect_run_artifact(workspace, action)
     artifacts = raw.get("artifacts", [])
     if isinstance(artifacts, dict):
         artifacts = []
@@ -538,6 +525,27 @@ def _execute_action(action: LabAction, timeout: int | None = None, workspace: Pa
         artifacts=[str(item) for item in artifacts],
         runtime_seconds=raw.get("runtime_seconds", runtime),
     )
+
+
+def _collect_run_artifact(workspace: Path | None, action: LabAction) -> None:
+    if workspace is None or action.kind not in {"dry_run", "run_protocol", "run_replication", "run_ablation"}:
+        return
+    match = re.search(r"action_(\d+)_", action.action_id)
+    if not match:
+        return
+    step = int(match.group(1))
+    runs_dir = workspace / "runs"
+    runs_dir.mkdir(parents=True, exist_ok=True)
+    target = runs_dir / f"experiment_{step}.json"
+    for candidate in [
+        runs_dir / "runs" / f"experiment_{step}.json",
+        runs_dir / f"experiment_{step}.json",
+        workspace / f"experiment_{step}.json",
+        workspace / f"experiment_{step:03d}.json",
+    ]:
+        if candidate.exists() and candidate != target:
+            candidate.replace(target)
+            break
 
 
 def _communicate_with_live_logs(
@@ -869,6 +877,8 @@ def _clean_workspace(workspace: Path) -> None:
                 shutil.rmtree(path)
             else:
                 path.unlink()
+    for path in workspace.glob("experiment_*.json"):
+        path.unlink()
 
 
 def _slug(question: str) -> str:

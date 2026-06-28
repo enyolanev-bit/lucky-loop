@@ -1,0 +1,44 @@
+{
+  "domain_queries": [
+    "Can repeated-seed evaluation show that nonlinear models do not robustly outperform logistic regression on public EEG sensor classification data?",
+    "repeated seed evaluation show nonlinear models robustly outperform logistic regression machine learning classification",
+    "repeated seed evaluation show nonlinear models robustly outperform logistic regression logistic regression random forest svm gradient boosting",
+    "repeated seed evaluation show nonlinear models robustly outperform logistic regression robustness repeated seeds cross validation",
+    "\"human activity recognition\" sensor classification machine learning",
+    "\"EEG eye state\" classification machine learning",
+    "wearable sensor classification logistic regression random forest svm"
+  ],
+  "method_queries": [
+    "ti:\"AI Scientist\" OR abs:\"autonomous scientific discovery\"",
+    "all:\"Agent Laboratory\" \"research assistants\"",
+    "all:\"MLE-bench\" \"machine learning agents\"",
+    "all:\"Qwen-AgentWorld\" OR all:\"language world models\"",
+    "all:\"claim verification\" scientific claims"
+  ],
+  "dataset_queries": [
+    "repeated seed evaluation show nonlinear models robustly outperform logistic regression classification dataset",
+    "repeated seed evaluation show nonlinear models robustly outperform logistic regression openml huggingface dataset",
+    "sensor classification dataset",
+    "tabular classification benchmark"
+  ],
+  "key_terms": [
+    "repeated",
+    "seed",
+    "evaluation",
+    "show",
+    "nonlinear",
+    "models",
+    "robustly",
+    "outperform",
+    "logistic",
+    "regression",
+    "sensor",
+    "classification"
+  ],
+  "excluded_terms": [
+    "autonomous research",
+    "AI scientist",
+    "world model"
+  ],
+  "rationale": "Domain queries are derived from the user question; method queries are isolated for orchestration safeguards."
+}

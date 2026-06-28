@@ -1,0 +1,47 @@
+{
+  "claim_blocked_if": "logistic_regression_balanced_accuracy >= best_nonlinear_balanced_accuracy - 0.01 OR effect_to_noise_ratio < 1.5",
+  "claim_enabled_if": "best_nonlinear_balanced_accuracy - logistic_regression_balanced_accuracy >= 0.02 AND effect_to_noise_ratio > 2.0",
+  "conditions": [
+    "gradientboostingclassifier",
+    "logisticregression",
+    "randomforestclassifier",
+    "svc"
+  ],
+  "controlled_variables": [
+    "dataset",
+    "target_column",
+    "split_strategy",
+    "seeds",
+    "preprocessing"
+  ],
+  "dataset": "1471",
+  "expected_artifacts": [
+    "runs/experiment_<step>.json",
+    "analyses/analysis_<step>.json"
+  ],
+  "hypothesis_id": "H1_generated",
+  "manipulated_variable": "model_family",
+  "primary_metric": "balanced_accuracy",
+  "protocol_id": "generated_ml_research_protocol",
+  "protocol_risks": [
+    "generated_protocol",
+    "dataset_selection_bias"
+  ],
+  "scientific_goal": "A nonlinear model can robustly outperform logistic regression across repeated seeds on a public sensor classification dataset.",
+  "secondary_metrics": [
+    "accuracy",
+    "f1_macro",
+    "precision_macro",
+    "recall_macro"
+  ],
+  "seeds": [
+    42,
+    123,
+    456,
+    789,
+    111,
+    222,
+    333,
+    444
+  ]
+}

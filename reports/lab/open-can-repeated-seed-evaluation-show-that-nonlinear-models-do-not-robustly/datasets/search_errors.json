@@ -1,0 +1,57 @@
+[
+  {
+    "source": "openml",
+    "query": "repeated seed evaluation show nonlinear models robustly outperform logistic regression classification dataset",
+    "error": "HTTPError: HTTP Error 412: Precondition Failed"
+  },
+  {
+    "source": "openml",
+    "query": "tabular classification",
+    "error": "HTTPError: HTTP Error 412: Precondition Failed"
+  },
+  {
+    "source": "openml",
+    "query": "tabular-classification",
+    "error": "HTTPError: HTTP Error 412: Precondition Failed"
+  },
+  {
+    "source": "openml",
+    "query": "repeated seed evaluation show nonlinear models robustly outperform logistic regression openml huggingface dataset",
+    "error": "HTTPError: HTTP Error 412: Precondition Failed"
+  },
+  {
+    "source": "openml",
+    "query": "sensor classification dataset",
+    "error": "HTTPError: HTTP Error 412: Precondition Failed"
+  },
+  {
+    "source": "openml",
+    "query": "human activity recognition",
+    "error": "HTTPError: HTTP Error 412: Precondition Failed"
+  },
+  {
+    "source": "openml",
+    "query": "eeg eye state classification",
+    "error": "HTTPError: HTTP Error 412: Precondition Failed"
+  },
+  {
+    "source": "openml",
+    "query": "wearable sensor classification",
+    "error": "HTTPError: HTTP Error 412: Precondition Failed"
+  },
+  {
+    "source": "openml",
+    "query": "tabular classification benchmark",
+    "error": "HTTPError: HTTP Error 412: Precondition Failed"
+  },
+  {
+    "source": "openml",
+    "query": "Public EEG sensor classification dataset (e.g., EEG Eye State, BCI Competition IV) with at least 1000 samples, binary or multiclass labels, and standard preprocessing.",
+    "error": "HTTPError: HTTP Error 412: Precondition Failed"
+  },
+  {
+    "source": "openml",
+    "query": "A nonlinear model can robustly outperform logistic regression across repeated seeds on a public sensor classification dataset.",
+    "error": "HTTPError: HTTP Error 412: Precondition Failed"
+  }
+]

@@ -1,0 +1,21 @@
+[
+  {
+    "allowed_rewrite": null,
+    "claim": "A Transformer-based model (e.g., HART) robustly outperforms logistic regression on public sensor classification data across repeated seeds.",
+    "claim_id": "experiment_008:robustness",
+    "diagnostic": null,
+    "evidence_ids": [
+      "experiment_008"
+    ],
+    "failure_category": null,
+    "hypothesis_id": "H1_generated",
+    "metrics": {
+      "effect_size": 0.3456807466016991,
+      "effect_to_noise_ratio": 42.91644024297435,
+      "seed_noise": 0.022265135480009544
+    },
+    "next_action": null,
+    "reason": "The measured effect exceeded seed noise by the support threshold.",
+    "verdict": "supported"
+  }
+]

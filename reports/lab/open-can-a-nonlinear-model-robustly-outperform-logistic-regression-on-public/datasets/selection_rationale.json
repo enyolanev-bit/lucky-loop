@@ -1,0 +1,8 @@
+{
+  "selected_dataset_id": "eeg_eye_state",
+  "selected_source": "openml",
+  "selected_reason": "usable supervised classification table; score=75.80; reasons=External OpenML registry candidate with known classification target, classification tag/name match, likely usable for empirical ML",
+  "rejected_summary": [],
+  "fit_to_hypothesis": "openml:eeg_eye_state provides 14980 rows, 14 features, target `Class`, and is being used to test: A Transformer-based model (e.g., HART) robustly outperforms logistic regression on public sensor classification data across repeated seeds.. Required properties considered: Public HAR dataset (e.g., UCI HAR, WISDM) with accelerometer/gyroscope data, binary or multiclass activity labels, at least 1000 samples..",
+  "risks": []
+}

@@ -1,0 +1,13 @@
+[
+  {
+    "claim_candidate": "A Transformer-based model (e.g., HART) robustly outperforms logistic regression on public sensor classification data across repeated seeds.",
+    "falsification_condition": "If logistic regression's mean balanced accuracy is within 1% of Transformer's, or if the effect-to-noise ratio is <1.5, the hypothesis is falsified.",
+    "hypothesis_id": "H1",
+    "literature_gap_ids": [
+      "domain_gap_model_comparison",
+      "domain_gap_robustness"
+    ],
+    "minimum_evidence_needed": "One public dataset with 10 seeds, showing Transformer mean balanced accuracy > logistic regression by at least 2% and effect-to-noise ratio >2.",
+    "why_it_matters": "HAR literature (arxiv_2209_11750_2022) shows Transformers outperform CNNs/LSTMs and are robust to sensor heterogeneity, suggesting a nonlinear advantage over logistic regression."
+  }
+]

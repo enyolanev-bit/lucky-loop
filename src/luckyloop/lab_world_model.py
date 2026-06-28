@@ -9,37 +9,15 @@ from openai import OpenAI
 from .schemas import LabAction, LabPrediction, LabStudyState
 
 
-LAB_WORLD_MODEL_PROMPT_VERSION = "lab_computer_world_model_v2"
-LAB_WORLD_MODEL_SCHEMA_VERSION = "lab_prediction_schema_v2"
+LAB_WORLD_MODEL_PROMPT_VERSION = "lab_computer_world_model_v3"
+LAB_WORLD_MODEL_SCHEMA_VERSION = "lab_prediction_schema_v3"
 
 
-SYSTEM = """You are Qwen-AgentWorld acting as a computer-lab world model for ML research.
-Your job is to predict the next computer-lab observation after a candidate lab action.
-
-You are not the scientific oracle. You do not know the real result before execution.
-Predict the likely terminal/output pattern, files/artifacts, runtime or failure risk, protocol risk, and whether the action can change what the final report may honestly claim.
-
-Return strict JSON only with exactly these keys:
-- predicted_terminal_observation: string
-- expected_result_pattern: string
-- predicted_artifacts: array of strings
-- failure_modes: array of strings
-- protocol_risks: array of strings
-- runtime_risk: string
-- expected_runtime_seconds: number or null
-- expected_runtime_range_seconds: array with two numbers, or empty array
-- compute_waste_risk: number from 0 to 1
-- value_of_information: number from 0 to 1
-- suggested_modification: string
-- decision_threshold: string
-- expected_claim_delta: one of "none", "adds_observation", "reduces_uncertainty", "enables_claim", "blocks_or_rewrites_claim", "report_ready"
-- recommendation: one of "run", "skip", "modify", "verify", "stop_and_report"
-- why_not_score_chasing: string
-- rationale: string
-
-Be specific. For generated Python/sklearn actions, estimate whether the action is a schema check, reduced dry-run, full fit, repeated-seed fit, or report-only step. If the command contains --dry-run but the action metadata suggests large data or repeated heavy models, recommend "modify" and explain the reduction needed. Mention likely expensive estimators such as SVC, random_forest, and hist_gradient_boosting when relevant.
-
-Do not use markdown. Do not claim actual execution. Predict only."""
+SYSTEM = """You are Qwen-AgentWorld, a world model for an ML research lab.
+Predict the next lab state before the action executes. Output one JSON object only. No markdown.
+Do not use neutral claim_support_probability=0.5.
+Compare the action with an alternative such as stop/report, revise claim, search dataset, or reduce seeds.
+Dry-runs cannot support scientific claims. Full runs can support, weaken, or block claims. Reports should use recommendation=stop_and_report."""
 
 
 def simulator_configured() -> bool:
@@ -50,6 +28,14 @@ def _json_from_text(text: str) -> dict:
     try:
         return json.loads(text)
     except Exception:
+        decoder = json.JSONDecoder()
+        for match in re.finditer(r"\{", text):
+            try:
+                data, _ = decoder.raw_decode(text[match.start() :])
+                if isinstance(data, dict):
+                    return data
+            except json.JSONDecodeError:
+                pass
         match = re.search(r"\{.*\}", text, flags=re.S)
         if not match:
             raise ValueError("Qwen lab prediction did not contain JSON")
@@ -68,7 +54,27 @@ def _list(value) -> list[str]:
 
 def _one_of(value, allowed: set[str], default: str) -> str:
     text = str(value or default).lower()
-    return text if text in allowed else default
+    if text in allowed:
+        return text
+    if "stop" in text and "stop_and_report" in allowed:
+        return "stop_and_report"
+    if any(term in text for term in ["proceed", "run", "execute"]) and "run" in allowed:
+        return "run"
+    if "verify" in text and "verify" in allowed:
+        return "verify"
+    if "modify" in text and "modify" in allowed:
+        return "modify"
+    if "skip" in text and "skip" in allowed:
+        return "skip"
+    if "report_ready" in allowed and ("report" in text or "ready" in text):
+        return "report_ready"
+    if "block" in text and "blocks_or_rewrites_claim" in allowed:
+        return "blocks_or_rewrites_claim"
+    if "enable" in text and "enables_claim" in allowed:
+        return "enables_claim"
+    if any(term in text for term in ["reduce", "uncertain", "uncertainty", "observation", "improvement", "accuracy"]) and "reduces_uncertainty" in allowed:
+        return "reduces_uncertainty"
+    return default
 
 
 def _float_or_none(value) -> float | None:
@@ -88,10 +94,58 @@ def _float_range(value) -> list[float]:
 
 
 def _bounded(value, default: float) -> float:
+    if isinstance(value, str):
+        text = value.strip().lower()
+        qualitative = {
+            "none": 0.0,
+            "very low": 0.1,
+            "low": 0.25,
+            "medium": 0.5,
+            "moderate": 0.5,
+            "high": 0.75,
+            "very high": 0.9,
+        }
+        if text in qualitative:
+            return qualitative[text]
     parsed = _float_or_none(value)
     if parsed is None:
         return default
     return max(0.0, min(1.0, parsed))
+
+
+def _prediction_quality_failures(action: LabAction, prediction: LabPrediction) -> list[str]:
+    failures = []
+    if abs(prediction.claim_support_probability - 0.5) < 0.001:
+        failures.append("claim_support_probability must not be neutral 0.5")
+    if abs(prediction.value_of_information - 0.5) < 0.001:
+        failures.append("value_of_information must not be neutral 0.5")
+    if action.estimated_cost_class != "cheap" and prediction.compute_waste_risk <= 0.0:
+        failures.append("compute_waste_risk must be positive for non-cheap actions")
+    if not prediction.runtime_risk.strip():
+        failures.append("runtime_risk is required")
+    if not prediction.discriminative_reason.strip():
+        failures.append("discriminative_reason is required")
+    if not (prediction.rationale.strip() or prediction.why_not_score_chasing.strip()):
+        failures.append("rationale or why_not_score_chasing is required")
+    if not (prediction.failure_modes or prediction.protocol_risks):
+        failures.append("failure_modes or protocol_risks are required")
+    if action.expected_artifacts:
+        if not prediction.predicted_artifacts:
+            failures.append("predicted_artifacts are required for artifact-producing actions")
+        unexpected = [item for item in prediction.predicted_artifacts if item not in action.expected_artifacts]
+        if unexpected:
+            failures.append(f"predicted_artifacts must only use expected_artifacts; unexpected={unexpected}")
+    if action.kind in {"run_protocol", "run_replication", "run_ablation", "dry_run"}:
+        if not prediction.preferred_next_action_if_blocked.strip():
+            failures.append("preferred_next_action_if_blocked is required for executable protocol actions")
+        if not prediction.what_would_change_my_mind.strip():
+            failures.append("what_would_change_my_mind is required for executable protocol actions")
+    if action.kind == "stop_and_report":
+        if prediction.recommendation != "stop_and_report":
+            failures.append("stop_and_report action must recommend stop_and_report")
+        if prediction.expected_claim_delta != "report_ready":
+            failures.append("stop_and_report action must set expected_claim_delta=report_ready")
+    return failures
 
 
 def normalize_prediction(data: dict, source: str) -> LabPrediction:
@@ -109,6 +163,11 @@ def normalize_prediction(data: dict, source: str) -> LabPrediction:
         value_of_information=_bounded(data.get("value_of_information"), 0.5),
         suggested_modification=str(data.get("suggested_modification") or ""),
         decision_threshold=str(data.get("decision_threshold") or ""),
+        claim_support_probability=_bounded(data.get("claim_support_probability"), 0.5),
+        expected_best_model=str(data.get("expected_best_model") or ""),
+        preferred_next_action_if_blocked=str(data.get("preferred_next_action_if_blocked") or ""),
+        what_would_change_my_mind=str(data.get("what_would_change_my_mind") or ""),
+        discriminative_reason=str(data.get("discriminative_reason") or ""),
         expected_claim_delta=_one_of(
             data.get("expected_claim_delta"),
             {"none", "adds_observation", "reduces_uncertainty", "enables_claim", "blocks_or_rewrites_claim", "report_ready"},
@@ -141,6 +200,11 @@ def plumbing_prediction(action: LabAction) -> LabPrediction:
         value_of_information=0.5,
         suggested_modification="",
         decision_threshold="",
+        claim_support_probability=0.5,
+        expected_best_model="",
+        preferred_next_action_if_blocked="",
+        what_would_change_my_mind="",
+        discriminative_reason="No world-model call was made.",
         expected_claim_delta=action.claim_delta_target,
         recommendation="run" if action.kind != "stop_and_report" else "stop_and_report",
         why_not_score_chasing="Plumbing mode does not provide world-model evidence.",
@@ -150,8 +214,38 @@ def plumbing_prediction(action: LabAction) -> LabPrediction:
     )
 
 
+def parse_failed_prediction(action: LabAction, error: Exception) -> LabPrediction:
+    expensive = action.estimated_cost_class in {"moderate", "expensive"}
+    executable = action.kind in {"run_protocol", "run_replication", "run_ablation", "dry_run"}
+    return LabPrediction(
+        source="qwen_parse_failed",
+        predicted_terminal_observation="World-model response was malformed; controller used action metadata.",
+        expected_result_pattern="action may progress, but forecast quality is degraded",
+        predicted_artifacts=action.expected_artifacts,
+        failure_modes=["malformed_world_model_json"],
+        protocol_risks=action.protocol_risks or ["world_model_parse_failure"],
+        runtime_risk="higher risk; no parsed world-model forecast",
+        expected_runtime_seconds=None,
+        expected_runtime_range_seconds=[],
+        compute_waste_risk=0.65 if expensive else 0.25,
+        value_of_information=0.75 if executable else 0.65,
+        suggested_modification="continue, then verify with real execution evidence",
+        decision_threshold="do not use malformed forecast as evidence",
+        claim_support_probability=0.35 if executable else 0.45,
+        expected_best_model="unknown until execution",
+        preferred_next_action_if_blocked="verify artifacts and retry world-model call",
+        what_would_change_my_mind="successful execution with verified artifacts",
+        discriminative_reason=f"Qwen JSON parse failed: {type(error).__name__}",
+        expected_claim_delta=action.claim_delta_target,
+        recommendation="run" if action.kind != "stop_and_report" else "stop_and_report",
+        why_not_score_chasing="fallback is planning-only; verifier still gates claims",
+        rationale="Malformed world-model output should not block autoresearch.",
+        prompt_version=LAB_WORLD_MODEL_PROMPT_VERSION,
+        world_model_schema_version=LAB_WORLD_MODEL_SCHEMA_VERSION,
+    )
+
+
 def _compact_state(state: LabStudyState) -> dict:
-    payload = state.model_dump()
     compact_observations = []
     for observation in state.observations[-4:]:
         raw = observation.raw or {}
@@ -177,10 +271,52 @@ def _compact_state(state: LabStudyState) -> dict:
                 "stderr_tail": observation.stderr_tail[-500:],
             }
         )
-    payload["observations"] = compact_observations
-    payload["analyses"] = [analysis.model_dump() for analysis in state.analyses[-3:]]
-    payload["claims"] = [claim.model_dump() for claim in state.claims[-5:]]
-    return payload
+    return {
+        "question": state.lab_question.question,
+        "budget": state.lab_question.budget,
+        "summary": state.summary,
+        "hypotheses": [
+            {
+                "hypothesis_id": item.hypothesis_id,
+                "claim_candidate": item.claim_candidate,
+                "minimum_evidence_needed": item.minimum_evidence_needed,
+                "falsification_condition": item.falsification_condition,
+            }
+            for item in state.hypotheses[-3:]
+        ],
+        "protocols": [
+            {
+                "protocol_id": item.protocol_id,
+                "scientific_goal": item.scientific_goal,
+                "dataset": item.dataset,
+                "conditions": item.conditions,
+                "seeds": item.seeds,
+                "claim_enabled_if": item.claim_enabled_if,
+                "claim_blocked_if": item.claim_blocked_if,
+                "protocol_risks": item.protocol_risks,
+            }
+            for item in state.protocols[-3:]
+        ],
+        "observations": compact_observations,
+        "analyses": [analysis.model_dump() for analysis in state.analyses[-3:]],
+        "claims": [claim.model_dump() for claim in state.claims[-5:]],
+    }
+
+
+def _compact_action(action: LabAction) -> dict:
+    return {
+        "action_id": action.action_id,
+        "kind": action.kind,
+        "scientific_goal": action.scientific_goal,
+        "expected_artifacts": action.expected_artifacts,
+        "protocol_risks": action.protocol_risks,
+        "estimated_cost_class": action.estimated_cost_class,
+        "claim_delta_target": action.claim_delta_target,
+        "command_hint": "dry_run" if "--dry-run" in action.command else "python_execution" if action.command.startswith("python ") else "internal_stage",
+        "controls": action.controls,
+        "manipulated_variables": action.manipulated_variables,
+        "primary_metric": action.primary_metric,
+    }
 
 
 def predict_lab_action(action: LabAction, state: LabStudyState, require_qwen: bool = False) -> LabPrediction:
@@ -199,21 +335,86 @@ def predict_lab_action(action: LabAction, state: LabStudyState, require_qwen: bo
     client = OpenAI(base_url=base_url, api_key=api_key, timeout=timeout_seconds, max_retries=1)
     payload = {
         "lab_state": _compact_state(state),
-        "candidate_action": action.model_dump(),
+        "candidate_action": _compact_action(action),
+        "implicit_alternatives": [
+            "stop_and_report",
+            "search_better_dataset",
+            "revise_claim",
+            "add_or_reduce_seeds",
+            "simplify_protocol",
+        ],
         "instructions": {
             "predict_environment_not_truth": True,
             "proof_comes_from_real_python_execution": True,
             "do_not_make_claims_from_prediction": True,
+            "must_be_action_specific": True,
+            "must_compare_against_alternatives": True,
+            "neutral_defaults_are_invalid": True,
+            "claim_support_probability_must_not_equal_0_5": True,
+            "prediction_is_rejected_if_generic": True,
+            "required_action_specific_fields": [
+                "runtime_risk",
+                "claim_support_probability",
+                "failure_modes_or_protocol_risks",
+                "preferred_next_action_if_blocked",
+                "what_would_change_my_mind",
+                "discriminative_reason",
+                "rationale_or_why_not_score_chasing",
+            ],
         },
     }
-    response = client.chat.completions.create(
-        model=model,
-        messages=[
-            {"role": "system", "content": SYSTEM},
-            {"role": "user", "content": json.dumps(payload, indent=2, sort_keys=True)},
-        ],
-        temperature=0.2,
-        max_tokens=900,
+    user_prompt = (
+        "Predict the next ML lab state for this action. Return JSON only with keys: "
+        "predicted_terminal_observation, expected_result_pattern, predicted_artifacts, failure_modes, "
+        "protocol_risks, runtime_risk, expected_runtime_seconds, expected_runtime_range_seconds, "
+        "compute_waste_risk, value_of_information, suggested_modification, decision_threshold, "
+        "claim_support_probability, expected_best_model, preferred_next_action_if_blocked, "
+        "what_would_change_my_mind, discriminative_reason, expected_claim_delta, recommendation, "
+        "why_not_score_chasing, rationale. "
+        "Keep every string under 12 words. Use only listed artifacts. "
+        "Use numeric decimals for compute_waste_risk and value_of_information, not low/medium/high. "
+        "Allowed expected_claim_delta: none, adds_observation, reduces_uncertainty, enables_claim, "
+        "blocks_or_rewrites_claim, report_ready. Allowed recommendation: run, skip, modify, verify, "
+        "stop_and_report. Payload: "
+        f"{json.dumps(payload, separators=(',', ':'), sort_keys=True)}"
     )
-    text = response.choices[0].message.content or "{}"
-    return normalize_prediction(_json_from_text(text), "qwen_agentworld")
+    messages = [
+        {"role": "system", "content": SYSTEM},
+        {"role": "user", "content": user_prompt},
+    ]
+    last_failures = []
+    last_prediction = None
+    for attempt in range(3):
+        response = client.chat.completions.create(
+            model=model,
+            messages=messages,
+            temperature=0.1,
+            max_tokens=4000,
+        )
+        text = response.choices[0].message.content or "{}"
+        try:
+            prediction = normalize_prediction(_json_from_text(text), "qwen_agentworld")
+        except Exception as exc:
+            return parse_failed_prediction(action, exc)
+        failures = _prediction_quality_failures(action, prediction)
+        if not failures:
+            return prediction
+        last_failures = failures
+        last_prediction = prediction
+        messages.extend(
+            [
+                {"role": "assistant", "content": text},
+                {
+                    "role": "user",
+                    "content": (
+                        "Your prediction failed the world-model quality gate for "
+                        f"{action.action_id}: {last_failures}. Return strict JSON again. "
+                        "Do not use claim_support_probability=0.5. Compare this action against at least one "
+                        "alternative and state how the action changes claim support, compute risk, and next decision."
+                    ),
+                },
+            ]
+        )
+    if require_qwen:
+        raise RuntimeError(f"Qwen prediction failed quality gate for {action.action_id}: {last_failures}")
+    return last_prediction or plumbing_prediction(action)

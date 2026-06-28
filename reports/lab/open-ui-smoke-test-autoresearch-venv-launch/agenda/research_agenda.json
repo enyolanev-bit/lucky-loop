@@ -1,0 +1,89 @@
+{
+  "domain_gaps": [
+    {
+      "claim": "The literature context must establish whether nonlinear models are actually expected to improve the selected ML task over simple baselines.",
+      "dataset_requirements": [
+        "A balanced binary sentiment dataset (e.g., IMDb reviews, product reviews) with at least 10,000 samples, preprocessed text features."
+      ],
+      "gap_id": "domain_gap_model_comparison",
+      "source_ids": [
+        "arxiv_2604_25452_2026",
+        "arxiv_2208_06828_2022",
+        "arxiv_2306_04338_2023",
+        "arxiv_1912_00524_2019",
+        "arxiv_1905_08737_2019"
+      ],
+      "suggested_metrics": [
+        "balanced_accuracy",
+        "f1_macro",
+        "accuracy"
+      ],
+      "testable_question": "Do nonlinear models (e.g., random forest, SVM with RBF kernel, gradient boosting) significantly outperform logistic regression on a balanced binary sentiment classification dataset?",
+      "why_it_matters": "Without this comparison, hypotheses about nonlinear model superiority remain unsupported."
+    },
+    {
+      "claim": "Claims about the selected ML task performance require robustness checks across splits or seeds, not a single score.",
+      "dataset_requirements": [
+        "Same dataset as above, with at least 5 random train/test splits or 5-fold cross-validation repeated 3 times."
+      ],
+      "gap_id": "domain_gap_robustness",
+      "source_ids": [
+        "arxiv_2604_25452_2026",
+        "arxiv_2208_06828_2022",
+        "arxiv_2306_04338_2023",
+        "arxiv_1912_00524_2019",
+        "arxiv_1905_08737_2019"
+      ],
+      "suggested_metrics": [
+        "mean_balanced_accuracy",
+        "standard_deviation",
+        "effect_size"
+      ],
+      "testable_question": "Do performance differences between logistic regression and nonlinear models persist across multiple random seeds and cross-validation folds?",
+      "why_it_matters": "Single-split comparisons can be misleading due to seed variance."
+    }
+  ],
+  "domain_summary": "The domain literature covers sentiment analysis on product reviews, comparing logistic regression, SVM, LightGBM, and BiLSTM with attention. Logistic regression achieved 97.26% accuracy/F1, while BiLSTM achieved 97.24%, showing near parity. Other papers discuss multinomial logistic regression optimization, data source changes in official statistics, and combined latent factor/logistic regression models for citation networks. The key finding is that logistic regression can match or exceed deep learning performance on balanced datasets with proper feature engineering.",
+  "hypotheses": [
+    {
+      "claim_candidate": "Logistic regression achieves comparable or superior performance to nonlinear models (random forest, SVM with RBF kernel, gradient boosting) on balanced binary sentiment classification.",
+      "compute_risk": 0.5,
+      "dataset_requirements": [
+        "A balanced binary sentiment dataset (e.g., IMDb reviews) with at least 10,000 samples, preprocessed with TF-IDF or word embeddings."
+      ],
+      "expected_signal": "Logistic regression achieves accuracy within 1% of the best nonlinear model, with overlapping confidence intervals.",
+      "falsification_condition": "Nonlinear model outperforms logistic regression by more than 2% in balanced accuracy with p < 0.05 after multiple seed correction.",
+      "hypothesis_id": "hyp_linear_baseline_sufficient",
+      "literature_gap_ids": [
+        "domain_gap_model_comparison",
+        "domain_gap_robustness"
+      ],
+      "minimum_evidence_needed": "One dataset with 5 repeated 5-fold cross-validations, reporting mean and standard deviation of balanced accuracy.",
+      "motivation": "The domain literature (arxiv_2604_25452_2026) shows logistic regression matching BiLSTM; this suggests linear models may be sufficient for this task.",
+      "priority_score": 1.0,
+      "scientific_value": 0.5
+    },
+    {
+      "claim_candidate": "Nonlinear models (random forest, SVM with RBF kernel, gradient boosting) significantly outperform logistic regression on balanced binary sentiment classification.",
+      "compute_risk": 0.5,
+      "dataset_requirements": [
+        "Same as above."
+      ],
+      "expected_signal": "Best nonlinear model outperforms logistic regression by at least 2% in balanced accuracy with p < 0.05.",
+      "falsification_condition": "Logistic regression achieves accuracy within 1% of the best nonlinear model, or nonlinear model fails to show consistent advantage across seeds.",
+      "hypothesis_id": "hyp_nonlinear_superior",
+      "literature_gap_ids": [
+        "domain_gap_model_comparison",
+        "domain_gap_robustness"
+      ],
+      "minimum_evidence_needed": "Same as above.",
+      "motivation": "Despite the domain literature showing parity, many practitioners expect nonlinear models to capture complex patterns; this hypothesis tests that expectation.",
+      "priority_score": 1.0,
+      "scientific_value": 0.5
+    }
+  ],
+  "method_summary": "Method literature focuses on autonomous AI research agents (AI Scientist, Agent Laboratory, MLE-bench) and their limitations, including claim calibration, prediction before compute, single-run overclaim, and end-to-end auditability. Recommendations include using world models for prediction, running repeated seeds, and gating claims through deterministic verification.",
+  "question": "UI smoke test autoresearch venv launch",
+  "selected_hypothesis_id": "hyp_linear_baseline_sufficient",
+  "selection_rationale": "The user question asks whether nonlinear models outperform logistic regression. The domain literature (arxiv_2604_25452_2026) shows logistic regression matching BiLSTM, suggesting linear models may be sufficient. Preserving the user's direction, we select the hypothesis that logistic regression is comparable or superior, as it is more aligned with the evidence and provides a clear falsification condition. This hypothesis can be tested on a single public dataset with repeated cross-validation, meeting the requirement for minimal evidence."
+}

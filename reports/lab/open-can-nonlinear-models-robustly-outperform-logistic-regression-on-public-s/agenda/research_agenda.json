@@ -1,0 +1,107 @@
+{
+  "domain_gaps": [
+    {
+      "claim": "The literature context must establish whether nonlinear models are actually expected to improve sensor classification over simple baselines.",
+      "dataset_requirements": [
+        "At least one public sensor classification dataset (e.g., UCI HAR, EEG Eye State) with binary or multiclass labels, and metadata for train/test splits."
+      ],
+      "gap_id": "domain_gap_model_comparison",
+      "source_ids": [
+        "arxiv_2604_25452_2026",
+        "arxiv_2209_11750_2022",
+        "arxiv_2008_00235_2020",
+        "arxiv_1511_06663_2015",
+        "arxiv_2303_00064_2023"
+      ],
+      "suggested_metrics": [
+        "balanced_accuracy",
+        "f1_macro",
+        "accuracy"
+      ],
+      "testable_question": "Do nonlinear models (e.g., random forest, XGBoost, neural networks) achieve higher balanced accuracy than logistic regression on public sensor datasets?",
+      "why_it_matters": "Without domain-specific evidence, hypotheses may be misaligned with actual sensor classification dynamics."
+    },
+    {
+      "claim": "Claims about sensor classification performance require robustness checks across splits or seeds, not a single score.",
+      "dataset_requirements": [
+        "Same as above, plus ability to run repeated experiments with different random seeds."
+      ],
+      "gap_id": "domain_gap_robustness",
+      "source_ids": [
+        "arxiv_2604_25452_2026",
+        "arxiv_2209_11750_2022",
+        "arxiv_2008_00235_2020",
+        "arxiv_1511_06663_2015",
+        "arxiv_2303_00064_2023"
+      ],
+      "suggested_metrics": [
+        "effect_to_noise_ratio",
+        "mean_difference",
+        "standard_deviation_across_seeds"
+      ],
+      "testable_question": "Is the performance difference between nonlinear models and logistic regression larger than the run-to-run variance across 10 random seeds?",
+      "why_it_matters": "Single-run comparisons can be misleading due to seed noise; robustness is essential for reliable conclusions."
+    }
+  ],
+  "domain_summary": "The domain literature covers sensor-based classification tasks such as human activity recognition (HAR), sentiment analysis, and multi-omics classification. Key findings include: (1) Logistic regression with proper feature selection can achieve competitive performance (e.g., 97.26% F1 on sentiment analysis), (2) Transformer-based models (HART, MobileHART) show robustness to sensor heterogeneity, (3) Simple models like logistic regression and SVM often match or exceed deep learning in controlled settings, and (4) Performance claims require robustness checks across seeds and splits due to high variance in sensor data.",
+  "hypotheses": [
+    {
+      "claim_candidate": "A nonlinear model can robustly outperform logistic regression across repeated seeds on a public sensor classification dataset.",
+      "compute_risk": 0.5,
+      "dataset_requirements": [
+        "One public sensor dataset (e.g., UCI HAR, EEG Eye State) with at least 1000 samples, binary or multiclass target, and standard train/test split."
+      ],
+      "expected_signal": "Nonlinear models achieve at least 2 percentage points higher balanced accuracy than logistic regression, with effect size exceeding seed noise (effect_to_noise_ratio > 2).",
+      "falsification_condition": "If logistic regression achieves balanced accuracy within 1 percentage point of the best nonlinear model across 10 seeds, or if the effect_to_noise_ratio is less than 1.5.",
+      "hypothesis_id": "H1",
+      "literature_gap_ids": [
+        "domain_gap_model_comparison",
+        "domain_gap_robustness"
+      ],
+      "minimum_evidence_needed": "One dataset with 10 repeated seeds, showing consistent advantage for nonlinear models.",
+      "motivation": "Domain literature shows that sensor data often contains complex interactions and nonlinear patterns that linear models may miss. For example, transformer-based HAR models outperform simpler baselines in heterogeneous environments.",
+      "priority_score": 1.0,
+      "scientific_value": 0.5
+    },
+    {
+      "claim_candidate": "A nonlinear model can robustly outperform logistic regression across repeated seeds on a public sensor classification dataset.",
+      "compute_risk": 0.5,
+      "dataset_requirements": [
+        "Same as H1."
+      ],
+      "expected_signal": "Logistic regression achieves balanced accuracy within 1 percentage point of the best nonlinear model across seeds.",
+      "falsification_condition": "If any nonlinear model exceeds logistic regression by more than 2 percentage points with effect_to_noise_ratio > 2.",
+      "hypothesis_id": "H2",
+      "literature_gap_ids": [
+        "domain_gap_model_comparison",
+        "domain_gap_robustness"
+      ],
+      "minimum_evidence_needed": "One dataset with 10 repeated seeds, showing logistic regression is competitive.",
+      "motivation": "Domain literature (e.g., sentiment analysis with 97.26% F1) shows logistic regression can be highly competitive when combined with feature selection or engineering. Sensor data may have linear separability after appropriate preprocessing.",
+      "priority_score": 1.0,
+      "scientific_value": 0.5
+    },
+    {
+      "claim_candidate": "The relative performance of nonlinear vs. linear models on sensor data is dataset-dependent and no single model family dominates.",
+      "compute_risk": 0.5,
+      "dataset_requirements": [
+        "At least two public sensor datasets from different domains (e.g., HAR and EEG)."
+      ],
+      "expected_signal": "On one dataset, nonlinear models outperform logistic regression; on another, logistic regression is competitive or better.",
+      "falsification_condition": "If the same model family (nonlinear or linear) is best on both datasets with consistent effect sizes.",
+      "hypothesis_id": "H3",
+      "literature_gap_ids": [
+        "domain_gap_model_comparison",
+        "domain_gap_robustness"
+      ],
+      "minimum_evidence_needed": "Two datasets with 10 seeds each, showing cross-dataset variation.",
+      "motivation": "Domain literature shows mixed results: logistic regression excels on some tasks (sentiment), while transformers excel on others (HAR). This suggests dataset-specific factors determine the best model.",
+      "priority_score": 1.0,
+      "scientific_value": 0.5
+    }
+  ],
+  "method_summary": "Method literature focuses on autonomous research agents and claim verification. Key insights: (1) Single-run leaderboard wins can overstate robustness; matched multi-seed comparisons are needed, (2) Autonomous agents should log predictions before compute and verify claims through deterministic checks, (3) End-to-end auditability requires preserving sources, experiment plans, and evidence manifests, and (4) Claim calibration is critical to avoid unsupported best-model claims.",
+  "question": "Can nonlinear models robustly outperform logistic regression on public sensor classification data?",
+  "selected_hypothesis_id": "H1",
+  "selection_rationale": "H1 directly answers the user's question in the requested direction (nonlinear models outperform logistic regression) and is testable on a single public dataset with low compute risk. The domain literature provides motivation (e.g., transformer-based HAR models), and the method literature ensures robustness via repeated seeds. H2 and H3 are valid alternatives but invert the user's direction or require multiple datasets, increasing complexity. H1 preserves the user's question direction and can be supported or falsified with minimal evidence."
+}

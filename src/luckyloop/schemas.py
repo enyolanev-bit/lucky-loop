@@ -511,6 +511,11 @@ class LabPrediction(BaseModel):
     value_of_information: float = 0.5
     suggested_modification: str = ""
     decision_threshold: str = ""
+    claim_support_probability: float = 0.5
+    expected_best_model: str = ""
+    preferred_next_action_if_blocked: str = ""
+    what_would_change_my_mind: str = ""
+    discriminative_reason: str = ""
     expected_claim_delta: Literal[
         "none",
         "adds_observation",

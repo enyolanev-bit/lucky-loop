@@ -1,0 +1,62 @@
+[
+  {
+    "source": "openml",
+    "query": "nonlinear models robustly outperform logistic regression sensor classification data classification dataset",
+    "error": "HTTPError: HTTP Error 412: Precondition Failed"
+  },
+  {
+    "source": "openml",
+    "query": "human activity recognition",
+    "error": "HTTPError: HTTP Error 412: Precondition Failed"
+  },
+  {
+    "source": "openml",
+    "query": "eeg eye state classification",
+    "error": "HTTPError: HTTP Error 412: Precondition Failed"
+  },
+  {
+    "source": "openml",
+    "query": "wearable sensor classification",
+    "error": "HTTPError: HTTP Error 412: Precondition Failed"
+  },
+  {
+    "source": "openml",
+    "query": "tabular classification",
+    "error": "HTTPError: HTTP Error 412: Precondition Failed"
+  },
+  {
+    "source": "openml",
+    "query": "tabular-classification",
+    "error": "HTTPError: HTTP Error 412: Precondition Failed"
+  },
+  {
+    "source": "openml",
+    "query": "nonlinear models robustly outperform logistic regression sensor classification data openml huggingface dataset",
+    "error": "HTTPError: HTTP Error 412: Precondition Failed"
+  },
+  {
+    "source": "openml",
+    "query": "sensor classification dataset",
+    "error": "HTTPError: HTTP Error 412: Precondition Failed"
+  },
+  {
+    "source": "openml",
+    "query": "tabular classification benchmark",
+    "error": "HTTPError: HTTP Error 412: Precondition Failed"
+  },
+  {
+    "source": "openml",
+    "query": "One public sensor dataset (e.g., UCI HAR, EEG Eye State) with at least 1000 samples, binary or multiclass target, and standard train/test split.",
+    "error": "HTTPError: HTTP Error 412: Precondition Failed"
+  },
+  {
+    "source": "openml",
+    "query": "accelerometer gyroscope classification",
+    "error": "HTTPError: HTTP Error 412: Precondition Failed"
+  },
+  {
+    "source": "openml",
+    "query": "A nonlinear model can robustly outperform logistic regression across repeated seeds on a public sensor classification dataset.",
+    "error": "HTTPError: HTTP Error 412: Precondition Failed"
+  }
+]

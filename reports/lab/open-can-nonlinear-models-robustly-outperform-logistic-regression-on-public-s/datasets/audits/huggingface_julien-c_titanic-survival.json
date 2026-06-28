@@ -1,0 +1,25 @@
+{
+  "dataset_id": "julien-c/titanic-survival",
+  "source": "huggingface",
+  "status": "accepted",
+  "reason": "usable supervised classification table",
+  "local_path": "/home/animus/lucky-loop/reports/lab/open-can-nonlinear-models-robustly-outperform-logistic-regression-on-public-s/datasets/selected_dataset.csv",
+  "target_column": "Survived",
+  "feature_columns": [
+    "Pclass",
+    "Sex",
+    "Age",
+    "Siblings/Spouses Aboard",
+    "Parents/Children Aboard",
+    "Fare"
+  ],
+  "n_rows": 887,
+  "n_features": 6,
+  "class_counts": {
+    "0": 545,
+    "1": 342
+  },
+  "warnings": [
+    "may_need_non_tabular_pipeline"
+  ]
+}

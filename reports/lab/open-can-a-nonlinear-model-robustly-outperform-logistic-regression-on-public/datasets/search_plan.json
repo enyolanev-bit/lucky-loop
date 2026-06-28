@@ -1,0 +1,23 @@
+{
+  "queries": [
+    "nonlinear model robustly outperform logistic regression sensor classification data repeated classification dataset",
+    "nonlinear model robustly outperform logistic regression sensor classification data repeated openml huggingface dataset",
+    "sensor classification dataset",
+    "tabular classification benchmark",
+    "Public HAR dataset (e.g., UCI HAR, WISDM) with accelerometer/gyroscope data, binary or multiclass activity labels, at least 1000 samples.",
+    "A Transformer-based model (e.g., HART) robustly outperforms logistic regression on public sensor classification data across repeated seeds."
+  ],
+  "required_properties": [
+    "Public HAR dataset (e.g., UCI HAR, WISDM) with accelerometer/gyroscope data, binary or multiclass activity labels, at least 1000 samples."
+  ],
+  "preferred_sources": [
+    "huggingface",
+    "openml"
+  ],
+  "rejection_criteria": [
+    "no plausible supervised target",
+    "too few rows or minority class too small",
+    "features cannot be materialized into a safe local table"
+  ],
+  "rationale": "Dataset search plan derived from selected hypothesis `H1`."
+}

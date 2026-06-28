@@ -1,0 +1,89 @@
+{
+  "domain_gaps": [
+    {
+      "claim": "The literature context must establish whether nonlinear models are actually expected to improve EEG/sensor classification over simple baselines.",
+      "dataset_requirements": [
+        "Public EEG sensor classification dataset with at least 1000 samples, multiple classes, and standard train/test splits."
+      ],
+      "gap_id": "domain_gap_model_comparison",
+      "source_ids": [
+        "arxiv_2409_14508_2024",
+        "arxiv_2209_11750_2022",
+        "arxiv_2604_25452_2026",
+        "arxiv_1511_06663_2015",
+        "arxiv_2606_00815_2026"
+      ],
+      "suggested_metrics": [
+        "balanced_accuracy",
+        "accuracy",
+        "f1_macro"
+      ],
+      "testable_question": "Do nonlinear models (e.g., CNNs, LSTMs, Transformers) robustly outperform logistic regression on public EEG sensor classification datasets under repeated-seed evaluation?",
+      "why_it_matters": "Without domain-specific evidence, hypotheses about nonlinear superiority may be unfounded."
+    },
+    {
+      "claim": "Claims about EEG/sensor classification performance require robustness checks across splits or seeds, not a single score.",
+      "dataset_requirements": [
+        "Same as above, plus ability to run multiple random seeds (e.g., 10 seeds)."
+      ],
+      "gap_id": "domain_gap_robustness",
+      "source_ids": [
+        "arxiv_2409_14508_2024",
+        "arxiv_2209_11750_2022",
+        "arxiv_2604_25452_2026",
+        "arxiv_1511_06663_2015",
+        "arxiv_2606_00815_2026"
+      ],
+      "suggested_metrics": [
+        "effect_to_noise_ratio",
+        "mean_difference",
+        "standard_error"
+      ],
+      "testable_question": "Is the performance difference between nonlinear models and logistic regression larger than the seed noise in repeated runs?",
+      "why_it_matters": "Single-run comparisons can be misleading due to seed noise; repeated-seed evaluation is needed for reliable conclusions."
+    }
+  ],
+  "domain_summary": "The domain literature covers EEG/sensor classification, human activity recognition, and gravitational wave signal classification. Key findings include that logistic regression can achieve competitive accuracy (e.g., 97.26% in sentiment analysis) and that nonlinear models like CNNs, LSTMs, and Transformers often show marginal improvements that may not be robust across seeds or heterogeneous conditions. The OmniEEG-Bench benchmark highlights the need for standardized evaluation across diverse EEG datasets.",
+  "hypotheses": [
+    {
+      "claim_candidate": "A nonlinear model can robustly outperform logistic regression across repeated seeds on a public sensor classification dataset.",
+      "compute_risk": 0.5,
+      "dataset_requirements": [
+        "Public EEG sensor classification dataset (e.g., EEG Eye State, BCI Competition IV) with at least 1000 samples, binary or multiclass labels, and standard preprocessing."
+      ],
+      "expected_signal": "Logistic regression achieves comparable or better mean balanced accuracy than nonlinear models, with overlapping confidence intervals across seeds.",
+      "falsification_condition": "If a nonlinear model achieves statistically significantly higher mean balanced accuracy (p < 0.05, paired t-test) than logistic regression across 10 seeds, the hypothesis is falsified.",
+      "hypothesis_id": "H1",
+      "literature_gap_ids": [
+        "domain_gap_model_comparison",
+        "domain_gap_robustness"
+      ],
+      "minimum_evidence_needed": "At least one public EEG dataset where logistic regression is not significantly outperformed by any nonlinear model across 10 seeds.",
+      "motivation": "Domain literature shows logistic regression can achieve high accuracy (e.g., 97.26%) and that nonlinear gains are often marginal or dataset-dependent. Repeated-seed evaluation is needed to confirm robustness.",
+      "priority_score": 1.0,
+      "scientific_value": 0.5
+    },
+    {
+      "claim_candidate": "A nonlinear model can robustly outperform logistic regression across repeated seeds on a public sensor classification dataset.",
+      "compute_risk": 0.5,
+      "dataset_requirements": [
+        "Same as H1."
+      ],
+      "expected_signal": "At least one nonlinear model achieves statistically significantly higher mean balanced accuracy than logistic regression across seeds.",
+      "falsification_condition": "If no nonlinear model significantly outperforms logistic regression across seeds, the hypothesis is falsified.",
+      "hypothesis_id": "H2",
+      "literature_gap_ids": [
+        "domain_gap_model_comparison",
+        "domain_gap_robustness"
+      ],
+      "minimum_evidence_needed": "At least one public EEG dataset where a nonlinear model significantly outperforms logistic regression across 10 seeds.",
+      "motivation": "Some domain literature shows nonlinear models achieving state-of-the-art results (e.g., HART for HAR). However, this direction is opposite to the user's question and would require strong evidence.",
+      "priority_score": 1.0,
+      "scientific_value": 0.5
+    }
+  ],
+  "method_summary": "Method literature emphasizes the risks of single-run leaderboard claims and the need for repeated-seed evaluation, claim calibration, and end-to-end auditability. Autonomous research agents like The AI Scientist and Agent Laboratory demonstrate automated workflows but require robust verification to avoid unsupported claims. The use of world models for prediction before execution can accelerate research while maintaining rigor.",
+  "question": "Can repeated-seed evaluation show that nonlinear models do not robustly outperform logistic regression on public EEG sensor classification data?",
+  "selected_hypothesis_id": "H1",
+  "selection_rationale": "H1 aligns with the user's question direction (nonlinear models do not robustly outperform logistic regression) and is supported by domain literature showing logistic regression's competitiveness. It is testable on a single public dataset with repeated seeds, minimizing compute risk while providing high scientific value by challenging common assumptions."
+}

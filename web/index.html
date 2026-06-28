@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Curze Oracle</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+
+<div class="app-layout">
+  
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <div class="logo-area">
+      <div class="gicon logo-skull"></div>
+      <div class="logo-text">
+        <h1>CURZE ORACLE</h1>
+        <p>WORLD MODEL • PREDICT NEXT STATES</p>
+      </div>
+    </div>
+    <div class="status-area">
+      <div class="status-box">
+        <span class="label">MODEL</span>
+        <span class="value" id="model-label">detecting...</span>
+      </div>
+      <div class="status-box">
+        <span class="label">MODE</span>
+        <span class="value" id="mode-label">PREDICT</span>
+      </div>
+      <div class="status-box status-awake">
+        <span class="label">STATUS</span>
+        <span class="value">
+          <span id="status-label">AWAKE</span>
+          <svg class="heartbeat" viewBox="0 0 50 15">
+            <path d="M0,7.5 L10,7.5 L15,0 L20,15 L25,7.5 L50,7.5" />
+          </svg>
+        </span>
+      </div>
+      <div class="top-icons">
+        <button type="button" class="gicon icon-btn tower"></button>
+        <button type="button" class="gicon icon-btn cog"></button>
+        <button type="button" class="gicon icon-btn question"></button>
+        <button type="button" class="gicon icon-btn skull-mini"></button>
+      </div>
+    </div>
+  </header>
+
+  <!-- LEFT SIDEBAR -->
+  <nav class="sidebar">
+    <button type="button" class="nav-item active" data-target="#ask-form"><div class="icon-wrapper"><div class="gicon query"></div></div><span>QUERY</span></button>
+    <button type="button" class="nav-item" data-target="#pipeline-panel"><div class="icon-wrapper"><div class="gicon goons"></div></div><span>GOONS</span></button>
+    <button type="button" class="nav-item" data-target="#papers-list"><div class="icon-wrapper"><div class="gicon paper"></div></div><span>PAPERS</span></button>
+    <button type="button" class="nav-item" data-target="#trace-rows"><div class="icon-wrapper"><div class="gicon trace"></div></div><span>TRACES</span></button>
+    <button type="button" class="nav-item" data-target="#predicted-branches"><div class="icon-wrapper"><div class="gicon state"></div></div><span>STATES</span></button>
+    <div class="sidebar-spacer"></div>
+    <button type="button" class="nav-item" data-target="#verdict-panel"><div class="icon-wrapper"><div class="gicon verdict-icon"></div></div><span>VERDICT</span></button>
+  </nav>
+
+  <!-- CENTER CONTENT -->
+  <main class="center-stage">
+    
+    <!-- Prediction Map -->
+    <div class="prediction-map" style="background-image: url('assets/new-bg.png');">
+      <div class="current-state-panel">
+        <h3>CURRENT STATE</h3>
+        <div class="state-details" id="current-state-copy">
+          <div class="detail-row"><span class="lbl">STATE ID</span><span class="val monospace">PENDING...</span></div>
+          <div class="detail-row"><span class="lbl">TIMESTAMP (UTC)</span><span class="val monospace">--</span></div>
+          <div class="detail-row"><span class="lbl">CONTEXT</span><span class="val">Awaiting command to begin.</span></div>
+        </div>
+        <div class="state-metrics">
+          <div class="metric"><span class="lbl">HORIZON</span><span class="val" id="horizon">3 STEPS</span></div>
+          <div class="metric"><span class="lbl">TEMPERATURE</span><span class="val" id="temperature">0.20</span></div>
+        </div>
+      </div>
+
+      <!-- SVG Connecting Lines -->
+      <svg class="tree-lines" preserveAspectRatio="none">
+        <!-- Lines will be drawn by CSS/JS, using simple paths for now -->
+        <path d="M 280 180 L 380 180" class="svg-link base-link" />
+        <path d="M 380 180 Q 450 180 480 80 L 520 80" class="svg-link link-b1" />
+        <path d="M 380 180 L 520 180" class="svg-link link-b2" />
+        <path d="M 380 180 Q 450 180 480 280 L 520 280" class="svg-link link-b3" />
+        
+        <!-- Center glowing node -->
+        <circle cx="380" cy="180" r="4" class="glow-node" />
+      </svg>
+
+      <div class="predicted-branches" id="predicted-branches">
+        <!-- Branch 1 -->
+        <div class="branch-card" id="pred-card-1" style="top: 30px;">
+          <div class="branch-number">1</div>
+          <div class="thumb thumb-1"></div>
+          <div class="branch-info">
+            <div class="branch-header">
+              <div class="b-col"><span class="lbl">STATE ID</span><span class="val monospace">S_7C1AA3D1</span></div>
+              <div class="b-col"><span class="lbl">PROBABILITY</span><span class="val probability monospace">0.62</span></div>
+            </div>
+            <div class="pred-progress"><div class="pred-progress-bar bg-red" style="width: 62%;"></div></div>
+            <div class="branch-footer">
+              <span class="badge anomaly">ANOMALY</span>
+              <span class="desc"><span class="gicon skull-micro"></span> Structural Collapse</span>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Branch 2 -->
+        <div class="branch-card" id="pred-card-2" style="top: 130px;">
+          <div class="branch-number">2</div>
+          <div class="thumb thumb-2"></div>
+          <div class="branch-info">
+            <div class="branch-header">
+              <div class="b-col"><span class="lbl">STATE ID</span><span class="val monospace">S_7C1AB7E9</span></div>
+              <div class="b-col"><span class="lbl">PROBABILITY</span><span class="val probability monospace">0.24</span></div>
+            </div>
+            <div class="pred-progress"><div class="pred-progress-bar bg-red" style="width: 24%;"></div></div>
+            <div class="branch-footer">
+              <span class="badge anomaly">ANOMALY</span>
+              <span class="desc"><span class="gicon skull-micro"></span> Civic Unrest</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Branch 3 -->
+        <div class="branch-card" id="pred-card-3" style="top: 230px;">
+          <div class="branch-number">3</div>
+          <div class="thumb thumb-3"></div>
+          <div class="branch-info">
+            <div class="branch-header">
+              <div class="b-col"><span class="lbl">STATE ID</span><span class="val monospace">S_7C1AC4F6</span></div>
+              <div class="b-col"><span class="lbl">PROBABILITY</span><span class="val probability monospace">0.14</span></div>
+            </div>
+            <div class="pred-progress"><div class="pred-progress-bar bg-red" style="width: 14%;"></div></div>
+            <div class="branch-footer">
+              <span class="badge low-confidence">LOW CONFIDENCE</span>
+              <span class="desc"><span class="gicon skull-micro"></span> Data Sparse</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Verdict Banner -->
+    <div class="verdict-banner" id="verdict-panel">
+      <div class="verdict-icon-left"><div class="gicon verdict-icon"></div></div>
+      <div class="verdict-text">
+        <span class="lbl">VERDICT (TOP OUTCOME)</span>
+        <h2 id="verdict-title">SUFFERING IS INEVITABLE.</h2>
+        <p id="verdict-desc">The path ahead bleeds. Resistance is a prelude to ruin.</p>
+      </div>
+      <div class="verdict-icon-right"><div class="gicon winged"></div></div>
+    </div>
+
+    <!-- Ask Bar -->
+    <form class="ask-bar" id="ask-form">
+      <input type="text" id="question" placeholder="Ask Curze..." autocomplete="off">
+      <label class="turns-control">
+        <span>TURNS</span>
+        <input type="number" id="turn-count" min="1" max="32" step="1" value="8">
+      </label>
+      <button type="submit" class="btn-submit"><div class="gicon lightning"></div></button>
+    </form>
+
+  </main>
+
+  <!-- RIGHT SIDEBAR: GOON RUN -->
+  <aside class="right-stage goon-run-panel" id="pipeline-panel">
+    <header class="goon-header">
+      <div class="gicon skull-mini"></div>
+      <div>
+        <h2>GOON RUN</h2>
+        <p>AUTO-RESEARCH PIPELINE</p>
+      </div>
+      <div class="gicon skull-mini"></div>
+    </header>
+    
+    <ul class="pipeline-steps" id="pipeline">
+      <li>
+        <div class="gicon scout"></div>
+        <div class="step-num">1</div>
+        <div class="step-text"><strong>SCOUT WEB</strong><p>Awaiting query...</p></div>
+        <div class="badge queued">QUEUED</div>
+      </li>
+      <li>
+        <div class="gicon fetch"></div>
+        <div class="step-num">2</div>
+        <div class="step-text"><strong>FETCH PAPERS</strong><p>Awaiting query...</p></div>
+        <div class="badge queued">QUEUED</div>
+      </li>
+      <li>
+        <div class="gicon extract"></div>
+        <div class="step-num">3</div>
+        <div class="step-text"><strong>EXTRACT CLAIMS</strong><p>Awaiting query...</p></div>
+        <div class="badge queued">QUEUED</div>
+      </li>
+      <li>
+        <div class="gicon cross"></div>
+        <div class="step-num">4</div>
+        <div class="step-text"><strong>CROSS-CHECK</strong><p>Awaiting query...</p></div>
+        <div class="badge queued">QUEUED</div>
+      </li>
+      <li>
+        <div class="gicon clean"></div>
+        <div class="step-num">5</div>
+        <div class="step-text"><strong>CLEAN TRACE</strong><p>Awaiting query...</p></div>
+        <div class="badge queued">QUEUED</div>
+      </li>
+      <li>
+        <div class="gicon feed"></div>
+        <div class="step-num">6</div>
+        <div class="step-text"><strong>FEED MODEL</strong><p>Awaiting query...</p></div>
+        <div class="badge queued">QUEUED</div>
+      </li>
+    </ul>
+
+    <div class="live-log-container">
+      <header>
+        <span>GOON RUN LOG (LIVE)</span>
+        <button type="button" id="clear-log">CLEAR</button>
+      </header>
+      <pre id="live-log" class="monospace">System idle. Ready to initiate sequence.</pre>
+    </div>
+  </aside>
+
+  <!-- BOTTOM TABLES -->
+  <section class="bottom-tables" id="bottom-grid">
+    <!-- Papers -->
+    <div class="table-panel">
+      <header>
+        <div class="title-with-icon"><div class="gicon paper-red"></div><h3>PAPERS</h3></div>
+        <a href="#" class="view-all">VIEW ALL &#8599;</a>
+      </header>
+      <div class="table-content">
+        <ul class="papers-list" id="papers-list">
+          <li class="empty-state">No active run.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Clean Traces -->
+    <div class="table-panel">
+      <header>
+        <div class="title-with-icon"><div class="gicon trace-red"></div><h3>CLEAN TRACES</h3></div>
+        <a href="#" class="view-all">VIEW ALL &#8599;</a>
+      </header>
+      <div class="table-content">
+        <table class="data-table">
+          <thead>
+            <tr><th>TIME (UTC)</th><th>SOURCE</th><th>EVENT</th><th>STATUS</th></tr>
+          </thead>
+          <tbody id="trace-rows">
+            <tr><td colspan="4" class="empty-state">No traces logged yet.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- State Diffs -->
+    <div class="table-panel">
+      <header>
+        <div class="title-with-icon"><div class="gicon state-red"></div><h3>STATE DIFFS</h3></div>
+        <a href="#" class="view-all">VIEW ALL &#8599;</a>
+      </header>
+      <div class="table-content">
+        <table class="data-table diff-table">
+          <thead>
+            <tr><th>TRANSITION</th><th>BEFORE</th><th>AFTER</th><th>DELTA</th><th>CONF.</th></tr>
+          </thead>
+          <tbody id="diff-rows">
+            <tr><td colspan="5" class="empty-state">Awaiting world model predictions.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="app-footer">
+    <div class="footer-left">
+      <span>USER: NIGHT HAUNTER</span>
+      <span class="dot">•</span>
+      <span>CLEARANCE: <span class="text-red">DREAD</span></span>
+    </div>
+    <div class="footer-center">
+      <span>QUERY ID: <span id="status-query-id" class="monospace">PENDING</span></span>
+      <span class="divider">_</span>
+      <span>TOKENS: 0</span>
+      <span class="divider">_</span>
+      <span>CONTEXT: 128K</span>
+    </div>
+    <div class="footer-right">
+      <button type="button" id="download-report" class="report-download" disabled>DOWNLOAD REPORT</button>
+      <span class="text-red tagline">THE FUTURE IS A CRIME.</span>
+      <div class="gicon skull-mini"></div>
+    </div>
+  </footer>
+
+</div>
+
+<script src="./app.js"></script>
+</body>
+</html>

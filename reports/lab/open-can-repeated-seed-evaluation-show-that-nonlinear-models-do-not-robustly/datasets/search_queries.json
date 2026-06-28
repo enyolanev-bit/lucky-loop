@@ -1,0 +1,13 @@
+[
+  "repeated seed evaluation show nonlinear models robustly outperform logistic regression classification dataset",
+  "tabular classification",
+  "tabular-classification",
+  "repeated seed evaluation show nonlinear models robustly outperform logistic regression openml huggingface dataset",
+  "sensor classification dataset",
+  "human activity recognition",
+  "eeg eye state classification",
+  "wearable sensor classification",
+  "tabular classification benchmark",
+  "Public EEG sensor classification dataset (e.g., EEG Eye State, BCI Competition IV) with at least 1000 samples, binary or multiclass labels, and standard preprocessing.",
+  "A nonlinear model can robustly outperform logistic regression across repeated seeds on a public sensor classification dataset."
+]

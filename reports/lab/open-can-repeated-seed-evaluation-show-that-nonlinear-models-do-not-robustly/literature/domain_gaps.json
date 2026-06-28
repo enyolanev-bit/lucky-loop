@@ -1,0 +1,30 @@
+[
+  {
+    "gap_id": "domain_gap_model_comparison",
+    "claim": "The literature context must establish whether nonlinear models are actually expected to improve EEG/sensor classification over simple baselines.",
+    "source_ids": [
+      "arxiv_2409_14508_2024",
+      "arxiv_2209_11750_2022",
+      "arxiv_2604_25452_2026",
+      "arxiv_1511_06663_2015",
+      "arxiv_2606_00815_2026"
+    ],
+    "implication": "Generate hypotheses from domain-specific evidence rather than Lucky Loop meta-literature.",
+    "metric": "domain_source_coverage",
+    "experiment": "Compare baseline and nonlinear model families on a dataset selected for the user question."
+  },
+  {
+    "gap_id": "domain_gap_robustness",
+    "claim": "Claims about EEG/sensor classification performance require robustness checks across splits or seeds, not a single score.",
+    "source_ids": [
+      "arxiv_2409_14508_2024",
+      "arxiv_2209_11750_2022",
+      "arxiv_2604_25452_2026",
+      "arxiv_1511_06663_2015",
+      "arxiv_2606_00815_2026"
+    ],
+    "implication": "Use repeated seeds and block claims whose effect is within run-to-run noise.",
+    "metric": "effect_to_noise_ratio",
+    "experiment": "Run matched repeated-seed comparisons and verify effect size against seed noise."
+  }
+]

@@ -1,0 +1,307 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Lucky Loop Pitch Deck</title>
+<style>
+  @page { size: 297mm 167mm; margin: 0; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: #050506;
+    color: #f5ead7;
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .slide {
+    position: relative;
+    width: 297mm;
+    height: 167mm;
+    overflow: hidden;
+    page-break-after: always;
+    padding: 15mm 17mm 13mm 17mm;
+    background:
+      radial-gradient(circle at 76% 12%, rgba(229, 43, 38, .25), transparent 30%),
+      radial-gradient(circle at 20% 90%, rgba(91, 18, 16, .35), transparent 32%),
+      linear-gradient(135deg, #050506 0%, #0d0d11 55%, #190909 100%);
+  }
+  .slide::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.02) 1px, transparent 1px);
+    background-size: 18px 18px;
+    mask-image: linear-gradient(to bottom, rgba(0,0,0,.9), rgba(0,0,0,.25));
+    pointer-events: none;
+  }
+  .slide > * { position: relative; z-index: 1; }
+  .kicker { color: #ff4b45; text-transform: uppercase; letter-spacing: .18em; font-weight: 800; font-size: 10.5pt; margin-bottom: 5mm; }
+  h1, h2, h3, p { margin: 0; }
+  h1 { font-size: 50pt; line-height: .94; letter-spacing: -.045em; max-width: 195mm; }
+  h2 { font-size: 33pt; line-height: 1.02; letter-spacing: -.035em; max-width: 210mm; }
+  h3 { font-size: 15pt; line-height: 1.1; }
+  p, li { font-size: 12.2pt; line-height: 1.42; color: #d5c8b7; }
+  .lead { font-size: 16.5pt; line-height: 1.35; color: #f1e5d3; max-width: 174mm; margin-top: 8mm; }
+  .muted { color: #a99c8d; }
+  .red { color: #ff4b45; }
+  .green { color: #65d986; }
+  .mono { font-family: "JetBrains Mono", "SFMono-Regular", Consolas, monospace; }
+  .footer { position: absolute; left: 17mm; right: 17mm; bottom: 7mm; display: flex; justify-content: space-between; align-items: center; color: #756b60; font-size: 8.7pt; letter-spacing: .1em; text-transform: uppercase; z-index: 5; }
+  .logo { font-weight: 900; color: #f5ead7; letter-spacing: .08em; }
+  .pill { display: inline-flex; align-items: center; gap: 2mm; padding: 2.2mm 3.4mm; border: 1px solid rgba(255,75,69,.42); border-radius: 999px; background: rgba(229,43,38,.09); color: #f5ead7; font-size: 10pt; font-weight: 750; letter-spacing: .03em; }
+  .pill.dark { border-color: rgba(245,234,215,.18); background: rgba(255,255,255,.05); color: #d5c8b7; }
+  .row { display: grid; gap: 7mm; }
+  .cols2 { grid-template-columns: 1fr 1fr; }
+  .cols3 { grid-template-columns: repeat(3, 1fr); }
+  .cols4 { grid-template-columns: repeat(4, 1fr); }
+  .card { border: 1px solid rgba(245,234,215,.14); border-radius: 18px; padding: 6mm; background: rgba(12,12,15,.72); box-shadow: 0 16px 45px rgba(0,0,0,.24); }
+  .card.hot { border-color: rgba(255,75,69,.55); background: linear-gradient(135deg, rgba(229,43,38,.18), rgba(12,12,15,.78)); }
+  .card h3 { margin-bottom: 3mm; color: #fff2de; }
+  .card p { font-size: 10.6pt; }
+  .metric { padding: 6mm; border: 1px solid rgba(255,75,69,.38); border-radius: 18px; background: rgba(229,43,38,.12); }
+  .metric .n { font-size: 31pt; line-height: 1; font-weight: 900; color: #fff2de; }
+  .metric .l { margin-top: 2mm; font-size: 9pt; color: #b8aa99; text-transform: uppercase; letter-spacing: .12em; }
+  .hero-img { width: 100%; border-radius: 18px; border: 1px solid rgba(245,234,215,.14); box-shadow: 0 22px 55px rgba(0,0,0,.42); }
+  .img-frame { padding: 2.2mm; border: 1px solid rgba(245,234,215,.12); border-radius: 22px; background: rgba(255,255,255,.04); }
+  .big-bg { position: absolute; right: -18mm; bottom: 15mm; width: 185mm; opacity: .46; border-radius: 24px; border: 1px solid rgba(255,255,255,.1); transform: rotate(-2deg); box-shadow: 0 30px 80px rgba(0,0,0,.55); }
+  .code { font-size: 9.2pt; line-height: 1.42; color: #e8dccd; background: rgba(0,0,0,.46); border: 1px solid rgba(245,234,215,.12); border-radius: 16px; padding: 5mm; white-space: pre-wrap; }
+  .flow { display: flex; align-items: stretch; gap: 3.6mm; margin-top: 10mm; }
+  .node { flex: 1; min-height: 35mm; border: 1px solid rgba(245,234,215,.14); border-radius: 16px; padding: 5mm; background: rgba(10,10,13,.76); }
+  .node strong { display: block; color: #fff2de; margin-bottom: 3mm; font-size: 12pt; }
+  .node span { display: block; color: #b8aa99; font-size: 9.5pt; line-height: 1.35; }
+  .arrow { display: flex; align-items: center; color: #ff4b45; font-size: 24pt; font-weight: 900; }
+  .quote { border-left: 4px solid #ff4b45; padding-left: 7mm; margin-top: 10mm; max-width: 160mm; color: #f5ead7; font-size: 17pt; line-height: 1.3; }
+  ul.clean { list-style: none; padding: 0; margin: 6mm 0 0 0; }
+  ul.clean li { margin: 3.2mm 0; padding-left: 8mm; position: relative; }
+  ul.clean li::before { content: ""; position: absolute; left: 0; top: 2.7mm; width: 3mm; height: 3mm; border-radius: 50%; background: #ff4b45; box-shadow: 0 0 12px rgba(255,75,69,.8); }
+  table { width: 100%; border-collapse: collapse; font-size: 10.1pt; overflow: hidden; border-radius: 16px; }
+  th { text-align: left; color: #fff2de; background: rgba(229,43,38,.18); padding: 4mm; border-bottom: 1px solid rgba(245,234,215,.14); }
+  td { color: #d5c8b7; padding: 3.6mm 4mm; border-bottom: 1px solid rgba(245,234,215,.09); vertical-align: top; }
+  .check { color: #65d986; font-weight: 900; }
+  .x { color: #ff4b45; font-weight: 900; }
+  .small { font-size: 9.3pt; color: #a99c8d; }
+  .timeline { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5mm; margin-top: 10mm; }
+  .step { border-top: 3px solid #ff4b45; padding-top: 5mm; }
+  .step .num { color: #ff4b45; font-weight: 900; font-size: 11pt; letter-spacing: .12em; }
+  .step h3 { margin: 2mm 0 3mm; }
+  .badge-row { display:flex; gap:3mm; flex-wrap: wrap; margin-top: 8mm; }
+  .cover-mark { position:absolute; right: 20mm; top: 18mm; width: 54mm; height:54mm; border-radius: 50%; border:1px solid rgba(255,75,69,.35); background: radial-gradient(circle, rgba(229,43,38,.22), transparent 60%); display:flex; align-items:center; justify-content:center; font-size:30pt; font-weight:900; color:#ff4b45; }
+</style>
+</head>
+<body>
+
+<section class="slide">
+  <img class="big-bg" src="../assets/readme/dashboard.png" alt="dashboard" />
+  <div class="cover-mark">LL</div>
+  <div class="kicker">Predictive research lab OS</div>
+  <h1>Lucky Loop</h1>
+  <p class="lead">Predict before compute. Verify before claim.</p>
+  <p style="margin-top:10mm; max-width:132mm; font-size:14pt; color:#cdbfae;">A research-agent backend where Qwen-AgentWorld forecasts every expensive lab action, real Python tests reality, and a deterministic verifier decides what claims survive.</p>
+  <div class="badge-row">
+    <span class="pill">Qwen-AgentWorld</span>
+    <span class="pill dark">Real sklearn execution</span>
+    <span class="pill dark">Claim ledger</span>
+    <span class="pill dark">Audit-ready UI</span>
+  </div>
+  <div class="footer"><span class="logo">Lucky Loop</span><span>Pitch deck · 2026</span></div>
+</section>
+
+<section class="slide">
+  <div class="kicker">The problem</div>
+  <h2>Most AI research agents learn the story after the experiment.</h2>
+  <div class="row cols3" style="margin-top:12mm;">
+    <div class="card hot"><h3>They waste compute</h3><p>Actions are launched before the system estimates runtime, failure mode, value of information or protocol risk.</p></div>
+    <div class="card hot"><h3>They overclaim metrics</h3><p>A single best score can become a confident scientific claim even when seed noise or leakage risk dominates.</p></div>
+    <div class="card hot"><h3>They hide misses</h3><p>Reports rarely preserve what the model predicted before execution, so failures disappear from the narrative.</p></div>
+  </div>
+  <div class="quote">The missing primitive is not another experiment runner. It is a pre-compute world model plus a claim gate.</div>
+  <div class="footer"><span class="logo">Lucky Loop</span><span>02 · Problem</span></div>
+</section>
+
+<section class="slide">
+  <div class="kicker">The insight</div>
+  <h2>Separate prediction, execution and scientific claims.</h2>
+  <div class="flow">
+    <div class="node"><strong>Planner</strong><span>Proposes a safe candidate action from a constrained catalog.</span></div>
+    <div class="arrow">→</div>
+    <div class="node"><strong>World model</strong><span>Predicts observations, risks, runtime and claim impact before compute.</span></div>
+    <div class="arrow">→</div>
+    <div class="node"><strong>Executor</strong><span>Runs the real Python experiment and writes machine-readable evidence.</span></div>
+    <div class="arrow">→</div>
+    <div class="node"><strong>Verifier</strong><span>Blocks unsupported claims and writes a claim ledger.</span></div>
+  </div>
+  <div class="row cols3" style="margin-top:12mm;">
+    <div class="metric"><div class="n">01</div><div class="l">Prediction is planning</div></div>
+    <div class="metric"><div class="n">02</div><div class="l">Execution is evidence</div></div>
+    <div class="metric"><div class="n">03</div><div class="l">Claims need verification</div></div>
+  </div>
+  <div class="footer"><span class="logo">Lucky Loop</span><span>03 · Core loop</span></div>
+</section>
+
+<section class="slide">
+  <div class="kicker">Product</div>
+  <h2>An autonomous ML lab pipeline from question to honest report.</h2>
+  <div class="row cols2" style="margin-top:9mm; align-items:center;">
+    <div>
+      <ul class="clean">
+        <li>Starts from a natural-language research question.</li>
+        <li>Builds domain and method literature context.</li>
+        <li>Searches Hugging Face/OpenML datasets and audits candidates.</li>
+        <li>Generates a protocol, validates code, dry-runs, then executes.</li>
+        <li>Writes events, notebook, predictions, analyses, ledger and final report.</li>
+      </ul>
+    </div>
+    <div class="img-frame"><img class="hero-img" src="../assets/readme/architecture.svg" alt="architecture" /></div>
+  </div>
+  <div class="footer"><span class="logo">Lucky Loop</span><span>04 · Product flow</span></div>
+</section>
+
+<section class="slide">
+  <div class="kicker">Demo surface</div>
+  <h2>The cockpit makes the research trace visible.</h2>
+  <div class="row cols2" style="margin-top:8mm; grid-template-columns: 1.38fr .62fr; align-items:stretch;">
+    <div class="img-frame"><img class="hero-img" src="../assets/readme/dashboard.png" alt="dashboard" /></div>
+    <div class="card">
+      <h3>What the UI shows</h3>
+      <ul class="clean" style="margin-top:4mm;">
+        <li>Current lab state</li>
+        <li>Predicted branches</li>
+        <li>Live pipeline events</li>
+        <li>Literature sources</li>
+        <li>Clean traces and verdict</li>
+        <li>Downloadable report</li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer"><span class="logo">Lucky Loop</span><span>05 · UI</span></div>
+</section>
+
+<section class="slide">
+  <div class="kicker">World-model layer</div>
+  <h2>Qwen-AgentWorld predicts the next lab state before the action runs.</h2>
+  <div class="row cols2" style="margin-top:9mm; grid-template-columns: .95fr 1.05fr; align-items:center;">
+    <div class="img-frame"><img class="hero-img" src="../assets/readme/prediction-map.png" alt="prediction map" /></div>
+    <div class="card hot">
+      <h3>Prediction contract</h3>
+      <div class="code">expected observation
+expected artifacts
+runtime / compute-waste risk
+failure modes
+protocol risks
+claim support probability
+recommendation: run | verify | modify | skip | stop</div>
+      <p style="margin-top:5mm;">The prediction does not count as evidence. It is a planning signal that must later be compared with reality.</p>
+    </div>
+  </div>
+  <div class="footer"><span class="logo">Lucky Loop</span><span>06 · Qwen-AgentWorld</span></div>
+</section>
+
+<section class="slide">
+  <div class="kicker">Trust layer</div>
+  <h2>The verifier creates the honest moment.</h2>
+  <div class="row cols2" style="margin-top:9mm; grid-template-columns: 1fr 1fr;">
+    <div class="card hot">
+      <h3>What gets blocked</h3>
+      <div class="code">Apparent winner: C=0.1
+effect_size = 0.020979
+seed_noise = 0.027972
+verdict = inconclusive
+blocked: robustly better
+allowed: best mean, but effect smaller than seed noise</div>
+    </div>
+    <div>
+      <div class="metric"><div class="n">claim ledger</div><div class="l">every verdict is preserved</div></div>
+      <div class="row cols2" style="margin-top:5mm;">
+        <div class="card"><h3>Blocked claim</h3><p>Strong wording is rejected when evidence is insufficient.</p></div>
+        <div class="card"><h3>Allowed rewrite</h3><p>The report can still say what the evidence genuinely supports.</p></div>
+      </div>
+    </div>
+  </div>
+  <div class="footer"><span class="logo">Lucky Loop</span><span>07 · Verification</span></div>
+</section>
+
+<section class="slide">
+  <div class="kicker">Evidence model</div>
+  <h2>Every run becomes an audit folder, not just a pretty answer.</h2>
+  <div class="row cols2" style="margin-top:9mm; grid-template-columns: 1.05fr .95fr; align-items:center;">
+    <div class="card">
+      <h3>Generated artifacts</h3>
+      <div class="code">reports/lab/&lt;slug&gt;/
+  literature/*/sources.json
+  agenda/research_agenda.json
+  datasets/selected_dataset.csv
+  protocol/generated_protocol.json
+  generated/experiment.py
+  predictions/world_model_predictions.jsonl
+  notebook.jsonl
+  events.jsonl
+  claim_ledger.json
+  final_report.md</div>
+    </div>
+    <div class="img-frame"><img class="hero-img" src="../assets/readme/evidence-tables.png" alt="evidence tables" /></div>
+  </div>
+  <div class="footer"><span class="logo">Lucky Loop</span><span>08 · Evidence</span></div>
+</section>
+
+<section class="slide">
+  <div class="kicker">Differentiation</div>
+  <h2>Why this is different from a classic auto-research loop.</h2>
+  <table style="margin-top:10mm;">
+    <tr><th>Capability</th><th>Classic research agent</th><th>Lucky Loop</th></tr>
+    <tr><td>Pre-compute forecast</td><td><span class="x">No</span> — actions run first</td><td><span class="check">Yes</span> — Qwen-AgentWorld predicts observations and risk</td></tr>
+    <tr><td>Prediction-vs-reality trace</td><td>Usually absent</td><td>Logged as first-class evidence</td></tr>
+    <tr><td>Claim discipline</td><td>Often narrative-based</td><td>Deterministic verifier and claim ledger</td></tr>
+    <tr><td>Generated-code safety</td><td>Variable</td><td>Static validation plus dry-run before full compute</td></tr>
+    <tr><td>Demo honesty</td><td>Best score becomes the story</td><td>Blocked claims remain visible</td></tr>
+  </table>
+  <div class="footer"><span class="logo">Lucky Loop</span><span>09 · Differentiation</span></div>
+</section>
+
+<section class="slide">
+  <div class="kicker">Deployment</div>
+  <h2>Built as a backend, UI and API surface that can swap agents.</h2>
+  <div class="row cols3" style="margin-top:10mm;">
+    <div class="card hot"><h3>Product path</h3><p>Scientist planner through any OpenAI-compatible endpoint. World model through Qwen-AgentWorld. Python owns execution, verifier and reports.</p></div>
+    <div class="card"><h3>Agent-in-repo path</h3><p>Codex, Claude Code, OpenClaw or Hermes can operate from repo runbooks while the backend keeps trace labels explicit.</p></div>
+    <div class="card"><h3>Development path</h3><p>No-model smoke mode validates local code, artifacts and reports without pretending a model was called.</p></div>
+  </div>
+  <div class="code" style="margin-top:9mm;">PYTHONPATH=src python web/server.py 8000
+PYTHONPATH=src python -m luckyloop.lab --question "..." --budget 8
+PYTHONPATH=src python scripts/validate_lab_artifacts.py --workspace reports/lab/&lt;slug&gt;</div>
+  <div class="footer"><span class="logo">Lucky Loop</span><span>10 · Integration</span></div>
+</section>
+
+<section class="slide">
+  <div class="kicker">Roadmap</div>
+  <h2>From impressive demo to credible open research infrastructure.</h2>
+  <div class="timeline">
+    <div class="step"><div class="num">01</div><h3>Freeze demo loop</h3><p>Stable run, UI, report export and reproducibility evidence.</p></div>
+    <div class="step"><div class="num">02</div><h3>Ablation proof</h3><p>Compare classic, classic+verifier and full Lucky Loop policies.</p></div>
+    <div class="step"><div class="num">03</div><h3>Agent adapters</h3><p>Cleaner OpenAI-compatible planner and agent-in-repo modes.</p></div>
+    <div class="step"><div class="num">04</div><h3>Research packs</h3><p>Curated protocols beyond sklearn tabular classification.</p></div>
+  </div>
+  <div class="quote">The immediate win is a 60-second story: forecast → execute → compare → block or allow the claim.</div>
+  <div class="footer"><span class="logo">Lucky Loop</span><span>11 · Roadmap</span></div>
+</section>
+
+<section class="slide">
+  <div class="kicker">Close</div>
+  <h2>Most AI scientists hallucinate after the experiment.</h2>
+  <p class="lead" style="max-width:200mm;">Lucky Loop makes a prediction before the experiment, runs the real code, compares prediction with reality, and only claims what survives verification.</p>
+  <div class="row cols3" style="margin-top:13mm;">
+    <div class="metric"><div class="n">predict</div><div class="l">before compute</div></div>
+    <div class="metric"><div class="n">execute</div><div class="l">real code</div></div>
+    <div class="metric"><div class="n">verify</div><div class="l">before claim</div></div>
+  </div>
+  <div class="badge-row" style="margin-top:12mm;">
+    <span class="pill">Lucky Loop</span>
+    <span class="pill dark">Open auto-research backend</span>
+    <span class="pill dark">Audit-ready scientific claims</span>
+  </div>
+  <div class="footer"><span class="logo">Lucky Loop</span><span>12 · End</span></div>
+</section>
+
+</body>
+</html>

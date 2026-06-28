@@ -1,0 +1,308 @@
+[
+  {
+    "dataset_id": "julien-c/titanic-survival",
+    "source": "huggingface",
+    "name": "julien-c/titanic-survival",
+    "url": "https://huggingface.co/datasets/julien-c/titanic-survival",
+    "description": "\n\t\n\t\t\n\t\tTitanic Survival\n\t\n\nfrom https://web.stanford.edu/class/archive/cs/cs109/cs109.1166/problem12.html\n",
+    "license": "cc",
+    "task_tags": [
+      "task_categories:tabular-classification",
+      "license:cc",
+      "size_categories:n<1K",
+      "format:csv",
+      "modality:tabular",
+      "modality:text",
+      "library:datasets",
+      "library:pandas",
+      "library:mlcroissant",
+      "library:polars",
+      "region:us",
+      "tabular-classification"
+    ],
+    "score": 19.0,
+    "score_reasons": [
+      "Dynamic Hugging Face API candidate",
+      "classification tag/name match",
+      "likely usable for empirical ML"
+    ],
+    "risk_flags": [
+      "may_need_non_tabular_pipeline"
+    ],
+    "fallback_rank": 1
+  },
+  {
+    "dataset_id": "Nerlnet/EEG_Eye_State_Classification_table_freq_window",
+    "source": "huggingface",
+    "name": "Nerlnet/EEG_Eye_State_Classification_table_freq_window",
+    "url": "https://huggingface.co/datasets/Nerlnet/EEG_Eye_State_Classification_table_freq_window",
+    "description": "",
+    "license": null,
+    "task_tags": [
+      "size_categories:n<1K",
+      "format:csv",
+      "modality:tabular",
+      "library:datasets",
+      "library:pandas",
+      "library:mlcroissant",
+      "library:polars",
+      "region:us"
+    ],
+    "score": 18.0,
+    "score_reasons": [
+      "Dynamic Hugging Face API candidate",
+      "classification tag/name match",
+      "likely usable for empirical ML"
+    ],
+    "risk_flags": [
+      "missing_license"
+    ],
+    "fallback_rank": 2
+  },
+  {
+    "dataset_id": "aai510-group1/telco-customer-churn",
+    "source": "huggingface",
+    "name": "aai510-group1/telco-customer-churn",
+    "url": "https://huggingface.co/datasets/aai510-group1/telco-customer-churn",
+    "description": "\n\t\n\t\t\n\t\tDataset Card for Telco Customer Churn\n\t\n\nThis dataset contains information about customers of a fictional telecommunications company, including demographic information, services subscribed to, location details, and churn behavior. This merged dataset combines the information from the original Telco Customer Churn dataset with additional details.\n\n\t\n\t\t\n\t\tDataset Details\n\t\n\n\n\t\n\t\t\n\t\tDataset Description\n\t\n\nThis merged Telco Customer Churn dataset provides a comprehensive view of customer\u2026 See the full description on the dataset page: https://huggingface.co/datasets/aai510-group1/telco-customer-churn.",
+    "license": null,
+    "task_tags": [
+      "task_categories:tabular-classification",
+      "language:en",
+      "size_categories:1K<n<10K",
+      "format:csv",
+      "modality:tabular",
+      "modality:text",
+      "library:datasets",
+      "library:pandas",
+      "library:mlcroissant",
+      "library:polars",
+      "region:us",
+      "tabular-classification",
+      "churn-prediction",
+      "telecom",
+      "customer-retention",
+      "demographics",
+      "customer-service"
+    ],
+    "score": 16.0,
+    "score_reasons": [
+      "Dynamic Hugging Face API candidate",
+      "classification tag/name match",
+      "likely usable for empirical ML"
+    ],
+    "risk_flags": [
+      "missing_license",
+      "may_need_non_tabular_pipeline"
+    ],
+    "fallback_rank": 2
+  },
+  {
+    "dataset_id": "1471",
+    "source": "openml",
+    "name": "eeg-eye-state",
+    "url": "https://www.openml.org/d/1471",
+    "description": "eeg-eye-state ARFF  ",
+    "license": "unknown",
+    "task_tags": [
+      "classification",
+      "tabular"
+    ],
+    "score": 15.9,
+    "score_reasons": [
+      "Dynamic OpenML API candidate via query `eeg-eye-state`",
+      "metadata match"
+    ],
+    "risk_flags": [],
+    "fallback_rank": 1
+  },
+  {
+    "dataset_id": "Nerlnet/EEG_Eye_State_Classification",
+    "source": "huggingface",
+    "name": "Nerlnet/EEG_Eye_State_Classification",
+    "url": "https://huggingface.co/datasets/Nerlnet/EEG_Eye_State_Classification",
+    "description": "",
+    "license": null,
+    "task_tags": [
+      "region:us"
+    ],
+    "score": 13.0,
+    "score_reasons": [
+      "Dynamic Hugging Face API candidate",
+      "classification tag/name match"
+    ],
+    "risk_flags": [
+      "missing_license"
+    ],
+    "fallback_rank": 1
+  },
+  {
+    "dataset_id": "40",
+    "source": "openml",
+    "name": "sonar",
+    "url": "https://www.openml.org/d/40",
+    "description": "sonar ARFF  ",
+    "license": "unknown",
+    "task_tags": [
+      "classification",
+      "tabular"
+    ],
+    "score": 11.9,
+    "score_reasons": [
+      "Dynamic OpenML API candidate via query `sonar`",
+      "metadata match"
+    ],
+    "risk_flags": [],
+    "fallback_rank": 1
+  },
+  {
+    "dataset_id": "46258",
+    "source": "openml",
+    "name": "sonar",
+    "url": "https://www.openml.org/d/46258",
+    "description": "sonar arff  ",
+    "license": "unknown",
+    "task_tags": [
+      "classification",
+      "tabular"
+    ],
+    "score": 11.8,
+    "score_reasons": [
+      "Dynamic OpenML API candidate via query `sonar`",
+      "metadata match"
+    ],
+    "risk_flags": [],
+    "fallback_rank": 2
+  },
+  {
+    "dataset_id": "thienphuprogrammer/Activity_Human_Recognition",
+    "source": "huggingface",
+    "name": "thienphuprogrammer/Activity_Human_Recognition",
+    "url": "https://huggingface.co/datasets/thienphuprogrammer/Activity_Human_Recognition",
+    "description": "",
+    "license": null,
+    "task_tags": [
+      "region:us"
+    ],
+    "score": 9.0,
+    "score_reasons": [
+      "Dynamic Hugging Face API candidate",
+      "metadata match"
+    ],
+    "risk_flags": [
+      "missing_license"
+    ],
+    "fallback_rank": 2
+  },
+  {
+    "dataset_id": "1478",
+    "source": "openml",
+    "name": "har",
+    "url": "https://www.openml.org/d/1478",
+    "description": "har ARFF  ",
+    "license": "unknown",
+    "task_tags": [
+      "classification",
+      "tabular"
+    ],
+    "score": 7.9,
+    "score_reasons": [
+      "Dynamic OpenML API candidate via query `har`",
+      "metadata match"
+    ],
+    "risk_flags": [],
+    "fallback_rank": 1
+  },
+  {
+    "dataset_id": "DiFronzo/Human_Activity_Recognition",
+    "source": "huggingface",
+    "name": "DiFronzo/Human_Activity_Recognition",
+    "url": "https://huggingface.co/datasets/DiFronzo/Human_Activity_Recognition",
+    "description": "Human Activity Recognition (HAR) using smartphones dataset. Classifying the type of movement amongst five categories:\n\nWALKING,\nWALKING_UPSTAIRS,\nWALKING_DOWNSTAIRS,\nSITTING,\nSTANDING\n\nThe experiments have been carried out with a group of 16 volunteers within an age bracket of 19-26 years. Each person performed five activities (WALKING, WALKING_UPSTAIRS, WALKING_DOWNSTAIRS, SITTING, STANDING) wearing a smartphone (Samsung Galaxy S8) in the pucket. Using its embedded accelerometer and gyroscope\u2026 See the full description on the dataset page: https://huggingface.co/datasets/DiFronzo/Human_Activity_Recognition.",
+    "license": null,
+    "task_tags": [
+      "size_categories:100K<n<1M",
+      "format:text",
+      "modality:text",
+      "library:datasets",
+      "library:mlcroissant",
+      "region:us"
+    ],
+    "score": 7.0,
+    "score_reasons": [
+      "Dynamic Hugging Face API candidate",
+      "metadata match"
+    ],
+    "risk_flags": [
+      "missing_license",
+      "may_need_non_tabular_pipeline"
+    ],
+    "fallback_rank": 1
+  },
+  {
+    "dataset_id": "eeg_eye_state",
+    "source": "openml",
+    "name": "eeg_eye_state",
+    "url": "https://www.openml.org/d/1471",
+    "description": "OpenML EEG eye state sensor classification benchmark",
+    "license": "unknown",
+    "task_tags": [
+      "classification",
+      "tabular"
+    ],
+    "score": 119.8,
+    "score_reasons": [
+      "External OpenML registry candidate with known classification target",
+      "classification tag/name match",
+      "likely usable for empirical ML"
+    ],
+    "risk_flags": [
+      "curated_fallback"
+    ],
+    "fallback_rank": 2
+  },
+  {
+    "dataset_id": "har",
+    "source": "openml",
+    "name": "har",
+    "url": "https://www.openml.org/d/1478",
+    "description": "OpenML human activity recognition classification benchmark",
+    "license": "unknown",
+    "task_tags": [
+      "classification",
+      "tabular"
+    ],
+    "score": 91.7,
+    "score_reasons": [
+      "External OpenML registry candidate with known classification target",
+      "classification tag/name match",
+      "likely usable for empirical ML"
+    ],
+    "risk_flags": [
+      "curated_fallback"
+    ],
+    "fallback_rank": 3
+  },
+  {
+    "dataset_id": "sonar",
+    "source": "openml",
+    "name": "sonar",
+    "url": "https://www.openml.org/d/40",
+    "description": "OpenML Sonar binary classification benchmark",
+    "license": "unknown",
+    "task_tags": [
+      "classification",
+      "tabular"
+    ],
+    "score": 87.9,
+    "score_reasons": [
+      "External OpenML registry candidate with known classification target",
+      "classification tag/name match",
+      "likely usable for empirical ML"
+    ],
+    "risk_flags": [
+      "curated_fallback"
+    ],
+    "fallback_rank": 1
+  }
+]

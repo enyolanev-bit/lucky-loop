@@ -1,0 +1,31 @@
+{
+  "dataset_id": "1471",
+  "source": "openml",
+  "status": "accepted",
+  "reason": "usable supervised classification table",
+  "local_path": "/home/animus/lucky-loop/reports/lab/open-can-nonlinear-models-robustly-outperform-logistic-regression-on-public-s/datasets/selected_dataset.csv",
+  "target_column": "Class",
+  "feature_columns": [
+    "V1",
+    "V2",
+    "V3",
+    "V4",
+    "V5",
+    "V6",
+    "V7",
+    "V8",
+    "V9",
+    "V10",
+    "V11",
+    "V12",
+    "V13",
+    "V14"
+  ],
+  "n_rows": 14980,
+  "n_features": 14,
+  "class_counts": {
+    "1": 8257,
+    "2": 6723
+  },
+  "warnings": []
+}

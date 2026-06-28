@@ -1,0 +1,415 @@
+PREDICTIVE RESEARCH LAB OS
+
+Lucky Loop
+
+LL
+
+Predict before compute. Verify before claim.
+A research-agent backend where Qwen-AgentWorld
+forecasts every expensive lab action, real Python
+tests reality, and a deterministic verifier decides
+what claims survive.
+Qwen-AgentWorld
+
+LUCKY LOOP
+
+Real sklearn execution
+
+Claim ledger
+
+Audit-ready UI
+
+PITCH DECK · 2026
+
+THE PROBLEM
+
+Most AI research agents learn the
+story after the experiment.
+They waste compute
+
+They overclaim metrics
+
+They hide misses
+
+Actions are launched before the
+system estimates runtime, failure
+mode, value of information or
+protocol risk.
+
+A single best score can become a
+confident scientific claim even when
+seed noise or leakage risk
+dominates.
+
+Reports rarely preserve what the
+model predicted before execution, so
+failures disappear from the narrative.
+
+The missing primitive is not another experiment
+runner. It is a pre-compute world model plus a
+claim gate.
+
+LUCKY LOOP
+
+02 · PROBLEM
+
+THE INSIGHT
+
+Separate prediction, execution
+and scientific claims.
+Planner
+Proposes a safe candidate
+action from a constrained
+catalog.
+
+World model
+
+→
+
+Predicts observations,
+risks, runtime and claim
+impact before compute.
+
+Executor
+
+→
+
+Runs the real Python
+experiment and writes
+machine-readable
+evidence.
+
+Verifier
+
+→
+
+Blocks unsupported
+claims and writes a claim
+ledger.
+
+01
+
+02
+
+03
+
+PREDICTION IS PLANNING
+
+EXECUTION IS EVIDENCE
+
+C L A I M S N E E D V E R I F I C AT I O N
+
+LUCKY LOOP
+
+03 · CORE LOOP
+
+PRODUCT
+
+An autonomous ML lab pipeline
+from question to honest report.
+Starts from a natural-language research question.
+Builds domain and method literature context.
+Searches Hugging Face/OpenML datasets and audits
+candidates.
+Generates a protocol, validates code, dry-runs, then
+executes.
+
+LUCKY LOOP
+Predict before compute. Verify before claim.
+
+2
+1
+
+4
+
+Qwen-AgentWorld
+
+3
+
+Verifier + ledger
+
+Planner / agent
+
+Forecasts observation,
+
+Executor
+
+Compares prediction with
+
+Chooses safe candidate
+
+runtime, failure modes,
+
+Runs real sklearn code,
+
+reality and blocks weak
+
+actions from the catalog.
+
+protocol risks and claim
+
+captures metrics and
+
+scientific claims.
+
+NO INVENTED COMMANDS
+
+impact before compute.
+
+JSON evidence.
+
+A U D I TA B L E R E P O R T
+
+P L A N N I N G S I G N A L O N LY
+
+Every run updates the next state: observations, misses, claims, open risks.
+
+Writes events, notebook, predictions, analyses, ledger
+and final report.
+
+LUCKY LOOP
+
+04 · PRODUCT FLOW
+
+D E M O S U R FA C E
+
+The cockpit makes the research
+trace visible.
+What the UI shows
+Current lab state
+Predicted branches
+Live pipeline events
+Literature sources
+Clean traces and verdict
+Downloadable report
+
+LUCKY LOOP
+
+05 · UI
+
+W O R L D - M O D E L L AY E R
+
+Qwen-AgentWorld predicts the
+next lab state before the action
+runs.
+Prediction contract
+expected observation
+expected artifacts
+runtime / compute-waste risk
+failure modes
+protocol risks
+claim support probability
+recommendation: run | verify | modify | skip | stop
+
+The prediction does not count as evidence. It is a planning signal
+that must later be compared with reality.
+
+LUCKY LOOP
+
+06 · QWEN-AGENTWORLD
+
+T R U S T L AY E R
+
+The verifier creates the honest
+moment.
+What gets blocked
+Apparent winner: C=0.1
+effect_size = 0.020979
+seed_noise = 0.027972
+verdict = inconclusive
+blocked: robustly better
+allowed: best mean, but effect smaller than seed noise
+
+LUCKY LOOP
+
+claim ledger
+E V E RY V E R D I C T I S P R E S E RV E D
+
+Blocked claim
+
+Allowed rewrite
+
+Strong wording is
+rejected when evidence
+is insufficient.
+
+The report can still say
+what the evidence
+genuinely supports.
+
+07 · VERIFICATION
+
+EVIDENCE MODEL
+
+Every run becomes an audit
+folder, not just a pretty answer.
+Generated artifacts
+reports/lab/<slug>/
+literature/*/sources.json
+agenda/research_agenda.json
+datasets/selected_dataset.csv
+protocol/generated_protocol.json
+generated/experiment.py
+predictions/world_model_predictions.jsonl
+notebook.jsonl
+events.jsonl
+claim_ledger.json
+final_report.md
+
+LUCKY LOOP
+
+08 · EVIDENCE
+
+D I F F E R E N T I AT I O N
+
+Why this is different from a
+classic auto-research loop.
+Capability
+
+Classic research agent
+
+Lucky Loop
+
+Pre-compute forecast
+
+No — actions run first
+
+Yes — Qwen-AgentWorld predicts observations and risk
+
+Prediction-vs-reality trace
+
+Usually absent
+
+Logged as first-class evidence
+
+Claim discipline
+
+Often narrative-based
+
+Deterministic verifier and claim ledger
+
+Generated-code safety
+
+Variable
+
+Static validation plus dry-run before full compute
+
+Demo honesty
+
+Best score becomes the story
+
+Blocked claims remain visible
+
+LUCKY LOOP
+
+09 · DIFFERENTIATION
+
+DEPLOYMENT
+
+Built as a backend, UI and API
+surface that can swap agents.
+Product path
+
+Agent-in-repo path
+
+Development path
+
+Scientist planner through any
+OpenAI-compatible endpoint. World
+model through Qwen-AgentWorld.
+Python owns execution, verifier and
+reports.
+
+Codex, Claude Code, OpenClaw or
+Hermes can operate from repo
+runbooks while the backend keeps
+trace labels explicit.
+
+No-model smoke mode validates
+local code, artifacts and reports
+without pretending a model was
+called.
+
+PYTHONPATH=src python web/server.py 8000
+PYTHONPATH=src python -m luckyloop.lab --question "..." --budget 8
+PYTHONPATH=src python scripts/validate_lab_artifacts.py --workspace reports/lab/<slug>
+
+LUCKY LOOP
+
+10 · INTEGRATION
+
+ROADMAP
+
+From impressive demo to
+credible open research
+infrastructure.
+01
+
+02
+
+03
+
+04
+
+Freeze demo loop
+
+Ablation proof
+
+Agent adapters
+
+Research packs
+
+Stable run, UI, report export
+and reproducibility
+evidence.
+
+Compare classic,
+classic+verifier and full
+Lucky Loop policies.
+
+Cleaner OpenAI-compatible
+planner and agent-in-repo
+modes.
+
+Curated protocols beyond
+sklearn tabular
+classification.
+
+The immediate win is a 60-second story: forecast
+→ execute → compare → block or allow the claim.
+
+LUCKY LOOP
+
+11 · ROADMAP
+
+CLOSE
+
+Most AI scientists hallucinate
+after the experiment.
+Lucky Loop makes a prediction before the experiment, runs the real
+code, compares prediction with reality, and only claims what
+survives verification.
+
+predict
+
+execute
+
+verify
+
+BEFORE COMPUTE
+
+REAL CODE
+
+BEFORE CLAIM
+
+Lucky Loop
+
+LUCKY LOOP
+
+Open auto-research backend
+
+Audit-ready scientific claims
+
+12 · END
+
+

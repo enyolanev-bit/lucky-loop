@@ -1,0 +1,7 @@
+{
+  "decision": "stop_and_report",
+  "expected_evidence_gain": "None; budget exhausted.",
+  "next_action_goal": "Compile final report documenting that the candidate model (e.g., GradientBoostingClassifier) achieved higher mean balanced accuracy than logistic regression, but the effect-to-noise ratio was too low to support a robust claim of superiority across seeds.",
+  "rationale": "Budget is exhausted (0 remaining) and the latest analysis shows the candidate model outperforms logistic regression (mean balanced accuracy 0.822 vs 0.584), but the effect-to-noise ratio (0.67) is below the claim threshold of 2.0, and seed noise (0.355) is high. The claim is blocked due to insufficient robustness. Per contract, we must stop when budget is exhausted.",
+  "stop_reason": "Budget exhausted; evidence insufficient to support the claim; contract requires stop_and_report when budget is 0."
+}

@@ -1,0 +1,67 @@
+{
+  "ablations": [
+    "remove_feature_scaling",
+    "use_default_hyperparameters",
+    "reduce_training_size_to_50_percent"
+  ],
+  "baseline_models": [
+    "logisticregression"
+  ],
+  "candidate_models": [
+    "gradientboostingclassifier",
+    "logisticregression",
+    "mlpclassifier",
+    "randomforestclassifier",
+    "svc"
+  ],
+  "claim_blocked_if": "mean balanced_accuracy of best candidate model is within 1% of logistic regression mean balanced_accuracy or effect-to-noise ratio < 1.5",
+  "claim_enabled_if": "mean balanced_accuracy of best candidate model > mean balanced_accuracy of logistic regression by at least 2% and effect-to-noise ratio > 2 across 10 seeds",
+  "dataset_id": "eeg_eye_state",
+  "dataset_source": "openml",
+  "feature_columns": [
+    "V1",
+    "V2",
+    "V3",
+    "V4",
+    "V5",
+    "V6",
+    "V7",
+    "V8",
+    "V9",
+    "V10",
+    "V11",
+    "V12",
+    "V13",
+    "V14"
+  ],
+  "hypothesis": "A Transformer-based model (e.g., HART) robustly outperforms logistic regression on public sensor classification data across repeated seeds.",
+  "primary_metric": "balanced_accuracy",
+  "protocol_id": "generated_ml_research_protocol",
+  "question": "Can a nonlinear model robustly outperform logistic regression on public sensor classification data across repeated seeds?",
+  "risk_controls": [
+    "use_audited_dataset_only",
+    "repeated_seeds",
+    "stratified_split",
+    "claim_blocking_rule",
+    "effect_to_noise_ratio_check"
+  ],
+  "secondary_metrics": [
+    "accuracy",
+    "f1_macro",
+    "precision_macro",
+    "recall_macro"
+  ],
+  "seeds": [
+    42,
+    123,
+    456,
+    789,
+    101112,
+    131415,
+    161718,
+    192021
+  ],
+  "split_strategy": "stratified_train_test_split",
+  "target_column": "Class",
+  "task_type": "classification"
+}
