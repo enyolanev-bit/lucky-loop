@@ -7,6 +7,8 @@ must NEVER turn a null into an effect.
 from __future__ import annotations
 
 import importlib.util
+import json
+import tempfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -14,6 +16,7 @@ _spec = importlib.util.spec_from_file_location("analyze_ablation", ROOT / "scrip
 analyze_ablation = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(analyze_ablation)
 build_report = analyze_ablation.build_report
+metrics_for_workspace = analyze_ablation.metrics_for_workspace
 
 
 def run(*, runs, runtime, supported, blocked, source, fingerprint):
@@ -50,16 +53,22 @@ def test_big_runtime_delta_alone_is_still_null():
     assert v.startswith("NULL"), v
 
 
+def arm(*, runs, runtime, supported, blocked, source, fingerprint, n=3):
+    """A well-powered arm: the same run repeated n>=MIN_RUNS times."""
+    return [run(runs=runs, runtime=runtime, supported=supported, blocked=blocked,
+                source=source, fingerprint=fingerprint) for _ in range(n)]
+
+
 def test_claims_delta_triggers_effect():
-    on = [run(runs=4, runtime=0.05, supported=1, blocked=0, source="qwen_agentworld", fingerprint=["x"])]
-    off = [run(runs=4, runtime=0.05, supported=0, blocked=1, source="plumbing_not_called", fingerprint=["x"])]
+    on = arm(runs=4, runtime=0.05, supported=1, blocked=0, source="qwen_agentworld", fingerprint=["x"])
+    off = arm(runs=4, runtime=0.05, supported=0, blocked=1, source="plumbing_not_called", fingerprint=["x"])
     v = build_report(on, off)["verdict"]
     assert v.startswith("EFFECT MEASURED"), v
 
 
 def test_compute_runs_delta_triggers_effect():
-    on = [run(runs=2, runtime=0.05, supported=1, blocked=0, source="qwen_agentworld", fingerprint=["x"])]
-    off = [run(runs=4, runtime=0.05, supported=1, blocked=0, source="plumbing_not_called", fingerprint=["x"])]
+    on = arm(runs=2, runtime=0.05, supported=1, blocked=0, source="qwen_agentworld", fingerprint=["x"])
+    off = arm(runs=4, runtime=0.05, supported=1, blocked=0, source="plumbing_not_called", fingerprint=["x"])
     rep = build_report(on, off)
     assert rep["verdict"].startswith("EFFECT MEASURED"), rep["verdict"]
     assert rep["world_model_effect"]["compute_runs_saved_by_wm"] == 2.0
@@ -67,7 +76,59 @@ def test_compute_runs_delta_triggers_effect():
 
 def test_runtime_never_in_verdict_drivers():
     rep = build_report(
-        [run(runs=4, runtime=1.0, supported=1, blocked=0, source="qwen_agentworld", fingerprint=["x"])],
-        [run(runs=4, runtime=9.0, supported=1, blocked=0, source="plumbing_not_called", fingerprint=["x"])],
+        arm(runs=4, runtime=1.0, supported=1, blocked=0, source="qwen_agentworld", fingerprint=["x"]),
+        arm(runs=4, runtime=9.0, supported=1, blocked=0, source="plumbing_not_called", fingerprint=["x"]),
     )
     assert rep["verdict"].startswith("NULL")
+
+
+def test_underpowered_effect_is_flagged_not_measured():
+    # A real behavioural delta but only 1 run/arm — must be flagged UNDER-POWERED, not "MEASURED".
+    on = [run(runs=2, runtime=0.05, supported=1, blocked=0, source="qwen_agentworld", fingerprint=["x"])]
+    off = [run(runs=4, runtime=0.05, supported=1, blocked=0, source="plumbing_not_called", fingerprint=["x"])]
+    rep = build_report(on, off)
+    assert rep["verdict"].startswith("EFFECT (UNDER-POWERED"), rep["verdict"]
+    assert rep["world_model_effect"]["underpowered"] is True
+    assert rep["world_model_effect"]["min_runs_required"] == 3
+
+
+def test_well_powered_effect_is_not_flagged_underpowered():
+    on = arm(runs=2, runtime=0.05, supported=1, blocked=0, source="qwen_agentworld", fingerprint=["x"])
+    off = arm(runs=4, runtime=0.05, supported=1, blocked=0, source="plumbing_not_called", fingerprint=["x"])
+    rep = build_report(on, off)
+    assert rep["world_model_effect"]["underpowered"] is False
+    assert "UNDER-POWERED" not in rep["verdict"], rep["verdict"]
+
+
+def test_mislabeled_arm_sources_warn_in_verdict():
+    # ON arm carries the fallback source (arms swapped) — verdict must be prefixed with a warning.
+    on = arm(runs=4, runtime=0.05, supported=1, blocked=0, source="plumbing_not_called", fingerprint=["x"])
+    off = arm(runs=4, runtime=0.05, supported=0, blocked=1, source="qwen_agentworld", fingerprint=["x"])
+    rep = build_report(on, off)
+    assert rep["world_model_effect"]["arm_sources_ok"] is False
+    assert rep["verdict"].startswith("⚠ ARM SOURCES UNEXPECTED"), rep["verdict"]
+
+
+def test_correct_arm_sources_pass():
+    on = arm(runs=4, runtime=0.05, supported=1, blocked=0, source="qwen_agentworld", fingerprint=["x"])
+    off = arm(runs=4, runtime=0.05, supported=1, blocked=0, source="plumbing_not_called", fingerprint=["x"])
+    rep = build_report(on, off)
+    assert rep["world_model_effect"]["arm_sources_ok"] is True
+    assert not rep["verdict"].startswith("⚠"), rep["verdict"]
+
+
+def test_duplicate_claim_rows_counted_once():
+    # A claim_ledger with the same row written twice must count as ONE claim,
+    # so a duplicated 'supported' row cannot inflate the delta into a spurious effect.
+    dup = {"claim_id": "c1", "verdict": "supported", "claim": "scaling helps"}
+    with tempfile.TemporaryDirectory(dir=ROOT) as d:
+        ws = Path(d)
+        (ws / "notebook.jsonl").write_text(
+            json.dumps({"step": 1, "selected_action": {"kind": "run_protocol"},
+                        "actual_observation": {"status": "success", "runtime_seconds": 0.1}}) + "\n",
+            encoding="utf-8",
+        )
+        (ws / "claim_ledger.json").write_text(json.dumps([dup, dup]), encoding="utf-8")
+        m = metrics_for_workspace(ws)
+    assert m["claims_total"] == 1, m
+    assert m["claims_supported"] == 1, m

@@ -87,7 +87,17 @@ def metrics_for_workspace(ws: Path) -> dict | None:
             if rec in NONTRIVIAL_RECS or (isinstance(cwr, (int, float)) and cwr > 0):
                 nontrivial_signal = True
 
-    verdicts = [c.get("verdict") for c in claims]
+    # Count UNIQUE claims, not raw ledger rows: a duplicated supported/blocked row
+    # must not move the deltas and trigger a spurious EFFECT.
+    seen_claims: set = set()
+    unique_claims: list[dict] = []
+    for c in claims:
+        key = c.get("claim_id") or (c.get("verdict"), c.get("claim"))
+        if key in seen_claims:
+            continue
+        seen_claims.add(key)
+        unique_claims.append(c)
+    verdicts = [c.get("verdict") for c in unique_claims]
     dominant_source = max(sources, key=sources.get) if sources else "none"
     return {
         "workspace": str(ws.relative_to(ROOT)) if ws.is_absolute() else str(ws),
@@ -144,6 +154,10 @@ def _discover(ablation_dir: Path | None, on_glob: str | None, off_glob: str | No
 # this); only float dust falls under it.
 BEHAVIOURAL_EPS = 1e-6
 
+# Each arm must be repeated at least this many times before a delta is trustworthy.
+# Below it, LLM/sampling noise can manufacture a one-off "effect".
+MIN_RUNS = 3
+
 
 def build_report(on_runs: list[dict], off_runs: list[dict]) -> dict:
     on, off = summarize_arm(on_runs), summarize_arm(off_runs)
@@ -174,6 +188,21 @@ def build_report(on_runs: list[dict], off_runs: list[dict]) -> dict:
     rt_std = max(on["total_runtime_s"]["std"] or 0.0, off["total_runtime_s"]["std"] or 0.0)
     runtime_within_noise = runtime_saved is None or abs(runtime_saved) <= max(rt_std, 0.1)
 
+    # Sample size: a delta from <MIN_RUNS runs per arm can be LLM/sampling noise.
+    underpowered = min(on["n_runs"], off["n_runs"]) < MIN_RUNS
+
+    # Arm-source sanity: ON must be the real world model, OFF the fallback stub.
+    # If not, the arms may be swapped/mislabeled and the signed delta is untrustworthy.
+    arm_sources_ok = on["wm_source"] == ["qwen_agentworld"] and off["wm_source"] == ["plumbing_not_called"]
+    source_warning = (
+        ""
+        if arm_sources_ok
+        else (
+            f"⚠ ARM SOURCES UNEXPECTED (ON={on['wm_source']} should be ['qwen_agentworld'], "
+            f"OFF={off['wm_source']} should be ['plumbing_not_called']) — arms may be mislabeled, do not trust the sign. "
+        )
+    )
+
     effect = {
         "compute_runs_saved_by_wm": compute_runs_saved,
         "claims_supported_delta_on_minus_off": claims_supported_delta,
@@ -181,16 +210,21 @@ def build_report(on_runs: list[dict], off_runs: list[dict]) -> dict:
         "runtime_s_delta_off_minus_on": runtime_saved,
         "runtime_within_noise": runtime_within_noise,
         "qwen_text_differs": qwen_text_differs,
+        "underpowered": underpowered,
+        "min_runs_required": MIN_RUNS,
+        "arm_sources_ok": arm_sources_ok,
     }
 
     if not behavioural_effect:
-        verdict = (
+        verdict = source_warning + (
             "NULL → Option B (no measurable world-model effect). Experiment runs identical "
             "(compute_runs_saved=0) and claim verdicts identical (supported & blocked deltas=0). "
             "Runtime differences are timing jitter, not an effect"
             + ("; Qwen's free text differs from the fallback but its structured recommendation stays 'run' (same decisions)" if qwen_text_differs else "")
             + ". Present system + M1 with this as a stated limitation — do NOT claim a world-model compute win."
         )
+        if underpowered:
+            verdict += f" (Note: <{MIN_RUNS} runs/arm — under-powered, but NULL is the conservative read.)"
     else:
         parts = []
         if runs_moved:
@@ -199,17 +233,25 @@ def build_report(on_runs: list[dict], off_runs: list[dict]) -> dict:
             parts.append(f"claims_supported_delta(ON-OFF)={claims_supported_delta}")
         if abs(claims_blocked_delta) > BEHAVIOURAL_EPS:
             parts.append(f"claims_blocked_delta(ON-OFF)={claims_blocked_delta}")
-        verdict = "EFFECT MEASURED on real behavioural deltas: " + ", ".join(parts) + ". (Runtime is informational jitter, excluded.)"
+        body = ", ".join(parts)
+        if underpowered:
+            verdict = source_warning + (
+                f"EFFECT (UNDER-POWERED — fewer than {MIN_RUNS} runs/arm; this delta may be LLM/sampling "
+                f"noise, re-run ≥{MIN_RUNS}x to confirm): {body}. (Runtime excluded.)"
+            )
+        else:
+            verdict = source_warning + f"EFFECT MEASURED on real behavioural deltas: {body}. (Runtime is informational jitter, excluded.)"
 
     return {
-        "schema_version": "1.1",
+        "schema_version": "1.2",
         "arms": {"on": on, "off": off},
         "world_model_effect": effect,
         "verdict": verdict,
         "integrity_notes": [
             "Verdict driven ONLY by behavioural deltas: experiment runs + claim verdicts. Runtime jitter and Qwen free-text differences NEVER trigger an effect.",
-            "Metrics are ACTUALS computed identically for both arms; counterfactual 'saved_remaining_runs' is NOT used.",
-            "wm_source proves the arm: qwen_agentworld (ON) vs plumbing_not_called (OFF).",
+            "Metrics are ACTUALS computed identically for both arms; counterfactual 'saved_remaining_runs' is NOT used; claims are de-duplicated before counting.",
+            f"Each arm must be repeated >= {MIN_RUNS}x; a delta from fewer runs is flagged UNDER-POWERED (could be noise).",
+            "Arm sources are validated: ON must be qwen_agentworld, OFF plumbing_not_called — otherwise the verdict is prefixed with a mislabel warning.",
             "qwen_text_differs is informational: the world model can emit different prose while the structured recommendation stays 'run' (same decision) -> that is NOT an effect.",
         ],
     }

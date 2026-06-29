@@ -168,11 +168,16 @@ def main() -> None:
     )
 
     verdict_word = "weakly_supported" if supported else "blocked"
-    claim_text = (
-        "Feature scaling improves logistic regression accuracy on breast_cancer beyond seed noise."
-        if SCENARIO == "scaling"
-        else f"'{best_condition}' is the best model on breast_cancer beyond seed noise."
-    )
+    if SCENARIO == "scaling":
+        claim_text = "Feature scaling improves logistic regression accuracy on breast_cancer beyond seed noise."
+    else:
+        # close_models compares the two CLOSEST candidates (not the overall top model),
+        # so the claim is scoped to that pair — never an overall "best model" claim.
+        other = next((k for k in condition_means if k != best_condition), "the other candidate")
+        claim_text = (
+            f"Between the two closest candidates, '{best_condition}' beats '{other}' on "
+            f"breast_cancer beyond seed noise (close-pair comparison, not a best-model-overall claim)."
+        )
     claim = LabClaim(
         claim_id="claim_000",
         hypothesis_id="hyp_scaling" if SCENARIO == "scaling" else "hyp_best_model",

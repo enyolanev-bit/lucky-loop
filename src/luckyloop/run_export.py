@@ -262,10 +262,17 @@ def _traces(ws: Workspace) -> list[dict]:
 
 
 def _ranked_conditions(ws: Workspace) -> list[tuple[str, float, float]]:
-    """(condition, mean, std) sorted best-first, from the real analysis."""
+    """(condition, mean, std) sorted best-first, from the real analysis.
+    A condition whose mean is missing is skipped, never coerced to 0.0
+    (std absent -> 0.0 is honest: it means no measured spread)."""
     means = ws.analysis.get("condition_means") or {}
     stds = ws.analysis.get("condition_stds") or {}
-    items = [(name, float(mean), float(stds.get(name, 0.0))) for name, mean in means.items()]
+    items: list[tuple[str, float, float]] = []
+    for name, mean in means.items():
+        if mean is None:
+            continue
+        std = stds.get(name)
+        items.append((name, float(mean), float(std) if std is not None else 0.0))
     items.sort(key=lambda t: t[1], reverse=True)
     return items
 
@@ -286,14 +293,16 @@ def _predictions(ws: Workspace) -> list[dict]:
     # Candidate MODELS ranked before compute. Prefer the real top_model_summary
     # (each candidate carries its real mean metric and, when present, real std).
     models = ws.top_models.get("top_models") or []
-    ranked = [
-        (
-            m.get("config") or m.get("model_key") or m.get("model", "model"),
-            float(m.get("metric", 0.0)),
-            float(m.get("metric_std", 0.0)),
-        )
-        for m in models
-    ]
+    ranked: list[tuple[str, float, float]] = []
+    for m in models:
+        metric = m.get("metric")
+        if metric is None:
+            # No real metric -> skip; never invent accLow/accHigh/probability from 0.0.
+            ws.warn(f"predictions: candidate without a metric skipped ({m.get('config') or m.get('model_key') or m.get('model')})")
+            continue
+        config = m.get("config") or m.get("model_key") or m.get("model", "model")
+        std = m.get("metric_std")
+        ranked.append((config, float(metric), float(std) if std is not None else 0.0))
     ranked.sort(key=lambda t: t[1], reverse=True)
     if not ranked:
         # Fall back to the protocol's condition means if no model summary exists.
@@ -367,15 +376,22 @@ def _verdict(ws: Workspace) -> dict:
     # Sober lab label, derived from the REAL verdict.
     title_lab = "EFFECT EXCEEDS NOISE" if confirmed else "NO SIGNIFICANT DIFFERENCE"
 
-    # Gothic flavour (presentation) wraps the REAL effect/noise numbers.
-    if effect is not None and noise is not None and not confirmed:
+    # Gothic flavour (presentation) wraps the REAL effect/noise numbers — but ONLY
+    # when both are present. With no numeric analysis we never assert a comparison
+    # ("clears/within seed noise"); we fall back to the claim's own real text.
+    have_numbers = effect is not None and noise is not None
+    if have_numbers and not confirmed:
         reason = (
             f"Best mean leads, but the effect ({_round(effect)}) lies within seed noise "
             f"({_round(noise)}). A single split is an omen, not a truth."
         )
-    elif confirmed:
+    elif have_numbers and confirmed:
         reason = f"The effect ({_round(effect)}) clears seed noise ({_round(noise)}). The claim stands."
     else:
+        ws.warn(
+            "verdict: claim has no effect_size/seed_noise — effect/noise reported as 0.0 and the "
+            "reason falls back to the claim's own text (no fabricated numeric comparison)."
+        )
         reason = reason_lab
 
     return {
