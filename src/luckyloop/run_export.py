@@ -209,11 +209,12 @@ def _papers(ws: Workspace) -> list[dict]:
         url = source.get("url", "")
         arxiv_id, _ = _extract_arxiv_id(url)
         ref = f"arXiv:{arxiv_id}" if arxiv_id else (source.get("citation_id") or "")
-        # Authors come from the real catalogue; absent -> empty, never invented.
-        authors = source.get("authors")
-        if isinstance(authors, list):
-            authors = " · ".join(authors)
-        authors = authors or authors_by_id.get(arxiv_id, "")
+        # Prefer the curated catalogue's (verified, real) authors by arxiv id;
+        # fall back to whatever the source carried. Never invented.
+        src_authors = source.get("authors")
+        if isinstance(src_authors, list):
+            src_authors = " · ".join(src_authors)
+        authors = authors_by_id.get(arxiv_id) or src_authors or ""
         papers.append(
             {
                 "title": source.get("title", ""),

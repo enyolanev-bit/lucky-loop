@@ -7,7 +7,7 @@
   "predictions": [
     {
       "rank": 1,
-      "id": "s_60F561F",
+      "id": "s_10227D8",
       "config": "randomforestclassifier",
       "accLow": 0.9189,
       "accHigh": 0.9269,
@@ -19,7 +19,7 @@
     },
     {
       "rank": 2,
-      "id": "s_DD6A59D",
+      "id": "s_0312B3B",
       "config": "gradientboostingclassifier",
       "accLow": 0.7953,
       "accHigh": 0.8079,
@@ -31,7 +31,7 @@
     },
     {
       "rank": 3,
-      "id": "s_FB65F05",
+      "id": "s_65D7D31",
       "config": "logisticregression",
       "accLow": 0.521,
       "accHigh": 0.6213,
@@ -43,7 +43,7 @@
     },
     {
       "rank": 4,
-      "id": "s_3553B33",
+      "id": "s_A4D1586",
       "config": "svc",
       "accLow": 0.4657,
       "accHigh": 0.6451,
@@ -183,13 +183,13 @@
   "papers": [
     {
       "title": "Agent Laboratory: Using LLM Agents as Research Assistants",
-      "authors": "Agent Laboratory authors",
+      "authors": "Samuel Schmidgall et al.",
       "ref": "arXiv:2501.04227",
       "url": "https://arxiv.org/abs/2501.04227"
     },
     {
       "title": "AI Scientists Fail Without Strong Implementation Capability",
-      "authors": "AI scientist critique authors",
+      "authors": "Minjun Zhu et al.",
       "ref": "arXiv:2506.01372",
       "url": "https://arxiv.org/abs/2506.01372"
     },
@@ -201,19 +201,19 @@
     },
     {
       "title": "AI Research Agents for Machine Learning: Search, Exploration, and Generalization in MLE-bench",
-      "authors": "MLE-bench research agents authors",
+      "authors": "Edan Toledo et al.",
       "ref": "arXiv:2507.02554",
       "url": "https://arxiv.org/abs/2507.02554"
     },
     {
       "title": "The AI Scientist: Towards Fully Automated Open-Ended Scientific Discovery",
-      "authors": "Sakana AI",
+      "authors": "Chris Lu et al.",
       "ref": "arXiv:2408.06292",
       "url": "https://arxiv.org/abs/2408.06292"
     },
     {
       "title": "MLE-bench: Evaluating Machine Learning Agents on Machine Learning Engineering",
-      "authors": "OpenAI",
+      "authors": "Jun Shern Chan et al.",
       "ref": "arXiv:2410.07095",
       "url": "https://arxiv.org/abs/2410.07095"
     }
