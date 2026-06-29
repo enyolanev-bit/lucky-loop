@@ -89,7 +89,7 @@ def main() -> None:
         heading(f"Lucky Loop update - {now}", 2),
         paragraph(status),
         bullet("Qwen-AgentWorld-35B-A3B is running on Team Pegasus MI300X through vLLM."),
-        bullet("Endpoint: http://134.199.205.222:8000/v1"),
+        bullet("Endpoint: http://YOUR_SIMULATOR_HOST:8000/v1"),
         bullet("CLI loop verified: prediction -> real execution -> comparison -> next decision -> report."),
         bullet("Artifacts: runs/run_001.json ... run_005.json and reports/final_report.md."),
         bullet(f"Next: {next_step}"),
