@@ -167,8 +167,8 @@ function updateUI(data) {
       const actionData = pred.action || {};
       const stateId = (actionData.action_id || "STATE_UNKNOWN").substring(0, 16).toUpperCase();
       const descText = actionData.kind ? actionData.kind.replace(/_/g, ' ') : "Unknown Action";
-      let badgeHtml = '<span class="badge anomaly">ANOMALY</span>';
-      
+      let badgeHtml = '<span class="badge anomaly">FLAGGED</span>';
+
       if (prob > 0.6) badgeHtml = '<span class="badge done">LIKELY</span>';
       else if (prob < 0.4) badgeHtml = '<span class="badge low-confidence">LOW CONF</span>';
 
@@ -184,7 +184,7 @@ function updateUI(data) {
             <div class="pred-progress"><div class="pred-progress-bar bg-red" style="width: ${probPercent}%;"></div></div>
             <div class="branch-footer">
               ${badgeHtml}
-              <span class="desc"><span class="gicon skull-micro"></span> ${descText}</span>
+              <span class="desc">${descText}</span>
             </div>
           </div>
         </div>
@@ -220,9 +220,9 @@ function updateUI(data) {
       verdictDesc.textContent = "The empirical evidence supports the hypothesis. Nonlinear gains are validated.";
     }
   } else {
-    verdictTitle.textContent = "SUFFERING IS INEVITABLE.";
-    verdictTitle.style.color = "var(--red)";
-    verdictDesc.textContent = "The path ahead bleeds. Resistance is a prelude to ruin.";
+    verdictTitle.textContent = "AWAITING VERDICT";
+    verdictTitle.style.color = "var(--text-muted)";
+    verdictDesc.textContent = "Run a query — the verifier reports only claims that survive real execution.";
   }
 
   // Update Papers List
@@ -420,15 +420,20 @@ window.addEventListener("load", () => {
     .then(config => renderModel(config.models || {}))
     .catch(() => {});
 
-  // Load the most recent run automatically
-  fetch("/api/previous-runs")
-    .then(res => res.json())
-    .then(runs => {
-      if (runs && runs.length > 0) {
-        loadRun(runs[0].slug);
-      }
-    })
-    .catch(err => console.error(err));
+  // Load a specific run if ?slug= is given, else the most recent run.
+  const requestedSlug = new URLSearchParams(window.location.search).get("slug");
+  if (requestedSlug) {
+    loadRun(requestedSlug);
+  } else {
+    fetch("/api/previous-runs")
+      .then(res => res.json())
+      .then(runs => {
+        if (runs && runs.length > 0) {
+          loadRun(runs[0].slug);
+        }
+      })
+      .catch(err => console.error(err));
+  }
   
   // Make helper functions globally accessible for HTML onclick bindings
   window.loadRun = loadRun;

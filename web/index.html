@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Curze Oracle</title>
+  <title>Lucky Loop — Predict before compute. Verify before claim.</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -16,9 +16,9 @@
   <!-- TOPBAR -->
   <header class="topbar">
     <div class="logo-area">
-      <div class="gicon logo-skull"></div>
+      <div class="logo-mark"></div>
       <div class="logo-text">
-        <h1>CURZE ORACLE</h1>
+        <h1>LUCKY LOOP</h1>
         <p>WORLD MODEL • PREDICT NEXT STATES</p>
       </div>
     </div>
@@ -44,7 +44,6 @@
         <button type="button" class="gicon icon-btn tower"></button>
         <button type="button" class="gicon icon-btn cog"></button>
         <button type="button" class="gicon icon-btn question"></button>
-        <button type="button" class="gicon icon-btn skull-mini"></button>
       </div>
     </div>
   </header>
@@ -52,7 +51,7 @@
   <!-- LEFT SIDEBAR -->
   <nav class="sidebar">
     <button type="button" class="nav-item active" data-target="#ask-form"><div class="icon-wrapper"><div class="gicon query"></div></div><span>QUERY</span></button>
-    <button type="button" class="nav-item" data-target="#pipeline-panel"><div class="icon-wrapper"><div class="gicon goons"></div></div><span>GOONS</span></button>
+    <button type="button" class="nav-item" data-target="#pipeline-panel"><div class="icon-wrapper"><div class="gicon goons"></div></div><span>PIPELINE</span></button>
     <button type="button" class="nav-item" data-target="#papers-list"><div class="icon-wrapper"><div class="gicon paper"></div></div><span>PAPERS</span></button>
     <button type="button" class="nav-item" data-target="#trace-rows"><div class="icon-wrapper"><div class="gicon trace"></div></div><span>TRACES</span></button>
     <button type="button" class="nav-item" data-target="#predicted-branches"><div class="icon-wrapper"><div class="gicon state"></div></div><span>STATES</span></button>
@@ -64,7 +63,7 @@
   <main class="center-stage">
     
     <!-- Prediction Map -->
-    <div class="prediction-map" style="background-image: url('assets/new-bg.png');">
+    <div class="prediction-map">
       <div class="current-state-panel">
         <h3>CURRENT STATE</h3>
         <div class="state-details" id="current-state-copy">
@@ -102,8 +101,8 @@
             </div>
             <div class="pred-progress"><div class="pred-progress-bar bg-red" style="width: 62%;"></div></div>
             <div class="branch-footer">
-              <span class="badge anomaly">ANOMALY</span>
-              <span class="desc"><span class="gicon skull-micro"></span> Structural Collapse</span>
+              <span class="badge done">LIKELY</span>
+              <span class="desc">run protocol</span>
             </div>
           </div>
         </div>
@@ -119,8 +118,8 @@
             </div>
             <div class="pred-progress"><div class="pred-progress-bar bg-red" style="width: 24%;"></div></div>
             <div class="branch-footer">
-              <span class="badge anomaly">ANOMALY</span>
-              <span class="desc"><span class="gicon skull-micro"></span> Civic Unrest</span>
+              <span class="badge low-confidence">LOW CONF</span>
+              <span class="desc">run baseline</span>
             </div>
           </div>
         </div>
@@ -136,8 +135,8 @@
             </div>
             <div class="pred-progress"><div class="pred-progress-bar bg-red" style="width: 14%;"></div></div>
             <div class="branch-footer">
-              <span class="badge low-confidence">LOW CONFIDENCE</span>
-              <span class="desc"><span class="gicon skull-micro"></span> Data Sparse</span>
+              <span class="badge low-confidence">LOW CONF</span>
+              <span class="desc">dry run</span>
             </div>
           </div>
         </div>
@@ -149,15 +148,14 @@
       <div class="verdict-icon-left"><div class="gicon verdict-icon"></div></div>
       <div class="verdict-text">
         <span class="lbl">VERDICT (TOP OUTCOME)</span>
-        <h2 id="verdict-title">SUFFERING IS INEVITABLE.</h2>
-        <p id="verdict-desc">The path ahead bleeds. Resistance is a prelude to ruin.</p>
+        <h2 id="verdict-title">AWAITING VERDICT</h2>
+        <p id="verdict-desc">Run a query — the verifier reports only claims that survive real execution.</p>
       </div>
-      <div class="verdict-icon-right"><div class="gicon winged"></div></div>
     </div>
 
     <!-- Ask Bar -->
     <form class="ask-bar" id="ask-form">
-      <input type="text" id="question" placeholder="Ask Curze..." autocomplete="off">
+      <input type="text" id="question" placeholder="Ask Lucky Loop a research question..." autocomplete="off">
       <label class="turns-control">
         <span>TURNS</span>
         <input type="number" id="turn-count" min="1" max="32" step="1" value="8">
@@ -167,15 +165,13 @@
 
   </main>
 
-  <!-- RIGHT SIDEBAR: GOON RUN -->
+  <!-- RIGHT SIDEBAR: AUTO-RESEARCH RUN -->
   <aside class="right-stage goon-run-panel" id="pipeline-panel">
     <header class="goon-header">
-      <div class="gicon skull-mini"></div>
       <div>
-        <h2>GOON RUN</h2>
-        <p>AUTO-RESEARCH PIPELINE</p>
+        <h2>AUTO-RESEARCH RUN</h2>
+        <p>PIPELINE</p>
       </div>
-      <div class="gicon skull-mini"></div>
     </header>
     
     <ul class="pipeline-steps" id="pipeline">
@@ -219,7 +215,7 @@
 
     <div class="live-log-container">
       <header>
-        <span>GOON RUN LOG (LIVE)</span>
+        <span>RUN LOG (LIVE)</span>
         <button type="button" id="clear-log">CLEAR</button>
       </header>
       <pre id="live-log" class="monospace">System idle. Ready to initiate sequence.</pre>
@@ -281,9 +277,9 @@
   <!-- FOOTER -->
   <footer class="app-footer">
     <div class="footer-left">
-      <span>USER: NIGHT HAUNTER</span>
+      <span>TEAM PEGASUS</span>
       <span class="dot">•</span>
-      <span>CLEARANCE: <span class="text-red">DREAD</span></span>
+      <span>TRACK 3 — AUTONOMOUS RESEARCH</span>
     </div>
     <div class="footer-center">
       <span>QUERY ID: <span id="status-query-id" class="monospace">PENDING</span></span>
@@ -294,8 +290,7 @@
     </div>
     <div class="footer-right">
       <button type="button" id="download-report" class="report-download" disabled>DOWNLOAD REPORT</button>
-      <span class="text-red tagline">THE FUTURE IS A CRIME.</span>
-      <div class="gicon skull-mini"></div>
+      <span class="tagline">PREDICT BEFORE COMPUTE. VERIFY BEFORE CLAIM.</span>
     </div>
   </footer>
 

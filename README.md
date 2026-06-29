@@ -1,7 +1,7 @@
 # Lucky Loop
 
 <p align="center">
-  <img src="docs/assets/readme/dashboard-tour.gif" alt="Lucky Loop dashboard tour" width="960">
+  <img src="docs/assets/readme/dashboard.png" alt="Lucky Loop dashboard — OPEN-CAN-A run, claim blocked by the verifier" width="960">
 </p>
 
 <p align="center">
@@ -51,24 +51,20 @@ Most auto-research demos look good after the fact. They run something, read the 
 
 The frontend is a static HTML/CSS/JS dashboard served by `web/server.py`. There is no Node build step.
 
-<p align="center">
-  <img src="docs/assets/readme/dashboard.png" alt="Lucky Loop full dashboard" width="960">
-</p>
-
 Key UI areas:
 
 - Command bar: submit a research question and budget.
 - Prediction map: shows current state and latest Qwen-AgentWorld predicted branches.
-- Goon run panel: live backend stages and event log.
+- Pipeline panel: live backend stages and event log.
 - Papers table: literature sources found during the run.
 - Clean traces: execution and verification events.
 - State diffs: compact prediction state deltas.
 - Verdict banner: claim supported or claim blocked.
 - Download report: exports a complete Markdown run report.
 
-| Prediction map | Goon run | Evidence tables |
+| Prediction map | Pipeline | Evidence tables |
 | --- | --- | --- |
-| <img src="docs/assets/readme/prediction-map.png" alt="Prediction map" width="310"> | <img src="docs/assets/readme/goon-run.png" alt="Goon run panel" width="190"> | <img src="docs/assets/readme/evidence-tables.png" alt="Evidence tables" width="310"> |
+| <img src="docs/assets/readme/prediction-map.png" alt="Prediction map" width="310"> | <img src="docs/assets/readme/run-pipeline.png" alt="Auto-research pipeline panel" width="190"> | <img src="docs/assets/readme/evidence-tables.png" alt="Evidence tables" width="310"> |
 
 ## Quickstart
 
