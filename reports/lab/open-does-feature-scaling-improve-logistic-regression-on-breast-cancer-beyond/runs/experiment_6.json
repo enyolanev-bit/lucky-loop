@@ -1,0 +1,93 @@
+{
+  "status": "completed",
+  "protocol_id": "generated_ml_research_protocol",
+  "dataset": "eeg_eye_state",
+  "dataset_source": "openml",
+  "lab_action": "open-does-feature-scaling-improve-logistic-regression-on-breast-cancer-beyond",
+  "primary_metric": "balanced_accuracy",
+  "runs": [
+    {
+      "seed": 42,
+      "scaler": "No feature scaling",
+      "model": "logisticregression",
+      "balanced_accuracy": 1.0,
+      "accuracy": 1.0,
+      "f1_macro": 1.0,
+      "precision_macro": 1.0,
+      "recall_macro": 1.0
+    },
+    {
+      "seed": 42,
+      "scaler": "No feature scaling",
+      "model": "svc",
+      "balanced_accuracy": 1.0,
+      "accuracy": 1.0,
+      "f1_macro": 1.0,
+      "precision_macro": 1.0,
+      "recall_macro": 1.0
+    },
+    {
+      "seed": 42,
+      "scaler": "StandardScaler",
+      "model": "logisticregression",
+      "balanced_accuracy": 1.0,
+      "accuracy": 1.0,
+      "f1_macro": 1.0,
+      "precision_macro": 1.0,
+      "recall_macro": 1.0
+    },
+    {
+      "seed": 42,
+      "scaler": "StandardScaler",
+      "model": "svc",
+      "balanced_accuracy": 0.98,
+      "accuracy": 0.9833333333333333,
+      "f1_macro": 0.9827536648462202,
+      "precision_macro": 0.9861111111111112,
+      "recall_macro": 0.98
+    },
+    {
+      "seed": 42,
+      "scaler": "MinMaxScaler",
+      "model": "logisticregression",
+      "balanced_accuracy": 1.0,
+      "accuracy": 1.0,
+      "f1_macro": 1.0,
+      "precision_macro": 1.0,
+      "recall_macro": 1.0
+    },
+    {
+      "seed": 42,
+      "scaler": "MinMaxScaler",
+      "model": "svc",
+      "balanced_accuracy": 0.98,
+      "accuracy": 0.9833333333333333,
+      "f1_macro": 0.9827536648462202,
+      "precision_macro": 0.9861111111111112,
+      "recall_macro": 0.98
+    }
+  ],
+  "summary": {
+    "mean_balanced_accuracy": 0.9933333333333335,
+    "mean_accuracy": 0.9944444444444445,
+    "mean_f1_macro": 0.9942512216154067,
+    "mean_precision_macro": 0.9953703703703702,
+    "mean_recall_macro": 0.9933333333333335
+  },
+  "effect_size": null,
+  "seed_noise": null,
+  "effect_to_noise_ratio": null,
+  "best_condition": {
+    "seed": 42,
+    "scaler": "No feature scaling",
+    "model": "logisticregression",
+    "balanced_accuracy": 1.0,
+    "accuracy": 1.0,
+    "f1_macro": 1.0,
+    "precision_macro": 1.0,
+    "recall_macro": 1.0
+  },
+  "protocol_warnings": [],
+  "artifacts": [],
+  "runtime_seconds": 0.06343817710876465
+}

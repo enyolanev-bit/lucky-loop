@@ -1,0 +1,4 @@
+{
+  "state_id": "s_D9FDCE4",
+  "summary": "Best condition '+ StandardScaler' mean=0.9807 vs raw 0.9579; effect=0.0228, seed_noise=0.0066 over seeds [0, 1, 2, 3, 4]."
+}

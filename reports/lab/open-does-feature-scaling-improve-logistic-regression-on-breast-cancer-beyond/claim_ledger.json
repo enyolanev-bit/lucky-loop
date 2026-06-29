@@ -1,0 +1,21 @@
+[
+  {
+    "allowed_rewrite": null,
+    "claim": "Feature scaling improves logistic regression performance on breast cancer detection beyond seed noise.",
+    "claim_id": "experiment_008:robustness",
+    "diagnostic": null,
+    "evidence_ids": [
+      "experiment_008"
+    ],
+    "failure_category": null,
+    "hypothesis_id": "H1_generated",
+    "metrics": {
+      "effect_size": 0.09520110600987575,
+      "effect_to_noise_ratio": 8.341017952258788,
+      "seed_noise": 0.011413607614175536
+    },
+    "next_action": null,
+    "reason": "The measured effect exceeded seed noise by the support threshold.",
+    "verdict": "supported"
+  }
+]

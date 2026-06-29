@@ -1,0 +1,66 @@
+{
+  "study_id": "s_9806591",
+  "study_inference": {
+    "queries": [
+      "feature scaling logistic regression breast_cancer"
+    ],
+    "included_sources": [
+      {
+        "citation_id": "arxiv_2606_24597",
+        "title": "Qwen-AgentWorld: Language World Models for General Agents",
+        "authors": [
+          "Qwen Team"
+        ],
+        "url": "https://arxiv.org/abs/2606.24597",
+        "abstract": "Frames language world models as predictors of environment dynamics from state and action. Lucky Loop applies this idea to experiment outcomes.",
+        "used_for": [
+          "world_model_framing",
+          "state_action_prediction"
+        ],
+        "relevance_score": 0.9
+      },
+      {
+        "citation_id": "arxiv_2408_06292",
+        "title": "The AI Scientist: Towards Fully Automated Open-Ended Scientific Discovery",
+        "authors": [
+          "Sakana AI"
+        ],
+        "url": "https://arxiv.org/abs/2408.06292",
+        "abstract": "An autonomous scientific discovery system that generates ideas, writes code, runs experiments, and drafts papers. Useful as a baseline for end-to-end AI scientist workflows.",
+        "used_for": [
+          "autonomous_research_baseline",
+          "end_to_end_loop"
+        ],
+        "relevance_score": 0.9
+      },
+      {
+        "citation_id": "arxiv_2501_04227",
+        "title": "Agent Laboratory: Using LLM Agents as Research Assistants",
+        "authors": [
+          "Agent Laboratory authors"
+        ],
+        "url": "https://arxiv.org/abs/2501.04227",
+        "abstract": "A multi-agent research assistant workflow covering literature review, experiments, and report writing.",
+        "used_for": [
+          "autonomous_research_baseline",
+          "literature_to_report_loop"
+        ],
+        "relevance_score": 0.9
+      },
+      {
+        "citation_id": "arxiv_2410_07095",
+        "title": "MLE-bench: Evaluating Machine Learning Agents on Machine Learning Engineering",
+        "authors": [
+          "OpenAI"
+        ],
+        "url": "https://arxiv.org/abs/2410.07095",
+        "abstract": "A benchmark for ML engineering agents where agents search over real machine learning experiment spaces and are evaluated by task performance.",
+        "used_for": [
+          "ml_agent_baseline",
+          "score_based_evaluation"
+        ],
+        "relevance_score": 0.9
+      }
+    ]
+  }
+}

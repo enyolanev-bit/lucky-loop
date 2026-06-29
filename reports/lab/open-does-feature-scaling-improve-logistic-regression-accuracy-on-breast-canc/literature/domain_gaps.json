@@ -1,0 +1,18 @@
+[
+  {
+    "gap_id": "domain_gap_model_comparison",
+    "claim": "The literature context must establish whether nonlinear models are actually expected to improve the selected ML task over simple baselines.",
+    "source_ids": [],
+    "implication": "Generate hypotheses from domain-specific evidence rather than Lucky Loop meta-literature.",
+    "metric": "domain_source_coverage",
+    "experiment": "Compare baseline and nonlinear model families on a dataset selected for the user question."
+  },
+  {
+    "gap_id": "domain_gap_robustness",
+    "claim": "Claims about the selected ML task performance require robustness checks across splits or seeds, not a single score.",
+    "source_ids": [],
+    "implication": "Use repeated seeds and block claims whose effect is within run-to-run noise.",
+    "metric": "effect_to_noise_ratio",
+    "experiment": "Run matched repeated-seed comparisons and verify effect size against seed noise."
+  }
+]

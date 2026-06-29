@@ -1,0 +1,752 @@
+{
+  "status": "completed",
+  "protocol_id": "generated_ml_research_protocol",
+  "dataset": "eeg_eye_state",
+  "dataset_source": "openml",
+  "lab_action": "open-does-feature-scaling-improve-logistic-regression-accuracy-on-breast-canc",
+  "primary_metric": "balanced_accuracy",
+  "runs": [
+    {
+      "seed": 42,
+      "model": "logisticregression",
+      "scaler": "No feature scaling",
+      "metrics": {
+        "balanced_accuracy": 0.6195323775834856,
+        "accuracy": 0.6345126835781041,
+        "f1_macro": 0.6176600673047506,
+        "precision_macro": 0.631569999028466,
+        "recall_macro": 0.6195323775834856
+      }
+    },
+    {
+      "seed": 42,
+      "model": "logisticregression",
+      "scaler": "StandardScaler",
+      "metrics": {
+        "balanced_accuracy": 0.5648582924846719,
+        "accuracy": 0.585113484646195,
+        "f1_macro": 0.5560146390076834,
+        "precision_macro": 0.5771416083916083,
+        "recall_macro": 0.5648582924846719
+      }
+    },
+    {
+      "seed": 42,
+      "model": "logisticregression",
+      "scaler": "MinMaxScaler",
+      "metrics": {
+        "balanced_accuracy": 0.5034851019659146,
+        "accuracy": 0.5524032042723631,
+        "f1_macro": 0.377216426048601,
+        "precision_macro": 0.5425434835191416,
+        "recall_macro": 0.5034851019659146
+      }
+    },
+    {
+      "seed": 42,
+      "model": "gradientboostingclassifier",
+      "scaler": "No feature scaling",
+      "metrics": {
+        "balanced_accuracy": 0.8098142614929782,
+        "accuracy": 0.8174232309746329,
+        "f1_macro": 0.8127965228019773,
+        "precision_macro": 0.8210501754647951,
+        "recall_macro": 0.8098142614929782
+      }
+    },
+    {
+      "seed": 42,
+      "model": "gradientboostingclassifier",
+      "scaler": "StandardScaler",
+      "metrics": {
+        "balanced_accuracy": 0.8098142614929782,
+        "accuracy": 0.8174232309746329,
+        "f1_macro": 0.8127965228019773,
+        "precision_macro": 0.8210501754647951,
+        "recall_macro": 0.8098142614929782
+      }
+    },
+    {
+      "seed": 42,
+      "model": "gradientboostingclassifier",
+      "scaler": "MinMaxScaler",
+      "metrics": {
+        "balanced_accuracy": 0.8098142614929782,
+        "accuracy": 0.8174232309746329,
+        "f1_macro": 0.8127965228019773,
+        "precision_macro": 0.8210501754647951,
+        "recall_macro": 0.8098142614929782
+      }
+    },
+    {
+      "seed": 42,
+      "model": "randomforestclassifier",
+      "scaler": "No feature scaling",
+      "metrics": {
+        "balanced_accuracy": 0.923424802811859,
+        "accuracy": 0.9262349799732977,
+        "f1_macro": 0.9251236402624465,
+        "precision_macro": 0.9275713259301701,
+        "recall_macro": 0.923424802811859
+      }
+    },
+    {
+      "seed": 42,
+      "model": "randomforestclassifier",
+      "scaler": "StandardScaler",
+      "metrics": {
+        "balanced_accuracy": 0.9267288722166807,
+        "accuracy": 0.9295727636849133,
+        "f1_macro": 0.928499873378736,
+        "precision_macro": 0.9310747663551402,
+        "recall_macro": 0.9267288722166807
+      }
+    },
+    {
+      "seed": 42,
+      "model": "randomforestclassifier",
+      "scaler": "MinMaxScaler",
+      "metrics": {
+        "balanced_accuracy": 0.9272384203332891,
+        "accuracy": 0.9299065420560748,
+        "f1_macro": 0.9288680619904732,
+        "precision_macro": 0.9311746502672562,
+        "recall_macro": 0.9272384203332891
+      }
+    },
+    {
+      "seed": 42,
+      "model": "svc",
+      "scaler": "No feature scaling",
+      "metrics": {
+        "balanced_accuracy": 0.5,
+        "accuracy": 0.5510680907877169,
+        "f1_macro": 0.35528297826554767,
+        "precision_macro": 0.27553404539385845,
+        "recall_macro": 0.5
+      }
+    },
+    {
+      "seed": 42,
+      "model": "svc",
+      "scaler": "StandardScaler",
+      "metrics": {
+        "balanced_accuracy": 0.666686856450636,
+        "accuracy": 0.6939252336448598,
+        "f1_macro": 0.6552911434080296,
+        "precision_macro": 0.7432750751887607,
+        "recall_macro": 0.666686856450636
+      }
+    },
+    {
+      "seed": 42,
+      "model": "svc",
+      "scaler": "MinMaxScaler",
+      "metrics": {
+        "balanced_accuracy": 0.5,
+        "accuracy": 0.5510680907877169,
+        "f1_macro": 0.35528297826554767,
+        "precision_macro": 0.27553404539385845,
+        "recall_macro": 0.5
+      }
+    },
+    {
+      "seed": 52,
+      "model": "logisticregression",
+      "scaler": "No feature scaling",
+      "metrics": {
+        "balanced_accuracy": 0.6255091540780736,
+        "accuracy": 0.6385180240320427,
+        "f1_macro": 0.6247935430595488,
+        "precision_macro": 0.6347961215010225,
+        "recall_macro": 0.6255091540780736
+      }
+    },
+    {
+      "seed": 52,
+      "model": "logisticregression",
+      "scaler": "StandardScaler",
+      "metrics": {
+        "balanced_accuracy": 0.6161882288305611,
+        "accuracy": 0.6298397863818425,
+        "f1_macro": 0.6149579996511801,
+        "precision_macro": 0.6256176031253591,
+        "recall_macro": 0.6161882288305611
+      }
+    },
+    {
+      "seed": 52,
+      "model": "logisticregression",
+      "scaler": "MinMaxScaler",
+      "metrics": {
+        "balanced_accuracy": 0.5603270745003028,
+        "accuracy": 0.5971295060080107,
+        "f1_macro": 0.5120544216952738,
+        "precision_macro": 0.6290080893682588,
+        "recall_macro": 0.5603270745003028
+      }
+    },
+    {
+      "seed": 52,
+      "model": "gradientboostingclassifier",
+      "scaler": "No feature scaling",
+      "metrics": {
+        "balanced_accuracy": 0.8033439235880473,
+        "accuracy": 0.8107476635514018,
+        "f1_macro": 0.806117274526125,
+        "precision_macro": 0.8136099192515122,
+        "recall_macro": 0.8033439235880473
+      }
+    },
+    {
+      "seed": 52,
+      "model": "gradientboostingclassifier",
+      "scaler": "StandardScaler",
+      "metrics": {
+        "balanced_accuracy": 0.8033439235880473,
+        "accuracy": 0.8107476635514018,
+        "f1_macro": 0.806117274526125,
+        "precision_macro": 0.8136099192515122,
+        "recall_macro": 0.8033439235880473
+      }
+    },
+    {
+      "seed": 52,
+      "model": "gradientboostingclassifier",
+      "scaler": "MinMaxScaler",
+      "metrics": {
+        "balanced_accuracy": 0.8033439235880473,
+        "accuracy": 0.8107476635514018,
+        "f1_macro": 0.806117274526125,
+        "precision_macro": 0.8136099192515122,
+        "recall_macro": 0.8033439235880473
+      }
+    },
+    {
+      "seed": 52,
+      "model": "randomforestclassifier",
+      "scaler": "No feature scaling",
+      "metrics": {
+        "balanced_accuracy": 0.922888009745136,
+        "accuracy": 0.9255674232309746,
+        "f1_macro": 0.9244708301608862,
+        "precision_macro": 0.9267032907113062,
+        "recall_macro": 0.922888009745136
+      }
+    },
+    {
+      "seed": 52,
+      "model": "randomforestclassifier",
+      "scaler": "StandardScaler",
+      "metrics": {
+        "balanced_accuracy": 0.9254902402284073,
+        "accuracy": 0.9279038718291055,
+        "f1_macro": 0.9268830713954828,
+        "precision_macro": 0.9287711988048664,
+        "recall_macro": 0.9254902402284073
+      }
+    },
+    {
+      "seed": 52,
+      "model": "randomforestclassifier",
+      "scaler": "MinMaxScaler",
+      "metrics": {
+        "balanced_accuracy": 0.9267016272665659,
+        "accuracy": 0.9292389853137517,
+        "f1_macro": 0.9282139891128378,
+        "precision_macro": 0.9303090538102317,
+        "recall_macro": 0.9267016272665659
+      }
+    },
+    {
+      "seed": 52,
+      "model": "svc",
+      "scaler": "No feature scaling",
+      "metrics": {
+        "balanced_accuracy": 0.5,
+        "accuracy": 0.5510680907877169,
+        "f1_macro": 0.35528297826554767,
+        "precision_macro": 0.27553404539385845,
+        "recall_macro": 0.5
+      }
+    },
+    {
+      "seed": 52,
+      "model": "svc",
+      "scaler": "StandardScaler",
+      "metrics": {
+        "balanced_accuracy": 0.7721299921867788,
+        "accuracy": 0.7837116154873164,
+        "f1_macro": 0.7754102153572784,
+        "precision_macro": 0.7926239967071413,
+        "recall_macro": 0.7721299921867788
+      }
+    },
+    {
+      "seed": 52,
+      "model": "svc",
+      "scaler": "MinMaxScaler",
+      "metrics": {
+        "balanced_accuracy": 0.5051083155640718,
+        "accuracy": 0.5554072096128171,
+        "f1_macro": 0.3684762235730441,
+        "precision_macro": 0.6815686274509805,
+        "recall_macro": 0.5051083155640718
+      }
+    },
+    {
+      "seed": 62,
+      "model": "logisticregression",
+      "scaler": "No feature scaling",
+      "metrics": {
+        "balanced_accuracy": 0.6208959760784835,
+        "accuracy": 0.6351802403204272,
+        "f1_macro": 0.6194565221812325,
+        "precision_macro": 0.6318526689678341,
+        "recall_macro": 0.6208959760784835
+      }
+    },
+    {
+      "seed": 62,
+      "model": "logisticregression",
+      "scaler": "StandardScaler",
+      "metrics": {
+        "balanced_accuracy": 0.5733524123039095,
+        "accuracy": 0.5937917222963952,
+        "f1_macro": 0.5646612796942854,
+        "precision_macro": 0.5877089256483157,
+        "recall_macro": 0.5733524123039095
+      }
+    },
+    {
+      "seed": 62,
+      "model": "logisticregression",
+      "scaler": "MinMaxScaler",
+      "metrics": {
+        "balanced_accuracy": 0.5003717472118959,
+        "accuracy": 0.5514018691588785,
+        "f1_macro": 0.3561023910388972,
+        "precision_macro": 0.7756260434056761,
+        "recall_macro": 0.5003717472118959
+      }
+    },
+    {
+      "seed": 62,
+      "model": "gradientboostingclassifier",
+      "scaler": "No feature scaling",
+      "metrics": {
+        "balanced_accuracy": 0.8059733990214335,
+        "accuracy": 0.8134178905206942,
+        "f1_macro": 0.8088123335362681,
+        "precision_macro": 0.8165116972412958,
+        "recall_macro": 0.8059733990214335
+      }
+    },
+    {
+      "seed": 62,
+      "model": "gradientboostingclassifier",
+      "scaler": "StandardScaler",
+      "metrics": {
+        "balanced_accuracy": 0.8056705522618939,
+        "accuracy": 0.8130841121495327,
+        "f1_macro": 0.8084906263412139,
+        "precision_macro": 0.8161066799299395,
+        "recall_macro": 0.8056705522618939
+      }
+    },
+    {
+      "seed": 62,
+      "model": "gradientboostingclassifier",
+      "scaler": "MinMaxScaler",
+      "metrics": {
+        "balanced_accuracy": 0.8056705522618939,
+        "accuracy": 0.8130841121495327,
+        "f1_macro": 0.8084906263412139,
+        "precision_macro": 0.8161066799299395,
+        "recall_macro": 0.8056705522618939
+      }
+    },
+    {
+      "seed": 62,
+      "model": "randomforestclassifier",
+      "scaler": "No feature scaling",
+      "metrics": {
+        "balanced_accuracy": 0.9253796842738096,
+        "accuracy": 0.928237650200267,
+        "f1_macro": 0.9271444207413662,
+        "precision_macro": 0.9297118380062306,
+        "recall_macro": 0.9253796842738096
+      }
+    },
+    {
+      "seed": 62,
+      "model": "randomforestclassifier",
+      "scaler": "StandardScaler",
+      "metrics": {
+        "balanced_accuracy": 0.9274723666404725,
+        "accuracy": 0.9302403204272364,
+        "f1_macro": 0.9291893249540784,
+        "precision_macro": 0.931658526825098,
+        "recall_macro": 0.9274723666404725
+      }
+    },
+    {
+      "seed": 62,
+      "model": "randomforestclassifier",
+      "scaler": "MinMaxScaler",
+      "metrics": {
+        "balanced_accuracy": 0.9264949259094972,
+        "accuracy": 0.9292389853137517,
+        "f1_macro": 0.9281788247213779,
+        "precision_macro": 0.9305886883417602,
+        "recall_macro": 0.9264949259094972
+      }
+    },
+    {
+      "seed": 62,
+      "model": "svc",
+      "scaler": "No feature scaling",
+      "metrics": {
+        "balanced_accuracy": 0.5,
+        "accuracy": 0.5510680907877169,
+        "f1_macro": 0.35528297826554767,
+        "precision_macro": 0.27553404539385845,
+        "recall_macro": 0.5
+      }
+    },
+    {
+      "seed": 62,
+      "model": "svc",
+      "scaler": "StandardScaler",
+      "metrics": {
+        "balanced_accuracy": 0.5956029802823117,
+        "accuracy": 0.6275033377837116,
+        "f1_macro": 0.5672409803041434,
+        "precision_macro": 0.6617145764824086,
+        "recall_macro": 0.5956029802823117
+      }
+    },
+    {
+      "seed": 62,
+      "model": "svc",
+      "scaler": "MinMaxScaler",
+      "metrics": {
+        "balanced_accuracy": 0.5,
+        "accuracy": 0.5510680907877169,
+        "f1_macro": 0.35528297826554767,
+        "precision_macro": 0.27553404539385845,
+        "recall_macro": 0.5
+      }
+    },
+    {
+      "seed": 72,
+      "model": "logisticregression",
+      "scaler": "No feature scaling",
+      "metrics": {
+        "balanced_accuracy": 0.6293340298433527,
+        "accuracy": 0.6448598130841121,
+        "f1_macro": 0.6274307769697265,
+        "precision_macro": 0.6436725948596759,
+        "recall_macro": 0.6293340298433527
+      }
+    },
+    {
+      "seed": 72,
+      "model": "logisticregression",
+      "scaler": "StandardScaler",
+      "metrics": {
+        "balanced_accuracy": 0.5772909963320642,
+        "accuracy": 0.5964619492656876,
+        "f1_macro": 0.5703192032640976,
+        "precision_macro": 0.5903037343839446,
+        "recall_macro": 0.5772909963320642
+      }
+    },
+    {
+      "seed": 72,
+      "model": "logisticregression",
+      "scaler": "MinMaxScaler",
+      "metrics": {
+        "balanced_accuracy": 0.5022304832713754,
+        "accuracy": 0.5530707610146862,
+        "f1_macro": 0.36018345161898957,
+        "precision_macro": 0.7760869565217392,
+        "recall_macro": 0.5022304832713754
+      }
+    },
+    {
+      "seed": 72,
+      "model": "gradientboostingclassifier",
+      "scaler": "No feature scaling",
+      "metrics": {
+        "balanced_accuracy": 0.7944219905025456,
+        "accuracy": 0.8027369826435247,
+        "f1_macro": 0.7973833390148608,
+        "precision_macro": 0.8065922357778478,
+        "recall_macro": 0.7944219905025456
+      }
+    },
+    {
+      "seed": 72,
+      "model": "gradientboostingclassifier",
+      "scaler": "StandardScaler",
+      "metrics": {
+        "balanced_accuracy": 0.7944219905025456,
+        "accuracy": 0.8027369826435247,
+        "f1_macro": 0.7973833390148608,
+        "precision_macro": 0.8065922357778478,
+        "recall_macro": 0.7944219905025456
+      }
+    },
+    {
+      "seed": 72,
+      "model": "gradientboostingclassifier",
+      "scaler": "MinMaxScaler",
+      "metrics": {
+        "balanced_accuracy": 0.7947248372620852,
+        "accuracy": 0.8030707610146862,
+        "f1_macro": 0.7977036056376198,
+        "precision_macro": 0.8070039155090654,
+        "recall_macro": 0.7947248372620852
+      }
+    },
+    {
+      "seed": 72,
+      "model": "randomforestclassifier",
+      "scaler": "No feature scaling",
+      "metrics": {
+        "balanced_accuracy": 0.9204091696144502,
+        "accuracy": 0.9238985313751669,
+        "f1_macro": 0.9226274726569226,
+        "precision_macro": 0.9261572971953896,
+        "recall_macro": 0.9204091696144502
+      }
+    },
+    {
+      "seed": 72,
+      "model": "randomforestclassifier",
+      "scaler": "StandardScaler",
+      "metrics": {
+        "balanced_accuracy": 0.9193628284311186,
+        "accuracy": 0.9228971962616822,
+        "f1_macro": 0.9216025843837943,
+        "precision_macro": 0.9251865143504187,
+        "recall_macro": 0.9193628284311186
+      }
+    },
+    {
+      "seed": 72,
+      "model": "randomforestclassifier",
+      "scaler": "MinMaxScaler",
+      "metrics": {
+        "balanced_accuracy": 0.9179174950857766,
+        "accuracy": 0.9212283044058746,
+        "f1_macro": 0.9199541000859038,
+        "precision_macro": 0.9231031208012842,
+        "recall_macro": 0.9179174950857766
+      }
+    },
+    {
+      "seed": 72,
+      "model": "svc",
+      "scaler": "No feature scaling",
+      "metrics": {
+        "balanced_accuracy": 0.5,
+        "accuracy": 0.5510680907877169,
+        "f1_macro": 0.35528297826554767,
+        "precision_macro": 0.27553404539385845,
+        "recall_macro": 0.5
+      }
+    },
+    {
+      "seed": 72,
+      "model": "svc",
+      "scaler": "StandardScaler",
+      "metrics": {
+        "balanced_accuracy": 0.6966092421175406,
+        "accuracy": 0.7169559412550067,
+        "f1_macro": 0.694635378530264,
+        "precision_macro": 0.7408962372162187,
+        "recall_macro": 0.6966092421175406
+      }
+    },
+    {
+      "seed": 72,
+      "model": "svc",
+      "scaler": "MinMaxScaler",
+      "metrics": {
+        "balanced_accuracy": 0.5,
+        "accuracy": 0.5510680907877169,
+        "f1_macro": 0.35528297826554767,
+        "precision_macro": 0.27553404539385845,
+        "recall_macro": 0.5
+      }
+    },
+    {
+      "seed": 82,
+      "model": "logisticregression",
+      "scaler": "No feature scaling",
+      "metrics": {
+        "balanced_accuracy": 0.6182264212969947,
+        "accuracy": 0.6311748998664887,
+        "f1_macro": 0.6173737366732719,
+        "precision_macro": 0.6267694794847577,
+        "recall_macro": 0.6182264212969947
+      }
+    },
+    {
+      "seed": 82,
+      "model": "logisticregression",
+      "scaler": "StandardScaler",
+      "metrics": {
+        "balanced_accuracy": 0.5548098595196332,
+        "accuracy": 0.5734312416555407,
+        "f1_macro": 0.547592445553539,
+        "precision_macro": 0.5631594651887486,
+        "recall_macro": 0.5548098595196332
+      }
+    },
+    {
+      "seed": 82,
+      "model": "logisticregression",
+      "scaler": "MinMaxScaler",
+      "metrics": {
+        "balanced_accuracy": 0.5007434944237918,
+        "accuracy": 0.55173564753004,
+        "f1_macro": 0.3569207336320476,
+        "precision_macro": 0.7757181028724115,
+        "recall_macro": 0.5007434944237918
+      }
+    },
+    {
+      "seed": 82,
+      "model": "gradientboostingclassifier",
+      "scaler": "No feature scaling",
+      "metrics": {
+        "balanced_accuracy": 0.795002015225649,
+        "accuracy": 0.8014018691588785,
+        "f1_macro": 0.7972049730070402,
+        "precision_macro": 0.8023371732388125,
+        "recall_macro": 0.795002015225649
+      }
+    },
+    {
+      "seed": 82,
+      "model": "gradientboostingclassifier",
+      "scaler": "StandardScaler",
+      "metrics": {
+        "balanced_accuracy": 0.7943963217065697,
+        "accuracy": 0.8007343124165555,
+        "f1_macro": 0.796563115795939,
+        "precision_macro": 0.8015622088099241,
+        "recall_macro": 0.7943963217065697
+      }
+    },
+    {
+      "seed": 82,
+      "model": "gradientboostingclassifier",
+      "scaler": "MinMaxScaler",
+      "metrics": {
+        "balanced_accuracy": 0.7943963217065697,
+        "accuracy": 0.8007343124165555,
+        "f1_macro": 0.796563115795939,
+        "precision_macro": 0.8015622088099241,
+        "recall_macro": 0.7943963217065697
+      }
+    },
+    {
+      "seed": 82,
+      "model": "randomforestclassifier",
+      "scaler": "No feature scaling",
+      "metrics": {
+        "balanced_accuracy": 0.9216221328067478,
+        "accuracy": 0.9235647530040053,
+        "f1_macro": 0.9225734517009467,
+        "precision_macro": 0.9237569520885233,
+        "recall_macro": 0.9216221328067478
+      }
+    },
+    {
+      "seed": 82,
+      "model": "randomforestclassifier",
+      "scaler": "StandardScaler",
+      "metrics": {
+        "balanced_accuracy": 0.9161837255330216,
+        "accuracy": 0.9185580774365821,
+        "f1_macro": 0.9174312216750949,
+        "precision_macro": 0.9190901484902696,
+        "recall_macro": 0.9161837255330216
+      }
+    },
+    {
+      "seed": 82,
+      "model": "randomforestclassifier",
+      "scaler": "MinMaxScaler",
+      "metrics": {
+        "balanced_accuracy": 0.9166099626451469,
+        "accuracy": 0.9195594125500668,
+        "f1_macro": 0.9183339785984614,
+        "precision_macro": 0.9208528037383178,
+        "recall_macro": 0.9166099626451469
+      }
+    },
+    {
+      "seed": 82,
+      "model": "svc",
+      "scaler": "No feature scaling",
+      "metrics": {
+        "balanced_accuracy": 0.5,
+        "accuracy": 0.5510680907877169,
+        "f1_macro": 0.35528297826554767,
+        "precision_macro": 0.27553404539385845,
+        "recall_macro": 0.5
+      }
+    },
+    {
+      "seed": 82,
+      "model": "svc",
+      "scaler": "StandardScaler",
+      "metrics": {
+        "balanced_accuracy": 0.594487738646624,
+        "accuracy": 0.6265020026702269,
+        "f1_macro": 0.5657000728685937,
+        "precision_macro": 0.6605372691242406,
+        "recall_macro": 0.594487738646624
+      }
+    },
+    {
+      "seed": 82,
+      "model": "svc",
+      "scaler": "MinMaxScaler",
+      "metrics": {
+        "balanced_accuracy": 0.5,
+        "accuracy": 0.5510680907877169,
+        "f1_macro": 0.35528297826554767,
+        "precision_macro": 0.27553404539385845,
+        "recall_macro": 0.5
+      }
+    }
+  ],
+  "summary": {
+    "mean_balanced_accuracy": 0.7127642929034786,
+    "std_balanced_accuracy": 0.16339596809244505
+  },
+  "effect_size": 0.7127642929034786,
+  "seed_noise": 0.16339596809244505,
+  "effect_to_noise_ratio": 4.3621902132873664,
+  "best_condition": {
+    "seed": 62,
+    "model": "randomforestclassifier",
+    "scaler": "StandardScaler",
+    "metrics": {
+      "balanced_accuracy": 0.9274723666404725,
+      "accuracy": 0.9302403204272364,
+      "f1_macro": 0.9291893249540784,
+      "precision_macro": 0.931658526825098,
+      "recall_macro": 0.9274723666404725
+    }
+  },
+  "protocol_warnings": [],
+  "artifacts": [],
+  "runtime_seconds": 127.0834629535675
+}

@@ -732,22 +732,37 @@ if __name__ == "__main__":
 
 
 def deterministic_decision(state: LabStudyState, actions: list[LabAction]) -> LabScientistDecision:
-    for preferred_kind in ["inspect_dataset", "run_protocol", "run_replication", "run_ablation", "stop_and_report"]:
+    if not actions:
+        raise ValueError("no candidate actions available")
+    # Preference order over the kinds candidate_actions_for_state can emit.
+    # `run_baseline` is placed after `run_protocol` so existing trajectories are
+    # unchanged when both are present; it is included so a baseline-only step is
+    # handled instead of crashing. Any other kind falls back to the first action.
+    preferred = ["inspect_dataset", "run_protocol", "run_baseline", "run_replication", "run_ablation", "stop_and_report"]
+    chosen = None
+    chosen_kind = None
+    for preferred_kind in preferred:
         for action in actions:
             if action.kind == preferred_kind:
-                return LabScientistDecision(
-                    source="deterministic",
-                    research_question=state.lab_question.question,
-                    working_hypothesis=state.hypotheses[0].claim_candidate if state.hypotheses else state.lab_question.question,
-                    candidate_action_ids=[candidate.action_id for candidate in actions],
-                    preferred_action_id=action.action_id,
-                    rationale=f"Deterministic planner chose the first {preferred_kind} action for plumbing.",
-                    expected_evidence_needed="Use the safe lab protocol output and verifier.",
-                    claim_risk="Deterministic mode is not a demo scientist; it is for local tests only.",
-                    stop_or_continue="stop_and_report" if action.kind == "stop_and_report" else "continue",
-                    prompt_version=PROMPT_VERSION,
-                )
-    raise ValueError("no candidate actions available")
+                chosen, chosen_kind = action, preferred_kind
+                break
+        if chosen is not None:
+            break
+    if chosen is None:
+        # Actions exist but none match the preferred kinds -> proceed gracefully.
+        chosen, chosen_kind = actions[0], actions[0].kind
+    return LabScientistDecision(
+        source="deterministic",
+        research_question=state.lab_question.question,
+        working_hypothesis=state.hypotheses[0].claim_candidate if state.hypotheses else state.lab_question.question,
+        candidate_action_ids=[candidate.action_id for candidate in actions],
+        preferred_action_id=chosen.action_id,
+        rationale=f"Deterministic planner chose the first {chosen_kind} action for plumbing.",
+        expected_evidence_needed="Use the safe lab protocol output and verifier.",
+        claim_risk="Deterministic mode is not a demo scientist; it is for local tests only.",
+        stop_or_continue="stop_and_report" if chosen.kind == "stop_and_report" else "continue",
+        prompt_version=PROMPT_VERSION,
+    )
 
 
 def decide_next_action(

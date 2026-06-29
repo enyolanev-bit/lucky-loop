@@ -1,0 +1,231 @@
+{
+  "question": "Does feature scaling improve logistic regression accuracy on breast_cancer? auto-research method safeguards",
+  "queries": [
+    "ti:\"AI Scientist\" OR abs:\"autonomous scientific discovery\"",
+    "all:\"Agent Laboratory\" \"research assistants\"",
+    "all:\"MLE-bench\" \"machine learning agents\"",
+    "all:\"Qwen-AgentWorld\" OR all:\"language world models\"",
+    "all:\"claim verification\" scientific claims"
+  ],
+  "papers": [
+    {
+      "title": "Agent Laboratory: Using LLM Agents as Research Assistants",
+      "authors": [
+        "Agent Laboratory authors"
+      ],
+      "year": 2025,
+      "url": "https://arxiv.org/abs/2501.04227",
+      "abstract": "A multi-agent research assistant workflow covering literature review, experiments, and report writing.",
+      "tags": [
+        "research agents",
+        "multi-agent",
+        "literature review"
+      ],
+      "source": "curated",
+      "arxiv_id": "2501.04227",
+      "arxiv_version": null,
+      "categories": [],
+      "relevance_score": 6.0,
+      "citation_id": "arxiv_2501_04227_2025",
+      "used_for": [
+        "autonomous_research_baseline",
+        "end_to_end_loop",
+        "literature_to_report_loop"
+      ],
+      "exclusion_reason": null
+    },
+    {
+      "title": "AI Scientists Fail Without Strong Implementation Capability",
+      "authors": [
+        "AI scientist critique authors"
+      ],
+      "year": 2025,
+      "url": "https://arxiv.org/abs/2506.01372",
+      "abstract": "Argues that autonomous scientist systems can fail when implementation quality, experimental validity, and claim discipline are weak.",
+      "tags": [
+        "verification",
+        "implementation",
+        "claim risk"
+      ],
+      "source": "curated",
+      "arxiv_id": "2506.01372",
+      "arxiv_version": null,
+      "categories": [],
+      "relevance_score": 6.0,
+      "citation_id": "arxiv_2506_01372_2025",
+      "used_for": [
+        "autonomous_research_baseline",
+        "claim_risk",
+        "implementation_validity"
+      ],
+      "exclusion_reason": null
+    },
+    {
+      "title": "Qwen-AgentWorld: Language World Models for General Agents",
+      "authors": [
+        "Qwen Team"
+      ],
+      "year": 2026,
+      "url": "https://arxiv.org/abs/2606.24597",
+      "abstract": "Frames language world models as predictors of environment dynamics from state and action. Lucky Loop applies this idea to experiment outcomes.",
+      "tags": [
+        "world models",
+        "agents",
+        "qwen"
+      ],
+      "source": "curated",
+      "arxiv_id": "2606.24597",
+      "arxiv_version": null,
+      "categories": [],
+      "relevance_score": 5.0,
+      "citation_id": "arxiv_2606_24597_2026",
+      "used_for": [
+        "state_action_prediction",
+        "world_model_framing"
+      ],
+      "exclusion_reason": null
+    },
+    {
+      "title": "AI Research Agents for Machine Learning: Search, Exploration, and Generalization in MLE-bench",
+      "authors": [
+        "MLE-bench research agents authors"
+      ],
+      "year": 2025,
+      "url": "https://arxiv.org/abs/2507.02554",
+      "abstract": "Studies search and exploration behavior of AI research agents for machine learning tasks.",
+      "tags": [
+        "ml agents",
+        "search policy",
+        "exploration"
+      ],
+      "source": "curated",
+      "arxiv_id": "2507.02554",
+      "arxiv_version": null,
+      "categories": [],
+      "relevance_score": 5.0,
+      "citation_id": "arxiv_2507_02554_2025",
+      "used_for": [
+        "ml_agent_baseline",
+        "search_policy"
+      ],
+      "exclusion_reason": null
+    },
+    {
+      "title": "The AI Scientist: Towards Fully Automated Open-Ended Scientific Discovery",
+      "authors": [
+        "Sakana AI"
+      ],
+      "year": 2024,
+      "url": "https://arxiv.org/abs/2408.06292",
+      "abstract": "An autonomous scientific discovery system that generates ideas, writes code, runs experiments, and drafts papers. Useful as a baseline for end-to-end AI scientist workflows.",
+      "tags": [
+        "autonomous research",
+        "ai scientist",
+        "report generation"
+      ],
+      "source": "curated",
+      "arxiv_id": "2408.06292",
+      "arxiv_version": null,
+      "categories": [],
+      "relevance_score": 5.0,
+      "citation_id": "arxiv_2408_06292_2024",
+      "used_for": [
+        "autonomous_research_baseline",
+        "end_to_end_loop"
+      ],
+      "exclusion_reason": null
+    },
+    {
+      "title": "MLE-bench: Evaluating Machine Learning Agents on Machine Learning Engineering",
+      "authors": [
+        "OpenAI"
+      ],
+      "year": 2024,
+      "url": "https://arxiv.org/abs/2410.07095",
+      "abstract": "A benchmark for ML engineering agents where agents search over real machine learning experiment spaces and are evaluated by task performance.",
+      "tags": [
+        "ml agents",
+        "benchmark",
+        "experiment search"
+      ],
+      "source": "curated",
+      "arxiv_id": "2410.07095",
+      "arxiv_version": null,
+      "categories": [],
+      "relevance_score": 5.0,
+      "citation_id": "arxiv_2410_07095_2024",
+      "used_for": [
+        "ml_agent_baseline",
+        "score_based_evaluation"
+      ],
+      "exclusion_reason": null
+    }
+  ],
+  "excluded_papers": [],
+  "gap_findings": [
+    {
+      "gap_id": "gap_claim_calibration",
+      "claim": "Autonomous research agents can automate idea-to-report workflows, but final reports still need explicit claim calibration.",
+      "source_ids": [
+        "arxiv_2408_06292_2024",
+        "arxiv_2501_04227_2025",
+        "arxiv_2506_01372_2025"
+      ],
+      "implication": "Lucky Loop must separate observations from claims and force report claims through a verifier.",
+      "metric": "unsupported_best_model_claims",
+      "experiment": "Compare classic_autoresearch against lucky_loop_full claim ledger outcomes."
+    },
+    {
+      "gap_id": "gap_prediction_before_compute",
+      "claim": "ML-agent benchmarks and search policies emphasize final performance more than prospective prediction before compute.",
+      "source_ids": [
+        "arxiv_2410_07095_2024",
+        "arxiv_2507_02554_2025",
+        "arxiv_2606_24597_2026"
+      ],
+      "implication": "Lucky Loop should log state, candidate action, predicted observation, real observation, and comparison.",
+      "metric": "prediction_interval_coverage",
+      "experiment": "Measure Qwen-AgentWorld prediction-vs-reality for every Lucky Loop candidate decision."
+    },
+    {
+      "gap_id": "gap_single_run_overclaim",
+      "claim": "Single-run leaderboard wins can overstate robustness when top models are close across seeds.",
+      "source_ids": [
+        "arxiv_2410_07095_2024",
+        "arxiv_2506_01372_2025",
+        "arxiv_2507_02554_2025"
+      ],
+      "implication": "A robust best-model claim requires matched multi-seed top-model verification.",
+      "metric": "best_claimable_score",
+      "experiment": "Detect top observed models, rerun matched seeds, and compare effect size against seed noise."
+    },
+    {
+      "gap_id": "gap_end_to_end_auditability",
+      "claim": "End-to-end autoresearch needs literature context, execution, analysis, and report generation tied to auditable evidence.",
+      "source_ids": [
+        "arxiv_2408_06292_2024",
+        "arxiv_2501_04227_2025",
+        "arxiv_2506_01372_2025"
+      ],
+      "implication": "The workspace must preserve sources, experiment plans, commands, traces, claim ledgers, and final report links.",
+      "metric": "evidence_manifest_completeness",
+      "experiment": "Generate reports/autoresearch/<slug>/ with sources.json, research_context.json, experiment_plan.json, and evidence_manifest.json."
+    }
+  ],
+  "recommended_metrics": [
+    "unsupported_claim_rate",
+    "prediction_interval_coverage",
+    "prediction_miss_count",
+    "compute_per_claimable_claim"
+  ],
+  "recommended_baselines": [
+    "classic_autoresearch",
+    "classic_verified",
+    "lucky_loop_full"
+  ],
+  "recommended_experiment_plan": [
+    "Use Qwen-AgentWorld predictions before expensive actions.",
+    "Run generated code only after validation and dry-run.",
+    "Gate final claims through deterministic verification."
+  ]
+}

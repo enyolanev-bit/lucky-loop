@@ -19,7 +19,7 @@ ARXIV_RATE_LIMIT_SECONDS = 3.1
 CURATED_REFERENCES = [
     {
         "title": "The AI Scientist: Towards Fully Automated Open-Ended Scientific Discovery",
-        "authors": ["Sakana AI"],
+        "authors": ["Chris Lu et al."],
         "year": 2024,
         "url": "https://arxiv.org/abs/2408.06292",
         "abstract": (
@@ -32,7 +32,7 @@ CURATED_REFERENCES = [
     },
     {
         "title": "Agent Laboratory: Using LLM Agents as Research Assistants",
-        "authors": ["Agent Laboratory authors"],
+        "authors": ["Samuel Schmidgall et al."],
         "year": 2025,
         "url": "https://arxiv.org/abs/2501.04227",
         "abstract": (
@@ -44,7 +44,7 @@ CURATED_REFERENCES = [
     },
     {
         "title": "MLE-bench: Evaluating Machine Learning Agents on Machine Learning Engineering",
-        "authors": ["OpenAI"],
+        "authors": ["Jun Shern Chan et al."],
         "year": 2024,
         "url": "https://arxiv.org/abs/2410.07095",
         "abstract": (
@@ -56,7 +56,7 @@ CURATED_REFERENCES = [
     },
     {
         "title": "AI Research Agents for Machine Learning: Search, Exploration, and Generalization in MLE-bench",
-        "authors": ["MLE-bench research agents authors"],
+        "authors": ["Edan Toledo et al."],
         "year": 2025,
         "url": "https://arxiv.org/abs/2507.02554",
         "abstract": (
@@ -80,7 +80,7 @@ CURATED_REFERENCES = [
     },
     {
         "title": "AI Scientists Fail Without Strong Implementation Capability",
-        "authors": ["AI scientist critique authors"],
+        "authors": ["Minjun Zhu et al."],
         "year": 2025,
         "url": "https://arxiv.org/abs/2506.01372",
         "abstract": (

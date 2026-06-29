@@ -1,0 +1,27 @@
+{
+  "analysis_id": "analysis_008",
+  "best_condition": "randomforestclassifier",
+  "condition_means": {
+    "decisiontreeclassifier": 0.8279786423608687,
+    "gradientboostingclassifier": 0.8016909281821614,
+    "logisticregression": 0.571143709981634,
+    "mlpclassifier": 0.651922180016317,
+    "randomforestclassifier": 0.9231797483707445,
+    "svc": 0.5553750083498642
+  },
+  "condition_stds": {
+    "decisiontreeclassifier": 0.0038072810711105376,
+    "gradientboostingclassifier": 0.006237004707499262,
+    "logisticregression": 0.05011544224253225,
+    "mlpclassifier": 0.18388598908798803,
+    "randomforestclassifier": 0.003525305538222812,
+    "svc": 0.08967899860936822
+  },
+  "effect_size": 0.09520110600987575,
+  "effect_to_noise_ratio": 8.341017952258788,
+  "primary_metric": "balanced_accuracy",
+  "protocol_id": "generated_ml_research_protocol",
+  "protocol_warnings": [],
+  "seed_noise": 0.011413607614175536,
+  "summary": "Best condition by mean balanced_accuracy: randomforestclassifier. Effect=0.0952; seed_noise=0.0114."
+}

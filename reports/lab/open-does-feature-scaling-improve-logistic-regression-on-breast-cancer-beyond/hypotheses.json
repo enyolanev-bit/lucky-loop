@@ -1,0 +1,12 @@
+[
+  {
+    "claim_candidate": "Feature scaling improves logistic regression performance on breast cancer detection beyond seed noise.",
+    "falsification_condition": "No significant improvement in performance metrics after feature scaling.",
+    "hypothesis_id": "hypothesis_1",
+    "literature_gap_ids": [
+      "domain_gap_robustness"
+    ],
+    "minimum_evidence_needed": "Statistically significant improvement in performance metrics across multiple seeds.",
+    "why_it_matters": "Feature scaling can standardize input data, potentially enhancing the performance of logistic regression by ensuring that all features contribute equally to the model."
+  }
+]

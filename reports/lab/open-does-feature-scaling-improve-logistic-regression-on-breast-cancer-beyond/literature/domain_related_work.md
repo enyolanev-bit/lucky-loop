@@ -1,0 +1,160 @@
+# Related Work Context
+
+Research question: Does feature scaling improve logistic regression on breast_cancer beyond seed noise?
+
+## Search Protocol
+
+- API: official arXiv Atom API (`https://export.arxiv.org/api/query`).
+- Rate limit: one request every 3.1s.
+- Curated fallback: known core papers are included and deduplicated against arXiv metadata.
+- Citation stability: arXiv IDs and versions are preserved when available.
+
+## Search Queries
+
+- Does feature scaling improve logistic regression on breast_cancer beyond seed noise?
+- feature scaling improve logistic regression breast cancer beyond seed noise machine learning classification
+- feature scaling improve logistic regression breast cancer beyond seed noise logistic regression random forest svm gradient boosting
+- feature scaling improve logistic regression breast cancer beyond seed noise robustness repeated seeds cross validation
+
+## Source -> Gap -> Metric -> Experiment
+
+| Gap | Sources | Metric | Experiment |
+|---|---|---|---|
+| The literature context must establish whether nonlinear models are actually expected to improve the selected ML task over simple baselines. | [arxiv_2604_25452_2026], [arxiv_2008_00235_2020], [arxiv_1711_07831_2017], [arxiv_1511_06663_2015], [arxiv_2510_27326_2025] | `domain_source_coverage` | Compare baseline and nonlinear model families on a dataset selected for the user question. |
+| Claims about the selected ML task performance require robustness checks across splits or seeds, not a single score. | [arxiv_2604_25452_2026], [arxiv_2008_00235_2020], [arxiv_1711_07831_2017], [arxiv_1511_06663_2015], [arxiv_2510_27326_2025] | `effect_to_noise_ratio` | Run matched repeated-seed comparisons and verify effect size against seed noise. |
+
+## Included Sources
+
+### [arxiv_2604_25452_2026] Benchmarking Logistic Regression, SVM, and LightGBM Against BiLSTM with Attention for Sentiment Analysis on Indonesian Product Reviews
+
+- Authors: Razin Hafid Hamdi, Ivana Margareth Hutabarat, Hanna Gresia Sinaga, Luluk Muthoharoh
+- Year: 2026
+- URL: https://arxiv.org/abs/2604.25452v1
+- arXiv: 2604.25452v1
+- Categories: cs.CL
+- Source: arxiv
+- Used for: domain_background
+- Relevance score: 8.0
+
+Sentiment analysis of product reviews on e-commerce platforms plays a critical role in automatically understanding customer satisfaction and providing actionable insights for sellers seeking to improve product quality. This paper presents a comprehensive benchmarking study comparing a Machine Learning (ML) approach via the PyCaret AutoML framework against a Deep Learning (DL) approach based on a Bidirectional Long Short-Term Memory (BiLSTM) architecture with an Attention mechanism for binary sentiment classification on Indonesian product reviews. The dataset comprises 19,728 samples balanced equally between positive and negative reviews. For the ML approach, three prominent algorithms were evaluated via 10-fold stratified cross-validation: Logistic Regression (LR), Support Vector Machine (SVM) with a linear kernel, and Light Gradient Boosting Machine (LightGBM). Logistic Regression achieved the best ML performance with an accuracy of 97.26\% and an F1-score of 97.26\%. The BiLSTM with Attention model, evaluated on 3,946 held-out test samples, achieved an accuracy of 97.24\% and an F1-score of 97.24\%. These comparative results demonstrate that traditional ML algorithms with proper preprocessing and feature extraction can compete closely with, and even marginally outperform, more complex sequential DL architectures on high-dimensional datasets, while simultaneously offering greater computational efficiency.
+
+### [arxiv_2008_00235_2020] Two-step penalised logistic regression for multi-omic data with an application to cardiometabolic syndrome
+
+- Authors: Alessandra Cabassi, Denis Seyres, Mattia Frontini, Paul D. W. Kirk
+- Year: 2020
+- URL: https://arxiv.org/abs/2008.00235v1
+- arXiv: 2008.00235v1
+- Categories: stat.AP, stat.ME, stat.ML
+- Source: arxiv
+- Used for: domain_background
+- Relevance score: 5.0
+
+Building classification models that predict a binary class label on the basis of high dimensional multi-omics datasets poses several challenges, due to the typically widely differing characteristics of the data layers in terms of number of predictors, type of data, and levels of noise. Previous research has shown that applying classical logistic regression with elastic-net penalty to these datasets can lead to poor results (Liu et al., 2018). We implement a two-step approach to multi-omic logistic regression in which variable selection is performed on each layer separately and a predictive model is then built using the variables selected in the first step. Here, our approach is compared to other methods that have been developed for the same purpose, and we adapt existing software for multi-omic linear regression (Zhao and Zucknick, 2020) to the logistic regression setting. Extensive simulation studies show that our approach should be preferred if the goal is to select as many relevant predictors as possible, as well as achieving prediction performances comparable to those of the best competitors. Our motivating example is a cardiometabolic syndrome dataset comprising eight 'omic data types for 2 extreme phenotype groups (10 obese and 10 lipodystrophy individuals) and 185 blood donors. Our proposed approach allows us to identify features that characterise cardiometabolic syndrome at the molecular level. R code is available at https://github.com/acabassi/logistic-regression-for-multi-omic-data.
+
+### [arxiv_1711_07831_2017] On Breast Cancer Detection: An Application of Machine Learning Algorithms on the Wisconsin Diagnostic Dataset
+
+- Authors: Abien Fred Agarap
+- Year: 2017
+- URL: https://arxiv.org/abs/1711.07831v4
+- arXiv: 1711.07831v4
+- Categories: cs.LG, stat.ML
+- Source: arxiv
+- Used for: domain_background
+- Relevance score: 5.0
+
+This paper presents a comparison of six machine learning (ML) algorithms: GRU-SVM (Agarap, 2017), Linear Regression, Multilayer Perceptron (MLP), Nearest Neighbor (NN) search, Softmax Regression, and Support Vector Machine (SVM) on the Wisconsin Diagnostic Breast Cancer (WDBC) dataset (Wolberg, Street, & Mangasarian, 1992) by measuring their classification test accuracy and their sensitivity and specificity values. The said dataset consists of features which were computed from digitized images of FNA tests on a breast mass (Wolberg, Street, & Mangasarian, 1992). For the implementation of the ML algorithms, the dataset was partitioned in the following fashion: 70% for training phase, and 30% for the testing phase. The hyper-parameters used for all the classifiers were manually assigned. Results show that all the presented ML algorithms performed well (all exceeded 90% test accuracy) on the classification task. The MLP algorithm stands out among the implemented algorithms with a test accuracy of ~99.04%.
+
+### [arxiv_1511_06663_2015] L1 logistic regression as a feature selection step for training stable classification trees for the prediction of severity criteria in imported malaria
+
+- Authors: Luca Talenti, Margaux Luck, Anastasia Yartseva, Nicolas Argy
+- Year: 2015
+- URL: https://arxiv.org/abs/1511.06663v1
+- arXiv: 1511.06663v1
+- Categories: cs.LG, q-bio.QM, stat.AP
+- Source: arxiv
+- Used for: domain_background
+- Relevance score: 5.0
+
+Multivariate classification methods using explanatory and predictive models are necessary for characterizing subgroups of patients according to their risk profiles. Popular methods include logistic regression and classification trees with performances that vary according to the nature and the characteristics of the dataset. In the context of imported malaria, we aimed at classifying severity criteria based on a heterogeneous patient population. We investigated these approaches by implementing two different strategies: L1 logistic regression (L1LR) that models a single global solution and classification trees that model multiple local solutions corresponding to discriminant subregions of the feature space. For each strategy, we built a standard model, and a sparser version of it. As an alternative to pruning, we explore a promising approach that first constrains the tree model with an L1LR-based feature selection, an approach we called L1LR-Tree. The objective is to decrease its vulnerability to small data variations by removing variables corresponding to unstable local phenomena. Our study is twofold: i) from a methodological perspective comparing the performances and the stability of the three previous methods, i.e L1LR, classification trees and L1LR-Tree, for the classification of severe forms of imported malaria, and ii) from an applied perspective improving the actual classification of severe forms of imported malaria by identifying more personalized profiles predictive of several clinical criteria based on variables dismissed for the clinical definition of the disease. The main methodological results show that the combined method L1LR-Tree builds sparse and stable models that significantly predicts the different severity criteria and outperforms all the other methods in terms of accuracy.
+
+### [arxiv_2510_27326_2025] MeisenMeister: A Simple Two Stage Pipeline for Breast Cancer Classification on MRI
+
+- Authors: Benjamin Hamm, Yannick Kirchhoff, Maximilian Rokuss, Klaus Maier-Hein
+- Year: 2025
+- URL: https://arxiv.org/abs/2510.27326v1
+- arXiv: 2510.27326v1
+- Categories: cs.CV
+- Source: arxiv
+- Used for: domain_background
+- Relevance score: 4.0
+
+The ODELIA Breast MRI Challenge 2025 addresses a critical issue in breast cancer screening: improving early detection through more efficient and accurate interpretation of breast MRI scans. Even though methods for general-purpose whole-body lesion segmentation as well as multi-time-point analysis exist, breast cancer detection remains highly challenging, largely due to the limited availability of high-quality segmentation labels. Therefore, developing robust classification-based approaches is crucial for the future of early breast cancer detection, particularly in applications such as large-scale screening. In this write-up, we provide a comprehensive overview of our approach to the challenge. We begin by detailing the underlying concept and foundational assumptions that guided our work. We then describe the iterative development process, highlighting the key stages of experimentation, evaluation, and refinement that shaped the evolution of our solution. Finally, we present the reasoning and evidence that informed the design choices behind our final submission, with a focus on performance, robustness, and clinical relevance. We release our full implementation publicly at https://github.com/MIC-DKFZ/MeisenMeister
+
+### [arxiv_1910_13757_2019] A CNN-based methodology for breast cancer diagnosis using thermal images
+
+- Authors: Juan Zuluaga-Gomez, Zeina Al Masry, Khaled Benaggoune, Safa Meraghni
+- Year: 2019
+- URL: https://arxiv.org/abs/1910.13757v1
+- arXiv: 1910.13757v1
+- Categories: cs.CV, eess.IV
+- Source: arxiv
+- Used for: domain_background
+- Relevance score: 4.0
+
+Micro Abstract: A recent study from GLOBOCAN disclosed that during 2018 two million women worldwide had been diagnosed from breast cancer. This study presents a computer-aided diagnosis system based on convolutional neural networks as an alternative diagnosis methodology for breast cancer diagnosis with thermal images. Experimental results showed that lower false-positives and false-negatives classification rates are obtained when data pre-processing and data augmentation techniques are implemented in these thermal images. Background: There are many types of breast cancer screening techniques such as, mammography, magnetic resonance imaging, ultrasound and blood sample tests, which require either, expensive devices or personal qualified. Currently, some countries still lack access to these main screening techniques due to economic, social or cultural issues. The objective of this study is to demonstrate that computer-aided diagnosis(CAD) systems based on convolutional neural networks (CNN) are faster, reliable and robust than other techniques. Methods: We performed a study of the influence of data pre-processing, data augmentation and database size versus a proposed set of CNN models. Furthermore, we developed a CNN hyper-parameters fine-tuning optimization algorithm using a tree parzen estimator. Results: Among the 57 patients database, our CNN models obtained a higher accuracy (92\%) and F1-score (92\%) that outperforms several state-of-the-art architectures such as ResNet50, SeResNet50 and Inception. Also, we demonstrated that a CNN model that implements data-augmentation techniques reach identical performance metrics in comparison with a CNN that uses a database up to 50\% bigger. Conclusion: This study highlights the benefits of data augmentation and CNNs in thermal breast images. Also, it measures the influence of the database size in the performance of CNNs.
+
+### [arxiv_2307_11274_2023] Screening Mammography Breast Cancer Detection
+
+- Authors: Debajyoti Chakraborty
+- Year: 2023
+- URL: https://arxiv.org/abs/2307.11274v1
+- arXiv: 2307.11274v1
+- Categories: cs.CV, cs.LG, eess.IV
+- Source: arxiv
+- Used for: domain_background
+- Relevance score: 3.0
+
+Breast cancer is a leading cause of cancer-related deaths, but current programs are expensive and prone to false positives, leading to unnecessary follow-up and patient anxiety. This paper proposes a solution to automated breast cancer detection, to improve the efficiency and accuracy of screening programs. Different methodologies were tested against the RSNA dataset of radiographic breast images of roughly 20,000 female patients and yielded an average validation case pF1 score of 0.56 across methods.
+
+### [arxiv_1912_00524_2019] Factor Analysis on Citation, Using a Combined Latent and Logistic Regression Model
+
+- Authors: Namjoon Suh, Xiaoming Huo, Eric Heim, Lee Seversky
+- Year: 2019
+- URL: https://arxiv.org/abs/1912.00524v1
+- arXiv: 1912.00524v1
+- Categories: cs.LG, stat.ML
+- Source: arxiv
+- Used for: domain_background
+- Relevance score: 3.0
+
+We propose a combined model, which integrates the latent factor model and the logistic regression model, for the citation network. It is noticed that neither a latent factor model nor a logistic regression model alone is sufficient to capture the structure of the data. The proposed model has a latent (i.e., factor analysis) model to represents the main technological trends (a.k.a., factors), and adds a sparse component that captures the remaining ad-hoc dependence. Parameter estimation is carried out through the construction of a joint-likelihood function of edges and properly chosen penalty terms. The convexity of the objective function allows us to develop an efficient algorithm, while the penalty terms push towards a low-dimensional latent component and a sparse graphical structure. Simulation results show that the proposed method works well in practical situations. The proposed method has been applied to a real application, which contains a citation network of statisticians (Ji and Jin, 2016). Some interesting findings are reported.
+
+### [arxiv_1811_07818_2018] Novel approach to locate region of interest in mammograms for Breast cancer
+
+- Authors: BV Divyashree, Amarnath R, Naveen M, G Hemantha Kumar
+- Year: 2018
+- URL: https://arxiv.org/abs/1811.07818v1
+- arXiv: 1811.07818v1
+- Categories: cs.CV
+- Source: arxiv
+- Used for: domain_background
+- Relevance score: 2.0
+
+Locating region of interest for breast cancer masses in the mammographic image is a challenging problem in medical image processing. In this research work, the keen idea is to efficiently extract suspected mass region for further examination. In particular to this fact breast boundary segmentation on sliced rgb image using modified intensity based approach followed by quad tree based division to spot out suspicious area are proposed in the paper. To evaluate the performance DDSM standard dataset are experimented and achieved acceptable accuracy.
+
+## Excluded / Low-Relevance Sources
+
+- None.
+
+## Metrics Suggested By Literature
+
+- `balanced_accuracy`
+- `accuracy`
+- `f1_macro`
+- `precision_macro`
+- `recall_macro`
+
+## Baselines
+
+- `literature_baseline`
+- `simple_model_baseline`

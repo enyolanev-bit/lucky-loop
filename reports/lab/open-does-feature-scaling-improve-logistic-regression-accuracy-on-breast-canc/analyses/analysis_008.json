@@ -1,0 +1,23 @@
+{
+  "analysis_id": "analysis_008",
+  "best_condition": "randomforestclassifier",
+  "condition_means": {
+    "gradientboostingclassifier": 0.8016101690462841,
+    "logisticregression": 0.571143709981634,
+    "randomforestclassifier": 0.9229282842361319,
+    "svc": 0.5553750083498642
+  },
+  "condition_stds": {
+    "gradientboostingclassifier": 0.006332708807208949,
+    "logisticregression": 0.05011544224253225,
+    "randomforestclassifier": 0.004006542183656702,
+    "svc": 0.08967899860936822
+  },
+  "effect_size": 0.1213181151898477,
+  "effect_to_noise_ratio": 10.74691931784188,
+  "primary_metric": "balanced_accuracy",
+  "protocol_id": "generated_ml_research_protocol",
+  "protocol_warnings": [],
+  "seed_noise": 0.01128864110745087,
+  "summary": "Best condition by mean balanced_accuracy: randomforestclassifier. Effect=0.1213; seed_noise=0.0113."
+}

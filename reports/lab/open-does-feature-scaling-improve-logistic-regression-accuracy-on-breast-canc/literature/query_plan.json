@@ -1,0 +1,37 @@
+{
+  "domain_queries": [
+    "Does feature scaling improve logistic regression accuracy on breast_cancer?",
+    "feature scaling improve logistic regression accuracy breast cancer machine learning classification",
+    "feature scaling improve logistic regression accuracy breast cancer logistic regression random forest svm gradient boosting",
+    "feature scaling improve logistic regression accuracy breast cancer robustness repeated seeds cross validation"
+  ],
+  "method_queries": [
+    "ti:\"AI Scientist\" OR abs:\"autonomous scientific discovery\"",
+    "all:\"Agent Laboratory\" \"research assistants\"",
+    "all:\"MLE-bench\" \"machine learning agents\"",
+    "all:\"Qwen-AgentWorld\" OR all:\"language world models\"",
+    "all:\"claim verification\" scientific claims"
+  ],
+  "dataset_queries": [
+    "feature scaling improve logistic regression accuracy breast cancer classification dataset",
+    "feature scaling improve logistic regression accuracy breast cancer openml huggingface dataset",
+    "sensor classification dataset",
+    "tabular classification benchmark"
+  ],
+  "key_terms": [
+    "feature",
+    "scaling",
+    "improve",
+    "logistic",
+    "regression",
+    "accuracy",
+    "breast",
+    "cancer"
+  ],
+  "excluded_terms": [
+    "autonomous research",
+    "AI scientist",
+    "world model"
+  ],
+  "rationale": "Domain queries are derived from the user question; method queries are isolated for orchestration safeguards."
+}

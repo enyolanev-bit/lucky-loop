@@ -1,0 +1,44 @@
+{
+  "claim_blocked_if": "No significant difference in balanced accuracy with and without feature scaling across multiple seeds.",
+  "claim_enabled_if": "Statistically significant improvement in balanced accuracy with feature scaling across multiple seeds.",
+  "conditions": [
+    "gradientboostingclassifier",
+    "logisticregression",
+    "randomforestclassifier",
+    "svc"
+  ],
+  "controlled_variables": [
+    "dataset",
+    "target_column",
+    "split_strategy",
+    "seeds",
+    "preprocessing"
+  ],
+  "dataset": "eeg_eye_state",
+  "expected_artifacts": [
+    "runs/experiment_<step>.json",
+    "analyses/analysis_<step>.json"
+  ],
+  "hypothesis_id": "H1_generated",
+  "manipulated_variable": "model_family",
+  "primary_metric": "balanced_accuracy",
+  "protocol_id": "generated_ml_research_protocol",
+  "protocol_risks": [
+    "generated_protocol",
+    "dataset_selection_bias"
+  ],
+  "scientific_goal": "Feature scaling improves logistic regression accuracy on breast cancer classification.",
+  "secondary_metrics": [
+    "accuracy",
+    "f1_macro",
+    "precision_macro",
+    "recall_macro"
+  ],
+  "seeds": [
+    42,
+    52,
+    62,
+    72,
+    82
+  ]
+}
