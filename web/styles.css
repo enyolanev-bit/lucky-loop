@@ -53,7 +53,7 @@ body {
 /* Specific icon mappings based on 4x3 sprite grid */
 .gicon.logo-skull   { width: 56px; height: 56px; background-position: 0% 0%; }
 .gicon.query        { width: 32px; height: 32px; background-position: 0% 0%; }
-.gicon.goons        { width: 32px; height: 32px; background-position: 66.666% 0%; }
+.gicon.pipeline-nav        { width: 32px; height: 32px; background-position: 66.666% 0%; }
 .gicon.paper        { width: 32px; height: 32px; background-position: 100% 0%; }
 .gicon.trace        { width: 32px; height: 32px; background-position: 33.333% 0%; }
 .gicon.state        { width: 32px; height: 32px; background-position: 33.333% 50%; }
@@ -588,7 +588,7 @@ body {
   flex-direction: column;
 }
 
-.goon-header {
+.run-header {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -598,13 +598,13 @@ body {
   text-align: center;
 }
 
-.goon-header h2 {
+.run-header h2 {
   font-family: 'Bebas Neue', sans-serif;
   font-size: 28px;
   letter-spacing: 0.1em;
   line-height: 1;
 }
-.goon-header p {
+.run-header p {
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.15em;
