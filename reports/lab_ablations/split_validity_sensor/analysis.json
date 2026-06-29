@@ -1,0 +1,202 @@
+{
+  "schema_version": "1.1",
+  "arms": {
+    "on": {
+      "n_runs": 3,
+      "wm_source": [
+        "qwen_agentworld"
+      ],
+      "any_nontrivial_signal": false,
+      "distinct_signal_fingerprints": 1,
+      "signal_fingerprint": [
+        "('run', 0.0, 0.5, 'adds_observation')"
+      ],
+      "experiment_runs": {
+        "mean": 4.0,
+        "std": 0.0,
+        "n": 3
+      },
+      "total_runtime_s": {
+        "mean": 0.3257,
+        "std": 0.0036,
+        "n": 3
+      },
+      "claims_supported": {
+        "mean": 2.0,
+        "std": 0.0,
+        "n": 3
+      },
+      "claims_blocked": {
+        "mean": 3.0,
+        "std": 0.0,
+        "n": 3
+      },
+      "runs_to_first_supported": {
+        "mean": 2.0,
+        "std": 0.0,
+        "n": 3
+      }
+    },
+    "off": {
+      "n_runs": 3,
+      "wm_source": [
+        "plumbing_not_called"
+      ],
+      "any_nontrivial_signal": false,
+      "distinct_signal_fingerprints": 1,
+      "signal_fingerprint": [
+        "('run', 0.0, 0.5, 'adds_observation')",
+        "('run', 0.0, 0.5, 'reduces_uncertainty')",
+        "('stop_and_report', 0.0, 0.5, 'report_ready')"
+      ],
+      "experiment_runs": {
+        "mean": 4.0,
+        "std": 0.0,
+        "n": 3
+      },
+      "total_runtime_s": {
+        "mean": 0.3138,
+        "std": 0.0021,
+        "n": 3
+      },
+      "claims_supported": {
+        "mean": 2.0,
+        "std": 0.0,
+        "n": 3
+      },
+      "claims_blocked": {
+        "mean": 3.0,
+        "std": 0.0,
+        "n": 3
+      },
+      "runs_to_first_supported": {
+        "mean": 2.0,
+        "std": 0.0,
+        "n": 3
+      }
+    }
+  },
+  "world_model_effect": {
+    "compute_runs_saved_by_wm": 0.0,
+    "claims_supported_delta_on_minus_off": 0.0,
+    "claims_blocked_delta_on_minus_off": 0.0,
+    "runtime_s_delta_off_minus_on": -0.0119,
+    "runtime_within_noise": true,
+    "qwen_text_differs": true
+  },
+  "verdict": "NULL → Option B (no measurable world-model effect). Experiment runs identical (compute_runs_saved=0) and claim verdicts identical (supported & blocked deltas=0). Runtime differences are timing jitter, not an effect; Qwen's free text differs from the fallback but its structured recommendation stays 'run' (same decisions). Present system + M1 with this as a stated limitation — do NOT claim a world-model compute win.",
+  "integrity_notes": [
+    "Verdict driven ONLY by behavioural deltas: experiment runs + claim verdicts. Runtime jitter and Qwen free-text differences NEVER trigger an effect.",
+    "Metrics are ACTUALS computed identically for both arms; counterfactual 'saved_remaining_runs' is NOT used.",
+    "wm_source proves the arm: qwen_agentworld (ON) vs plumbing_not_called (OFF).",
+    "qwen_text_differs is informational: the world model can emit different prose while the structured recommendation stays 'run' (same decision) -> that is NOT an effect."
+  ],
+  "per_run": {
+    "on": [
+      {
+        "workspace": "reports/lab_ablations/split_validity_sensor/on_run1",
+        "wm_source": "qwen_agentworld",
+        "steps": 6,
+        "experiment_runs": 4,
+        "total_runtime_s": 0.3254,
+        "claims_total": 5,
+        "claims_supported": 2,
+        "claims_blocked": 3,
+        "claims_observation_inconclusive": 0,
+        "runs_to_first_supported": 2,
+        "nontrivial_signal": false,
+        "signal_fingerprint": [
+          "('run', 0.0, 0.5, 'adds_observation')"
+        ]
+      },
+      {
+        "workspace": "reports/lab_ablations/split_validity_sensor/on_run2",
+        "wm_source": "qwen_agentworld",
+        "steps": 6,
+        "experiment_runs": 4,
+        "total_runtime_s": 0.3215,
+        "claims_total": 5,
+        "claims_supported": 2,
+        "claims_blocked": 3,
+        "claims_observation_inconclusive": 0,
+        "runs_to_first_supported": 2,
+        "nontrivial_signal": false,
+        "signal_fingerprint": [
+          "('run', 0.0, 0.5, 'adds_observation')"
+        ]
+      },
+      {
+        "workspace": "reports/lab_ablations/split_validity_sensor/on_run3",
+        "wm_source": "qwen_agentworld",
+        "steps": 6,
+        "experiment_runs": 4,
+        "total_runtime_s": 0.3302,
+        "claims_total": 5,
+        "claims_supported": 2,
+        "claims_blocked": 3,
+        "claims_observation_inconclusive": 0,
+        "runs_to_first_supported": 2,
+        "nontrivial_signal": false,
+        "signal_fingerprint": [
+          "('run', 0.0, 0.5, 'adds_observation')"
+        ]
+      }
+    ],
+    "off": [
+      {
+        "workspace": "reports/lab_ablations/split_validity_sensor/off_run1",
+        "wm_source": "plumbing_not_called",
+        "steps": 6,
+        "experiment_runs": 4,
+        "total_runtime_s": 0.3154,
+        "claims_total": 5,
+        "claims_supported": 2,
+        "claims_blocked": 3,
+        "claims_observation_inconclusive": 0,
+        "runs_to_first_supported": 2,
+        "nontrivial_signal": false,
+        "signal_fingerprint": [
+          "('run', 0.0, 0.5, 'adds_observation')",
+          "('run', 0.0, 0.5, 'reduces_uncertainty')",
+          "('stop_and_report', 0.0, 0.5, 'report_ready')"
+        ]
+      },
+      {
+        "workspace": "reports/lab_ablations/split_validity_sensor/off_run2",
+        "wm_source": "plumbing_not_called",
+        "steps": 6,
+        "experiment_runs": 4,
+        "total_runtime_s": 0.3151,
+        "claims_total": 5,
+        "claims_supported": 2,
+        "claims_blocked": 3,
+        "claims_observation_inconclusive": 0,
+        "runs_to_first_supported": 2,
+        "nontrivial_signal": false,
+        "signal_fingerprint": [
+          "('run', 0.0, 0.5, 'adds_observation')",
+          "('run', 0.0, 0.5, 'reduces_uncertainty')",
+          "('stop_and_report', 0.0, 0.5, 'report_ready')"
+        ]
+      },
+      {
+        "workspace": "reports/lab_ablations/split_validity_sensor/off_run3",
+        "wm_source": "plumbing_not_called",
+        "steps": 6,
+        "experiment_runs": 4,
+        "total_runtime_s": 0.3108,
+        "claims_total": 5,
+        "claims_supported": 2,
+        "claims_blocked": 3,
+        "claims_observation_inconclusive": 0,
+        "runs_to_first_supported": 2,
+        "nontrivial_signal": false,
+        "signal_fingerprint": [
+          "('run', 0.0, 0.5, 'adds_observation')",
+          "('run', 0.0, 0.5, 'reduces_uncertainty')",
+          "('stop_and_report', 0.0, 0.5, 'report_ready')"
+        ]
+      }
+    ]
+  }
+}

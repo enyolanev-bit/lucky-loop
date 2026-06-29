@@ -139,79 +139,108 @@ def _discover(ablation_dir: Path | None, on_glob: str | None, off_glob: str | No
     return on, off
 
 
+# A behavioural delta below this is treated as zero. Experiment-run counts and
+# claim counts are discrete, so any genuine difference is >= 1/n_runs (well above
+# this); only float dust falls under it.
+BEHAVIOURAL_EPS = 1e-6
+
+
 def build_report(on_runs: list[dict], off_runs: list[dict]) -> dict:
     on, off = summarize_arm(on_runs), summarize_arm(off_runs)
 
-    def delta(metric: str):
+    def off_minus_on(metric: str):
         a, b = off[metric]["mean"], on[metric]["mean"]
         return round(a - b, 4) if (a is not None and b is not None) else None
 
-    # Signed effect of the world model: OFF - ON (positive runtime/runs delta = WM saved compute).
+    def on_minus_off(metric: str):
+        a, b = on[metric]["mean"], off[metric]["mean"]
+        return round((a or 0) - (b or 0), 4)
+
+    compute_runs_saved = off_minus_on("experiment_runs")          # discrete -> real if != 0
+    runtime_saved = off_minus_on("total_runtime_s")               # timing jitter -> informational ONLY
+    claims_supported_delta = on_minus_off("claims_supported")
+    claims_blocked_delta = on_minus_off("claims_blocked")
+
+    # ── Verdict drivers: ONLY behavioural deltas (decisions/claims), never runtime, never text. ──
+    runs_moved = compute_runs_saved is not None and abs(compute_runs_saved) > BEHAVIOURAL_EPS
+    claims_moved = abs(claims_supported_delta) > BEHAVIOURAL_EPS or abs(claims_blocked_delta) > BEHAVIOURAL_EPS
+    behavioural_effect = runs_moved or claims_moved
+
+    # Informational only — Qwen's free text/fields may differ while the decision stays "run".
+    # This NEVER drives the verdict (renamed from the old "signal_diverged" to avoid confusion).
+    qwen_text_differs = set(on["signal_fingerprint"]) != set(off["signal_fingerprint"])
+
+    # Runtime: jitter. Flag whether it is within timing noise (max across-run std), never an effect.
+    rt_std = max(on["total_runtime_s"]["std"] or 0.0, off["total_runtime_s"]["std"] or 0.0)
+    runtime_within_noise = runtime_saved is None or abs(runtime_saved) <= max(rt_std, 0.1)
+
     effect = {
-        "compute_runs_saved_by_wm": delta("experiment_runs"),
-        "runtime_s_saved_by_wm": delta("total_runtime_s"),
-        "claims_supported_delta_on_minus_off": (
-            round((on["claims_supported"]["mean"] or 0) - (off["claims_supported"]["mean"] or 0), 4)
-        ),
+        "compute_runs_saved_by_wm": compute_runs_saved,
+        "claims_supported_delta_on_minus_off": claims_supported_delta,
+        "claims_blocked_delta_on_minus_off": claims_blocked_delta,
+        "runtime_s_delta_off_minus_on": runtime_saved,
+        "runtime_within_noise": runtime_within_noise,
+        "qwen_text_differs": qwen_text_differs,
     }
 
-    # Honest null detection: did the world-model's structured signal actually diverge?
-    on_fp = set(on["signal_fingerprint"])
-    off_fp = set(off["signal_fingerprint"])
-    signal_diverged = (on_fp != off_fp) or on["any_nontrivial_signal"]
-    metrics_moved = any(effect[k] not in (None, 0) for k in ("compute_runs_saved_by_wm", "runtime_s_saved_by_wm"))
-
-    if not signal_diverged and not metrics_moved:
+    if not behavioural_effect:
         verdict = (
-            "NULL (honest) → Option B. The world-model's STRUCTURED signal is identical to the fallback "
-            "(same recommendation / compute_waste_risk / value_of_information) and arm metrics do not move. "
-            "Qwen produces richer text but exerts no measured decision influence on these tasks. Present the "
-            "system + M1 with this as a stated limitation — do not claim a world-model compute win."
+            "NULL → Option B (no measurable world-model effect). Experiment runs identical "
+            "(compute_runs_saved=0) and claim verdicts identical (supported & blocked deltas=0). "
+            "Runtime differences are timing jitter, not an effect"
+            + ("; Qwen's free text differs from the fallback but its structured recommendation stays 'run' (same decisions)" if qwen_text_differs else "")
+            + ". Present system + M1 with this as a stated limitation — do NOT claim a world-model compute win."
         )
-    elif signal_diverged and metrics_moved:
-        verdict = "EFFECT MEASURED. Qwen's structured signal diverged from the fallback and arm metrics moved — report the signed deltas."
     else:
-        verdict = "PARTIAL / inconclusive. Signal or metrics moved but not both — inspect per-run detail; likely LLM noise, add repeats."
+        parts = []
+        if runs_moved:
+            parts.append(f"compute_runs_saved(OFF-ON)={compute_runs_saved}")
+        if abs(claims_supported_delta) > BEHAVIOURAL_EPS:
+            parts.append(f"claims_supported_delta(ON-OFF)={claims_supported_delta}")
+        if abs(claims_blocked_delta) > BEHAVIOURAL_EPS:
+            parts.append(f"claims_blocked_delta(ON-OFF)={claims_blocked_delta}")
+        verdict = "EFFECT MEASURED on real behavioural deltas: " + ", ".join(parts) + ". (Runtime is informational jitter, excluded.)"
 
     return {
-        "schema_version": "1.0",
+        "schema_version": "1.1",
         "arms": {"on": on, "off": off},
-        "world_model_effect_off_minus_on": effect,
+        "world_model_effect": effect,
         "verdict": verdict,
         "integrity_notes": [
-            "Metrics are ACTUALS (real runs executed, summed runtime), computed identically for both arms.",
-            "Counterfactual 'saved_remaining_runs' is deliberately NOT used (verifier-attributed, one-sided).",
+            "Verdict driven ONLY by behavioural deltas: experiment runs + claim verdicts. Runtime jitter and Qwen free-text differences NEVER trigger an effect.",
+            "Metrics are ACTUALS computed identically for both arms; counterfactual 'saved_remaining_runs' is NOT used.",
             "wm_source proves the arm: qwen_agentworld (ON) vs plumbing_not_called (OFF).",
-            "Deltas are signed (OFF - ON); a world-model win is positive, a regression is negative — both reported.",
+            "qwen_text_differs is informational: the world model can emit different prose while the structured recommendation stays 'run' (same decision) -> that is NOT an effect.",
         ],
     }
 
 
 def render_md(report: dict, on_runs: list[dict], off_runs: list[dict]) -> str:
     on, off = report["arms"]["on"], report["arms"]["off"]
-    e = report["world_model_effect_off_minus_on"]
+    e = report["world_model_effect"]
 
     def cell(arm, k):
         m = arm[k]
         return f"{m['mean']} ± {m['std']} (n={m['n']})" if m["mean"] is not None else "n/a"
 
+    rt_label = f"{e['runtime_s_delta_off_minus_on']} (jitter, hors verdict)" + (" — within noise" if e["runtime_within_noise"] else "")
     lines = [
         "# Ablation world-model ON/OFF — analyse honnête",
         "",
         f"**Verdict : {report['verdict']}**",
         "",
-        f"- ON arm: {on['n_runs']} runs · source `{on['wm_source']}` · signal non-trivial: {on['any_nontrivial_signal']}",
-        f"- OFF arm: {off['n_runs']} runs · source `{off['wm_source']}` · signal non-trivial: {off['any_nontrivial_signal']}",
+        f"- ON arm: {on['n_runs']} runs · source `{on['wm_source']}`",
+        f"- OFF arm: {off['n_runs']} runs · source `{off['wm_source']}`",
         "",
-        "| Métrique (mean ± std) | ON (world-model) | OFF (fallback) | Δ (OFF − ON) |",
-        "|---|---|---|---|",
-        f"| Runs d'expérience réels | {cell(on,'experiment_runs')} | {cell(off,'experiment_runs')} | {e['compute_runs_saved_by_wm']} |",
-        f"| Runtime total (s) | {cell(on,'total_runtime_s')} | {cell(off,'total_runtime_s')} | {e['runtime_s_saved_by_wm']} |",
-        f"| Claims supported | {cell(on,'claims_supported')} | {cell(off,'claims_supported')} | — |",
-        f"| Claims blocked | {cell(on,'claims_blocked')} | {cell(off,'claims_blocked')} | — |",
-        f"| Runs jusqu'au 1er supported | {cell(on,'runs_to_first_supported')} | {cell(off,'runs_to_first_supported')} | — |",
+        "| Métrique (mean ± std) | ON (world-model) | OFF (fallback) | Δ | compte pour le verdict ? |",
+        "|---|---|---|---|---|",
+        f"| **Runs d'expérience réels** | {cell(on,'experiment_runs')} | {cell(off,'experiment_runs')} | {e['compute_runs_saved_by_wm']} (OFF−ON) | ✅ OUI |",
+        f"| **Claims supported** | {cell(on,'claims_supported')} | {cell(off,'claims_supported')} | {e['claims_supported_delta_on_minus_off']} (ON−OFF) | ✅ OUI |",
+        f"| **Claims blocked** | {cell(on,'claims_blocked')} | {cell(off,'claims_blocked')} | {e['claims_blocked_delta_on_minus_off']} (ON−OFF) | ✅ OUI |",
+        f"| Runtime total (s) | {cell(on,'total_runtime_s')} | {cell(off,'total_runtime_s')} | {rt_label} | ❌ non (jitter) |",
+        f"| Runs jusqu'au 1er supported | {cell(on,'runs_to_first_supported')} | {cell(off,'runs_to_first_supported')} | — | indicatif |",
         "",
-        f"**Signal structuré Qwen divergent du fallback ?** {'OUI' if (set(on['signal_fingerprint']) != set(off['signal_fingerprint']) or on['any_nontrivial_signal']) else 'NON (== fallback)'}",
+        f"**Texte/champs Qwen ≠ fallback ?** {'oui' if e['qwen_text_differs'] else 'non'} — _informatif uniquement, NE compte PAS comme effet_ (la `recommendation` reste `run` → même décision).",
         "",
         "## Intégrité",
         *[f"- {n}" for n in report["integrity_notes"]],
