@@ -1,17 +1,17 @@
 {
   "currentState": {
-    "id": "open-does-feature-scaling-improve-logistic-regression-on-breast-cancer-beyond",
+    "id": "open-does-feature-scaling-improve-logistic-regression-accuracy-on-breast-canc",
     "dataset": "eeg_eye_state",
-    "context": "Sources ingested · 17 papers · 1 claims extracted"
+    "context": "Sources ingested · 6 papers · 1 claims extracted"
   },
   "predictions": [
     {
       "rank": 1,
-      "id": "s_90E3018",
+      "id": "s_60F561F",
       "config": "randomforestclassifier",
-      "accLow": 0.9197,
-      "accHigh": 0.9267,
-      "probability": 0.363,
+      "accLow": 0.9189,
+      "accHigh": 0.9269,
+      "probability": 0.5329,
       "tag": {
         "label": "TOP OUTCOME",
         "tone": "top"
@@ -19,11 +19,11 @@
     },
     {
       "rank": 2,
-      "id": "s_48B3183",
-      "config": "decisiontreeclassifier",
-      "accLow": 0.8242,
-      "accHigh": 0.8318,
-      "probability": 0.2255,
+      "id": "s_DD6A59D",
+      "config": "gradientboostingclassifier",
+      "accLow": 0.7953,
+      "accHigh": 0.8079,
+      "probability": 0.2905,
       "tag": {
         "label": "ANOMALY",
         "tone": "anomaly"
@@ -31,11 +31,11 @@
     },
     {
       "rank": 3,
-      "id": "s_1C88AF4",
-      "config": "gradientboostingclassifier",
-      "accLow": 0.7955,
-      "accHigh": 0.8079,
-      "probability": 0.1978,
+      "id": "s_FB65F05",
+      "config": "logisticregression",
+      "accLow": 0.521,
+      "accHigh": 0.6213,
+      "probability": 0.0918,
       "tag": {
         "label": "LOW CONFIDENCE",
         "tone": "low"
@@ -43,27 +43,11 @@
     },
     {
       "rank": 4,
-      "id": "s_51ED2D2",
-      "config": "mlpclassifier",
-      "accLow": 0.468,
-      "accHigh": 0.8358,
-      "probability": 0.0935
-    },
-    {
-      "rank": 5,
-      "id": "s_26A9446",
-      "config": "logisticregression",
-      "accLow": 0.521,
-      "accHigh": 0.6213,
-      "probability": 0.0624
-    },
-    {
-      "rank": 6,
-      "id": "s_914E745",
+      "id": "s_3553B33",
       "config": "svc",
       "accLow": 0.4657,
       "accHigh": 0.6451,
-      "probability": 0.0577
+      "probability": 0.0848
     }
   ],
   "pipeline": [
@@ -75,7 +59,7 @@
       "log": [
         {
           "tag": "SCOUT",
-          "text": "17 relevant sources retained"
+          "text": "6 relevant sources retained"
         }
       ]
     },
@@ -87,11 +71,11 @@
       "log": [
         {
           "tag": "FETCH",
-          "text": "arXiv:2604.25452 Benchmarking Logistic Regression, SVM, and LightGBM Against BiLSTM with Attention for Sentiment Analysis on Indonesian Product Reviews"
+          "text": "arXiv:2501.04227 Agent Laboratory: Using LLM Agents as Research Assistants"
         },
         {
           "tag": "FETCH",
-          "text": "arXiv:2008.00235 Two-step penalised logistic regression for multi-omic data with an application to cardiometabolic syndrome",
+          "text": "arXiv:2506.01372 AI Scientists Fail Without Strong Implementation Capability",
           "tone": "ok"
         }
       ]
@@ -104,7 +88,7 @@
       "log": [
         {
           "tag": "EXTRACT",
-          "text": "17 sources parsed into claims"
+          "text": "6 sources parsed into claims"
         }
       ]
     },
@@ -112,15 +96,15 @@
       "key": "predict",
       "title": "PREDICT",
       "detail": "Qwen-AgentWorld · before compute",
-      "speak": "Oracle predicts randomforestclassifier reaches accuracy 0.9197 to 0.9267, before any compute.",
+      "speak": "Oracle predicts randomforestclassifier reaches accuracy 0.9189 to 0.9269, before any compute.",
       "log": [
         {
           "tag": "PREDICT",
-          "text": "randomforestclassifier → acc 0.9197–0.9267 · p=0.363"
+          "text": "randomforestclassifier → acc 0.9189–0.9269 · p=0.5329"
         },
         {
           "tag": "PREDICT",
-          "text": "decisiontreeclassifier → acc 0.8242–0.8318 · p=0.2255"
+          "text": "gradientboostingclassifier → acc 0.7953–0.8079 · p=0.2905"
         }
       ]
     },
@@ -136,27 +120,17 @@
         },
         {
           "tag": "RUN",
-          "text": "gradientboostingclassifier 0.828 → 0.8017 (-0.0263)",
+          "text": "logisticregression 0.8016 → 0.5711 (-0.2305)",
           "tone": "ok"
         },
         {
           "tag": "RUN",
-          "text": "logisticregression 0.8017 → 0.5711 (-0.2305)",
+          "text": "randomforestclassifier 0.5711 → 0.9229 (+0.3518)",
           "tone": "ok"
         },
         {
           "tag": "RUN",
-          "text": "mlpclassifier 0.5711 → 0.6519 (+0.0808)",
-          "tone": "ok"
-        },
-        {
-          "tag": "RUN",
-          "text": "randomforestclassifier 0.6519 → 0.9232 (+0.2713)",
-          "tone": "ok"
-        },
-        {
-          "tag": "RUN",
-          "text": "svc 0.9232 → 0.5554 (-0.3678)",
+          "text": "svc 0.9229 → 0.5554 (-0.3676)",
           "tone": "ok"
         }
       ]
@@ -165,11 +139,11 @@
       "key": "cross",
       "title": "CROSS-CHECK",
       "detail": "verifier · effect vs noise",
-      "speak": "Verifier compares effect 0.0952 to seed noise 0.0114.",
+      "speak": "Verifier compares effect 0.1213 to seed noise 0.0113.",
       "log": [
         {
           "tag": "CROSS",
-          "text": "effect=0.0952 vs seed_noise=0.0114"
+          "text": "effect=0.1213 vs seed_noise=0.0113"
         },
         {
           "tag": "CROSS",
@@ -182,7 +156,7 @@
       "key": "report",
       "title": "REPORT",
       "detail": "verdict + provenance",
-      "speak": "Verdict: claim confirmed. The effect (0.0952) clears seed noise (0.0114). The claim stands.",
+      "speak": "Verdict: claim confirmed. The effect (0.1213) clears seed noise (0.0113). The claim stands.",
       "log": [
         {
           "tag": "VERDICT",
@@ -191,7 +165,7 @@
         },
         {
           "tag": "REPORT",
-          "text": "provenance written · 18 traces",
+          "text": "provenance written · 7 traces",
           "tone": "ok"
         }
       ]
@@ -201,243 +175,110 @@
     "state": "CONFIRMED",
     "title": "CLAIM CONFIRMED",
     "titleLab": "EFFECT EXCEEDS NOISE",
-    "reason": "The effect (0.0952) clears seed noise (0.0114). The claim stands.",
+    "reason": "The effect (0.1213) clears seed noise (0.0113). The claim stands.",
     "reasonLab": "The measured effect exceeded seed noise by the support threshold.",
-    "effect": 0.0952,
-    "noise": 0.0114
+    "effect": 0.1213,
+    "noise": 0.0113
   },
   "papers": [
     {
-      "title": "Benchmarking Logistic Regression, SVM, and LightGBM Against BiLSTM with Attention for Sentiment Analysis on Indonesian Product Reviews",
-      "authors": "Razin Hafid Hamdi · Ivana Margareth Hutabarat · Hanna Gresia Sinaga · Luluk Muthoharoh · Ardika Satria · Martin C. T. Manullang",
-      "ref": "arXiv:2604.25452",
-      "url": "https://arxiv.org/abs/2604.25452v1"
-    },
-    {
-      "title": "Two-step penalised logistic regression for multi-omic data with an application to cardiometabolic syndrome",
-      "authors": "Alessandra Cabassi · Denis Seyres · Mattia Frontini · Paul D. W. Kirk",
-      "ref": "arXiv:2008.00235",
-      "url": "https://arxiv.org/abs/2008.00235v1"
-    },
-    {
-      "title": "On Breast Cancer Detection: An Application of Machine Learning Algorithms on the Wisconsin Diagnostic Dataset",
-      "authors": "Abien Fred Agarap",
-      "ref": "arXiv:1711.07831",
-      "url": "https://arxiv.org/abs/1711.07831v4"
-    },
-    {
-      "title": "L1 logistic regression as a feature selection step for training stable classification trees for the prediction of severity criteria in imported malaria",
-      "authors": "Luca Talenti · Margaux Luck · Anastasia Yartseva · Nicolas Argy · Sandrine Houzé · Cecilia Damon",
-      "ref": "arXiv:1511.06663",
-      "url": "https://arxiv.org/abs/1511.06663v1"
-    },
-    {
-      "title": "MeisenMeister: A Simple Two Stage Pipeline for Breast Cancer Classification on MRI",
-      "authors": "Benjamin Hamm · Yannick Kirchhoff · Maximilian Rokuss · Klaus Maier-Hein",
-      "ref": "arXiv:2510.27326",
-      "url": "https://arxiv.org/abs/2510.27326v1"
-    },
-    {
-      "title": "A CNN-based methodology for breast cancer diagnosis using thermal images",
-      "authors": "Juan Zuluaga-Gomez · Zeina Al Masry · Khaled Benaggoune · Safa Meraghni · Noureddine Zerhouni",
-      "ref": "arXiv:1910.13757",
-      "url": "https://arxiv.org/abs/1910.13757v1"
-    },
-    {
-      "title": "Screening Mammography Breast Cancer Detection",
-      "authors": "Debajyoti Chakraborty",
-      "ref": "arXiv:2307.11274",
-      "url": "https://arxiv.org/abs/2307.11274v1"
-    },
-    {
-      "title": "Factor Analysis on Citation, Using a Combined Latent and Logistic Regression Model",
-      "authors": "Namjoon Suh · Xiaoming Huo · Eric Heim · Lee Seversky",
-      "ref": "arXiv:1912.00524",
-      "url": "https://arxiv.org/abs/1912.00524v1"
-    },
-    {
-      "title": "Novel approach to locate region of interest in mammograms for Breast cancer",
-      "authors": "BV Divyashree · Amarnath R · Naveen M · G Hemantha Kumar",
-      "ref": "arXiv:1811.07818",
-      "url": "https://arxiv.org/abs/1811.07818v1"
-    },
-    {
       "title": "Agent Laboratory: Using LLM Agents as Research Assistants",
-      "authors": "Samuel Schmidgall · Yusheng Su · Ze Wang · Ximeng Sun · Jialian Wu · Xiaodong Yu · Jiang Liu · Michael Moor · Zicheng Liu · Emad Barsoum",
+      "authors": "Agent Laboratory authors",
       "ref": "arXiv:2501.04227",
-      "url": "https://arxiv.org/abs/2501.04227v2"
-    },
-    {
-      "title": "Qwen-AgentWorld: Language World Models for General Agents",
-      "authors": "Yuxin Zuo · Zikai Xiao · Li Sheng · Fei Huang · Jianhong Tu · Yuxuan Liu · Tianyi Tang · Xiaomeng Hu · Yang Su · Qingfeng Lan · Yantao Liu · Qin Zhu · Yinger Zhang · Bowen Yu · Haiquan Zhao · Haiyang Xu · Jianxin Yang · Jiayang Cheng · Junyang Wang · Lianghao Deng · Mingfeng Xue · Tianyi Bai · Yang Fan · Yubo Ma · Yucheng Li · Zeyu Cui · Zhihai Wang · Zhihui Xie · Zhuorui Ye · An Yang · Dayiheng Liu · Jingren Zhou · Ning Ding",
-      "ref": "arXiv:2606.24597",
-      "url": "https://arxiv.org/abs/2606.24597v1"
-    },
-    {
-      "title": "Agentic AI Scientists Are Not Built For Autonomous Scientific Discovery",
-      "authors": "Harshit Bisht · Vinay Kumar · Kevin Maik Jablonka · Mausam · N. M. Anoop Krishnan",
-      "ref": "arXiv:2605.08956",
-      "url": "https://arxiv.org/abs/2605.08956v1"
+      "url": "https://arxiv.org/abs/2501.04227"
     },
     {
       "title": "AI Scientists Fail Without Strong Implementation Capability",
-      "authors": "Minjun Zhu · Qiujie Xie · Yixuan Weng · Jian Wu · Zhen Lin · Linyi Yang · Yue Zhang",
+      "authors": "AI scientist critique authors",
       "ref": "arXiv:2506.01372",
-      "url": "https://arxiv.org/abs/2506.01372v2"
+      "url": "https://arxiv.org/abs/2506.01372"
     },
     {
-      "title": "MLE-bench: Evaluating Machine Learning Agents on Machine Learning Engineering",
-      "authors": "Jun Shern Chan · Neil Chowdhury · Oliver Jaffe · James Aung · Dane Sherburn · Evan Mays · Giulio Starace · Kevin Liu · Leon Maksin · Tejal Patwardhan · Lilian Weng · Aleksander Mądry",
-      "ref": "arXiv:2410.07095",
-      "url": "https://arxiv.org/abs/2410.07095v6"
+      "title": "Qwen-AgentWorld: Language World Models for General Agents",
+      "authors": "Qwen Team",
+      "ref": "arXiv:2606.24597",
+      "url": "https://arxiv.org/abs/2606.24597"
     },
     {
       "title": "AI Research Agents for Machine Learning: Search, Exploration, and Generalization in MLE-bench",
-      "authors": "Edan Toledo · Karen Hambardzumyan · Martin Josifoski · Rishi Hazra · Nicolas Baldwin · Alexis Audran-Reiss · Michael Kuchnik · Despoina Magka · Minqi Jiang · Alisia Maria Lupidi · Andrei Lupu · Roberta Raileanu · Kelvin Niu · Tatiana Shavrina · Jean-Christophe Gagnon-Audet · Michael Shvartsman · Shagun Sodhani · Alexander H. Miller · Abhishek Charnalia · Derek Dunfield · Carole-Jean Wu · Pontus Stenetorp · Nicola Cancedda · Jakob Nicolaus Foerster · Yoram Bachrach",
+      "authors": "MLE-bench research agents authors",
       "ref": "arXiv:2507.02554",
-      "url": "https://arxiv.org/abs/2507.02554v2"
+      "url": "https://arxiv.org/abs/2507.02554"
     },
     {
       "title": "The AI Scientist: Towards Fully Automated Open-Ended Scientific Discovery",
-      "authors": "Chris Lu · Cong Lu · Robert Tjarko Lange · Jakob Foerster · Jeff Clune · David Ha",
+      "authors": "Sakana AI",
       "ref": "arXiv:2408.06292",
-      "url": "https://arxiv.org/abs/2408.06292v3"
+      "url": "https://arxiv.org/abs/2408.06292"
     },
     {
-      "title": "Towards a Medical AI Scientist",
-      "authors": "Hongtao Wu · Boyun Zheng · Dingjie Song · Yu Jiang · Jianfeng Gao · Lei Xing · Lichao Sun · Yixuan Yuan",
-      "ref": "arXiv:2603.28589",
-      "url": "https://arxiv.org/abs/2603.28589v1"
+      "title": "MLE-bench: Evaluating Machine Learning Agents on Machine Learning Engineering",
+      "authors": "OpenAI",
+      "ref": "arXiv:2410.07095",
+      "url": "https://arxiv.org/abs/2410.07095"
     }
   ],
   "traces": [
     {
       "time": "13:47:20",
-      "source": "arXiv:2604.25452",
-      "event": "source ingested"
-    },
-    {
-      "time": "13:47:18",
-      "source": "arXiv:2008.00235",
-      "event": "source ingested"
-    },
-    {
-      "time": "13:47:16",
-      "source": "arXiv:1711.07831",
-      "event": "source ingested"
-    },
-    {
-      "time": "13:47:14",
-      "source": "arXiv:1511.06663",
-      "event": "source ingested"
-    },
-    {
-      "time": "13:47:12",
-      "source": "arXiv:2510.27326",
-      "event": "source ingested"
-    },
-    {
-      "time": "13:47:10",
-      "source": "arXiv:1910.13757",
-      "event": "source ingested"
-    },
-    {
-      "time": "13:47:08",
-      "source": "arXiv:2307.11274",
-      "event": "source ingested"
-    },
-    {
-      "time": "13:47:06",
-      "source": "arXiv:1912.00524",
-      "event": "source ingested"
-    },
-    {
-      "time": "13:47:04",
-      "source": "arXiv:1811.07818",
-      "event": "source ingested"
-    },
-    {
-      "time": "13:47:02",
       "source": "arXiv:2501.04227",
       "event": "source ingested"
     },
     {
-      "time": "13:47:00",
-      "source": "arXiv:2606.24597",
-      "event": "source ingested"
-    },
-    {
-      "time": "13:46:58",
-      "source": "arXiv:2605.08956",
-      "event": "source ingested"
-    },
-    {
-      "time": "13:46:56",
+      "time": "13:47:18",
       "source": "arXiv:2506.01372",
       "event": "source ingested"
     },
     {
-      "time": "13:46:54",
-      "source": "arXiv:2410.07095",
+      "time": "13:47:16",
+      "source": "arXiv:2606.24597",
       "event": "source ingested"
     },
     {
-      "time": "13:46:52",
+      "time": "13:47:14",
       "source": "arXiv:2507.02554",
       "event": "source ingested"
     },
     {
-      "time": "13:46:50",
+      "time": "13:47:12",
       "source": "arXiv:2408.06292",
       "event": "source ingested"
     },
     {
-      "time": "13:46:48",
-      "source": "arXiv:2603.28589",
+      "time": "13:47:10",
+      "source": "arXiv:2410.07095",
       "event": "source ingested"
     },
     {
-      "time": "13:46:46",
+      "time": "13:47:08",
       "source": "sklearn:eeg_eye_state",
       "event": "Loaded 14980×14"
     }
   ],
   "diffs": [
     {
-      "step": "decisiontreeclassifier",
-      "before": 0.828,
-      "after": 0.828,
+      "step": "gradientboostingclassifier",
+      "before": 0.8016,
+      "after": 0.8016,
       "delta": 0.0
     },
     {
-      "step": "gradientboostingclassifier",
-      "before": 0.828,
-      "after": 0.8017,
-      "delta": -0.0263
-    },
-    {
       "step": "logisticregression",
-      "before": 0.8017,
+      "before": 0.8016,
       "after": 0.5711,
       "delta": -0.2305
     },
     {
-      "step": "mlpclassifier",
-      "before": 0.5711,
-      "after": 0.6519,
-      "delta": 0.0808
-    },
-    {
       "step": "randomforestclassifier",
-      "before": 0.6519,
-      "after": 0.9232,
-      "delta": 0.2713
+      "before": 0.5711,
+      "after": 0.9229,
+      "delta": 0.3518
     },
     {
       "step": "svc",
-      "before": 0.9232,
+      "before": 0.9229,
       "after": 0.5554,
-      "delta": -0.3678
+      "delta": -0.3676
     }
   ],
   "findings": []

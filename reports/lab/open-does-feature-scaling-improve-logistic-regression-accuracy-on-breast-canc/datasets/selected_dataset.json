@@ -1,0 +1,53 @@
+{
+  "candidate": {
+    "dataset_id": "eeg_eye_state",
+    "source": "openml",
+    "name": "eeg_eye_state",
+    "url": "https://www.openml.org/d/1471",
+    "description": "OpenML EEG eye state sensor classification benchmark",
+    "license": "unknown",
+    "task_tags": [
+      "classification",
+      "tabular"
+    ],
+    "score": 55.8,
+    "score_reasons": [
+      "External OpenML registry candidate with known classification target",
+      "classification tag/name match",
+      "likely usable for empirical ML"
+    ],
+    "risk_flags": [],
+    "fallback_rank": 2
+  },
+  "audit": {
+    "dataset_id": "eeg_eye_state",
+    "source": "openml",
+    "status": "accepted",
+    "reason": "usable supervised classification table",
+    "local_path": "/Users/nevil/dev/sandbox/lucky-loop/reports/lab/open-does-feature-scaling-improve-logistic-regression-accuracy-on-breast-canc/datasets/selected_dataset.csv",
+    "target_column": "Class",
+    "feature_columns": [
+      "V1",
+      "V2",
+      "V3",
+      "V4",
+      "V5",
+      "V6",
+      "V7",
+      "V8",
+      "V9",
+      "V10",
+      "V11",
+      "V12",
+      "V13",
+      "V14"
+    ],
+    "n_rows": 14980,
+    "n_features": 14,
+    "class_counts": {
+      "1": 8257,
+      "2": 6723
+    },
+    "warnings": []
+  }
+}

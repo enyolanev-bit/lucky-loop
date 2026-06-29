@@ -1,0 +1,104 @@
+{
+  "status": "completed",
+  "protocol_id": "generated_ml_research_protocol",
+  "dataset": "eeg_eye_state",
+  "dataset_source": "openml",
+  "lab_action": "open-does-feature-scaling-improve-logistic-regression-accuracy-on-breast-canc",
+  "primary_metric": "balanced_accuracy",
+  "runs": [
+    {
+      "seed": 42,
+      "model": "logisticregression",
+      "scaler": "No feature scaling",
+      "metrics": {
+        "balanced_accuracy": 1.0,
+        "accuracy": 1.0,
+        "f1_macro": 1.0,
+        "precision_macro": 1.0,
+        "recall_macro": 1.0
+      }
+    },
+    {
+      "seed": 42,
+      "model": "logisticregression",
+      "scaler": "StandardScaler",
+      "metrics": {
+        "balanced_accuracy": 1.0,
+        "accuracy": 1.0,
+        "f1_macro": 1.0,
+        "precision_macro": 1.0,
+        "recall_macro": 1.0
+      }
+    },
+    {
+      "seed": 42,
+      "model": "logisticregression",
+      "scaler": "MinMaxScaler",
+      "metrics": {
+        "balanced_accuracy": 0.9736842105263157,
+        "accuracy": 0.96875,
+        "f1_macro": 0.967967967967968,
+        "precision_macro": 0.9642857142857143,
+        "recall_macro": 0.9736842105263157
+      }
+    },
+    {
+      "seed": 42,
+      "model": "gradientboostingclassifier",
+      "scaler": "No feature scaling",
+      "metrics": {
+        "balanced_accuracy": 0.9615384615384616,
+        "accuracy": 0.96875,
+        "f1_macro": 0.9671794871794872,
+        "precision_macro": 0.975,
+        "recall_macro": 0.9615384615384616
+      }
+    },
+    {
+      "seed": 42,
+      "model": "gradientboostingclassifier",
+      "scaler": "StandardScaler",
+      "metrics": {
+        "balanced_accuracy": 0.9615384615384616,
+        "accuracy": 0.96875,
+        "f1_macro": 0.9671794871794872,
+        "precision_macro": 0.975,
+        "recall_macro": 0.9615384615384616
+      }
+    },
+    {
+      "seed": 42,
+      "model": "gradientboostingclassifier",
+      "scaler": "MinMaxScaler",
+      "metrics": {
+        "balanced_accuracy": 0.9615384615384616,
+        "accuracy": 0.96875,
+        "f1_macro": 0.9671794871794872,
+        "precision_macro": 0.975,
+        "recall_macro": 0.9615384615384616
+      }
+    }
+  ],
+  "summary": {
+    "mean_balanced_accuracy": 0.9763832658569501,
+    "std_balanced_accuracy": 0.01724282366960949
+  },
+  "effect_size": 0.9763832658569501,
+  "seed_noise": 0.01724282366960949,
+  "effect_to_noise_ratio": 56.625485742096146,
+  "best_condition": {
+    "seed": 42,
+    "model": "logisticregression",
+    "scaler": "No feature scaling",
+    "metrics": {
+      "balanced_accuracy": 1.0,
+      "accuracy": 1.0,
+      "f1_macro": 1.0,
+      "precision_macro": 1.0,
+      "recall_macro": 1.0
+    }
+  },
+  "protocol_warnings": [],
+  "artifacts": [],
+  "runtime_seconds": 0.31404900550842285
+}

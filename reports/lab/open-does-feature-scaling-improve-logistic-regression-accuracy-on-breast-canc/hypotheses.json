@@ -1,0 +1,13 @@
+[
+  {
+    "claim_candidate": "Feature scaling improves logistic regression accuracy on breast cancer classification.",
+    "falsification_condition": "No significant difference in accuracy with and without feature scaling across multiple seeds.",
+    "hypothesis_id": "hypothesis_1",
+    "literature_gap_ids": [
+      "domain_gap_model_comparison",
+      "domain_gap_robustness"
+    ],
+    "minimum_evidence_needed": "Statistically significant improvement in accuracy across multiple data splits and seeds.",
+    "why_it_matters": "Feature scaling can standardize input data, potentially leading to better model convergence and performance."
+  }
+]

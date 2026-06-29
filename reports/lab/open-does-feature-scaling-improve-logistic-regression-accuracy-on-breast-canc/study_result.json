@@ -1,0 +1,96 @@
+{
+  "claims": [
+    {
+      "allowed_rewrite": null,
+      "claim": "Feature scaling improves logistic regression accuracy on breast cancer classification.",
+      "claim_id": "experiment_008:robustness",
+      "diagnostic": null,
+      "evidence_ids": [
+        "experiment_008"
+      ],
+      "failure_category": null,
+      "hypothesis_id": "H1_generated",
+      "metrics": {
+        "effect_size": 0.1213181151898477,
+        "effect_to_noise_ratio": 10.74691931784188,
+        "seed_noise": 0.01128864110745087
+      },
+      "next_action": null,
+      "reason": "The measured effect exceeded seed noise by the support threshold.",
+      "verdict": "supported"
+    }
+  ],
+  "final_report": "reports/lab/open-does-feature-scaling-improve-logistic-regression-accuracy-on-breast-canc/final_report.md",
+  "hypotheses": [
+    {
+      "claim_candidate": "Feature scaling improves logistic regression accuracy on breast cancer classification.",
+      "falsification_condition": "No significant difference in accuracy with and without feature scaling across multiple seeds.",
+      "hypothesis_id": "hypothesis_1",
+      "literature_gap_ids": [
+        "domain_gap_model_comparison",
+        "domain_gap_robustness"
+      ],
+      "minimum_evidence_needed": "Statistically significant improvement in accuracy across multiple data splits and seeds.",
+      "why_it_matters": "Feature scaling can standardize input data, potentially leading to better model convergence and performance."
+    }
+  ],
+  "lab_question": {
+    "budget": 6,
+    "domain": "ml_research_validity",
+    "question": "Does feature scaling improve logistic regression accuracy on breast_cancer?",
+    "require_qwen": true,
+    "study_id": "open_generated_ml_research",
+    "success_criteria": [
+      "external dataset discovery finds a usable Hugging Face or OpenML dataset",
+      "the research protocol is generated from the question, literature, and dataset audit",
+      "the experiment code is generated, statically validated, dry-run, executed, analyzed, verified, and reported"
+    ]
+  },
+  "protocols": [
+    {
+      "claim_blocked_if": "No significant difference in balanced accuracy with and without feature scaling across multiple seeds.",
+      "claim_enabled_if": "Statistically significant improvement in balanced accuracy with feature scaling across multiple seeds.",
+      "conditions": [
+        "gradientboostingclassifier",
+        "logisticregression",
+        "randomforestclassifier",
+        "svc"
+      ],
+      "controlled_variables": [
+        "dataset",
+        "target_column",
+        "split_strategy",
+        "seeds",
+        "preprocessing"
+      ],
+      "dataset": "eeg_eye_state",
+      "expected_artifacts": [
+        "runs/experiment_<step>.json",
+        "analyses/analysis_<step>.json"
+      ],
+      "hypothesis_id": "H1_generated",
+      "manipulated_variable": "model_family",
+      "primary_metric": "balanced_accuracy",
+      "protocol_id": "generated_ml_research_protocol",
+      "protocol_risks": [
+        "generated_protocol",
+        "dataset_selection_bias"
+      ],
+      "scientific_goal": "Feature scaling improves logistic regression accuracy on breast cancer classification.",
+      "secondary_metrics": [
+        "accuracy",
+        "f1_macro",
+        "precision_macro",
+        "recall_macro"
+      ],
+      "seeds": [
+        42,
+        52,
+        62,
+        72,
+        82
+      ]
+    }
+  ],
+  "workspace": "reports/lab/open-does-feature-scaling-improve-logistic-regression-accuracy-on-breast-canc"
+}

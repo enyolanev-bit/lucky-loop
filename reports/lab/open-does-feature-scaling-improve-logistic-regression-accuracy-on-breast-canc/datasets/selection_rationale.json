@@ -1,0 +1,8 @@
+{
+  "selected_dataset_id": "eeg_eye_state",
+  "selected_source": "openml",
+  "selected_reason": "usable supervised classification table; score=55.80; reasons=External OpenML registry candidate with known classification target, classification tag/name match, likely usable for empirical ML",
+  "rejected_summary": [],
+  "fit_to_hypothesis": "openml:eeg_eye_state provides 14980 rows, 14 features, target `Class`, and is being used to test: Feature scaling improves logistic regression accuracy on breast cancer classification.. Required properties considered: B, r, e, a, s, t,  , c, a, n, c, e, r,  , d, a, t, a, s, e, t,  , w, i, t, h,  , f, e, a, t, u, r, e, s,  , a, n, d,  , l, a, b, e, l, s, ,,  , m, u, l, t, i, p, l, e,  , s, p, l, i, t, s,  , a, n, d,  , s, e, e, d, s, ..",
+  "risks": []
+}

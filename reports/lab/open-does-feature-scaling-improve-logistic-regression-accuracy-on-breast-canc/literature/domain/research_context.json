@@ -1,0 +1,45 @@
+{
+  "question": "Does feature scaling improve logistic regression accuracy on breast_cancer?",
+  "queries": [
+    "Does feature scaling improve logistic regression accuracy on breast_cancer?",
+    "feature scaling improve logistic regression accuracy breast cancer machine learning classification",
+    "feature scaling improve logistic regression accuracy breast cancer logistic regression random forest svm gradient boosting",
+    "feature scaling improve logistic regression accuracy breast cancer robustness repeated seeds cross validation"
+  ],
+  "papers": [],
+  "excluded_papers": [],
+  "gap_findings": [
+    {
+      "gap_id": "domain_gap_model_comparison",
+      "claim": "The literature context must establish whether nonlinear models are actually expected to improve the selected ML task over simple baselines.",
+      "source_ids": [],
+      "implication": "Generate hypotheses from domain-specific evidence rather than Lucky Loop meta-literature.",
+      "metric": "domain_source_coverage",
+      "experiment": "Compare baseline and nonlinear model families on a dataset selected for the user question."
+    },
+    {
+      "gap_id": "domain_gap_robustness",
+      "claim": "Claims about the selected ML task performance require robustness checks across splits or seeds, not a single score.",
+      "source_ids": [],
+      "implication": "Use repeated seeds and block claims whose effect is within run-to-run noise.",
+      "metric": "effect_to_noise_ratio",
+      "experiment": "Run matched repeated-seed comparisons and verify effect size against seed noise."
+    }
+  ],
+  "recommended_metrics": [
+    "balanced_accuracy",
+    "accuracy",
+    "f1_macro",
+    "precision_macro",
+    "recall_macro"
+  ],
+  "recommended_baselines": [
+    "literature_baseline",
+    "simple_model_baseline"
+  ],
+  "recommended_experiment_plan": [
+    "Select a dataset whose metadata and target match the research question.",
+    "Compare baseline and candidate model families with matched splits and repeated seeds.",
+    "Report only claims supported by the verification plan."
+  ]
+}
