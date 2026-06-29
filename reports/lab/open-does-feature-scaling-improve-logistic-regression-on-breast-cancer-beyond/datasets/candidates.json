@@ -1,0 +1,498 @@
+[
+  {
+    "dataset_id": "eeg_eye_state",
+    "source": "openml",
+    "name": "eeg_eye_state",
+    "url": "https://www.openml.org/d/1471",
+    "description": "OpenML EEG eye state sensor classification benchmark",
+    "license": "unknown",
+    "task_tags": [
+      "classification",
+      "tabular"
+    ],
+    "score": 51.8,
+    "score_reasons": [
+      "External OpenML registry candidate with known classification target",
+      "classification tag/name match",
+      "likely usable for empirical ML"
+    ],
+    "risk_flags": [],
+    "fallback_rank": 2
+  },
+  {
+    "dataset_id": "sonar",
+    "source": "openml",
+    "name": "sonar",
+    "url": "https://www.openml.org/d/40",
+    "description": "OpenML Sonar binary classification benchmark",
+    "license": "unknown",
+    "task_tags": [
+      "classification",
+      "tabular"
+    ],
+    "score": 47.9,
+    "score_reasons": [
+      "External OpenML registry candidate with known classification target",
+      "classification tag/name match",
+      "likely usable for empirical ML"
+    ],
+    "risk_flags": [],
+    "fallback_rank": 1
+  },
+  {
+    "dataset_id": "har",
+    "source": "openml",
+    "name": "har",
+    "url": "https://www.openml.org/d/1478",
+    "description": "OpenML human activity recognition classification benchmark",
+    "license": "unknown",
+    "task_tags": [
+      "classification",
+      "tabular"
+    ],
+    "score": 47.7,
+    "score_reasons": [
+      "External OpenML registry candidate with known classification target",
+      "classification tag/name match",
+      "likely usable for empirical ML"
+    ],
+    "risk_flags": [],
+    "fallback_rank": 3
+  },
+  {
+    "dataset_id": "imodels/tabular-benchmark-797-classification",
+    "source": "huggingface",
+    "name": "imodels/tabular-benchmark-797-classification",
+    "url": "https://huggingface.co/datasets/imodels/tabular-benchmark-797-classification",
+    "description": "",
+    "license": null,
+    "task_tags": [
+      "size_categories:1K<n<10K",
+      "format:csv",
+      "modality:tabular",
+      "library:datasets",
+      "library:pandas",
+      "library:mlcroissant",
+      "library:polars",
+      "region:us"
+    ],
+    "score": 22.0,
+    "score_reasons": [
+      "classification tag/name match",
+      "likely usable for empirical ML"
+    ],
+    "risk_flags": [
+      "missing_license"
+    ],
+    "fallback_rank": 1
+  },
+  {
+    "dataset_id": "LocalLaws/LOCUS-v1",
+    "source": "huggingface",
+    "name": "LocalLaws/LOCUS-v1",
+    "url": "https://huggingface.co/datasets/LocalLaws/LOCUS-v1",
+    "description": "\n\t\n\t\t\n\t\n\t\n\t\tLOCUS v1.0\n\t\n\nThis repository contains the dataset presented in the paper Freeing the Law with LOCUS: A Local Ordinance Corpus for the United States.\n\n\t\n\t\t\n\t\n\t\n\t\tDataset Summary\n\t\n\nLOCUS v1.0 is a chunk-level dataset of U.S. municipal and county law text labeled by legal function. Each eligible chunk is assigned a function, a binary is_substantive label, and all substantive provisions are assigned a topic.\nThe dataset is intended for legal text research, local-law structure\u2026 See the full description on the dataset page: https://huggingface.co/datasets/LocalLaws/LOCUS-v1.",
+    "license": "cc-by-nc-4.0",
+    "task_tags": [
+      "task_categories:text-classification",
+      "language:en",
+      "license:cc-by-nc-4.0",
+      "size_categories:1M<n<10M",
+      "format:parquet",
+      "format:optimized-parquet",
+      "modality:tabular",
+      "modality:text",
+      "library:datasets",
+      "library:dask",
+      "library:polars",
+      "library:mlcroissant",
+      "arxiv:2606.19334",
+      "region:us",
+      "law",
+      "legal-nlp",
+      "local-government",
+      "municipal-law",
+      "ordinances",
+      "classification"
+    ],
+    "score": 11.0,
+    "score_reasons": [
+      "classification tag/name match",
+      "likely usable for empirical ML"
+    ],
+    "risk_flags": [
+      "may_need_non_tabular_pipeline"
+    ],
+    "fallback_rank": 1
+  },
+  {
+    "dataset_id": "Glint-Research/Fable-5-traces",
+    "source": "huggingface",
+    "name": "Glint-Research/Fable-5-traces",
+    "url": "https://huggingface.co/datasets/Glint-Research/Fable-5-traces",
+    "description": "\n  \n\n\n\n  \n    \n      \n        Glint Research Dataset Card\n        Fable 5 Pi Agent Traces\n        A compact, high-signal corpus of Fable 5 coding-agent traces converted into Hugging Face Agent Traces / Pi-compatible sessions for Data Studio inspection, tool-use policy learning, and reasoning/action distillation.\n      \n      \n        Primary Config\n        pi_agent/train\n        Agent Trace preview enabled\n      \n    \n    \n      4,665 Pi trace sessions\n      60 source sessions\n      3,799 tool\u2026 See the full description on the dataset page: https://huggingface.co/datasets/Glint-Research/Fable-5-traces.",
+    "license": "agpl-3.0",
+    "task_tags": [
+      "task_categories:text-generation",
+      "annotations_creators:machine-generated",
+      "language:en",
+      "license:agpl-3.0",
+      "size_categories:1K<n<10K",
+      "format:json",
+      "format:agent-traces",
+      "modality:tabular",
+      "modality:text",
+      "library:datasets",
+      "library:dask",
+      "library:polars",
+      "library:mlcroissant",
+      "region:us",
+      "agent-traces",
+      "pi-agent",
+      "claude-code",
+      "fable-5",
+      "chain-of-thought",
+      "tool-use",
+      "coding-agents",
+      "synthetic-data",
+      "distillation",
+      "cot"
+    ],
+    "score": 3.0,
+    "score_reasons": [
+      "likely usable for empirical ML"
+    ],
+    "risk_flags": [
+      "may_need_non_tabular_pipeline"
+    ],
+    "fallback_rank": 1
+  },
+  {
+    "dataset_id": "SakanaAI/AI-CUDA-Engineer-Archive",
+    "source": "huggingface",
+    "name": "SakanaAI/AI-CUDA-Engineer-Archive",
+    "url": "https://huggingface.co/datasets/SakanaAI/AI-CUDA-Engineer-Archive",
+    "description": "\n\t\n\t\t\n\t\n\t\n\t\tThe AI CUDA Engineer Archive \ud83d\udc77: Agentic CUDA Kernel Discovery, Optimization & Composition\n\t\n\n\nWe release The AI CUDA Engineer archive, a dataset consisting of approximately 30,000 CUDA kernels generated by The AI CUDA Engineer. It is released under the CC-By-4.0 license and can be accessed via HuggingFace and interactively visualized here. The dataset is based on the Kernel tasks provided in KernelBench and includes a torch reference implementation, torch, NCU and Clang-tidy\u2026 See the full description on the dataset page: https://huggingface.co/datasets/SakanaAI/AI-CUDA-Engineer-Archive.",
+    "license": "cc-by-4.0",
+    "task_tags": [
+      "license:cc-by-4.0",
+      "size_categories:10K<n<100K",
+      "format:parquet",
+      "modality:tabular",
+      "modality:text",
+      "library:datasets",
+      "library:pandas",
+      "library:polars",
+      "library:mlcroissant",
+      "region:us",
+      "code"
+    ],
+    "score": 3.0,
+    "score_reasons": [
+      "likely usable for empirical ML"
+    ],
+    "risk_flags": [
+      "may_need_non_tabular_pipeline"
+    ],
+    "fallback_rank": 1
+  },
+  {
+    "dataset_id": "Qwen/AgentWorldBench",
+    "source": "huggingface",
+    "name": "Qwen/AgentWorldBench",
+    "url": "https://huggingface.co/datasets/Qwen/AgentWorldBench",
+    "description": "\n\t\n\t\t\n\t\n\t\n\t\tAgentWorldBench\n\t\n\nAgentWorldBench is a comprehensive evaluation benchmark for language world models, constructed from real-world observations of frontier model trajectories on established benchmarks such as Tool Decathlon, Terminal-Bench 1.0 & 2.0, and OSWorld-Verified. Every evaluation sample is paired with a ground-truth observation obtained from real environment execution, enabling reference-grounded scoring.\nAgentWorldBench evaluates world modeling quality by scoring each\u2026 See the full description on the dataset page: https://huggingface.co/datasets/Qwen/AgentWorldBench.",
+    "license": "apache-2.0",
+    "task_tags": [
+      "task_categories:text-generation",
+      "language:en",
+      "license:apache-2.0",
+      "size_categories:1K<n<10K",
+      "format:json",
+      "modality:tabular",
+      "modality:text",
+      "library:datasets",
+      "library:dask",
+      "library:polars",
+      "library:mlcroissant",
+      "arxiv:2606.24597",
+      "region:us",
+      "world-model",
+      "agent",
+      "benchmark",
+      "evaluation",
+      "environment-simulation",
+      "qwen"
+    ],
+    "score": 3.0,
+    "score_reasons": [
+      "likely usable for empirical ML"
+    ],
+    "risk_flags": [
+      "may_need_non_tabular_pipeline"
+    ],
+    "fallback_rank": 1
+  },
+  {
+    "dataset_id": "BitRobot/HIW-500",
+    "source": "huggingface",
+    "name": "BitRobot/HIW-500",
+    "url": "https://huggingface.co/datasets/BitRobot/HIW-500",
+    "description": "\n\t\n\t\t\n\t\n\t\n\t\tHIW500: Humanoids In-the-Wild Dataset\n\t\n\nhttps://bitrobot-foundation.github.io/humanoids-in-the-wild-500-hours/\nHIW500: Humanoids In-the-Wild Dataset is a large-scale dataset for whole-body humanoid robot learning in natural home environments. It captures human teleoperation demonstrations on Unitree G1 across real homes in Southeast Asia, where layouts, object states, lighting, clutter, and operator styles vary from episode to episode.\nThe dataset is designed for research on\u2026 See the full description on the dataset page: https://huggingface.co/datasets/BitRobot/HIW-500.",
+    "license": "cc-by-4.0",
+    "task_tags": [
+      "language:en",
+      "license:cc-by-4.0",
+      "region:us",
+      "robotics",
+      "humanoid"
+    ],
+    "score": 0.0,
+    "score_reasons": [
+      "metadata match"
+    ],
+    "risk_flags": [],
+    "fallback_rank": 1
+  },
+  {
+    "dataset_id": "armand0e/claude-fable-5-claude-code",
+    "source": "huggingface",
+    "name": "armand0e/claude-fable-5-claude-code",
+    "url": "https://huggingface.co/datasets/armand0e/claude-fable-5-claude-code",
+    "description": "\n\t\n\t\t\n\t\n\t\n\t\tclaude-fable-5 Agent Traces\n\t\n\nIt's worth noting that our team was working with Glint-Research to collect as much fable data as possible.\nThese are just the anonymized raw traces of both of our teams combined. This means that Glint-Research/Fable-5-traces was created from formatting and splitting up this same dataset. If you use one for your tune, don't use the other (it's the same exact data).\n\nFor training on this dataset I recommend using the teich package to convert to openai\u2026 See the full description on the dataset page: https://huggingface.co/datasets/armand0e/claude-fable-5-claude-code.",
+    "license": null,
+    "task_tags": [
+      "task_categories:text-generation",
+      "size_categories:n<1K",
+      "format:json",
+      "format:agent-traces",
+      "modality:tabular",
+      "modality:text",
+      "library:datasets",
+      "library:dask",
+      "library:polars",
+      "library:mlcroissant",
+      "region:us",
+      "agent-traces",
+      "format:agent-traces",
+      "claude",
+      "distillation",
+      "claude-fable-5",
+      "teich"
+    ],
+    "score": 0.0,
+    "score_reasons": [
+      "likely usable for empirical ML"
+    ],
+    "risk_flags": [
+      "missing_license",
+      "may_need_non_tabular_pipeline"
+    ],
+    "fallback_rank": 1
+  },
+  {
+    "dataset_id": "scholarweave/arxiv-latex",
+    "source": "huggingface",
+    "name": "scholarweave/arxiv-latex",
+    "url": "https://huggingface.co/datasets/scholarweave/arxiv-latex",
+    "description": "\n\t\n\t\t\n\t\n\t\n\t\tarXiv LaTeX Source Dataset\n\t\n\nThis dataset provides the entire corpus of arXiv's LaTeX source files, pre-parsed, formatted, and aligned with official metadata in ready-to-query Parquet files.\n\n\n\t\n\t\t\n\t\n\t\n\t\tWhy I Built This\n\t\n\nIf you have ever tried to work with the complete history of arXiv papers at scale, you have likely run into two massive hurdles:\n\nNetwork Egress Costs: While arXiv does offer public bulk access to its source files via S3 (s3://arxiv), the bucket is configured\u2026 See the full description on the dataset page: https://huggingface.co/datasets/scholarweave/arxiv-latex.",
+    "license": "other",
+    "task_tags": [
+      "task_categories:text-generation",
+      "task_categories:feature-extraction",
+      "language:en",
+      "license:other",
+      "size_categories:1M<n<10M",
+      "format:parquet",
+      "modality:text",
+      "library:datasets",
+      "library:dask",
+      "library:polars",
+      "library:mlcroissant",
+      "region:us",
+      "science",
+      "arxiv",
+      "latex",
+      "academic"
+    ],
+    "score": -2.0,
+    "score_reasons": [
+      "metadata match"
+    ],
+    "risk_flags": [
+      "may_need_non_tabular_pipeline"
+    ],
+    "fallback_rank": 1
+  },
+  {
+    "dataset_id": "nvidia/Open-SWE-Traces",
+    "source": "huggingface",
+    "name": "nvidia/Open-SWE-Traces",
+    "url": "https://huggingface.co/datasets/nvidia/Open-SWE-Traces",
+    "description": "\n\t\n\t\t\n\t\n\t\n\t\tOpen-SWE-Traces: Advancing Distillation for Software Engineering Agents\n\t\n\n\n\t\n\t\t\n\t\n\t\n\t\tData Overview\n\t\n\nOpen-SWE-Traces is an agentic instruction tuning dataset designed to advance the capabilities of LLMs in software engineering. This dataset comprises 200k+ agent \ntrajectories collected using the SWE-agent and OpenHands framework. The trajectories \nwere synthesized using Minimax-M2.5 and Qwen3.5-122B-A10B and \nspecifically curated for supervised fine-tuning (SFT), aiming to\u2026 See the full description on the dataset page: https://huggingface.co/datasets/nvidia/Open-SWE-Traces.",
+    "license": "cc-by-4.0",
+    "task_tags": [
+      "license:cc-by-4.0",
+      "size_categories:100K<n<1M",
+      "format:parquet",
+      "modality:text",
+      "library:datasets",
+      "library:dask",
+      "library:polars",
+      "library:mlcroissant",
+      "arxiv:2606.16038",
+      "region:us",
+      "code",
+      "synthetic",
+      "tools",
+      "agents",
+      "software"
+    ],
+    "score": -2.0,
+    "score_reasons": [
+      "metadata match"
+    ],
+    "risk_flags": [
+      "may_need_non_tabular_pipeline"
+    ],
+    "fallback_rank": 1
+  },
+  {
+    "dataset_id": "WithinUsAI/claude_mythos_distilled_25k",
+    "source": "huggingface",
+    "name": "WithinUsAI/claude_mythos_distilled_25k",
+    "url": "https://huggingface.co/datasets/WithinUsAI/claude_mythos_distilled_25k",
+    "description": "\n\t\n\t\t\n\t\n\t\n\t\tClaude Mythos Distilled 25K\n\t\n\nA high-quality synthetic supervised fine-tuning (SFT) dataset designed to train and fine-tune any LLM to mirror the capabilities, reasoning style, agentic behavior, and technical depth of Anthropic's Claude Mythos (distilled frontier model).\n\n\t\n\t\t\n\t\n\t\n\t\tDataset Summary\n\t\n\n\nSize: 25,000 high-quality examples\nFormat: JSONL with chat messages (user/assistant pairs) + rich metadata\nCategories (balanced for general + specialized capability):\nCybersecurity\u2026 See the full description on the dataset page: https://huggingface.co/datasets/WithinUsAI/claude_mythos_distilled_25k.",
+    "license": "apache-2.0",
+    "task_tags": [
+      "language:en",
+      "license:apache-2.0",
+      "size_categories:10K<n<100K",
+      "format:json",
+      "modality:text",
+      "library:datasets",
+      "library:pandas",
+      "library:polars",
+      "library:mlcroissant",
+      "region:us",
+      "synthetic",
+      "claude",
+      "mythos",
+      "distillation",
+      "cybersecurity",
+      "coding",
+      "reasoning",
+      "agentic",
+      "frontier-model-mirror",
+      "sft",
+      "instruction-tuning"
+    ],
+    "score": -2.0,
+    "score_reasons": [
+      "metadata match"
+    ],
+    "risk_flags": [
+      "may_need_non_tabular_pipeline"
+    ],
+    "fallback_rank": 1
+  },
+  {
+    "dataset_id": "ArtificialAnalysis/ITBench-AA",
+    "source": "huggingface",
+    "name": "ArtificialAnalysis/ITBench-AA",
+    "url": "https://huggingface.co/datasets/ArtificialAnalysis/ITBench-AA",
+    "description": "\n\t\n\t\t\n\t\n\t\n\t\tITBench-AA\n\t\n\nArtificial Analysis' release of the public scenarios from\nIBM's ITBench benchmark, used for\nthe ITBench-AA leaderboard.\nThis repo currently contains the SRE subset (sre config). Each row is a\nKubernetes incident scenario with its expected contributing-factor entities. An\nagent under evaluation is given access to an offline snapshot of the affected\ncluster (alerts, events, traces, topology) and must identify the entity\n(Deployment, Pod, ConfigMap, etc.) responsible for\u2026 See the full description on the dataset page: https://huggingface.co/datasets/ArtificialAnalysis/ITBench-AA.",
+    "license": "cc-by-4.0",
+    "task_tags": [
+      "task_categories:question-answering",
+      "language:en",
+      "license:cc-by-4.0",
+      "size_categories:n<1K",
+      "format:json",
+      "modality:text",
+      "library:datasets",
+      "library:pandas",
+      "library:polars",
+      "library:mlcroissant",
+      "region:us",
+      "sre",
+      "kubernetes",
+      "root-cause-analysis",
+      "agents",
+      "it-operations"
+    ],
+    "score": -2.0,
+    "score_reasons": [
+      "metadata match"
+    ],
+    "risk_flags": [
+      "may_need_non_tabular_pipeline"
+    ],
+    "fallback_rank": 1
+  },
+  {
+    "dataset_id": "VINAY-UMRETHE/Sonnet-Opus-4.5-4.6-Gemini-3.0-3.1-Pro-GPT-5-5.1-5.2-GLM-4.7-MiniMax-M2.1-DeepSeek-V3.2-High",
+    "source": "huggingface",
+    "name": "VINAY-UMRETHE/Sonnet-Opus-4.5-4.6-Gemini-3.0-3.1-Pro-GPT-5-5.1-5.2-GLM-4.7-MiniMax-M2.1-DeepSeek-V3.2-High",
+    "url": "https://huggingface.co/datasets/VINAY-UMRETHE/Sonnet-Opus-4.5-4.6-Gemini-3.0-3.1-Pro-GPT-5-5.1-5.2-GLM-4.7-MiniMax-M2.1-DeepSeek-V3.2-High",
+    "description": "\n\t\n\t\t\n\t\n\t\n\t\tDistill\n\t\n\n\n  \n  \n\n\nThis is a multi-source curated instruction and reasoning dataset specifically for training and distilling large language models (LLMs) to exhibit advanced Chain-of-Thought (CoT), Agentic, Mathematical and Coding capabilities. It aggregates high-quality outputs from frontier models into messages ChatML format.\n\n\t\n\t\t\n\t\n\t\n\t\tDataset Structure\n\t\n\nThe dataset contains a total of 70.2K examples, split into three subsets based on the presence of visible reasoning\u2026 See the full description on the dataset page: https://huggingface.co/datasets/VINAY-UMRETHE/Sonnet-Opus-4.5-4.6-Gemini-3.0-3.1-Pro-GPT-5-5.1-5.2-GLM-4.7-MiniMax-M2.1-DeepSeek-V3.2-High.",
+    "license": "apache-2.0",
+    "task_tags": [
+      "task_categories:text-generation",
+      "language:en",
+      "license:apache-2.0",
+      "size_categories:100K<n<1M",
+      "format:parquet",
+      "format:optimized-parquet",
+      "modality:text",
+      "library:datasets",
+      "library:dask",
+      "library:polars",
+      "library:mlcroissant",
+      "region:us",
+      "distillation",
+      "agent",
+      "code",
+      "math",
+      "reasoning",
+      "non_reasoning",
+      "synthetic"
+    ],
+    "score": -2.0,
+    "score_reasons": [
+      "metadata match"
+    ],
+    "risk_flags": [
+      "may_need_non_tabular_pipeline"
+    ],
+    "fallback_rank": 1
+  },
+  {
+    "dataset_id": "mlabonne/open-perfectblend",
+    "source": "huggingface",
+    "name": "mlabonne/open-perfectblend",
+    "url": "https://huggingface.co/datasets/mlabonne/open-perfectblend",
+    "description": "\n\n\t\n\t\t\n\t\t\ud83c\udfa8 Open-PerfectBlend\n\t\n\nOpen-PerfectBlend is an open-source reproduction of the instruction dataset introduced in the paper \"The Perfect Blend: Redefining RLHF with Mixture of Judges\".\nIt's a solid general-purpose instruction dataset with chat, math, code, and instruction-following data.\n\n\t\n\t\t\n\t\tData source\n\t\n\n\nHere is the list of the datasets used in this mix:\n\n\t\n\t\t\nDataset\n# Samples\n\n\n\t\t\nmeta-math/MetaMathQA\n395,000\n\n\nopenbmb/UltraInteract_sft\n288,579\n\n\nHuggingFaceH4/ultrachat_200k\u2026 See the full description on the dataset page: https://huggingface.co/datasets/mlabonne/open-perfectblend.",
+    "license": "apache-2.0",
+    "task_tags": [
+      "license:apache-2.0",
+      "size_categories:1M<n<10M",
+      "format:parquet",
+      "modality:text",
+      "library:datasets",
+      "library:dask",
+      "library:mlcroissant",
+      "library:polars",
+      "arxiv:2409.20370",
+      "region:us"
+    ],
+    "score": -2.0,
+    "score_reasons": [
+      "metadata match"
+    ],
+    "risk_flags": [
+      "may_need_non_tabular_pipeline"
+    ],
+    "fallback_rank": 1
+  }
+]

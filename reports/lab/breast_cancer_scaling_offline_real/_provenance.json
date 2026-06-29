@@ -1,0 +1,12 @@
+{
+  "generator": "scripts/make_demo_workspace.py",
+  "mode": "offline_real_metrics_no_llm",
+  "seeds": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "note": "sklearn metrics are really computed; LLM scientist + Qwen world model are bypassed."
+}

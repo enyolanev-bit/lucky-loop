@@ -1,0 +1,21 @@
+[
+  {
+    "claim_id": "claim_000",
+    "hypothesis_id": "hyp_best_model",
+    "claim": "'svc (rbf)' is the best model on breast_cancer beyond seed noise.",
+    "verdict": "blocked",
+    "evidence_ids": [
+      "analysis_000"
+    ],
+    "reason": "Best mean accuracy at svc (rbf), but the observed effect (0.007) is within the across-seed std (0.0147). On a single split this is within noise — no best-model claim is supported.",
+    "failure_category": null,
+    "diagnostic": null,
+    "next_action": null,
+    "allowed_rewrite": null,
+    "metrics": {
+      "effect_size": 0.007,
+      "seed_noise": 0.0147,
+      "best_condition": "svc (rbf)"
+    }
+  }
+]

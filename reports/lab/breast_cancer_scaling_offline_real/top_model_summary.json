@@ -1,0 +1,36 @@
+{
+  "best_observed_model": "logistic_regression + scale",
+  "best_observed_metric": 0.9807,
+  "top_models": [
+    {
+      "run_id": "s_BRE0",
+      "model": "logistic_regression",
+      "model_key": "logistic_regression + scale",
+      "config": "logistic_regression + scale",
+      "metric": 0.9807,
+      "metric_std": 0.0066,
+      "params": {}
+    },
+    {
+      "run_id": "s_BRE1",
+      "model": "svc",
+      "model_key": "svc (rbf)",
+      "config": "svc (rbf)",
+      "metric": 0.9719,
+      "metric_std": 0.0102,
+      "params": {}
+    },
+    {
+      "run_id": "s_BRE2",
+      "model": "random_forest",
+      "model_key": "random_forest",
+      "config": "random_forest",
+      "metric": 0.9649,
+      "metric_std": 0.0147,
+      "params": {}
+    }
+  ],
+  "top_gap": 0.0088,
+  "needs_robustness_verification": true,
+  "reason": "single-split observation; robustness not yet established"
+}

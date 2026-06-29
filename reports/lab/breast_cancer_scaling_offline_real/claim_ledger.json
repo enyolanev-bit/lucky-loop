@@ -1,0 +1,21 @@
+[
+  {
+    "claim_id": "claim_000",
+    "hypothesis_id": "hyp_scaling",
+    "claim": "Feature scaling improves logistic regression accuracy on breast_cancer beyond seed noise.",
+    "verdict": "weakly_supported",
+    "evidence_ids": [
+      "analysis_000"
+    ],
+    "reason": "Best mean accuracy at + StandardScaler, but the observed effect (0.0228) is greater than the across-seed std (0.0066). Claim weakly supported.",
+    "failure_category": null,
+    "diagnostic": null,
+    "next_action": null,
+    "allowed_rewrite": null,
+    "metrics": {
+      "effect_size": 0.0228,
+      "seed_noise": 0.0066,
+      "best_condition": "+ StandardScaler"
+    }
+  }
+]

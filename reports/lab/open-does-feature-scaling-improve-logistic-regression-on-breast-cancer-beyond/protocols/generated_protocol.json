@@ -1,0 +1,46 @@
+{
+  "claim_blocked_if": "No significant improvement in balanced accuracy and F1-score after feature scaling across multiple seeds.",
+  "claim_enabled_if": "Statistically significant improvement in balanced accuracy and F1-score across multiple seeds with feature scaling.",
+  "conditions": [
+    "decisiontreeclassifier",
+    "gradientboostingclassifier",
+    "logisticregression",
+    "mlpclassifier",
+    "randomforestclassifier",
+    "svc"
+  ],
+  "controlled_variables": [
+    "dataset",
+    "target_column",
+    "split_strategy",
+    "seeds",
+    "preprocessing"
+  ],
+  "dataset": "eeg_eye_state",
+  "expected_artifacts": [
+    "runs/experiment_<step>.json",
+    "analyses/analysis_<step>.json"
+  ],
+  "hypothesis_id": "H1_generated",
+  "manipulated_variable": "model_family",
+  "primary_metric": "balanced_accuracy",
+  "protocol_id": "generated_ml_research_protocol",
+  "protocol_risks": [
+    "generated_protocol",
+    "dataset_selection_bias"
+  ],
+  "scientific_goal": "Feature scaling improves logistic regression performance on breast cancer detection beyond seed noise.",
+  "secondary_metrics": [
+    "accuracy",
+    "f1_macro",
+    "precision_macro",
+    "recall_macro"
+  ],
+  "seeds": [
+    42,
+    52,
+    62,
+    72,
+    82
+  ]
+}

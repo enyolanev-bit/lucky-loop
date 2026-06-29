@@ -14,3 +14,4 @@ reports/
 .env
 .entire/local*
 data-*.json
+.gstack/

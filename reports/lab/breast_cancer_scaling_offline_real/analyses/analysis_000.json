@@ -1,0 +1,23 @@
+{
+  "analysis_id": "analysis_000",
+  "protocol_id": "breast_cancer_scaling_ablation",
+  "primary_metric": "accuracy",
+  "condition_means": {
+    "logreg (raw)": 0.9579,
+    "+ StandardScaler": 0.9807,
+    "tune C=1.0": 0.9807
+  },
+  "condition_stds": {
+    "logreg (raw)": 0.0066,
+    "+ StandardScaler": 0.0066,
+    "tune C=1.0": 0.0066
+  },
+  "effect_size": 0.0228,
+  "seed_noise": 0.0066,
+  "effect_to_noise_ratio": 3.455,
+  "best_condition": "+ StandardScaler",
+  "protocol_warnings": [
+    "single stratified split per seed; no nested CV"
+  ],
+  "summary": "Best condition '+ StandardScaler' mean=0.9807 vs raw 0.9579; effect=0.0228, seed_noise=0.0066 over seeds [0, 1, 2, 3, 4]."
+}
