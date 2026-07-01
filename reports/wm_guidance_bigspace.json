@@ -1,0 +1,76 @@
+{
+  "model": "Qwen/Qwen-AgentWorld-35B-A3B",
+  "n_candidates": 16,
+  "by_dataset": {
+    "breast_cancer": {
+      "calibration": -0.032,
+      "on_cost_s": 0.6255,
+      "on_cost_costaware_s": 0.0071,
+      "off_random_s": 0.2657,
+      "off_cheapest_s": 0.0071,
+      "saved_vs_random_pct": -135.4,
+      "saved_vs_cheapest_pct": -8727.3,
+      "costaware_saved_vs_cheapest_pct": 0.0,
+      "n_candidates": 16
+    },
+    "wine": {
+      "calibration": 0.541,
+      "on_cost_s": 0.004,
+      "on_cost_costaware_s": 0.0015,
+      "off_random_s": 0.1079,
+      "off_cheapest_s": 0.0015,
+      "saved_vs_random_pct": 96.2,
+      "saved_vs_cheapest_pct": -168.5,
+      "costaware_saved_vs_cheapest_pct": 0.0,
+      "n_candidates": 16
+    },
+    "digits": {
+      "calibration": 0.553,
+      "on_cost_s": 0.035,
+      "on_cost_costaware_s": 0.0809,
+      "off_random_s": 2.6296,
+      "off_cheapest_s": 0.0809,
+      "saved_vs_random_pct": 98.7,
+      "saved_vs_cheapest_pct": 56.7,
+      "costaware_saved_vs_cheapest_pct": 0.0,
+      "n_candidates": 16
+    },
+    "iris": {
+      "calibration": 0.518,
+      "on_cost_s": 0.0284,
+      "on_cost_costaware_s": 0.0263,
+      "off_random_s": 0.1639,
+      "off_cheapest_s": 0.0263,
+      "saved_vs_random_pct": 82.7,
+      "saved_vs_cheapest_pct": -7.8,
+      "costaware_saved_vs_cheapest_pct": 0.0,
+      "n_candidates": 16
+    },
+    "synth_easy": {
+      "calibration": 0.815,
+      "on_cost_s": 1.1561,
+      "on_cost_costaware_s": 0.0284,
+      "off_random_s": 0.624,
+      "off_cheapest_s": 0.0284,
+      "saved_vs_random_pct": -85.3,
+      "saved_vs_cheapest_pct": -3968.6,
+      "costaware_saved_vs_cheapest_pct": 0.0,
+      "n_candidates": 16
+    },
+    "synth_hard": {
+      "calibration": 0.909,
+      "on_cost_s": 1.0772,
+      "on_cost_costaware_s": 0.0451,
+      "off_random_s": 0.5397,
+      "off_cheapest_s": 0.0451,
+      "saved_vs_random_pct": -99.6,
+      "saved_vs_cheapest_pct": -2287.9,
+      "costaware_saved_vs_cheapest_pct": 0.0,
+      "n_candidates": 16
+    }
+  },
+  "avg_saved_vs_random_all": -7.1,
+  "avg_saved_vs_cheapest_all": -2517.2,
+  "avg_saved_vs_cheapest_real_only": -2211.7,
+  "avg_costaware_saved_vs_cheapest_all": 0.0
+}
