@@ -9,7 +9,7 @@ Here we give a BIG candidate space (varied cost + accuracy) so guidance can matt
 Per dataset we also report Qwen calibration (Spearman predicted vs actual) to relate it to the saving.
 
 Real Qwen via the box endpoint; real sklearn timing. No fabrication.
-    LLM_BASE_URL=http://134.199.205.222:8000/v1 python experiments/wm_guidance_bigspace.py
+    LLM_BASE_URL=http://YOUR_SIMULATOR_HOST:8000/v1 python experiments/wm_guidance_bigspace.py
 """
 from __future__ import annotations
 import json, os, time, statistics as st, urllib.request, warnings
@@ -26,7 +26,7 @@ from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier,
 from sklearn.svm import SVC
 
 warnings.filterwarnings("ignore", category=ConvergenceWarning)
-BASE = os.environ.get("LLM_BASE_URL", "http://134.199.205.222:8000/v1")
+BASE = os.environ.get("LLM_BASE_URL", "http://YOUR_SIMULATOR_HOST:8000/v1")
 MODEL = os.environ.get("LLM_MODEL", "Qwen/Qwen-AgentWorld-35B-A3B")
 KEY = os.environ.get("OPENAI_API_KEY", "dummy")
 ROOT = Path(__file__).resolve().parents[1]
