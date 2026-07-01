@@ -1,0 +1,13 @@
+{
+  "analysis_id": "analysis_001",
+  "best_condition": null,
+  "condition_means": {},
+  "condition_stds": {},
+  "effect_size": null,
+  "effect_to_noise_ratio": null,
+  "primary_metric": "balanced_accuracy",
+  "protocol_id": "inspect_dataset",
+  "protocol_warnings": [],
+  "seed_noise": null,
+  "summary": "No numeric runs were available."
+}

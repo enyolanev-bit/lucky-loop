@@ -1,0 +1,37 @@
+{
+  "candidate_gaps": [
+    {
+      "claim": "Random splits can inflate apparent generalization on temporally or subject-correlated sensor data.",
+      "gap_id": "gap_split_validity_sensor",
+      "protocol": "random_vs_blocked_split"
+    }
+  ],
+  "known_failure_modes": [
+    "single-run overclaim",
+    "data leakage",
+    "metric misuse",
+    "split-induced overstatement",
+    "seed variance"
+  ],
+  "known_methods": [
+    "safe protocol catalog",
+    "repeated-seed evaluation",
+    "effect-vs-noise claim verification"
+  ],
+  "literature_limit": "metadata, abstracts, curated notes, and arXiv IDs; full PDFs are not parsed in v1",
+  "methodological_risks": "Random splits can inflate apparent generalization on temporally or subject-correlated sensor data.",
+  "schema_version": "1.0",
+  "study_id": "split_validity_sensor",
+  "study_inference": {
+    "prompt_version": "user_override",
+    "rationale": "`--study` was provided explicitly for a debug or ablation run.",
+    "source": "user_override",
+    "study_id": "split_validity_sensor"
+  },
+  "suggested_hypotheses": [
+    "Random splits can inflate apparent generalization on temporally or subject-correlated sensor data."
+  ],
+  "suggested_protocol_families": [
+    "split_validity_sensor"
+  ]
+}

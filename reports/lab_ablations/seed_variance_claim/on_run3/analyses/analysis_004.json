@@ -1,0 +1,23 @@
+{
+  "analysis_id": "analysis_004",
+  "best_condition": "svc",
+  "condition_means": {
+    "forest": 0.9921296296296297,
+    "linear": 0.9884259259259259,
+    "svc": 0.9930555555555556
+  },
+  "condition_stds": {
+    "forest": 0.0109221139435677,
+    "linear": 0.012858612496840992,
+    "svc": 0.012858612496840999
+  },
+  "effect_size": 0.0009259259259259967,
+  "effect_to_noise_ratio": 0.033333333333335866,
+  "primary_metric": "balanced_accuracy",
+  "protocol_id": "single_run_vs_repeated_seeds",
+  "protocol_warnings": [
+    "single-run winner is observation-only until repeated-seed effect exceeds seed noise"
+  ],
+  "seed_noise": 0.02777777777777779,
+  "summary": "Best condition by mean balanced_accuracy: svc. Effect=0.0009; seed_noise=0.0278."
+}

@@ -1,0 +1,63 @@
+{
+  "artifacts": [],
+  "best_condition": "linear",
+  "conditions": [
+    "linear"
+  ],
+  "dataset": "wine",
+  "effect_size": null,
+  "effect_to_noise_ratio": null,
+  "lab_action": "run_baseline",
+  "primary_metric": "balanced_accuracy",
+  "protocol_id": "single_run_vs_repeated_seeds",
+  "protocol_warnings": [
+    "single-run winner is observation-only until repeated-seed effect exceeds seed noise"
+  ],
+  "runs": [
+    {
+      "accuracy": 1.0,
+      "balanced_accuracy": 1.0,
+      "condition": "linear",
+      "f1": 1.0,
+      "model": "linear",
+      "seed": 0
+    },
+    {
+      "accuracy": 0.9777777777777777,
+      "balanced_accuracy": 0.9814814814814815,
+      "condition": "linear",
+      "f1": 0.9779047619047617,
+      "model": "linear",
+      "seed": 1
+    },
+    {
+      "accuracy": 0.9777777777777777,
+      "balanced_accuracy": 0.9814814814814815,
+      "condition": "linear",
+      "f1": 0.9779047619047617,
+      "model": "linear",
+      "seed": 2
+    },
+    {
+      "accuracy": 1.0,
+      "balanced_accuracy": 1.0,
+      "condition": "linear",
+      "f1": 1.0,
+      "model": "linear",
+      "seed": 3
+    }
+  ],
+  "runtime_seconds": 0.0231,
+  "seed_noise": null,
+  "status": "success",
+  "study_id": "single_run_vs_repeated_seeds",
+  "summary": {
+    "linear": {
+      "max": 1.0,
+      "mean_balanced_accuracy": 0.9907407407407407,
+      "min": 0.9814814814814815,
+      "n": 4,
+      "std_balanced_accuracy": 0.010691671651659719
+    }
+  }
+}

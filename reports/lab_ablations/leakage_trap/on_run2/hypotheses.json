@@ -1,0 +1,12 @@
+[
+  {
+    "claim_candidate": "A high score from leaky preprocessing is protocol-invalid and must not be reported as model generalization.",
+    "falsification_condition": "Proper and intentionally leaky preprocessing produce comparable performance.",
+    "hypothesis_id": "H1_leakage_invalidates_claim",
+    "literature_gap_ids": [
+      "gap_leakage_trap"
+    ],
+    "minimum_evidence_needed": "Controlled proper-vs-leaky protocol with a protocol warning attached to the leaky branch.",
+    "why_it_matters": "Autonomous ML agents can accidentally run preprocessing outside the train fold and produce impressive but invalid results."
+  }
+]

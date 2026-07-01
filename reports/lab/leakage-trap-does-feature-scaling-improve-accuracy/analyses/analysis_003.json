@@ -1,0 +1,17 @@
+{
+  "analysis_id": "analysis_003",
+  "best_condition": "proper_pipeline",
+  "condition_means": {
+    "proper_pipeline": 0.9666928721174004
+  },
+  "condition_stds": {
+    "proper_pipeline": 0.013026999905538073
+  },
+  "effect_size": null,
+  "effect_to_noise_ratio": null,
+  "primary_metric": "balanced_accuracy",
+  "protocol_id": "proper_vs_leaky_preprocessing",
+  "protocol_warnings": [],
+  "seed_noise": null,
+  "summary": "Best condition by mean balanced_accuracy: proper_pipeline."
+}

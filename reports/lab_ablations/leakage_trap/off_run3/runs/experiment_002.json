@@ -1,0 +1,103 @@
+{
+  "artifacts": [],
+  "best_condition": "leaky_preprocessing",
+  "conditions": [
+    "leaky_preprocessing",
+    "proper_pipeline"
+  ],
+  "dataset": "breast_cancer",
+  "effect_size": 0.030948637316561833,
+  "effect_to_noise_ratio": 3.280555555555555,
+  "lab_action": "run_main_protocol",
+  "primary_metric": "balanced_accuracy",
+  "protocol_id": "proper_vs_leaky_preprocessing",
+  "protocol_warnings": [
+    "data_leakage: label-derived feature was intentionally included before the split as a controlled invalid protocol"
+  ],
+  "runs": [
+    {
+      "accuracy": 0.958041958041958,
+      "balanced_accuracy": 0.9550314465408805,
+      "condition": "proper_pipeline",
+      "f1": 0.958041958041958,
+      "model": "linear",
+      "seed": 0
+    },
+    {
+      "accuracy": 1.0,
+      "balanced_accuracy": 1.0,
+      "condition": "leaky_preprocessing",
+      "f1": 1.0,
+      "model": "linear",
+      "seed": 0
+    },
+    {
+      "accuracy": 0.965034965034965,
+      "balanced_accuracy": 0.960587002096436,
+      "condition": "proper_pipeline",
+      "f1": 0.9649650533628434,
+      "model": "linear",
+      "seed": 1
+    },
+    {
+      "accuracy": 1.0,
+      "balanced_accuracy": 1.0,
+      "condition": "leaky_preprocessing",
+      "f1": 1.0,
+      "model": "linear",
+      "seed": 1
+    },
+    {
+      "accuracy": 0.972027972027972,
+      "balanced_accuracy": 0.9661425576519916,
+      "condition": "proper_pipeline",
+      "f1": 0.9719127026819333,
+      "model": "linear",
+      "seed": 2
+    },
+    {
+      "accuracy": 0.993006993006993,
+      "balanced_accuracy": 0.9905660377358491,
+      "condition": "leaky_preprocessing",
+      "f1": 0.9929930106725687,
+      "model": "linear",
+      "seed": 2
+    },
+    {
+      "accuracy": 0.986013986013986,
+      "balanced_accuracy": 0.9850104821802935,
+      "condition": "proper_pipeline",
+      "f1": 0.986013986013986,
+      "model": "linear",
+      "seed": 3
+    },
+    {
+      "accuracy": 1.0,
+      "balanced_accuracy": 1.0,
+      "condition": "leaky_preprocessing",
+      "f1": 1.0,
+      "model": "linear",
+      "seed": 3
+    }
+  ],
+  "runtime_seconds": 0.0463,
+  "seed_noise": 0.009433962264150941,
+  "status": "success",
+  "study_id": "proper_vs_leaky_preprocessing",
+  "summary": {
+    "leaky_preprocessing": {
+      "max": 1.0,
+      "mean_balanced_accuracy": 0.9976415094339622,
+      "min": 0.9905660377358491,
+      "n": 4,
+      "std_balanced_accuracy": 0.004716981132075471
+    },
+    "proper_pipeline": {
+      "max": 0.9850104821802935,
+      "mean_balanced_accuracy": 0.9666928721174004,
+      "min": 0.9550314465408805,
+      "n": 4,
+      "std_balanced_accuracy": 0.013026999905538073
+    }
+  }
+}

@@ -1,0 +1,76 @@
+{
+  "domain": "ml_research_validity",
+  "goal": "Run a complete computational ML research lab from literature to verified claims.",
+  "hypotheses": [
+    {
+      "claim_candidate": "A high score from leaky preprocessing is protocol-invalid and must not be reported as model generalization.",
+      "falsification_condition": "Proper and intentionally leaky preprocessing produce comparable performance.",
+      "hypothesis_id": "H1_leakage_invalidates_claim",
+      "literature_gap_ids": [
+        "gap_leakage_trap"
+      ],
+      "minimum_evidence_needed": "Controlled proper-vs-leaky protocol with a protocol warning attached to the leaky branch.",
+      "why_it_matters": "Autonomous ML agents can accidentally run preprocessing outside the train fold and produce impressive but invalid results."
+    }
+  ],
+  "pipeline": [
+    "research_intake",
+    "literature_review",
+    "gap_mapping",
+    "hypothesis_generation",
+    "protocol_design",
+    "qwen_prediction_before_action",
+    "real_ml_execution",
+    "analysis",
+    "claim_verification",
+    "lab_notebook",
+    "final_report"
+  ],
+  "protocols": [
+    {
+      "claim_blocked_if": "no score inflation or warning is observed",
+      "claim_enabled_if": "leaky preprocessing raises the score but emits a protocol warning",
+      "conditions": [
+        "proper_pipeline",
+        "leaky_preprocessing"
+      ],
+      "controlled_variables": [
+        "model_family",
+        "seeds",
+        "test_fraction"
+      ],
+      "dataset": "breast_cancer",
+      "expected_artifacts": [
+        "runs/experiment_<step>.json",
+        "analyses/analysis_<step>.json"
+      ],
+      "hypothesis_id": "H1_leakage_invalidates_claim",
+      "manipulated_variable": "preprocessing_scope",
+      "primary_metric": "balanced_accuracy",
+      "protocol_id": "proper_vs_leaky_preprocessing",
+      "protocol_risks": [
+        "data_leakage"
+      ],
+      "scientific_goal": "Compare a proper train-fold preprocessing pipeline against an intentionally leaky preprocessing probe.",
+      "secondary_metrics": [
+        "accuracy",
+        "f1"
+      ],
+      "seeds": [
+        0,
+        1,
+        2,
+        3
+      ]
+    }
+  ],
+  "question": "Does feature scaling improve accuracy?",
+  "schema_version": "1.0",
+  "study_id": "leakage_trap",
+  "study_inference": {
+    "prompt_version": "user_override",
+    "rationale": "`--study` was provided explicitly for a debug or ablation run.",
+    "source": "user_override",
+    "study_id": "leakage_trap"
+  }
+}

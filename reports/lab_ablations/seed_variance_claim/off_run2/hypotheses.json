@@ -1,0 +1,12 @@
+[
+  {
+    "claim_candidate": "A single-run winner is not a robust best-model claim when the effect is smaller than seed noise.",
+    "falsification_condition": "Repeated seeds show an effect-to-noise ratio above the support threshold.",
+    "hypothesis_id": "H1_single_run_winner_not_robust",
+    "literature_gap_ids": [
+      "gap_seed_variance_claim"
+    ],
+    "minimum_evidence_needed": "Multi-seed comparison of candidate models with effect/noise reported.",
+    "why_it_matters": "Auto-research reports often turn leaderboard observations into unsupported claims."
+  }
+]

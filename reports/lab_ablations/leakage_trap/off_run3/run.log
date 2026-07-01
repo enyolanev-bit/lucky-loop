@@ -1,0 +1,158 @@
+{
+  "claims": [
+    {
+      "allowed_rewrite": null,
+      "claim": "A high score from leaky preprocessing is protocol-invalid and must not be reported as model generalization.",
+      "claim_id": "experiment_001:observation",
+      "diagnostic": null,
+      "evidence_ids": [
+        "experiment_001"
+      ],
+      "failure_category": null,
+      "hypothesis_id": "H1_leakage_invalidates_claim",
+      "metrics": {
+        "effect_size": 0.0,
+        "effect_to_noise_ratio": 0.0
+      },
+      "next_action": null,
+      "reason": "The lab recorded a real ML result, but no stronger verifier rule applied.",
+      "verdict": "observation_only"
+    },
+    {
+      "allowed_rewrite": "The leaky branch is an invalid protocol probe, not a valid model result.",
+      "claim": "The high score from the leaky branch is a valid generalization claim.",
+      "claim_id": "experiment_002:leakage_blocks_claim",
+      "diagnostic": "The experiment included a leakage warning, so high scores from that branch cannot support generalization.",
+      "evidence_ids": [
+        "experiment_002"
+      ],
+      "failure_category": "protocol_invalid_leakage",
+      "hypothesis_id": "H1_leakage_invalidates_claim",
+      "metrics": {
+        "effect_size": 0.030948637316561833,
+        "effect_to_noise_ratio": 3.280555555555555
+      },
+      "next_action": "Remove leakage, rebuild the preprocessing pipeline inside train folds, and rerun.",
+      "reason": "A protocol warning indicates label-derived or test-informed leakage.",
+      "verdict": "blocked"
+    },
+    {
+      "allowed_rewrite": null,
+      "claim": "A high score from leaky preprocessing is protocol-invalid and must not be reported as model generalization.",
+      "claim_id": "experiment_003:observation",
+      "diagnostic": null,
+      "evidence_ids": [
+        "experiment_003"
+      ],
+      "failure_category": null,
+      "hypothesis_id": "H1_leakage_invalidates_claim",
+      "metrics": {
+        "effect_size": 0.0,
+        "effect_to_noise_ratio": 0.0
+      },
+      "next_action": null,
+      "reason": "The lab recorded a real ML result, but no stronger verifier rule applied.",
+      "verdict": "observation_only"
+    },
+    {
+      "allowed_rewrite": "The leaky branch is an invalid protocol probe, not a valid model result.",
+      "claim": "The high score from the leaky branch is a valid generalization claim.",
+      "claim_id": "experiment_004:leakage_blocks_claim",
+      "diagnostic": "The experiment included a leakage warning, so high scores from that branch cannot support generalization.",
+      "evidence_ids": [
+        "experiment_004"
+      ],
+      "failure_category": "protocol_invalid_leakage",
+      "hypothesis_id": "H1_leakage_invalidates_claim",
+      "metrics": {
+        "effect_size": 0.030738993710691775,
+        "effect_to_noise_ratio": 3.258333333333329
+      },
+      "next_action": "Remove leakage, rebuild the preprocessing pipeline inside train folds, and rerun.",
+      "reason": "A protocol warning indicates label-derived or test-informed leakage.",
+      "verdict": "blocked"
+    },
+    {
+      "allowed_rewrite": null,
+      "claim": "A high score from leaky preprocessing is protocol-invalid and must not be reported as model generalization.",
+      "claim_id": "experiment_005:observation",
+      "diagnostic": null,
+      "evidence_ids": [
+        "experiment_005"
+      ],
+      "failure_category": null,
+      "hypothesis_id": "H1_leakage_invalidates_claim",
+      "metrics": {
+        "effect_size": 0.0,
+        "effect_to_noise_ratio": 0.0
+      },
+      "next_action": null,
+      "reason": "The lab recorded a real ML result, but no stronger verifier rule applied.",
+      "verdict": "observation_only"
+    }
+  ],
+  "final_report": "reports/lab/leakage-trap-does-feature-scaling-improve-accuracy/final_report.md",
+  "hypotheses": [
+    {
+      "claim_candidate": "A high score from leaky preprocessing is protocol-invalid and must not be reported as model generalization.",
+      "falsification_condition": "Proper and intentionally leaky preprocessing produce comparable performance.",
+      "hypothesis_id": "H1_leakage_invalidates_claim",
+      "literature_gap_ids": [
+        "gap_leakage_trap"
+      ],
+      "minimum_evidence_needed": "Controlled proper-vs-leaky protocol with a protocol warning attached to the leaky branch.",
+      "why_it_matters": "Autonomous ML agents can accidentally run preprocessing outside the train fold and produce impressive but invalid results."
+    }
+  ],
+  "lab_question": {
+    "budget": 6,
+    "domain": "ml_research_validity",
+    "question": "Does feature scaling improve accuracy?",
+    "require_qwen": false,
+    "study_id": "leakage_trap",
+    "success_criteria": [
+      "literature review, gaps, hypotheses, protocols, real runs, analyses, notebook, claim ledger, and final report exist",
+      "Qwen-AgentWorld predicts each Lucky Loop lab action before execution when --require-qwen is used",
+      "claims in the final report are backed by deterministic lab verifier entries"
+    ]
+  },
+  "protocols": [
+    {
+      "claim_blocked_if": "no score inflation or warning is observed",
+      "claim_enabled_if": "leaky preprocessing raises the score but emits a protocol warning",
+      "conditions": [
+        "proper_pipeline",
+        "leaky_preprocessing"
+      ],
+      "controlled_variables": [
+        "model_family",
+        "seeds",
+        "test_fraction"
+      ],
+      "dataset": "breast_cancer",
+      "expected_artifacts": [
+        "runs/experiment_<step>.json",
+        "analyses/analysis_<step>.json"
+      ],
+      "hypothesis_id": "H1_leakage_invalidates_claim",
+      "manipulated_variable": "preprocessing_scope",
+      "primary_metric": "balanced_accuracy",
+      "protocol_id": "proper_vs_leaky_preprocessing",
+      "protocol_risks": [
+        "data_leakage"
+      ],
+      "scientific_goal": "Compare a proper train-fold preprocessing pipeline against an intentionally leaky preprocessing probe.",
+      "secondary_metrics": [
+        "accuracy",
+        "f1"
+      ],
+      "seeds": [
+        0,
+        1,
+        2,
+        3
+      ]
+    }
+  ],
+  "workspace": "reports/lab/leakage-trap-does-feature-scaling-improve-accuracy"
+}

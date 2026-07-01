@@ -1,0 +1,239 @@
+{
+  "artifacts": [],
+  "best_condition": "svc",
+  "conditions": [
+    "forest",
+    "linear",
+    "svc"
+  ],
+  "dataset": "wine",
+  "effect_size": 0.0009259259259259967,
+  "effect_to_noise_ratio": 0.033333333333335866,
+  "lab_action": "run_replication",
+  "primary_metric": "balanced_accuracy",
+  "protocol_id": "single_run_vs_repeated_seeds",
+  "protocol_warnings": [
+    "single-run winner is observation-only until repeated-seed effect exceeds seed noise"
+  ],
+  "runs": [
+    {
+      "accuracy": 1.0,
+      "balanced_accuracy": 1.0,
+      "condition": "linear",
+      "f1": 1.0,
+      "model": "linear",
+      "seed": 0
+    },
+    {
+      "accuracy": 1.0,
+      "balanced_accuracy": 1.0,
+      "condition": "forest",
+      "f1": 1.0,
+      "model": "forest",
+      "seed": 0
+    },
+    {
+      "accuracy": 1.0,
+      "balanced_accuracy": 1.0,
+      "condition": "svc",
+      "f1": 1.0,
+      "model": "svc",
+      "seed": 0
+    },
+    {
+      "accuracy": 0.9777777777777777,
+      "balanced_accuracy": 0.9814814814814815,
+      "condition": "linear",
+      "f1": 0.9779047619047617,
+      "model": "linear",
+      "seed": 1
+    },
+    {
+      "accuracy": 1.0,
+      "balanced_accuracy": 1.0,
+      "condition": "forest",
+      "f1": 1.0,
+      "model": "forest",
+      "seed": 1
+    },
+    {
+      "accuracy": 1.0,
+      "balanced_accuracy": 1.0,
+      "condition": "svc",
+      "f1": 1.0,
+      "model": "svc",
+      "seed": 1
+    },
+    {
+      "accuracy": 0.9777777777777777,
+      "balanced_accuracy": 0.9814814814814815,
+      "condition": "linear",
+      "f1": 0.9779047619047617,
+      "model": "linear",
+      "seed": 2
+    },
+    {
+      "accuracy": 0.9777777777777777,
+      "balanced_accuracy": 0.9777777777777779,
+      "condition": "forest",
+      "f1": 0.9776949363156261,
+      "model": "forest",
+      "seed": 2
+    },
+    {
+      "accuracy": 1.0,
+      "balanced_accuracy": 1.0,
+      "condition": "svc",
+      "f1": 1.0,
+      "model": "svc",
+      "seed": 2
+    },
+    {
+      "accuracy": 1.0,
+      "balanced_accuracy": 1.0,
+      "condition": "linear",
+      "f1": 1.0,
+      "model": "linear",
+      "seed": 3
+    },
+    {
+      "accuracy": 1.0,
+      "balanced_accuracy": 1.0,
+      "condition": "forest",
+      "f1": 1.0,
+      "model": "forest",
+      "seed": 3
+    },
+    {
+      "accuracy": 1.0,
+      "balanced_accuracy": 1.0,
+      "condition": "svc",
+      "f1": 1.0,
+      "model": "svc",
+      "seed": 3
+    },
+    {
+      "accuracy": 1.0,
+      "balanced_accuracy": 1.0,
+      "condition": "linear",
+      "f1": 1.0,
+      "model": "linear",
+      "seed": 10
+    },
+    {
+      "accuracy": 1.0,
+      "balanced_accuracy": 1.0,
+      "condition": "forest",
+      "f1": 1.0,
+      "model": "forest",
+      "seed": 10
+    },
+    {
+      "accuracy": 1.0,
+      "balanced_accuracy": 1.0,
+      "condition": "svc",
+      "f1": 1.0,
+      "model": "svc",
+      "seed": 10
+    },
+    {
+      "accuracy": 0.9777777777777777,
+      "balanced_accuracy": 0.9722222222222222,
+      "condition": "linear",
+      "f1": 0.9775949862906386,
+      "model": "linear",
+      "seed": 11
+    },
+    {
+      "accuracy": 0.9777777777777777,
+      "balanced_accuracy": 0.9777777777777779,
+      "condition": "forest",
+      "f1": 0.9776949363156261,
+      "model": "forest",
+      "seed": 11
+    },
+    {
+      "accuracy": 0.9777777777777777,
+      "balanced_accuracy": 0.9722222222222222,
+      "condition": "svc",
+      "f1": 0.9775949862906386,
+      "model": "svc",
+      "seed": 11
+    },
+    {
+      "accuracy": 0.9777777777777777,
+      "balanced_accuracy": 0.9722222222222222,
+      "condition": "linear",
+      "f1": 0.9775949862906386,
+      "model": "linear",
+      "seed": 12
+    },
+    {
+      "accuracy": 1.0,
+      "balanced_accuracy": 1.0,
+      "condition": "forest",
+      "f1": 1.0,
+      "model": "forest",
+      "seed": 12
+    },
+    {
+      "accuracy": 0.9777777777777777,
+      "balanced_accuracy": 0.9722222222222222,
+      "condition": "svc",
+      "f1": 0.9775949862906386,
+      "model": "svc",
+      "seed": 12
+    },
+    {
+      "accuracy": 1.0,
+      "balanced_accuracy": 1.0,
+      "condition": "linear",
+      "f1": 1.0,
+      "model": "linear",
+      "seed": 13
+    },
+    {
+      "accuracy": 0.9777777777777777,
+      "balanced_accuracy": 0.9814814814814815,
+      "condition": "forest",
+      "f1": 0.9779047619047617,
+      "model": "forest",
+      "seed": 13
+    },
+    {
+      "accuracy": 1.0,
+      "balanced_accuracy": 1.0,
+      "condition": "svc",
+      "f1": 1.0,
+      "model": "svc",
+      "seed": 13
+    }
+  ],
+  "runtime_seconds": 1.1299,
+  "seed_noise": 0.02777777777777779,
+  "status": "success",
+  "study_id": "single_run_vs_repeated_seeds",
+  "summary": {
+    "forest": {
+      "max": 1.0,
+      "mean_balanced_accuracy": 0.9921296296296296,
+      "min": 0.9777777777777779,
+      "n": 8,
+      "std_balanced_accuracy": 0.0109221139435677
+    },
+    "linear": {
+      "max": 1.0,
+      "mean_balanced_accuracy": 0.9884259259259259,
+      "min": 0.9722222222222222,
+      "n": 8,
+      "std_balanced_accuracy": 0.012858612496840992
+    },
+    "svc": {
+      "max": 1.0,
+      "mean_balanced_accuracy": 0.9930555555555556,
+      "min": 0.9722222222222222,
+      "n": 8,
+      "std_balanced_accuracy": 0.012858612496840999
+    }
+  }
+}

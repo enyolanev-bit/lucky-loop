@@ -1,0 +1,30 @@
+{
+  "artifacts": [],
+  "best_condition": null,
+  "conditions": [
+    "dataset_profile"
+  ],
+  "dataset": "breast_cancer",
+  "effect_size": null,
+  "effect_to_noise_ratio": null,
+  "primary_metric": "balanced_accuracy",
+  "protocol_id": "inspect_dataset",
+  "protocol_warnings": [],
+  "runs": [],
+  "runtime_seconds": 0.0061,
+  "seed_noise": null,
+  "status": "success",
+  "study_id": "inspect_dataset",
+  "summary": {
+    "class_counts": {
+      "0": 212,
+      "1": 357
+    },
+    "classes": [
+      "0",
+      "1"
+    ],
+    "n_features": 30,
+    "n_samples": 569
+  }
+}

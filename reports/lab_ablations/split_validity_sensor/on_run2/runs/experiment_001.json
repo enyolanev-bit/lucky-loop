@@ -1,0 +1,30 @@
+{
+  "artifacts": [],
+  "best_condition": null,
+  "conditions": [
+    "dataset_profile"
+  ],
+  "dataset": "eeg_eye_state",
+  "effect_size": null,
+  "effect_to_noise_ratio": null,
+  "primary_metric": "balanced_accuracy",
+  "protocol_id": "inspect_dataset",
+  "protocol_warnings": [],
+  "runs": [],
+  "runtime_seconds": 0.0056,
+  "seed_noise": null,
+  "status": "success",
+  "study_id": "inspect_dataset",
+  "summary": {
+    "class_counts": {
+      "0": 2756,
+      "1": 2244
+    },
+    "classes": [
+      "0",
+      "1"
+    ],
+    "n_features": 14,
+    "n_samples": 5000
+  }
+}

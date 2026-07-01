@@ -1,0 +1,61 @@
+{
+  "artifacts": [],
+  "best_condition": "proper_pipeline",
+  "conditions": [
+    "proper_pipeline"
+  ],
+  "dataset": "breast_cancer",
+  "effect_size": null,
+  "effect_to_noise_ratio": null,
+  "lab_action": "run_negative_control",
+  "primary_metric": "balanced_accuracy",
+  "protocol_id": "proper_vs_leaky_preprocessing",
+  "protocol_warnings": [],
+  "runs": [
+    {
+      "accuracy": 0.6013986013986014,
+      "balanced_accuracy": 0.4971698113207547,
+      "condition": "proper_pipeline",
+      "f1": 0.5208796519366955,
+      "model": "linear",
+      "seed": 0
+    },
+    {
+      "accuracy": 0.5944055944055944,
+      "balanced_accuracy": 0.48385744234800837,
+      "condition": "proper_pipeline",
+      "f1": 0.4996869684369684,
+      "model": "linear",
+      "seed": 1
+    },
+    {
+      "accuracy": 0.6153846153846154,
+      "balanced_accuracy": 0.5044025157232704,
+      "condition": "proper_pipeline",
+      "f1": 0.5212087364553732,
+      "model": "linear",
+      "seed": 2
+    },
+    {
+      "accuracy": 0.6363636363636364,
+      "balanced_accuracy": 0.5404612159329141,
+      "condition": "proper_pipeline",
+      "f1": 0.5731601731601733,
+      "model": "linear",
+      "seed": 3
+    }
+  ],
+  "runtime_seconds": 0.0369,
+  "seed_noise": null,
+  "status": "success",
+  "study_id": "proper_vs_leaky_preprocessing",
+  "summary": {
+    "proper_pipeline": {
+      "max": 0.5404612159329141,
+      "mean_balanced_accuracy": 0.5064727463312368,
+      "min": 0.48385744234800837,
+      "n": 4,
+      "std_balanced_accuracy": 0.02420398379535472
+    }
+  }
+}

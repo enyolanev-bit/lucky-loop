@@ -1,0 +1,36 @@
+{
+  "claim_blocked_if": "no score inflation or warning is observed",
+  "claim_enabled_if": "leaky preprocessing raises the score but emits a protocol warning",
+  "conditions": [
+    "proper_pipeline",
+    "leaky_preprocessing"
+  ],
+  "controlled_variables": [
+    "model_family",
+    "seeds",
+    "test_fraction"
+  ],
+  "dataset": "breast_cancer",
+  "expected_artifacts": [
+    "runs/experiment_<step>.json",
+    "analyses/analysis_<step>.json"
+  ],
+  "hypothesis_id": "H1_leakage_invalidates_claim",
+  "manipulated_variable": "preprocessing_scope",
+  "primary_metric": "balanced_accuracy",
+  "protocol_id": "proper_vs_leaky_preprocessing",
+  "protocol_risks": [
+    "data_leakage"
+  ],
+  "scientific_goal": "Compare a proper train-fold preprocessing pipeline against an intentionally leaky preprocessing probe.",
+  "secondary_metrics": [
+    "accuracy",
+    "f1"
+  ],
+  "seeds": [
+    0,
+    1,
+    2,
+    3
+  ]
+}

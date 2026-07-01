@@ -1,0 +1,103 @@
+{
+  "artifacts": [],
+  "best_condition": "blocked_split",
+  "conditions": [
+    "blocked_split",
+    "random_split"
+  ],
+  "dataset": "eeg_eye_state",
+  "effect_size": 0.0016856714900986836,
+  "effect_to_noise_ratio": 0.05982488849002532,
+  "lab_action": "run_negative_control",
+  "primary_metric": "balanced_accuracy",
+  "protocol_id": "random_vs_blocked_split",
+  "protocol_warnings": [
+    "blocked split is a proxy for temporal or grouped holdout; it is stricter than random split"
+  ],
+  "runs": [
+    {
+      "accuracy": 0.5472,
+      "balanced_accuracy": 0.4970338577441796,
+      "condition": "random_split",
+      "f1": 0.39547208237903475,
+      "model": "linear",
+      "seed": 0
+    },
+    {
+      "accuracy": 0.5528,
+      "balanced_accuracy": 0.5121341528275404,
+      "condition": "blocked_split",
+      "f1": 0.48693557803858095,
+      "model": "linear",
+      "seed": 0
+    },
+    {
+      "accuracy": 0.5544,
+      "balanced_accuracy": 0.5037306385808051,
+      "condition": "random_split",
+      "f1": 0.4002853387420382,
+      "model": "linear",
+      "seed": 1
+    },
+    {
+      "accuracy": 0.5184,
+      "balanced_accuracy": 0.48399974161875847,
+      "condition": "blocked_split",
+      "f1": 0.4464009356553262,
+      "model": "linear",
+      "seed": 1
+    },
+    {
+      "accuracy": 0.5528,
+      "balanced_accuracy": 0.503769445500855,
+      "condition": "random_split",
+      "f1": 0.4115410303927846,
+      "model": "linear",
+      "seed": 2
+    },
+    {
+      "accuracy": 0.54,
+      "balanced_accuracy": 0.5018460058792961,
+      "condition": "blocked_split",
+      "f1": 0.45743956341295827,
+      "model": "linear",
+      "seed": 2
+    },
+    {
+      "accuracy": 0.5496,
+      "balanced_accuracy": 0.49887977357455715,
+      "condition": "random_split",
+      "f1": 0.3938252167177154,
+      "model": "linear",
+      "seed": 3
+    },
+    {
+      "accuracy": 0.5504,
+      "balanced_accuracy": 0.5121765010351966,
+      "condition": "blocked_split",
+      "f1": 0.4775674182469762,
+      "model": "linear",
+      "seed": 3
+    }
+  ],
+  "runtime_seconds": 0.0573,
+  "seed_noise": 0.028176759416438157,
+  "status": "success",
+  "study_id": "random_vs_blocked_split",
+  "summary": {
+    "blocked_split": {
+      "max": 0.5121765010351966,
+      "mean_balanced_accuracy": 0.5025391003401979,
+      "min": 0.48399974161875847,
+      "n": 4,
+      "std_balanced_accuracy": 0.013280721944793565
+    },
+    "random_split": {
+      "max": 0.503769445500855,
+      "mean_balanced_accuracy": 0.5008534288500992,
+      "min": 0.4970338577441796,
+      "n": 4,
+      "std_balanced_accuracy": 0.003428601635351506
+    }
+  }
+}

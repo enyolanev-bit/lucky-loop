@@ -1,0 +1,38 @@
+{
+  "claim_blocked_if": "split effects are within seed noise",
+  "claim_enabled_if": "random_split mean exceeds blocked_split mean by more than seed noise",
+  "conditions": [
+    "random_split",
+    "blocked_split"
+  ],
+  "controlled_variables": [
+    "model_family",
+    "feature_set",
+    "test_fraction",
+    "seeds"
+  ],
+  "dataset": "eeg_eye_state",
+  "expected_artifacts": [
+    "runs/experiment_<step>.json",
+    "analyses/analysis_<step>.json"
+  ],
+  "hypothesis_id": "H1_split_overstates_generalization",
+  "manipulated_variable": "split_strategy",
+  "primary_metric": "balanced_accuracy",
+  "protocol_id": "random_vs_blocked_split",
+  "protocol_risks": [
+    "temporal_correlation",
+    "single_split_overclaim"
+  ],
+  "scientific_goal": "Compare random train/test splitting against blocked sequential splitting on real sensor-style data.",
+  "secondary_metrics": [
+    "accuracy",
+    "f1"
+  ],
+  "seeds": [
+    0,
+    1,
+    2,
+    3
+  ]
+}

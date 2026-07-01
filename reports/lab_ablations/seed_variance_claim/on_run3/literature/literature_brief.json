@@ -1,0 +1,37 @@
+{
+  "candidate_gaps": [
+    {
+      "claim": "Single-run winners are not robust claims when seed noise is large.",
+      "gap_id": "gap_seed_variance_claim",
+      "protocol": "single_run_vs_repeated_seeds"
+    }
+  ],
+  "known_failure_modes": [
+    "single-run overclaim",
+    "data leakage",
+    "metric misuse",
+    "split-induced overstatement",
+    "seed variance"
+  ],
+  "known_methods": [
+    "safe protocol catalog",
+    "repeated-seed evaluation",
+    "effect-vs-noise claim verification"
+  ],
+  "literature_limit": "metadata, abstracts, curated notes, and arXiv IDs; full PDFs are not parsed in v1",
+  "methodological_risks": "Single-run winners are not robust claims when seed noise is large.",
+  "schema_version": "1.0",
+  "study_id": "seed_variance_claim",
+  "study_inference": {
+    "prompt_version": "user_override",
+    "rationale": "`--study` was provided explicitly for a debug or ablation run.",
+    "source": "user_override",
+    "study_id": "seed_variance_claim"
+  },
+  "suggested_hypotheses": [
+    "Single-run winners are not robust claims when seed noise is large."
+  ],
+  "suggested_protocol_families": [
+    "seed_variance_claim"
+  ]
+}

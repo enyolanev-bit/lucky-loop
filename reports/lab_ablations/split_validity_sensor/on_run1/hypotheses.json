@@ -1,0 +1,12 @@
+[
+  {
+    "claim_candidate": "Random train/test splits overstate generalization on sequential sensor data compared with blocked splits.",
+    "falsification_condition": "Random and blocked split performance are similar within seed noise.",
+    "hypothesis_id": "H1_split_overstates_generalization",
+    "literature_gap_ids": [
+      "gap_split_validity_sensor"
+    ],
+    "minimum_evidence_needed": "Repeated-seed comparison where random split exceeds blocked split by more than seed noise.",
+    "why_it_matters": "Sensor samples can be temporally or subject correlated; random splits can mix near-duplicates across train and test."
+  }
+]

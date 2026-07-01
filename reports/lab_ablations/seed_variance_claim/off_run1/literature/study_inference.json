@@ -1,0 +1,6 @@
+{
+  "prompt_version": "user_override",
+  "rationale": "`--study` was provided explicitly for a debug or ablation run.",
+  "source": "user_override",
+  "study_id": "seed_variance_claim"
+}

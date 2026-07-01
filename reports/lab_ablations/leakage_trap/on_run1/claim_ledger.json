@@ -1,0 +1,92 @@
+[
+  {
+    "allowed_rewrite": null,
+    "claim": "A high score from leaky preprocessing is protocol-invalid and must not be reported as model generalization.",
+    "claim_id": "experiment_001:observation",
+    "diagnostic": null,
+    "evidence_ids": [
+      "experiment_001"
+    ],
+    "failure_category": null,
+    "hypothesis_id": "H1_leakage_invalidates_claim",
+    "metrics": {
+      "effect_size": 0.0,
+      "effect_to_noise_ratio": 0.0
+    },
+    "next_action": null,
+    "reason": "The lab recorded a real ML result, but no stronger verifier rule applied.",
+    "verdict": "observation_only"
+  },
+  {
+    "allowed_rewrite": "The leaky branch is an invalid protocol probe, not a valid model result.",
+    "claim": "The high score from the leaky branch is a valid generalization claim.",
+    "claim_id": "experiment_002:leakage_blocks_claim",
+    "diagnostic": "The experiment included a leakage warning, so high scores from that branch cannot support generalization.",
+    "evidence_ids": [
+      "experiment_002"
+    ],
+    "failure_category": "protocol_invalid_leakage",
+    "hypothesis_id": "H1_leakage_invalidates_claim",
+    "metrics": {
+      "effect_size": 0.030948637316561833,
+      "effect_to_noise_ratio": 3.280555555555555
+    },
+    "next_action": "Remove leakage, rebuild the preprocessing pipeline inside train folds, and rerun.",
+    "reason": "A protocol warning indicates label-derived or test-informed leakage.",
+    "verdict": "blocked"
+  },
+  {
+    "allowed_rewrite": null,
+    "claim": "A high score from leaky preprocessing is protocol-invalid and must not be reported as model generalization.",
+    "claim_id": "experiment_003:observation",
+    "diagnostic": null,
+    "evidence_ids": [
+      "experiment_003"
+    ],
+    "failure_category": null,
+    "hypothesis_id": "H1_leakage_invalidates_claim",
+    "metrics": {
+      "effect_size": 0.0,
+      "effect_to_noise_ratio": 0.0
+    },
+    "next_action": null,
+    "reason": "The lab recorded a real ML result, but no stronger verifier rule applied.",
+    "verdict": "observation_only"
+  },
+  {
+    "allowed_rewrite": "The leaky branch is an invalid protocol probe, not a valid model result.",
+    "claim": "The high score from the leaky branch is a valid generalization claim.",
+    "claim_id": "experiment_004:leakage_blocks_claim",
+    "diagnostic": "The experiment included a leakage warning, so high scores from that branch cannot support generalization.",
+    "evidence_ids": [
+      "experiment_004"
+    ],
+    "failure_category": "protocol_invalid_leakage",
+    "hypothesis_id": "H1_leakage_invalidates_claim",
+    "metrics": {
+      "effect_size": 0.030738993710691775,
+      "effect_to_noise_ratio": 3.258333333333329
+    },
+    "next_action": "Remove leakage, rebuild the preprocessing pipeline inside train folds, and rerun.",
+    "reason": "A protocol warning indicates label-derived or test-informed leakage.",
+    "verdict": "blocked"
+  },
+  {
+    "allowed_rewrite": null,
+    "claim": "A high score from leaky preprocessing is protocol-invalid and must not be reported as model generalization.",
+    "claim_id": "experiment_005:observation",
+    "diagnostic": null,
+    "evidence_ids": [
+      "experiment_005"
+    ],
+    "failure_category": null,
+    "hypothesis_id": "H1_leakage_invalidates_claim",
+    "metrics": {
+      "effect_size": 0.0,
+      "effect_to_noise_ratio": 0.0
+    },
+    "next_action": null,
+    "reason": "The lab recorded a real ML result, but no stronger verifier rule applied.",
+    "verdict": "observation_only"
+  }
+]

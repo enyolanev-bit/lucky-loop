@@ -1,0 +1,80 @@
+{
+  "autoresearch_gaps": [
+    {
+      "claim": "Autonomous research agents can automate idea-to-report workflows, but final reports still need explicit claim calibration.",
+      "experiment": "Compare classic_autoresearch against lucky_loop_full claim ledger outcomes.",
+      "gap_id": "gap_claim_calibration",
+      "implication": "Lucky Loop must separate observations from claims and force report claims through a verifier.",
+      "metric": "unsupported_best_model_claims",
+      "source_ids": [
+        "arxiv_2407_18367_2024",
+        "arxiv_2408_06292_2024",
+        "arxiv_2501_04227_2025",
+        "arxiv_2506_01372_2025",
+        "arxiv_2605_08956_2026"
+      ]
+    },
+    {
+      "claim": "ML-agent benchmarks and search policies emphasize final performance more than prospective prediction before compute.",
+      "experiment": "Measure Qwen-AgentWorld prediction-vs-reality for every Lucky Loop candidate decision.",
+      "gap_id": "gap_prediction_before_compute",
+      "implication": "Lucky Loop should log state, candidate action, predicted observation, real observation, and comparison.",
+      "metric": "prediction_interval_coverage",
+      "source_ids": [
+        "arxiv_2410_07095_2024",
+        "arxiv_2507_02554_2025",
+        "arxiv_2605_08956_2026",
+        "arxiv_2606_24597_2026"
+      ]
+    },
+    {
+      "claim": "Single-run leaderboard wins can overstate robustness when top models are close across seeds.",
+      "experiment": "Detect top observed models, rerun matched seeds, and compare effect size against seed noise.",
+      "gap_id": "gap_single_run_overclaim",
+      "implication": "A robust best-model claim requires matched multi-seed top-model verification.",
+      "metric": "best_claimable_score",
+      "source_ids": [
+        "arxiv_2407_18367_2024",
+        "arxiv_2410_07095_2024",
+        "arxiv_2506_01372_2025",
+        "arxiv_2507_02554_2025",
+        "arxiv_2605_08956_2026"
+      ]
+    },
+    {
+      "claim": "End-to-end autoresearch needs literature context, execution, analysis, and report generation tied to auditable evidence.",
+      "experiment": "Generate reports/autoresearch/<slug>/ with sources.json, research_context.json, experiment_plan.json, and evidence_manifest.json.",
+      "gap_id": "gap_end_to_end_auditability",
+      "implication": "The workspace must preserve sources, experiment plans, commands, traces, claim ledgers, and final report links.",
+      "metric": "evidence_manifest_completeness",
+      "source_ids": [
+        "arxiv_2408_06292_2024",
+        "arxiv_2501_04227_2025",
+        "arxiv_2506_01372_2025",
+        "arxiv_2605_08956_2026"
+      ]
+    }
+  ],
+  "literature_limit": "metadata, abstracts, curated notes, and arXiv IDs; full PDFs are not parsed in v1",
+  "schema_version": "1.0",
+  "source_to_gap_to_protocol": [
+    {
+      "gap_id": "gap_split_validity_sensor",
+      "protocol": "random_vs_blocked_split",
+      "source_ids": [
+        "arxiv_2605_08956_2026",
+        "arxiv_2501_04227_2025",
+        "arxiv_2506_01372_2025",
+        "arxiv_2410_07095_2024",
+        "arxiv_2606_24597_2026",
+        "arxiv_2507_02554_2025"
+      ]
+    }
+  ],
+  "study_gap": {
+    "claim": "Random splits can inflate apparent generalization on temporally or subject-correlated sensor data.",
+    "gap_id": "gap_split_validity_sensor",
+    "protocol": "random_vs_blocked_split"
+  },
+  "study_id": "split_validity_sensor"
+}

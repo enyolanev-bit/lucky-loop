@@ -1,0 +1,21 @@
+{
+  "analysis_id": "analysis_002",
+  "best_condition": "leaky_preprocessing",
+  "condition_means": {
+    "leaky_preprocessing": 0.9976415094339622,
+    "proper_pipeline": 0.9666928721174004
+  },
+  "condition_stds": {
+    "leaky_preprocessing": 0.004716981132075471,
+    "proper_pipeline": 0.013026999905538073
+  },
+  "effect_size": 0.030948637316561833,
+  "effect_to_noise_ratio": 3.280555555555555,
+  "primary_metric": "balanced_accuracy",
+  "protocol_id": "proper_vs_leaky_preprocessing",
+  "protocol_warnings": [
+    "data_leakage: label-derived feature was intentionally included before the split as a controlled invalid protocol"
+  ],
+  "seed_noise": 0.009433962264150941,
+  "summary": "Best condition by mean balanced_accuracy: leaky_preprocessing. Effect=0.0309; seed_noise=0.0094."
+}

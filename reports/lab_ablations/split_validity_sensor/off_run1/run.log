@@ -1,0 +1,165 @@
+{
+  "claims": [
+    {
+      "allowed_rewrite": "Observed split differences are not enough for a robust overstatement claim.",
+      "claim": "Random train/test splits overstate generalization on sequential sensor data compared with blocked splits.",
+      "claim_id": "experiment_001:split_validity",
+      "diagnostic": "The blocked split did not underperform random split in a claimable way.",
+      "evidence_ids": [
+        "experiment_001"
+      ],
+      "failure_category": "split_effect_not_claimable",
+      "hypothesis_id": "H1_split_overstates_generalization",
+      "metrics": {
+        "blocked_mean": null,
+        "effect_to_noise_ratio": 0.0,
+        "random_mean": null
+      },
+      "next_action": "Run more seeds or use a stronger grouped/temporal holdout before claiming split overstatement.",
+      "reason": "The blocked split did not underperform random split in a claimable way.",
+      "verdict": "blocked"
+    },
+    {
+      "allowed_rewrite": null,
+      "claim": "Random train/test splits overstate generalization on sequential sensor data compared with blocked splits.",
+      "claim_id": "experiment_002:split_validity",
+      "diagnostic": null,
+      "evidence_ids": [
+        "experiment_002"
+      ],
+      "failure_category": null,
+      "hypothesis_id": "H1_split_overstates_generalization",
+      "metrics": {
+        "blocked_mean": 0.46568811146755335,
+        "effect_to_noise_ratio": 4.95961808935456,
+        "random_mean": 0.6096538034662341
+      },
+      "next_action": null,
+      "reason": "Random split exceeded blocked split by more than the estimated seed noise.",
+      "verdict": "supported"
+    },
+    {
+      "allowed_rewrite": "Observed split differences are not enough for a robust overstatement claim.",
+      "claim": "Random train/test splits overstate generalization on sequential sensor data compared with blocked splits.",
+      "claim_id": "experiment_003:split_validity",
+      "diagnostic": "The blocked split did not underperform random split in a claimable way.",
+      "evidence_ids": [
+        "experiment_003"
+      ],
+      "failure_category": "split_effect_not_claimable",
+      "hypothesis_id": "H1_split_overstates_generalization",
+      "metrics": {
+        "blocked_mean": null,
+        "effect_to_noise_ratio": 0.0,
+        "random_mean": 0.6096538034662341
+      },
+      "next_action": "Run more seeds or use a stronger grouped/temporal holdout before claiming split overstatement.",
+      "reason": "The blocked split did not underperform random split in a claimable way.",
+      "verdict": "blocked"
+    },
+    {
+      "allowed_rewrite": null,
+      "claim": "Random train/test splits overstate generalization on sequential sensor data compared with blocked splits.",
+      "claim_id": "experiment_004:split_validity",
+      "diagnostic": null,
+      "evidence_ids": [
+        "experiment_004"
+      ],
+      "failure_category": null,
+      "hypothesis_id": "H1_split_overstates_generalization",
+      "metrics": {
+        "blocked_mean": 0.44306505241533695,
+        "effect_to_noise_ratio": 3.2316543862065883,
+        "random_mean": 0.6143884094078322
+      },
+      "next_action": null,
+      "reason": "Random split exceeded blocked split by more than the estimated seed noise.",
+      "verdict": "supported"
+    },
+    {
+      "allowed_rewrite": "Observed split differences are not enough for a robust overstatement claim.",
+      "claim": "Random train/test splits overstate generalization on sequential sensor data compared with blocked splits.",
+      "claim_id": "experiment_005:split_validity",
+      "diagnostic": "The blocked split did not underperform random split in a claimable way.",
+      "evidence_ids": [
+        "experiment_005"
+      ],
+      "failure_category": "split_effect_not_claimable",
+      "hypothesis_id": "H1_split_overstates_generalization",
+      "metrics": {
+        "blocked_mean": 0.5025391003401979,
+        "effect_to_noise_ratio": 0.05982488849002532,
+        "random_mean": 0.5008534288500992
+      },
+      "next_action": "Run more seeds or use a stronger grouped/temporal holdout before claiming split overstatement.",
+      "reason": "The blocked split did not underperform random split in a claimable way.",
+      "verdict": "blocked"
+    }
+  ],
+  "final_report": "reports/lab/split-validity-sensor-does-feature-scaling-improve-accuracy/final_report.md",
+  "hypotheses": [
+    {
+      "claim_candidate": "Random train/test splits overstate generalization on sequential sensor data compared with blocked splits.",
+      "falsification_condition": "Random and blocked split performance are similar within seed noise.",
+      "hypothesis_id": "H1_split_overstates_generalization",
+      "literature_gap_ids": [
+        "gap_split_validity_sensor"
+      ],
+      "minimum_evidence_needed": "Repeated-seed comparison where random split exceeds blocked split by more than seed noise.",
+      "why_it_matters": "Sensor samples can be temporally or subject correlated; random splits can mix near-duplicates across train and test."
+    }
+  ],
+  "lab_question": {
+    "budget": 6,
+    "domain": "ml_research_validity",
+    "question": "Does feature scaling improve accuracy?",
+    "require_qwen": false,
+    "study_id": "split_validity_sensor",
+    "success_criteria": [
+      "literature review, gaps, hypotheses, protocols, real runs, analyses, notebook, claim ledger, and final report exist",
+      "Qwen-AgentWorld predicts each Lucky Loop lab action before execution when --require-qwen is used",
+      "claims in the final report are backed by deterministic lab verifier entries"
+    ]
+  },
+  "protocols": [
+    {
+      "claim_blocked_if": "split effects are within seed noise",
+      "claim_enabled_if": "random_split mean exceeds blocked_split mean by more than seed noise",
+      "conditions": [
+        "random_split",
+        "blocked_split"
+      ],
+      "controlled_variables": [
+        "model_family",
+        "feature_set",
+        "test_fraction",
+        "seeds"
+      ],
+      "dataset": "eeg_eye_state",
+      "expected_artifacts": [
+        "runs/experiment_<step>.json",
+        "analyses/analysis_<step>.json"
+      ],
+      "hypothesis_id": "H1_split_overstates_generalization",
+      "manipulated_variable": "split_strategy",
+      "primary_metric": "balanced_accuracy",
+      "protocol_id": "random_vs_blocked_split",
+      "protocol_risks": [
+        "temporal_correlation",
+        "single_split_overclaim"
+      ],
+      "scientific_goal": "Compare random train/test splitting against blocked sequential splitting on real sensor-style data.",
+      "secondary_metrics": [
+        "accuracy",
+        "f1"
+      ],
+      "seeds": [
+        0,
+        1,
+        2,
+        3
+      ]
+    }
+  ],
+  "workspace": "reports/lab/split-validity-sensor-does-feature-scaling-improve-accuracy"
+}

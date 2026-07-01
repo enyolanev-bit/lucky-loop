@@ -1,0 +1,19 @@
+{
+  "analysis_id": "analysis_003",
+  "best_condition": "random_split",
+  "condition_means": {
+    "random_split": 0.6096538034662341
+  },
+  "condition_stds": {
+    "random_split": 0.013038448751893096
+  },
+  "effect_size": null,
+  "effect_to_noise_ratio": null,
+  "primary_metric": "balanced_accuracy",
+  "protocol_id": "random_vs_blocked_split",
+  "protocol_warnings": [
+    "blocked split is a proxy for temporal or grouped holdout; it is stricter than random split"
+  ],
+  "seed_noise": null,
+  "summary": "Best condition by mean balanced_accuracy: random_split."
+}

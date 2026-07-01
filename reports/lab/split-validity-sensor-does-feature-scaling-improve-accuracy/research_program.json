@@ -1,0 +1,78 @@
+{
+  "domain": "ml_research_validity",
+  "goal": "Run a complete computational ML research lab from literature to verified claims.",
+  "hypotheses": [
+    {
+      "claim_candidate": "Random train/test splits overstate generalization on sequential sensor data compared with blocked splits.",
+      "falsification_condition": "Random and blocked split performance are similar within seed noise.",
+      "hypothesis_id": "H1_split_overstates_generalization",
+      "literature_gap_ids": [
+        "gap_split_validity_sensor"
+      ],
+      "minimum_evidence_needed": "Repeated-seed comparison where random split exceeds blocked split by more than seed noise.",
+      "why_it_matters": "Sensor samples can be temporally or subject correlated; random splits can mix near-duplicates across train and test."
+    }
+  ],
+  "pipeline": [
+    "research_intake",
+    "literature_review",
+    "gap_mapping",
+    "hypothesis_generation",
+    "protocol_design",
+    "qwen_prediction_before_action",
+    "real_ml_execution",
+    "analysis",
+    "claim_verification",
+    "lab_notebook",
+    "final_report"
+  ],
+  "protocols": [
+    {
+      "claim_blocked_if": "split effects are within seed noise",
+      "claim_enabled_if": "random_split mean exceeds blocked_split mean by more than seed noise",
+      "conditions": [
+        "random_split",
+        "blocked_split"
+      ],
+      "controlled_variables": [
+        "model_family",
+        "feature_set",
+        "test_fraction",
+        "seeds"
+      ],
+      "dataset": "eeg_eye_state",
+      "expected_artifacts": [
+        "runs/experiment_<step>.json",
+        "analyses/analysis_<step>.json"
+      ],
+      "hypothesis_id": "H1_split_overstates_generalization",
+      "manipulated_variable": "split_strategy",
+      "primary_metric": "balanced_accuracy",
+      "protocol_id": "random_vs_blocked_split",
+      "protocol_risks": [
+        "temporal_correlation",
+        "single_split_overclaim"
+      ],
+      "scientific_goal": "Compare random train/test splitting against blocked sequential splitting on real sensor-style data.",
+      "secondary_metrics": [
+        "accuracy",
+        "f1"
+      ],
+      "seeds": [
+        0,
+        1,
+        2,
+        3
+      ]
+    }
+  ],
+  "question": "Does feature scaling improve accuracy?",
+  "schema_version": "1.0",
+  "study_id": "split_validity_sensor",
+  "study_inference": {
+    "prompt_version": "user_override",
+    "rationale": "`--study` was provided explicitly for a debug or ablation run.",
+    "source": "user_override",
+    "study_id": "split_validity_sensor"
+  }
+}

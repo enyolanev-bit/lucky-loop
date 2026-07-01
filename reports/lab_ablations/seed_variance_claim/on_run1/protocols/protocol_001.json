@@ -1,0 +1,37 @@
+{
+  "claim_blocked_if": "effect is less than or equal to seed noise",
+  "claim_enabled_if": "best model effect exceeds seed noise",
+  "conditions": [
+    "single_run_winner",
+    "repeated_seed_comparison"
+  ],
+  "controlled_variables": [
+    "dataset",
+    "candidate_models",
+    "preprocessing"
+  ],
+  "dataset": "wine",
+  "expected_artifacts": [
+    "runs/experiment_<step>.json",
+    "analyses/analysis_<step>.json"
+  ],
+  "hypothesis_id": "H1_single_run_winner_not_robust",
+  "manipulated_variable": "seed_replication",
+  "primary_metric": "balanced_accuracy",
+  "protocol_id": "single_run_vs_repeated_seeds",
+  "protocol_risks": [
+    "seed_variance",
+    "single_split_overclaim"
+  ],
+  "scientific_goal": "Compare single-run model winner against repeated-seed evidence.",
+  "secondary_metrics": [
+    "accuracy",
+    "f1"
+  ],
+  "seeds": [
+    0,
+    1,
+    2,
+    3
+  ]
+}

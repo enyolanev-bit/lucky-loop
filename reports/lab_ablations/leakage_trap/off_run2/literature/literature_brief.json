@@ -1,0 +1,37 @@
+{
+  "candidate_gaps": [
+    {
+      "claim": "Preprocessing outside train folds can leak target or test information into the model.",
+      "gap_id": "gap_leakage_trap",
+      "protocol": "proper_vs_leaky_preprocessing"
+    }
+  ],
+  "known_failure_modes": [
+    "single-run overclaim",
+    "data leakage",
+    "metric misuse",
+    "split-induced overstatement",
+    "seed variance"
+  ],
+  "known_methods": [
+    "safe protocol catalog",
+    "repeated-seed evaluation",
+    "effect-vs-noise claim verification"
+  ],
+  "literature_limit": "metadata, abstracts, curated notes, and arXiv IDs; full PDFs are not parsed in v1",
+  "methodological_risks": "Preprocessing outside train folds can leak target or test information into the model.",
+  "schema_version": "1.0",
+  "study_id": "leakage_trap",
+  "study_inference": {
+    "prompt_version": "user_override",
+    "rationale": "`--study` was provided explicitly for a debug or ablation run.",
+    "source": "user_override",
+    "study_id": "leakage_trap"
+  },
+  "suggested_hypotheses": [
+    "Preprocessing outside train folds can leak target or test information into the model."
+  ],
+  "suggested_protocol_families": [
+    "leakage_trap"
+  ]
+}

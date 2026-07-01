@@ -1,0 +1,63 @@
+{
+  "artifacts": [],
+  "best_condition": "random_split",
+  "conditions": [
+    "random_split"
+  ],
+  "dataset": "eeg_eye_state",
+  "effect_size": null,
+  "effect_to_noise_ratio": null,
+  "lab_action": "run_random_split_baseline",
+  "primary_metric": "balanced_accuracy",
+  "protocol_id": "random_vs_blocked_split",
+  "protocol_warnings": [
+    "blocked split is a proxy for temporal or grouped holdout; it is stricter than random split"
+  ],
+  "runs": [
+    {
+      "accuracy": 0.632,
+      "balanced_accuracy": 0.6166755922582782,
+      "condition": "random_split",
+      "f1": 0.6229444623206126,
+      "model": "linear",
+      "seed": 0
+    },
+    {
+      "accuracy": 0.6368,
+      "balanced_accuracy": 0.6198706953423935,
+      "condition": "random_split",
+      "f1": 0.6257158929806362,
+      "model": "linear",
+      "seed": 1
+    },
+    {
+      "accuracy": 0.6048,
+      "balanced_accuracy": 0.590843119145006,
+      "condition": "random_split",
+      "f1": 0.5971621918742144,
+      "model": "linear",
+      "seed": 2
+    },
+    {
+      "accuracy": 0.628,
+      "balanced_accuracy": 0.6112258071192589,
+      "condition": "random_split",
+      "f1": 0.6169924049403304,
+      "model": "linear",
+      "seed": 3
+    }
+  ],
+  "runtime_seconds": 0.0372,
+  "seed_noise": null,
+  "status": "success",
+  "study_id": "random_vs_blocked_split",
+  "summary": {
+    "random_split": {
+      "max": 0.6198706953423935,
+      "mean_balanced_accuracy": 0.6096538034662342,
+      "min": 0.590843119145006,
+      "n": 4,
+      "std_balanced_accuracy": 0.013038448751893097
+    }
+  }
+}

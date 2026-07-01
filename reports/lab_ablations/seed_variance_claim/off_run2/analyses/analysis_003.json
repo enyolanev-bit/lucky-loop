@@ -1,0 +1,19 @@
+{
+  "analysis_id": "analysis_003",
+  "best_condition": "linear",
+  "condition_means": {
+    "linear": 0.9907407407407407
+  },
+  "condition_stds": {
+    "linear": 0.010691671651659719
+  },
+  "effect_size": null,
+  "effect_to_noise_ratio": null,
+  "primary_metric": "balanced_accuracy",
+  "protocol_id": "single_run_vs_repeated_seeds",
+  "protocol_warnings": [
+    "single-run winner is observation-only until repeated-seed effect exceeds seed noise"
+  ],
+  "seed_noise": null,
+  "summary": "Best condition by mean balanced_accuracy: linear."
+}
