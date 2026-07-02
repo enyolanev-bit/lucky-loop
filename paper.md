@@ -2,7 +2,7 @@
 
 ### A controlled negative result on tabular ML — and a pipeline that caught its own false positives
 
-**Team Pegasus** — Nevil Enyola, Hicham, and collaborators
+**Team Pegasus** — Nevil Enyola, Icham, and collaborators
 *Paris Research Hackathon (TUM.ai × Iterate), Track 3 — Autonomous AI Research Agent · June 2026*
 
 ---

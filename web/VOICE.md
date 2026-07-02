@@ -1,7 +1,7 @@
 # Voice narration — drop-in for the autoresearch demo
 
 Browser-native Web Speech API. **Zero backend, zero API key, free.** Scores the rubric's
-"Make it fun / voice-first" axis. Works on any frontend (the Next demo OR Hicham's new site).
+"Make it fun / voice-first" axis. Works on any frontend (the Next demo OR Icham's new site).
 
 ## React / Next (this repo)
 
