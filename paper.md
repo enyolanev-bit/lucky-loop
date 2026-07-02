@@ -61,7 +61,7 @@ We isolate one question: **does the world model change what the loop does, or do
 
 ### 5.1 The loop runs end-to-end (M1)
 
-Question: *"Does feature scaling improve logistic regression accuracy on breast_cancer?"* The agent selected the dataset, ran the literature pass, generated and executed a protocol over four model families (seeds 42/52/62/72/82), and the verifier returned **one `supported` claim**: effect_size **0.121**, seed_noise **0.011**, **effect/noise ratio 10.7**. All **8/8** world-model predictions came from the real Qwen (`qwen_agentworld`, 0 fallback). The full Track-3 cycle — review → code → analysis → verified report — is demonstrated on real hardware.
+Question: *"Does feature scaling improve logistic regression accuracy on breast_cancer?"* The agent ran the literature pass and — exercising its autonomous dataset selection — picked the OpenML `eeg_eye_state` sensor dataset over sklearn's breast_cancer, then generated and executed a protocol over four model families on it (seeds 42/52/62/72/82). The verifier returned **one `supported` claim**: effect_size **0.121**, seed_noise **0.011**, **effect/noise ratio 10.7**. All **8/8** world-model predictions came from the real Qwen (`qwen_agentworld`, 0 fallback). One artifact flaw we keep visible: the ledger's claim *text* inherits the question's breast_cancer wording while the evidence ran on eeg_eye_state — the verifier gates the numbers, not the prose. The full Track-3 cycle — review → code → analysis → verified report — is demonstrated on real hardware.
 
 **First signal of the null:** all 8 real-Qwen predictions returned the identical structured `recommendation = run`. Even running for real, the world model's *decision-relevant* signal never diverged from the heuristic.
 

@@ -1,5 +1,7 @@
 # Lucky Loop: cadrage final
 
+> **⚠️ Document historique (hackathon, avant les ablations finales).** Les chiffres d'exemple ci-dessous (dont `effect_size = 0.020979` / `seed_noise = 0.027972`) viennent d'une itération de démo antérieure et ne correspondent pas aux artefacts publiés. L'ablation à 3 policies décrite ici a été remplacée par les ablations ON/OFF (A1) et d'ordonnancement (A2). **Source de vérité : [`paper.md`](../paper.md)** et les artefacts sous `reports/`.
+
 ## Framing
 
 **Lucky Loop: Predictive Research Lab OS with Claim-Calibrated Reporting**

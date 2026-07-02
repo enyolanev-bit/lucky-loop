@@ -1,3 +1,8 @@
+[HISTORICAL — hackathon pitch deck, pre-final-ablations.
+Example numbers below (effect_size 0.020979 / seed_noise 0.027972) are from an
+earlier demo iteration and do not match the published artifacts.
+Source of truth: paper.md + reports/ in the repo root.]
+
 PREDICTIVE RESEARCH LAB OS
 
 Lucky Loop
