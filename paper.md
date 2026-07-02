@@ -106,8 +106,9 @@ Had we shipped the +98.7%, we would have published exactly the overconfident, no
 
 ## 7. Limitations
 
-- **Tabular sklearn tasks only.** The null may not transfer to open-ended, high-variance, or expensive research tasks where structured forecasts could genuinely diverge.
+- **Tabular sklearn tasks only.** The null may not transfer to open-ended, high-variance, or expensive research tasks where structured forecasts could genuinely diverge. Foresight also had little to buy here: each experiment costs milliseconds, and the value of predicting an outcome should scale with the cost of obtaining it.
 - **Baselines.** A1's OFF arm is a heuristic stub; A2's strongest baseline (cheapest-first) is itself trivial — the honest reading is "the world model does not beat trivial heuristics here," not "world models are useless."
+- **Relation to the world-model research program.** Our result does not contradict the case for world models in perception and robotics. The failure mode we observed — the structured signal collapsing to a constant — is precisely the absence of calibrated, decision-relevant uncertainty ("knowing when it doesn't know") that latent world-model research identifies as the core capability to build. The null is a data point for that program, not a refutation of it.
 - **Scale / variance.** n=3 (A1), single split per dataset (A2), low-temperature stochastic predictions. Reproducibility commands are emitted per run.
 - **Forecast use.** We tested decision-gating and accuracy-ranking; other uses (failure prediction, early-stopping, multi-step planning) are untested.
 
