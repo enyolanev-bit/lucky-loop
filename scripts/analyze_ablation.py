@@ -330,7 +330,9 @@ def main() -> None:
     (out.with_suffix(".json")).write_text(json.dumps(report, indent=2, ensure_ascii=False), encoding="utf-8")
     (out.with_suffix(".md")).write_text(render_md(report, on_runs, off_runs), encoding="utf-8")
 
-    print(f"Wrote {out.with_suffix('.md').relative_to(ROOT)} and .json")
+    md_path = out.with_suffix(".md")
+    shown = md_path.relative_to(ROOT) if md_path.is_relative_to(ROOT) else md_path
+    print(f"Wrote {shown} and .json")
     print(f"  ON n={len(on_runs)} OFF n={len(off_runs)}")
     print(f"  VERDICT: {report['verdict']}")
 
