@@ -1,8 +1,50 @@
 from __future__ import annotations
 
+import re
 from statistics import mean, stdev
 
 from .schemas import LabAnalysis, LabClaim, ProtocolSpec, ResearchHypothesis
+
+# Dataset names this lab runs on (configs/tasks + A2 synthetics). Used only to
+# detect claim prose that names a DIFFERENT dataset than the executed one.
+_KNOWN_DATASETS = [
+    "breast_cancer",
+    "digits",
+    "eeg_eye_state",
+    "har",
+    "iris",
+    "sonar",
+    "wine",
+    "synth_easy",
+    "synth_hard",
+]
+
+
+def _mentions_dataset(text: str, dataset: str) -> bool:
+    aliases = {dataset, dataset.replace("_", " ")}
+    return any(re.search(rf"\b{re.escape(alias)}\b", text) for alias in aliases)
+
+
+def _dataset_mismatch_note(claim_text: str, executed_dataset: str) -> str | None:
+    """Flag claim prose that names a dataset other than the one that ran.
+
+    The claim text is hypothesis prose and can inherit the research question's
+    dataset wording even when autonomous dataset selection picked another one
+    (the flaw kept visible in paper §5.1). The note makes the mismatch
+    machine-readable in the ledger instead of silent.
+    """
+    text = claim_text.lower()
+    executed = executed_dataset.lower()
+    if _mentions_dataset(text, executed):
+        return None
+    for name in _KNOWN_DATASETS:
+        if name != executed and _mentions_dataset(text, name):
+            return (
+                f"Claim text mentions '{name}' but the executed protocol ran on "
+                f"'{executed_dataset}'. The verifier gates the numbers from the "
+                "executed protocol; treat the prose dataset as unverified."
+            )
+    return None
 
 
 def analyze_observation(raw: dict, analysis_id: str) -> LabAnalysis:
@@ -256,4 +298,10 @@ def verify_lab_claims(
                 metrics={"effect_size": effect, "effect_to_noise_ratio": ratio},
             )
         )
+
+    for claim in claims:
+        claim.executed_dataset = protocol.dataset
+        claim.executed_conditions = list(protocol.conditions)
+        claim.executed_metric = analysis.primary_metric
+        claim.provenance_note = _dataset_mismatch_note(claim.claim, protocol.dataset)
     return claims

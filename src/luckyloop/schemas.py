@@ -568,6 +568,13 @@ class LabClaim(BaseModel):
     next_action: str | None = None
     allowed_rewrite: str | None = None
     metrics: dict[str, Any] = Field(default_factory=dict)
+    # Provenance from the EXECUTED protocol, machine-derived. The `claim` prose
+    # comes from the hypothesis and may drift from what actually ran; these
+    # fields always reflect reality (the flaw published in paper §5.1).
+    executed_dataset: str | None = None
+    executed_conditions: list[str] = Field(default_factory=list)
+    executed_metric: str | None = None
+    provenance_note: str | None = None
 
 
 class LabNotebookEntry(BaseModel):
